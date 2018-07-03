@@ -1,5 +1,9 @@
 Object.assign(DateTime.prototype, {
 
+    add(interval) {
+        return this.modify(interval);
+    },
+
     date(date = false) {
         return date === false ?
             this.getDate() :
@@ -10,10 +14,6 @@ Object.assign(DateTime.prototype, {
         return day === false ?
             this.getDay() :
             this.setDay(day);
-    },
-
-    dayName(type = 'full') {
-        return DateTime.lang.days[type][this.getDay()];
     },
 
     dayOfYear(day = false) {
@@ -64,10 +64,6 @@ Object.assign(DateTime.prototype, {
             this.setMonth(month - 1);
     },
 
-    monthName(type = 'full') {
-        return DateTime.lang.months[type][this.getMonth()];
-    },
-
     offset(offset = false) {
         return offset === false ?
             this.getTimezoneOffset() :
@@ -84,6 +80,10 @@ Object.assign(DateTime.prototype, {
         return seconds === false ?
             this.getSeconds() :
             this.setSeconds(seconds);
+    },
+
+    sub(interval) {
+        return this.modify(interval, true);
     },
 
     time(time = false) {

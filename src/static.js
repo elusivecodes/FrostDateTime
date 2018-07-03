@@ -14,8 +14,8 @@ Object.assign(DateTime, {
     },
 
     dateSuffix(date) {
-        const j = i % 10;
-        const k = i % 100;
+        const j = date % 10;
+        const k = date % 100;
 
         if (j === 1 && k !== 11) {
             return this.lang.ordinal[0];
@@ -33,7 +33,7 @@ Object.assign(DateTime, {
     },
 
     dayOfYear(year, month, date) {
-        for (let i = 1; i < month; i++) {
+        for (let i = 0; i < month; i++) {
             date += this.daysInMonth(year, i);
         }
 
@@ -41,9 +41,10 @@ Object.assign(DateTime, {
     },
 
     daysInMonth(year, month) {
-        let days = this.monthDays[month - 1];
+        month = new Date(year, month).getMonth();
+        let days = this.monthDays[month];
 
-        if (month == 2 && this.isLeapYear(year)) {
+        if (month == 1 && this.isLeapYear(year)) {
             days++;
         }
 
@@ -79,19 +80,7 @@ Object.assign(DateTime, {
 
     fromFormat(dateString, formatString) {
 
-        const dateData = {
-            timezone: false,
-            offset: false,
-            year: false,
-            month: false,
-            date: false,
-            dayOfYear: false,
-            hours: false,
-            minutes: false,
-            seconds: false,
-            milliseconds: false,
-            timestamp: false
-        };
+        const dateData = {};
 
         const formatTokens = this.formatTokens();
 
@@ -119,27 +108,81 @@ Object.assign(DateTime, {
             this.formatData[key].input(dateData, dateMatch[1]);
         });
 
-        const date = new DateTime();
+        return this.fromObject(dateData);
+    },
 
-        Object.keys(dateData).forEach(method => {
-            if (dateData[method] === false) {
-                return;
+    fromObject(dateData) {
+
+        let dateinit;
+        if (dateData.timestamp) {
+            dateinit = dateData.timestamp * 1000;
+        } else {
+            const now = new Date();
+            const year = dateData.year || now.getFullYear();
+
+            let month;
+            let date;
+            if (dateData.dayOfYear && ( ! dateData.month || ! dateData.date)) {
+                month = 0;
+                date = dateData.dayOfyear;
+            } else {
+                month = dateData.month - 1 || now.getMonth();
+                date = dateData.date || now.getDate();
             }
 
-            date[method](dateData[method]);
-        });
+            dateinit = [
+                year,
+                month,
+                date,
+                dateData.hours || now.getHours(),
+                dateData.minutes || now.getMinutes(),
+                dateData.seconds || now.getSeconds(),
+                dateData.milliseconds || now.getMilliseconds()
+            ];
+        }
 
-        return date;
+        return new this(dateinit, dateData.timezone || null, dateData.offset || null);
     },
 
     getDayFromName(day, type = 'full') {
-        const index = DateTime.lang.days[type].findIndex(value => matchesString(value, day));
+        const index = DateTime.lang.days[type].findIndex(value => Frost.matchesString(value, day, true));
         return index >= 0 ? index : false;
     },
 
+    getDayName(day, type = 'full') {
+        return DateTime.lang.days[type][day];
+    },
+
     getMonthFromName(month, type = 'full') {
-        const index = DateTime.lang.months[type].findIndex(value => matchesString(value, month));
+        const index = DateTime.lang.months[type].findIndex(value => Frost.matchesString(value, month, true));
         return index >= 0 ? index : false;
+    },
+
+    getMonthName(day, type = 'full') {
+        return DateTime.lang.months[type][day];
+    },
+
+    getIsoDay(day) {
+        return ((day + 6) % 7) + 1;
+    },
+
+    getIsoWeek() {
+        const currentWeek = new Date(...arguments);
+        const currentDay = this.getIsoDay(currentWeek.getUTCDay());
+        currentWeek.setUTCDate(currentWeek.getUTCDate() - currentDay + 4);
+
+        const firstWeek = new Date(currentWeek.getUTCFullYear(), 0, 4);
+        const firstDay = this.getIsoDay(firstWeek.getUTCDay());
+        firstWeek.setUTCDate(firstWeek.getUTCDate() - firstDay + 4);
+
+        return 1 + Math.floor((currentWeek - firstWeek) / 604800000);
+    },
+
+    getIsoYear() {
+        const tempDate = new Date(...arguments);
+        const isoDay = this.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - isoDay + 4);
+        return tempDate.getUTCFullYear();
     },
 
     isLeapYear(year) {
@@ -147,13 +190,40 @@ Object.assign(DateTime, {
     },
 
     isoWeeksInYear(year) {
-        const date = new DateTime(year, 12, 28);
+        const date = new DateTime([year, 12, 28]);
         return date.getIsoWeek();
+    },
+
+    parseDay(day) {
+        return day === null || Frost.isNumeric(day) ? day :
+            DateTime.getDayFromName(day) ||
+            DateTime.getDayFromName(day, 'short') ||
+            DateTime.getDayFromName(day, 'min') ||
+            null;
+    },
+
+    parseMonth(month) {
+        return month === null || Frost.isNumeric(month) ? month :
+            DateTime.getMonthFromName(month) ||
+            DateTime.getMonthFromName(month, 'short') ||
+            null;
+    },
+
+    standardOffset(year, timezone) {
+        const jan = new DateTime([year, 0, 1], timezone);
+        const jul = new DateTime([year, 6, 1], timezone);
+
+        return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
     },
 
     timezoneAbbr(timezone, dst = false) {
         return dst ?
             this.timezones[timezone].abbrDST :
             this.timezones[timezone].abbr;
+    },
+
+    timezoneFromOffset(timestamp, offset) {
+        return Object.keys(this.timezones)
+            .find(timezone => this.calculateTimezoneOffset(timezone, timestamp) === offset);
     }
 });

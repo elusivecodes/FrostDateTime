@@ -1,21 +1,200 @@
-(function(window) {
+(function(Frost) {
 
+class DateInterval {
+    constructor(interval) {
+        if (interval) {
+            const match = interval.match(DateInterval.isoRegex);
+
+            this.y = match[1] || 0;
+            this.m = match[2] || 0;
+            this.d = match[4] ? match[4] * 7 : match[3] || 0;
+            this.h = match[5] || 0;
+            this.i = match[6] || 0;
+            this.s = match[7] || 0;
+        } else {
+            this.y = 0;
+            this.m = 0;
+            this.d = 0;
+            this.h = 0;
+            this.i = 0;
+            this.s = 0;
+        }
+
+        this.days = null;
+        this.invert = false;
+    }
+
+    format(formatString) {
+        const formatTokens = {};
+
+        Object.keys(this.formatData).forEach(key => {
+            const token = this.formatData[key].token;
+            formatTokens[token] = key;
+        });
+
+        let output = '';
+        let prefixed = false;
+        formatString.split('').forEach(char => {
+            if ( ! prefixed && char === '%') {
+                prefixed = true;
+                return;
+            }
+
+            if ( ! prefixed || ! formatTokens[char]) {
+                output += char;
+                prefixed = false;
+                return;
+            }
+
+            const key = formatTokens[char];
+            output += DateInterval.formatData[key].output(this);
+        });
+
+        return output;
+    }
+
+    static fromString(string) {
+        const interval = new DateInterval();
+
+        const regex = new RegExp(DateInterval.stringRegex, 'gi');
+
+        let match;
+        while (match = regex.exec(string)) {
+            const type = match[2];
+            const value = parseInt(match[1]);
+            if (type === 'year') {
+                interval.y += value;
+            } else if (type === 'month') {
+                interval.m += value;
+            } else if (type === 'day') {
+                interval.d += value;
+            } else if (type === 'fortnight' || type === 'forthnight') {
+                interval.d += value * 14;
+            } else if (type === 'week') {
+                interval.d += value * 7;
+            } else if (type === 'hour') {
+                interval.h += value;
+            } else if (type === 'min' || type === 'minute') {
+                interval.i += value;
+            } else if (type === 'sec' || type === 'second') {
+                interval.s += value;
+            }
+        }
+
+        return interval;
+    }
+}
+
+Frost.DateInterval = DateInterval;
 class DateTime {
-    constructor() {
-        this._date = new Date(...arguments);
+    constructor(date = null, timezone = null, offset = null) {
 
-        this._offset = 0;
-        this._timezone = 'UTC';
+        let timestamp;
+        if (date === null) {
+            timestamp = Date.now();
+        } else if (Frost.isArray(date)) {
+            timestamp = Date.UTC(...date);
+        } else if (Frost.isNumeric(date)) {
+            timestamp = date;
+        } else if (Frost.isString(date)) {
+            timestamp = Date.parse(date);
+        } else if (date instanceof Date || date instanceof DateTime) {
+            timestamp = date.getTime();
+        } else {
+            console.error('Invalid date supplied');
+            return false;
+        }
 
-        const offset = this._date.getTimezoneOffset();
-        this.offset(offset);
+        if ( ! timezone) {
+            if (offset !== null) {
+                timezone = DateTime.timezoneFromOffset(timestamp + offset * 60000, offset);
+            } else if (date instanceof DateTime) {
+                timezone = date.getTimezone();
+            }
+        }
 
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        this.timezone(timezone);
+        this._timezone = timezone || DateTime.defaultTimezone;
+        this._offset = DateTime.calculateTimezoneOffset(this._timezone, timestamp);
+
+        if (this._offset && Frost.isArray(date)) {
+            timestamp += this._offset * 60000;
+        }
+
+        this._date = new Date(timestamp);
+        this._checkOffset();
+    }
+
+    getLocalTime() {
+        return this._date.getTime() - (this._offset * 60000);
+    }
+
+    getLocalTimestamp() {
+        return (this._date.getTime() - (this._offset * 60000)) / 1000;
+    }
+
+    getTime() {
+        return this._date.getTime();
+    }
+
+    getTimestamp() {
+        return this._date.getTime() / 1000;
+    }
+
+    getTimezone() {
+        return this._timezone;
+    }
+
+    getTimezoneOffset() {
+        return this._offset;
+    }
+
+    setLocalTime(time) {
+        this._date.setTime(time + (this._offset * 60000));
+        return this._checkOffset();
+    }
+
+    setLocalTimestamp(timestamp) {
+        this._date.setTime((timestamp + (this._offset * 60000)) * 1000);
+        return this._checkOffset();
+    }
+
+    setTime(time) {
+        this._date.setTime(time);
+        return this._checkOffset();
+    }
+
+    setTimestamp(timestamp) {
+        this._date.setTime(timestamp * 1000);
+        return this._checkOffset();
+    }
+
+    setTimezone(timezone) {
+        this._timezone = timezone;
+        return this._checkOffset();
+    }
+
+    setTimezoneOffset(offset) {
+        const timezone = DateTime.timezoneFromOffset(this.getTime(), offset);
+        if (timezone) {
+            this.setTimezone(timezone);
+        }
+        return this;
     }
 
     toDateString() {
-        return this.format(DateTime.formats.date);
+        return this.format(DateTime.formats.string)
+    }
+
+    toLocaleDateString() {
+        return this._date.toLocaleDateString();
+    }
+
+    toLocaleString() {
+        return this._date.toLocaleString();
+    }
+
+    toLocaleTimeString() {
+        return this._date.toLocaleTimeString();
     }
 
     toISOString() {
@@ -30,18 +209,49 @@ class DateTime {
         return this.format(DateTime.formats.time);
     }
 
+    toUTCString() {
+        return this._date.toUTCString();
+    }
+
     valueOf() {
-        return this.time();
+        return this.getTime();
     }
 
     [Symbol.toPrimitive](hint) {
-        return hint === 'number' ?
-            this.valueOf() :
-            this.toString();
+        return this._date[Symbol.toPrimitive](hint);
     }
 
 }
+
+Frost.DateTime = DateTime;
+class DateTimeImmutable extends DateTime {
+    constructor() {
+        super(...arguments);
+    }
+
+    setLocalTime(time) {
+        return new DateTimeImmutable(time + (this._offset * 60000), this._timezone);
+    }
+
+    setTime(time) {
+        return new DateTimeImmutable(time, this._timezone);
+    }
+
+    setTimezone(timezone) {
+        return new DateTimeImmutable(this._date.getTime(), timezone);
+    }
+
+    setTimezoneOffset(offset) {
+        return new DateTimeImmutable(this._date.getTime(), this._timezone, offset);
+    }
+}
+
+Frost.DateTimeImmutable = DateTimeImmutable;
 Object.assign(DateTime.prototype, {
+
+    add(interval) {
+        return this.modify(interval);
+    },
 
     date(date = false) {
         return date === false ?
@@ -56,7 +266,7 @@ Object.assign(DateTime.prototype, {
     },
 
     dayName(type = 'full') {
-        return DateTime.lang.days[type][this.getDay()];
+        return DateTime.getDayName(this.getDay(), type);
     },
 
     dayOfYear(day = false) {
@@ -101,6 +311,54 @@ Object.assign(DateTime.prototype, {
             this.setMinutes(minutes);
     },
 
+    modify(interval, invert = false) {
+        if (Frost.isString(interval)) {
+            interval = DateInterval.fromString(interval);
+        }
+
+        let modify = 1;
+ 
+        if (interval.invert) {
+            modify *= -1;
+        }
+  
+        if (invert) {
+            modify *= -1;
+        }
+
+        const tempDate = new Date(this.getLocalTime());
+
+        if (interval.y) {
+            tempDate.setUTCFullYear(tempDate.getUTCFullYear() + (interval.y * modify));
+        }
+
+        if (interval.m) {
+            tempDate.setUTCMonth(tempDate.getUTCMonth() + (interval.m * modify));
+        }
+
+        if (interval.d) {
+            tempDate.setUTCDate(tempDate.getUTCDate() + (interval.d * modify));
+        }
+
+        if (interval.h) {
+            tempDate.setUTCHours(tempDate.getUTCHours() + (interval.h * modify));
+        }
+
+        if (interval.i) {
+            tempDate.setUTCMinutes(tempDate.getUTCMinutes() + (interval.i * modify));
+        }
+
+        if (interval.s) {
+            tempDate.setUTCSeconds(tempDate.getUTCSeconds() + (interval.s * modify));
+        }
+
+        if (interval.f) {
+            tempDate.setUTCTime(tempDate.getUTCTime() + (interval.f * modify));
+        }
+
+        return this.setLocalTime(tempDate.getTime());
+    },
+
     month(month = false) {
         return month === false ?
             this.getMonth() + 1 :
@@ -108,7 +366,7 @@ Object.assign(DateTime.prototype, {
     },
 
     monthName(type = 'full') {
-        return DateTime.lang.months[type][this.getMonth()];
+        return DateTime.getMonthName(this.getMonth(), type);
     },
 
     offset(offset = false) {
@@ -127,6 +385,10 @@ Object.assign(DateTime.prototype, {
         return seconds === false ?
             this.getSeconds() :
             this.setSeconds(seconds);
+    },
+
+    sub(interval) {
+        return this.modify(interval, true);
     },
 
     time(time = false) {
@@ -155,377 +417,469 @@ Object.assign(DateTime.prototype, {
 });
 Object.assign(DateTime.prototype, {
 
+    // Returns the date of the month in local timezone
     getDate() {
-        return this._date.getUTCDate();
+        return new Date(this.getLocalTime()).getUTCDate();
     },
 
+    // Returns the day of the week in local timezone
+    // (0 - Sunday, 6 - Saturday)
     getDay() {
-        return this._date.getUTCDay();
+        return new Date(this.getLocalTime()).getUTCDay();
     },
 
+    // Returns the day of the year in local timezone
+    // (1, 366)
     getDayOfYear() {
-        return DateTime.dayOfYear(this.getFullYear(), this.getMonth() + 1, this.getDate());
+        const tempDate = new Date(this.getLocalTime());
+        return DateTime.dayOfYear(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
     },
 
+    // Returns the full year in local timezone
     getFullYear() {
-        return this._date.getUTCFullYear();
+        return new Date(this.getLocalTime()).getUTCFullYear();
     },
 
+    // Returns the hours in local timezone
+    // (0, 23)
     getHours() {
-        return this._date.getUTCHours();
+        return new Date(this.getLocalTime()).getUTCHours();
     },
 
+    // Returns the ISO day of the week in local timezone
+    // (1 - Monday, 7 - Sunday)
     getIsoDay() {
-        return ((this.getDay() + 6) % 7) + 1;
+        return DateTime.getIsoDay(this.getDay());
     },
 
+    // Returns the ISO week of the year in local timezone
     getIsoWeek() {
-        const date = new DateTime(this.getFullYear(), this.getMonth(), this.getDate());
-
-        // Thursday in current week decides the year.
-        date.setIsoDay(4);
-
-        // January 4 is always in week 1.
-        const week1 = new DateTime(date.getFullYear(), 0, 4);
-
-        // Adjust to Thursday in week 1
-        week1.setIsoDay(4);
-
-        // Count weeks between date and week1.
-        const weeksBetween = (date.getTimestamp() - week1.getTimestamp()) / 604800;
-
-        return 1 + Math.floor(weeksBetween);
+        const tempDate = new Date(this.getLocalTime());
+        return DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
     },
 
+    // Returns the ISO year in local timezone
     getIsoYear() {
-        const date = new DateTime(this.getFullYear(), this.getMonth(), this.getDate());
-        date.setTimezone(this.getTimezone());
-        date.getIsoDay(4);
-        return date.getFullYear();
+        const tempDate = new Date(this.getLocalTime());
+        return DateTime.getIsoYear(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
     },
 
+    // Returns the milliseconds in local timezone
     getMilliseconds() {
-        return this._date.getUTCMilliseconds();
+        return new Date(this.getLocalTime()).getUTCMilliseconds();
     },
 
+    // Returns the minutes in local timezone
+    // (0, 59)
     getMinutes() {
-        return this._date.getUTCMinutes();
+        return new Date(this.getLocalTime()).getUTCMinutes();
     },
 
+    // Returns the month in local timezone
+    // (0, 11)
     getMonth() {
-        return this._date.getUTCMonth();
+        return new Date(this.getLocalTime()).getUTCMonth();
     },
 
+    // Returns the quarter of the year in local timezone
+    // (1, 4)
     getQuarter() {
         return Math.ceil(this.getMonth() / 3);
     },
 
+    // Returns the seconds in local timezone
+    // (0, 59)
     getSeconds() {
+        return new Date(this.getLocalTime()).getUTCSeconds();
+    },
+
+    // Sets the date of the month in local timezone
+    setDate() {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCDate(...arguments);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the day of the week in local timezone
+    // (0 - Sunday, 6 - Saturday)
+    setDay(day) {
+        day = DateTime.parseDay(day);
+
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDate.getUTCDay() + day);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the day of the year in local timezone
+    setDayOfYear(day) {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCMonth(0);
+        tempDate.setUTCDate(day);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the full year in local timezone
+    setFullYear(year, month = null, date = null) {
+        const tempDate = new Date(this.getLocalTime());
+
+        month = DateTime.parseMonth(month);
+
+        if (month === null) {
+            month = tempDate.getUTCMonth();
+        }
+
+        if (date === null) {
+            date = tempDate.getUTCDate();
+            const daysInMonth = DateTime.daysInMonth(year, month);
+            if (date > daysInMonth) {
+                date = daysInMonth;
+            }
+        }
+
+        tempDate.setUTCFullYear(year, month, date);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the hours in local timezone
+    // (0, 23)
+    setHours() {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCHours(...arguments);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the ISO day of the week in local timezone
+    // (1 - Monday, 7 - Sunday)
+    setIsoDay(day) {
+        day = DateTime.parseDay(day);
+
+        const tempDate = new Date(this.getLocalTime());
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the ISO week of the year in local timezone
+    setIsoWeek(week, day = null) {
+        const tempDate = new Date(this.getLocalTime());
+
+        if (day === null) {
+            day = DateTime.getIsoDay(tempDate.getUTCDay());
+        }
+
+        tempDate.setUTCMonth(0);
+        tempDate.setUTCDate(4 + ((week - 1) * 7));
+
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+ 
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the ISO year in local timezone
+    setIsoYear(year, week = null, day = null) {
+        const tempDate = new Date(this.getLocalTime());
+
+        if (week === null) {
+            week = DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
+        }
+
+        if (day === null) {
+            day = DateTime.getIsoDay(tempDate.getUTCDay());
+        }
+
+        tempDate.setUTCFullYear(year, 0, 4);
+        tempDate.setUTCDate(4 + ((week - 1) * 7));
+
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the milliseconds in local timezone
+    setMilliseconds() {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCMilliseconds(...arguments);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the minutes in local timezone
+    // (0, 59)
+    setMinutes() {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCMinutes(...arguments);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the month in local timezone
+    // (0, 11)
+    setMonth(month, date = null) {
+        const tempDate = new Date(this.getLocalTime());
+ 
+        month = DateTime.parseMonth(month);
+
+        if (date === null) {
+            date = tempDate.getUTCDate();
+            const daysInMonth = DateTime.daysInMonth(tempDate.getUTCFullYear(), month);
+            if (date > daysInMonth) {
+                date = daysInMonth;
+            }
+        }
+
+        tempDate.setUTCMonth(month, date);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the quarter in local timezone
+    // (1, 4)
+    setQuarter(quarter) {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCMonth(quarter * 3 - 3);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
+    // Sets the seconds in local timezone
+    // (0, 59)
+    setSeconds() {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCSeconds(...arguments);
+        return this.setLocalTime(tempDate.getTime());
+    }
+});
+Object.assign(DateTime.prototype, {
+
+    // Returns the date of the month in UTC timezone
+    getUTCDate() {
+        return this._date.getUTCDate();
+    },
+
+    // Returns the day of the week in UTC timezone
+    // (0 - Sunday, 6 - Saturday)
+    getUTCDay() {
+        return this._date.getUTCDay();
+    },
+
+    // Returns the day of the year in UTC timezone
+    // (1, 366)
+    getUTCDayOfYear() {
+        return DateTime.dayOfYear(this._date.getUTCFullYear(), this._date.getUTCMonth(), this._date.getUTCDate());
+    },
+
+    // Returns the full year in UTC timezone
+    getUTCFullYear() {
+        return this._date.getUTCFullYear();
+    },
+
+    // Returns the hours in UTC timezone
+    // (0, 23)
+    getUTCHours() {
+        return this._date.getUTCHours();
+    },
+
+    // Returns the ISO day of the week in UTC timezone
+    // (1 - Monday, 7 - Sunday)
+    getUTCIsoDay() {
+        return DateTime.getIsoDay(this.getUTCDay());
+    },
+
+    // Returns the ISO week of the year in UTC timezone
+    getUTCIsoWeek() {
+        return DateTime.getIsoWeek(this._date.getUTCFullYear(), this._date.getUTCMonth(), this._date.getUTCDate());
+    },
+
+    // Returns the ISO year in UTC timezone
+    getUTCIsoYear() {
+        return DateTime.getIsoYear(this._date.getUTCFullYear(), this._date.getUTCMonth(), this._date.getUTCDate());
+    },
+
+    // Returns the milliseconds in UTC timezone
+    getUTCMilliseconds() {
+        return this._date.getUTCMilliseconds();
+    },
+
+    // Returns the minutes in UTC timezone
+    // (0, 59)
+    getUTCMinutes() {
+        return this._date.getUTCMinutes();
+    },
+
+    // Returns the month in UTC timezone
+    // (0, 11)
+    getUTCMonth() {
+        return this._date.getUTCMonth();
+    },
+
+    // Returns the quarter of the year in UTC timezone
+    // (1, 4)
+    getUTCQuarter() {
+        return Math.ceil(this._date.getUTCMonth() / 3);
+    },
+
+    // Returns the seconds in UTC timezone
+    // (0, 59)
+    getUTCSeconds() {
         return this._date.getUTCSeconds();
     },
 
-    getTime() {
-        return this._date.getTime() + (this._offset * 60000);
+    // Sets the date of the month in UTC timezone
+    setUTCDate() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCDate(...arguments);
+        return this.setTime(tempDate.getTime());
     },
 
-    getTimestamp() {
-        return this.getTime() / 1000;
+    // Sets the day of the week in UTC timezone
+    // (0 - Sunday, 6 - Saturday)
+    setUTCDay(day) {
+        day = DateTime.parseDay(day);
+
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDate.getUTCDay() + day);
+        return this.setTime(tempDate.getTime());
     },
 
-    getTimezone() {
-        return this._timezone;
+    // Sets the day of the year in UTC timezone
+    setUTCDayOfYear(day) {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCMonth(0);
+        tempDate.setUTCDate(day);
+        return this.setTime(tempDate.getTime());
     },
 
-    getTimezoneOffset() {
-        return this._offset;
-    },
-
-    getUTCDate() {
-        return new Date(this.getTime()).getUTCDate();
-    },
-
-    getUTCDay() {
-        return new Date(this.getTime()).getUTCDay();
-    },
-
-    getUTCFullYear() {
-        return new Date(this.getTime()).getUTCFullYear();
-    },
-
-    getUTCHours() {
-        return new Date(this.getTime()).getUTCHours();
-    },
-
-    getUTCMilliseconds() {
-        return new Date(this.getTime()).getUTCMilliseconds();
-    },
-
-    getUTCMinutes() {
-        return new Date(this.getTime()).getUTCMinutes();
-    },
-
-    getUTCMonth() {
-        return new Date(this.getTime()).getUTCMonth();
-    },
-
-    getSeconds() {
-        return new Date(this.getTime()).getUTCSeconds();
-    }
-});
-Object.assign(DateTime.prototype, {
-
-    setDate(date) {
-        this._date.setUTCDate(date);
-
-        return this.checkDST();
-    },
-
-    setDay(day) {
-        let realDay = false;
-        if (utility.isNumeric(day)) {
-            realDay = day;
-        } else {
-            realDay = DateTime.getMonthFromName(day) ||
-                DateTime.getMonthFromName(day, 'short') ||
-                DateTime.getMonthFromName(day, 'min');
-        }
-
-        if (realDay === false) {
-            return this;
-        }
-
-        return this.setDate(this.getDate() - this.getDay() + realDay);
-    },
-
-    setDayOfYear(day) {
-        return this.setMonth(1).setDate(day);
-    },
-
-    setFullYear(year, month = null, date = null) {
-        if (month === null) {
-            month = this.getMonth();
-        }
-
-        let checkDate = false;
-        if (date === null) {
-            date = this.getDate();
-            checkDate = true;
-        }
-
-        this._date.setUTCFullYear(year, month, date);
-
-        if (checkDate && date != this.getDate()) {
-            this._date.setUTCDate(0);
-        }
-
-        return this.checkDST();
-    },
-
-    setHours(hours, minutes = null, seconds = null, ms = null) {
-        if (hours === null) {
-            hours = this.getHours();
-        }
-
-        if (minutes === null) {
-            minutes = this.getMinutes();
-        }
-
-        if (seconds === null) {
-            seconds = this.getSeconds();
-        }
-
-        if (ms === null) {
-            ms = this.getMilliseconds();
-        }
-
-        this._date.setUTCHours(hours, minutes, seconds, ms);
-
-        return this.checkDST();
-    },
-
-    setIsoDay(day) {
-        return this.setDate(this.getDate() - this.getIsoDay() + day);
-    },
-
-    setIsoWeek(week, day = null) {
-        if (day === null) {
-            day = this.getIsoDay();
-        }
-
-        this.setDayOfYear(4 + ((week - 1) * 7));
-
-        return this.setIsoDay(day);
-    },
-
-    setIsoYear(year, week = null, day = null) {
-        if (week === null) {
-            week = this.getIsoWeek();
-        }
-
-        if (day === null) {
-            day = this.getIsoDay();
-        }
-
-        this.setFullYear(year, 0, 4);
-
-        return this.setIsoWeek(week, day);
-    },
-
-    setMilliseconds(ms) {
-        this._date.setUTCMilliseconds(ms);
-
-        return this.checkDST();
-    },
-
-    setMinutes(minutes, seconds = null, ms = null) {
-        if (seconds === null) {
-            seconds = this.getSeconds();
-        }
-
-        if (ms === null) {
-            ms = this.getMilliseconds();
-        }
-
-        this._date.setUTCMinutes(minutes, seconds, ms);
-
-        return this.checkDST();
-    },
-
-    setMonth(month, date = null) {
-        let checkDate = false;
-        if (date === null) {
-            date = this.getDate();
-            checkDate = true;
-        }
-
-        let realMonth = false;
-        if (utility.isNumeric(month)) {
-            realMonth = month;
-        } else {
-            realMonth = DateTime.getMonthFromName(month) ||
-                DateTime.getMonthFromName(month, 'short');
-        }
-
-        if (realMonth === false) {
-            return this;
-        }
-
-        this._date.setUTCMonth(realMonth, date);
-
-        if (checkDate && date != this.getDate()) {
-            this._date.setUTCDate(0);
-        }
-
-        return this.checkDST();
-    },
-
-    setQuarter(quarter) {
-        this.setMonth(quarter * 3 - 3);
-
-        return this.checkDST();
-    },
-
-    setSeconds(seconds, ms = null) {
-        if (ms === null) {
-            ms = this.getMilliseconds();
-        }
-
-        this._date.setUTCSeconds(seconds, ms);
-
-        return this.checkDST();
-    },
-
-    setTime(time) {
-        this._date.setTime(time - (this._offset * 60000));
-
-        return this.checkDST();
-    },
-
-    setTimestamp(timestamp) {
-        return this.setTime(timestamp * 1000);
-    },
-
-    setTimezone(timezone) {
-        this._timezone = timezone;
-
-        return this.checkDST();
-    },
-
-    setTimezoneOffset(offset) {
-        const diff = this._offset - offset;
-        if (diff) {
-            this._date.setTime(this._date.getTime() + (diff * 60000));
-        }
-
-        this._offset = offset;
-
-        return this;
-    },
-
-    setUTCDate(date) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setDate(date)
-            .getTime();
-        this.setTime(timestamp);
-    },
-
+    // Sets the full year in UTC timezone
     setUTCFullYear(year, month = null, date = null) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setFullYear(year, month, date)
-            .getTime();
-        this.setTime(timestamp);
+        const tempDate = new Date(this.getTime());
+
+        month = DateTime.parseMonth(month);
+
+        if (month === null) {
+            month = tempDate.getUTCMonth();
+        }
+
+        if (date === null) {
+            date = tempDate.getUTCDate();
+            const daysInMonth = DateTime.daysInMonth(year, month);
+            if (date > daysInMonth) {
+                date = daysInMonth;
+            }
+        }
+
+        tempDate.setUTCFullYear(year, month, date);
+        return this.setTime(tempDate.getTime());
     },
 
-    setUTCHours(hours, minutes = null, seconds = null, ms = null) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setHours(hours, minutes, seconds, ms)
-            .getTime();
-        this.setTime(timestamp);
+    // Sets the hours in UTC timezone
+    // (0, 23)
+    setUTCHours() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCHours(...arguments);
+        return this.setTime(tempDate.getTime());
     },
 
-    setUTCMilliseconds(ms) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setMilliseconds(ms)
-            .getTime();
-        this.setTime(timestamp);
+    // Sets the ISO day of the week in UTC timezone
+    // (1 - Monday, 7 - Sunday)
+    setUTCIsoDay(day) {
+        day = DateTime.parseDay(day);
+
+        const tempDate = new Date(this.getTime());
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+        return this.setTime(tempDate.getTime());
     },
 
-    setUTCMinutes(minutes, seconds = null, ms = null) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setMinutes(minutes, seconds, ms)
-            .getTime();
-        this.setTime(timestamp);
+    // Sets the ISO week of the year in UTC timezone
+    setUTCIsoWeek(week, day = null) {
+        const tempDate = new Date(this.getTime());
+
+        if (day === null) {
+            day = DateTime.getIsoDay(tempDate.getUTCDay());
+        }
+
+        tempDate.setUTCMonth(0);
+        tempDate.setUTCDate(4 + ((week - 1) * 7));
+
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+ 
+        return this.setTime(tempDate.getTime());
     },
 
+    // Sets the ISO year in UTC timezone
+    setUTCIsoYear(year, week = null, day = null) {
+        const tempDate = new Date(this.getTime());
+
+        if (week === null) {
+            week = DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
+        }
+
+        if (day === null) {
+            day = DateTime.getIsoDay(tempDate.getUTCDay());
+        }
+
+        tempDate.setUTCFullYear(year, 0, 4);
+        tempDate.setUTCDate(4 + ((week - 1) * 7));
+
+        const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
+
+        return this.setTime(tempDate.getTime());
+    },
+
+    // Sets the milliseconds in UTC timezone
+    setUTCMilliseconds() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCMilliseconds(...arguments);
+        return this.setTime(tempDate.getTime());
+    },
+
+    // Sets the minutes in UTC timezone
+    // (0, 59)
+    setUTCMinutes() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCMinutes(...arguments);
+        return this.setTime(tempDate.getTime());
+    },
+
+    // Sets the month in UTC timezone
+    // (0, 11)
     setUTCMonth(month, date = null) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setMonth(month, date)
-            .getTime();
-        this.setTime(timestamp);
+        const tempDate = new Date(this.getTime());
+  
+        month = DateTime.parseMonth(month);
+
+        if (date === null) {
+            date = tempDate.getUTCDate();
+            const daysInMonth = DateTime.daysInMonth(tempDate.getUTCFullYear(), month);
+            if (date > daysInMonth) {
+                date = daysInMonth;
+            }
+        }
+
+        tempDate.setUTCMonth(month, date);
+        return this.setTime(tempDate.getTime());
     },
 
-    setUTCSeconds(seconds, ms = null) {
-        const timestamp = new DateTime(this.getTime())
-            .setTimezone('utc')
-            .setSeconds(seconds, ms)
-            .getTime();
-        this.setTime(timestamp);
+    // Sets the quarter in UTC timezone
+    // (1, 4)
+    setUTCQuarter() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCMonth(quarter * 3 - 3);
+        return this.setTime(tempDate.getTime());
+    },
+
+    // Sets the seconds in UTC timezone
+    // (0, 59)
+    setUTCSeconds() {
+        const tempDate = new Date(this.getTime());
+        tempDate.setUTCSeconds(...arguments);
+        return this.setTime(tempDate.getTime());
     }
 });
 Object.assign(DateTime.prototype, {
 
-    checkDST() {
-        const offset = DateTime.calculateTimezoneOffset(this._timezone, this.getTime());
-
-        if (offset !== this.getTimezoneOffset()) {
-            this.setTimezoneOffset(offset);
-        }
+    _checkOffset() {
+        this._offset = DateTime.calculateTimezoneOffset(this._timezone, this._date.getTime());
 
         return this;
     },
@@ -535,15 +889,35 @@ Object.assign(DateTime.prototype, {
     },
 
     daysInMonth() {
-        return DateTime.daysInMonth(this.getFullYear(), this.getMonth() + 1);
+        return DateTime.daysInMonth(this.getFullYear(), this.getMonth());
     },
 
     daysInYear() {
         return DateTime.daysInYear(this.getFullYear());
     },
 
+    diff(other, absolute = false) {
+        const interval = new DateInterval();
+
+        const tempDate = new Date(this.getTime());
+        const otherDate = new Date(other.getTime());
+
+        interval.y = Math.abs(tempDate.getUTCFullYear() - otherDate.getUTCFullYear());
+        interval.m = Math.abs(tempDate.getUTCMonth() - otherDate.getUTCMonth());
+        interval.d = Math.abs(tempDate.getUTCDate() - otherDate.getUTCDate());
+        interval.h = Math.abs(tempDate.getUTCHours() - otherDate.getUTCHours());
+        interval.i = Math.abs(tempDate.getUTCMinutes() - otherDate.getUTCMinutes());
+        interval.s = Math.abs(tempDate.getUTCSeconds() - otherDate.getUTCSeconds());
+        interval.f = Math.abs((tempDate.getUTCMilliseconds() - otherDate.getUTCMilliseconds()) * 1000);
+        interval.days = Math.abs((tempDate - otherDate) / 86400000);
+        interval.invert = ! absolute && date < otherDate;
+
+        return interval;
+    },
+
     format(formatString) {
         const formatTokens = DateTime.formatTokens(true);
+        const date = new Date(this.getLocalTime());
 
         let output = '';
         let escaped = false;
@@ -560,14 +934,14 @@ Object.assign(DateTime.prototype, {
             }
 
             const key = formatTokens[char];
-            output += DateTime.formatData[key].output(this);
+            output += DateTime.formatData[key].output(date, this);
         });
 
         return output;
     },
 
     isDST() {
-        return this.getTimezoneOffset() < this.standardOffset();
+        return this._offset < this.standardOffset();
     },
 
     isLeapYear() {
@@ -579,29 +953,7 @@ Object.assign(DateTime.prototype, {
     },
 
     standardOffset() {
-        const jan = new DateTime(this.getFullYear(), 0, 1);
-        jan.setTimezone(this.timezone());
-
-        const jul = new DateTime(this.getFullYear(), 6, 1);
-        jul.setTimezone(this.timezone());
-
-        return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-    },
-
-    toObject() {
-        return {
-            timezone: this.timezone(),
-            offset: this.offset(),
-            year: this.year(),
-            month: this.month(),
-            date: this.date(),
-            dayOfYear: this.dayOfYear(),
-            hours: this.hours(),
-            minutes: this.minutes(),
-            seconds: this.seconds(),
-            milliseconds: this.milliseconds(),
-            timestamp: this.timestamp()
-        }
+        return DateTime.standardOffset(this.getFullYear(), this._timezone);
     }
 
 });
@@ -612,15 +964,15 @@ DateTime.formatData = {
     // leap year
     leapYear: {
         token: 'L',
-        output: date => date.isLeapYear() ? 1 : 0
+        output: date => FrostDate.isLeapYear(date.getUTCFullYear()) ? 1 : 0
     },
 
     // year
     year: {
         token: 'Y',
-        regex: () => '(\\d{4})',
+        regex: () => '(\\d{1,4})',
         input: (date, value) => date.year = value,
-        output: date => padString(date.year(), 4)
+        output: date => date.getUTCFullYear()
     },
 
     // year short
@@ -632,7 +984,7 @@ DateTime.formatData = {
             date.year = value;
         },
         output: date => {
-            const year = '' + date.year();
+            const year = '' + date.getUTCFullYear();
             return year.substring(year.length - 2);
         }
     },
@@ -640,7 +992,7 @@ DateTime.formatData = {
     // iso year
     isoYear: {
         token: 'o',
-        output: date => date.isoYear()
+        output: date => DateTime.getIsoYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     },
 
     /* MONTH */
@@ -649,38 +1001,38 @@ DateTime.formatData = {
     monthName: {
         token: 'F',
         regex: () =>  '(' + DateTime.lang.months.full.join('|') + ')',
-        input: (date, value) => date.month = value,
-        output: date => date.monthName()
+        input: (date, value) => date.month = DateTime.getMonthFromName(value),
+        output: date => DateTime.getMonthName(date.getUTCMonth())
     },
 
     // month name short
     monthNameShort: {
         token: 'M',
         regex: () =>  '(' + DateTime.lang.months.short.join('|') + ')',
-        input: (date, value) => date.month = value,
-        output: date => date.monthName('short')
+        input: (date, value) => date.month = DateTime.getMonthFromName(value, 'short'),
+        output: date => DateTime.getMonthName(date.getUTCMonth(), 'short')
     },
 
     // month
     month: {
         token: 'm',
         regex: () => '(\\d{2})',
-        input: (date, value) => date.month = value,
-        output: date => padString(date.month(), 2)
+        input: (date, value) => date.month = value - 1,
+        output: date => Frost.padString(date.getUTCMonth() + 1, 2)
     },
 
     // month short
     monthShort: {
         token: 'n',
         regex: () => '(\\d{1,2})',
-        input: (date, value) => date.month = value,
-        output: date => date.month()
+        input: (date, value) => date.month = value - 1,
+        output: date => date.getUTCMonth() + 1
     },
 
     // days in month
     daysInMonth: {
         token: 't',
-        output: date => date.daysInMonth()
+        output: date => DateTime.daysInMonth(date.getUTCFullYear(), date.getUTCMonth())
     },
 
     /* WEEKS */
@@ -688,7 +1040,7 @@ DateTime.formatData = {
     // iso week
     isoWeek: {
         token: 'W',
-        output: date => date.isoWeek()
+        output: date => DateTime.getIsoWeek(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     },
 
     /* DAYS */
@@ -698,7 +1050,7 @@ DateTime.formatData = {
         token: 'z',
         regex: () => '(\\d{1,3})',
         input: (date, value) => date.dayOfYear = value + 1,
-        output: date => date.dayOfYear() - 1
+        output: date => DateTime.dayOfYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - 1
     },
 
     // date
@@ -706,7 +1058,7 @@ DateTime.formatData = {
         token: 'd',
         regex: () => '(\\d{2})',
         input: (date, value) => date.date = value,
-        output: date => padString(date.date(), 2)
+        output: date => Frost.padString(date.getUTCDate(), 2)
     },
 
     // date short
@@ -714,42 +1066,42 @@ DateTime.formatData = {
         token: 'j',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.date = value,
-        output: date => date.date()
+        output: date => date.getUTCDate()
     },
 
     // ordinal suffix
     dateSuffix: {
         token: 'S',
         regex: () =>  '(' + DateTime.lang.ordinal.join('|') + ')',
-        output: date => date.dateSuffix()
+        output: date => DateTime.dateSuffix(date.getUTCDate())
     },
 
     // iso day
     isoDay: {
         token: 'N',
-        output: date => date.isoDay()
+        output: date => DateTime.getIsoDay(date.getUTCDay())
     },
 
     // day of week
     day: {
         token: 'w',
-        output: date => date.day()
+        output: date => date.getUTCDay()
     },
 
     // day name
     dayName: {
         token: 'l',
         regex: () =>  '(' + DateTime.lang.days.full.join('|') + ')',
-        input: (date, value) => date.day = value,
-        output: date => date.dayName()
+        input: (date, value) => date.day = DateTime.getDayFromName(value),
+        output: date => DateTime.getDayName(date.getUTCDay())
     },
 
     // day name short
     dayNameShort: {
         token: 'D',
         regex: () =>  '(' + DateTime.lang.days.short.join('|') + ')',
-        input: (date, value) => date.day = value,
-        output: date => date.dayName('short')
+        input: (date, value) => date.day = DateTime.getDayFromName(value, 'short'),
+        output: date => DateTime.getDayName(date.getUTCDay(), 'short')
     },
 
     /* TIME */
@@ -759,7 +1111,7 @@ DateTime.formatData = {
         token: 'H',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value,
-        output: date => padString(date.hours(), 2)
+        output: date => Frost.padString(date.getUTCHours(), 2)
     },
 
     // hours short (24)
@@ -767,7 +1119,7 @@ DateTime.formatData = {
         token: 'G',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.hours = value,
-        output: date => date.hours()
+        output: date => date.getUTCHours()
     },
 
     // hours (12)
@@ -775,7 +1127,7 @@ DateTime.formatData = {
         token: 'h',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => padString(date.hours() % 12, 2)
+        output: date => Frost.padString(date.getUTCHours() % 12 || 12, 2)
     },
 
     // hours short (12)
@@ -783,7 +1135,7 @@ DateTime.formatData = {
         token: 'g',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => date.hours() % 12
+        output: date => date.getUTCHours() % 12 || 12
     },
 
     // minutes
@@ -791,7 +1143,7 @@ DateTime.formatData = {
         token: 'i',
         regex: () => '(\\d{2})',
         input: (date, value) => date.minutes = value,
-        output: date => padString(date.minutes(), 2)
+        output: date => Frost.padString(date.getUTCMinutes(), 2)
     },
 
     // seconds
@@ -799,7 +1151,7 @@ DateTime.formatData = {
         token: 's',
         regex: () => '(\\d{2})',
         input: (date, value) => date.seconds = value,
-        output: date => padString(date.seconds(), 2)
+        output: date => Frost.padString(date.getUTCSeconds(), 2)
     },
 
     // microseconds
@@ -807,13 +1159,13 @@ DateTime.formatData = {
         token: 'u',
         regex: () => '(\\d{1,6})',
         input: (date, value) => date.milliseconds = value / 1000,
-        output: date => date.milliseconds() * 1000
+        output: date => date.getUTCMilliseconds() * 1000
     },
 
     // milliseconds
     milliseconds: {
         token: 'v',
-        output: date => date.milliseconds()
+        output: date => date.getUTCMilliseconds()
     },
 
     /* TIMEZONE */
@@ -823,50 +1175,44 @@ DateTime.formatData = {
         token: 'e',
         regex: () => '(\\w+\\/\\w+|\\w+)',
         input: (date, value) => date.timezone = value,
-        output: date => date.timezone()
+        output: (date, datetime) => datetime._timezone
     },
 
     // daylight savings
     dst: {
         token: 'I',
-        output: date => date.isDST() ? 1 : 0
+        output: (date, datetime) => datetime.isDST() ? 1 : 0
     },
 
     // offset
     offset: {
         token: 'O',
         regex: () => '([\\+\\-]\\d{4})',
-        input: (date, value) =>  (
+        input: (date, value) => date.offset = (
             parseInt(value.slice(1, 3))
             * 60
             + parseInt(value.slice(3, 5))
         )
         * (value[0] === '-' ? 1 : -1),
-        output: date => {
-            const offset = date.offset();
-            return (offset > 0 ? '-' : '+') +
-                padString(Math.abs(Math.floor(offset / 60)), 2) +
-                padString(offset % 60, 2);
-        }
+        output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
+            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
+            Frost.padString(datetime._offset % 60, 2)
     },
 
     // offset colon
     offsetColon: {
         token: 'P',
         regex: () => '([\\+\\-]\\d{2}\\:\\d{2})',
-        input: (date, value) =>  (
+        input: (date, value) => date.offset = (
             parseInt(value.slice(1, 3))
             * 60
             + parseInt(value.slice(4, 6))
         )
         * (value[0] === '-' ? 1 : -1),
-        output: date => {
-            const offset = date.offset();
-            return (offset > 0 ? '-' : '+') +
-                padString(Math.abs(Math.floor(offset / 60)), 2) + 
-                ':' + 
-                padString(offset % 60, 2);
-        }
+        output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
+            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
+            ':' + 
+            Frost.padString(datetime._offset % 60, 2)
     },
 
     // timezone abbreviated
@@ -875,14 +1221,14 @@ DateTime.formatData = {
         regex: () => '([A-Z]{1,5})',
         input: (date, value) => date.timezone = date.timezone ||
             Object.keys(DateTime.timezones).find(timezone => timezone.abbr === value || timezone.abbrDST === value),
-        output: date => DateTime.timezoneAbbr(date.timezone(), date.isDST())
+        output: (date, datetime) => DateTime.timezoneAbbr(datetime._timezone, datetime.isDST())
     },
 
     // offset seconds
     offsetSeconds: {
         token: 'Z',
         input: (date, value) => date.offset = value / 60,
-        output: date => date.offset() * -1 * 60
+        output: (date, datetime) => datetime._offset * -60
     },
 
     /* FULL */
@@ -890,19 +1236,19 @@ DateTime.formatData = {
     // timestamp
     iso8601: {
         token: 'c',
-        output: date => date.toISOString()
+        output: (date, datetime) => datetime.toISOString()
     },
 
     rfc2822: {
         token: 'r',
-        output: date => date.format(DateTime.formats.rfc822)
+        output: (date, datetime) => datetime.format(DateTime.formats.rfc822)
     },
 
     timestamp: {
         token: 'U',
         regex: () => '(\\d+)',
         input: (date, value) => date.timestamp = value,
-        output: date => date.timestamp()
+        output: (date, datetime) => datetime.getTime()
     },
 
     /* SPECIAL */
@@ -960,58 +1306,98 @@ DateTime.formatData = {
         }
     }
 };
-DateTime.lang = {
-    ordinal: ['st', 'nd', 'rd', 'th'],
-    days: {
-        min: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-        short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
-        full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+DateInterval.formatData = {
+
+    percent: {
+        token: '%',
+        output: () => '%'
     },
+
+    years: {
+        token: 'Y',
+        output: interval => Frost.padString(interval.y, 2)
+    },
+
+    yearsShort: {
+        token: 'y',
+        output: interval => interval.y
+    },
+
     months: {
-        short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        token: 'M',
+        output: interval => Frost.padString(interval.m, 2)
     },
-    ampm: {
-        lower: ['am', 'pm'],
-        upper: ['AM', 'PM']
+
+    monthsShort: {
+        token: 'm',
+        output: interval => interval.m
+    },
+
+    days: {
+        token: 'D',
+        output: interval => Frost.padString(interval.d, 2)
+    },
+
+    daysShort: {
+        token: 'D',
+        output: interval => interval.d
+    },
+
+    daysTotal: {
+        token: 'a',
+        output: interval => interval.days
+    },
+
+    hours: {
+        token: 'H',
+        output: interval => Frost.padString(interval.h, 2)
+    },
+
+    hoursShort: {
+        token: 'h',
+        output: interval => interval.h
+    },
+
+    minutes: {
+        token: 'I',
+        output: interval => Frost.padString(interval.i, 2)
+    },
+
+    minutesShort: {
+        token: 'i',
+        output: interval => interval.i
+    },
+
+    seconds: {
+        token: 'S',
+        output: interval => Frost.padString(interval.s, 2)
+    },
+
+    secondsShort: {
+        token: 's',
+        output: interval => interval.s
+    },
+
+    microseconds: {
+        token: 'F',
+        output: interval => Frost.padString(interval.f, 6)
+    },
+
+    microsecondsShort: {
+        token: 'f',
+        output: interval => interval.f
+    },
+
+    sign: {
+        token: 'R',
+        output: interval => interval.invert ? '-' : '+'
+    },
+
+    signShort: {
+        token: 'r',
+        output: interval => interval.invert ? '-' : ''
     }
 };
-
-DateTime.seperators = [';', ':', '/', '.', ',', '-', '(', ')'];
-
-DateTime.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-DateTime.formats = {
-    atom: 'Y-m-d\\TH:i:sP',
-    cookie: 'l, d-M-Y H:i:s T',
-    date: 'D M d Y',
-    iso8601: 'Y-m-d\\TH:i:sO',
-    rfc822: 'D, d M y H:i:s O',
-    rfc850: 'l, d-M-y H:i:s T',
-    rfc1036: 'D, d M y H:i:s O',
-    rfc1123: 'D, d M Y H:i:s O',
-    rfc2822: 'D, d M Y H:i:s O',
-    rfc3339: 'Y-m-d\\TH:i:sP',
-    rfc3339_extended: 'Y-m-d\\TH:i:s.vP',
-    rss: 'D, d M Y H:i:s O',
-    string: 'D M d Y h:i:s O (e)',
-    time: 'h:i:s O (e)',
-    w3c: 'Y-m-d\\TH:i:sP'
-};
-
-DateTime.utcLocale = 'en-US';
-DateTime.utcOptions = {
-    timeZone: 'UTC',
-    hour12: false,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-};
-DateTime.utcFormatter = new Intl.DateTimeFormat(DateTime.utcLocale, DateTime.utcOptions);
-
-window.DateTime = DateTime;
 Object.assign(DateTime, {
 
     calculateTimezoneOffset(timezone, date) {
@@ -1028,8 +1414,8 @@ Object.assign(DateTime, {
     },
 
     dateSuffix(date) {
-        const j = i % 10;
-        const k = i % 100;
+        const j = date % 10;
+        const k = date % 100;
 
         if (j === 1 && k !== 11) {
             return this.lang.ordinal[0];
@@ -1047,7 +1433,7 @@ Object.assign(DateTime, {
     },
 
     dayOfYear(year, month, date) {
-        for (let i = 1; i < month; i++) {
+        for (let i = 0; i < month; i++) {
             date += this.daysInMonth(year, i);
         }
 
@@ -1055,9 +1441,10 @@ Object.assign(DateTime, {
     },
 
     daysInMonth(year, month) {
-        let days = this.monthDays[month - 1];
+        month = new Date(year, month).getMonth();
+        let days = this.monthDays[month];
 
-        if (month == 2 && this.isLeapYear(year)) {
+        if (month == 1 && this.isLeapYear(year)) {
             days++;
         }
 
@@ -1093,19 +1480,7 @@ Object.assign(DateTime, {
 
     fromFormat(dateString, formatString) {
 
-        const dateData = {
-            timezone: false,
-            offset: false,
-            year: false,
-            month: false,
-            date: false,
-            dayOfYear: false,
-            hours: false,
-            minutes: false,
-            seconds: false,
-            milliseconds: false,
-            timestamp: false
-        };
+        const dateData = {};
 
         const formatTokens = this.formatTokens();
 
@@ -1133,27 +1508,81 @@ Object.assign(DateTime, {
             this.formatData[key].input(dateData, dateMatch[1]);
         });
 
-        const date = new DateTime();
+        return this.fromObject(dateData);
+    },
 
-        Object.keys(dateData).forEach(method => {
-            if (dateData[method] === false) {
-                return;
+    fromObject(dateData) {
+
+        let dateinit;
+        if (dateData.timestamp) {
+            dateinit = dateData.timestamp * 1000;
+        } else {
+            const now = new Date();
+            const year = dateData.year || now.getFullYear();
+
+            let month;
+            let date;
+            if (dateData.dayOfYear && ( ! dateData.month || ! dateData.date)) {
+                month = 0;
+                date = dateData.dayOfyear();
+            } else {
+                month = dateData.month - 1 || now.getMonth();
+                date = dateData.date || now.getDate();
             }
 
-            date[method](dateData[method]);
-        });
+            dateinit = [
+                year,
+                month,
+                date,
+                dateData.hours || now.getHours(),
+                dateData.minutes || now.getMinutes(),
+                dateData.seconds || now.getSeconds(),
+                dateData.milliseconds || now.getMilliseconds()
+            ];
+        }
 
-        return date;
+        return new this(dateinit, dateData.timezone || null, dateData.offset || null);
     },
 
     getDayFromName(day, type = 'full') {
-        const index = DateTime.lang.days[type].findIndex(value => matchesString(value, day));
+        const index = DateTime.lang.days[type].findIndex(value => Frost.matchesString(value, day, true));
         return index >= 0 ? index : false;
     },
 
+    getDayName(day, type = 'full') {
+        return DateTime.lang.days[type][day];
+    },
+
     getMonthFromName(month, type = 'full') {
-        const index = DateTime.lang.months[type].findIndex(value => matchesString(value, month));
+        const index = DateTime.lang.months[type].findIndex(value => Frost.matchesString(value, month, true));
         return index >= 0 ? index : false;
+    },
+
+    getMonthName(day, type = 'full') {
+        return DateTime.lang.months[type][day];
+    },
+
+    getIsoDay(day) {
+        return ((day + 6) % 7) + 1;
+    },
+
+    getIsoWeek() {
+        const currentWeek = new Date(...arguments);
+        const currentDay = this.getIsoDay(currentWeek.getUTCDay());
+        currentWeek.setUTCDate(currentWeek.getUTCDate() - currentDay + 4);
+
+        const firstWeek = new Date(currentWeek.getUTCFullYear(), 0, 4);
+        const firstDay = this.getIsoDay(firstWeek.getUTCDay());
+        firstWeek.setUTCDate(firstWeek.getUTCDate() - firstDay + 4);
+
+        return 1 + Math.floor((currentWeek - firstWeek) / 604800000);
+    },
+
+    getIsoYear() {
+        const tempDate = new Date(...arguments);
+        const isoDay = this.getIsoDay(tempDate.getUTCDay());
+        tempDate.setUTCDate(tempDate.getUTCDate() - isoDay + 4);
+        return tempDate.getUTCFullYear();
     },
 
     isLeapYear(year) {
@@ -1161,14 +1590,41 @@ Object.assign(DateTime, {
     },
 
     isoWeeksInYear(year) {
-        const date = new DateTime(year, 12, 28);
+        const date = new DateTime([year, 12, 28]);
         return date.getIsoWeek();
+    },
+
+    parseDay(day) {
+        return Frost.isNumeric(day) ? day :
+            DateTime.getDayFromName(day) ||
+            DateTime.getDayFromName(day, 'short') ||
+            DateTime.getDayFromName(day, 'min') ||
+            null;
+    },
+
+    parseMonth(month) {
+        return Frost.isNumeric(month) ? month :
+            DateTime.getMonthFromName(month) ||
+            DateTime.getMonthFromName(month, 'short') ||
+            null;
+    },
+
+    standardOffset(year, timezone) {
+        const jan = new DateTime([year, 0, 1], timezone);
+        const jul = new DateTime([year, 6, 1], timezone);
+
+        return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
     },
 
     timezoneAbbr(timezone, dst = false) {
         return dst ?
             this.timezones[timezone].abbrDST :
             this.timezones[timezone].abbr;
+    },
+
+    timezoneFromOffset(timestamp, offset) {
+        return Object.keys(this.timezones)
+            .find(timezone => this.calculateTimezoneOffset(timezone, timestamp) === offset);
     }
 });
 
@@ -2542,17 +2998,60 @@ DateTime.timezones = {
 		abbr: 'UTC'
 	}
 };
-function matchesString(string, compare, insensitive = true) {
-    return ! insensitive ?
-        '' + string === '' + compare :
-        '' + string.toLowerCase() === '' + compare.toLowerCase();
-}
+DateTime.lang = {
+    ampm: {
+        lower: ['am', 'pm'],
+        upper: ['AM', 'PM']
+    },
+    days: {
+        min: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+        short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+        full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    },
+    months: {
+        short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    },
+    ordinal: ['st', 'nd', 'rd', 'th']
+};
 
-function padString(string, length, padding = 0) {
-    string = '' + string;
+DateTime.seperators = [';', ':', '/', '.', ',', '-', '(', ')'];
 
-    return string.length >= length ?
-        string : new Array(length - string.length + 1).join(padding) + string;
-}
+DateTime.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-})(window);
+DateTime.formats = {
+    atom: 'Y-m-d\\TH:i:sP',
+    cookie: 'l, d-M-Y H:i:s T',
+    date: 'D M d Y',
+    iso8601: 'Y-m-d\\TH:i:sO',
+    rfc822: 'D, d M y H:i:s O',
+    rfc850: 'l, d-M-y H:i:s T',
+    rfc1036: 'D, d M y H:i:s O',
+    rfc1123: 'D, d M Y H:i:s O',
+    rfc2822: 'D, d M Y H:i:s O',
+    rfc3339: 'Y-m-d\\TH:i:sP',
+    rfc3339_extended: 'Y-m-d\\TH:i:s.vP',
+    rss: 'D, d M Y H:i:s O',
+    string: 'D M d Y H:i:s O (e)',
+    time: 'H:i:s O (e)',
+    w3c: 'Y-m-d\\TH:i:sP'
+};
+
+DateTime.defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+DateTime.utcLocale = 'en-US';
+DateTime.utcOptions = {
+    timeZone: 'UTC',
+    hour12: false,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+};
+DateTime.utcFormatter = new Intl.DateTimeFormat(DateTime.utcLocale, DateTime.utcOptions);
+
+DateInterval.isoRegex = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
+DateInterval.stringRegex = /([\+\-]?\s*\d+)\s*(day|forthnight|fortnight|hour|minute|min|month|second|sec|week|year)s?/;
+
+})(Frost);

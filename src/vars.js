@@ -1,5 +1,8 @@
 DateTime.lang = {
-    ordinal: ['st', 'nd', 'rd', 'th'],
+    ampm: {
+        lower: ['am', 'pm'],
+        upper: ['AM', 'PM']
+    },
     days: {
         min: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
         short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
@@ -9,10 +12,7 @@ DateTime.lang = {
         short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     },
-    ampm: {
-        lower: ['am', 'pm'],
-        upper: ['AM', 'PM']
-    }
+    ordinal: ['st', 'nd', 'rd', 'th']
 };
 
 DateTime.seperators = [';', ':', '/', '.', ',', '-', '(', ')'];
@@ -32,10 +32,12 @@ DateTime.formats = {
     rfc3339: 'Y-m-d\\TH:i:sP',
     rfc3339_extended: 'Y-m-d\\TH:i:s.vP',
     rss: 'D, d M Y H:i:s O',
-    string: 'D M d Y h:i:s O (e)',
-    time: 'h:i:s O (e)',
+    string: 'D M d Y H:i:s O (e)',
+    time: 'H:i:s O (e)',
     w3c: 'Y-m-d\\TH:i:sP'
 };
+
+DateTime.defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 DateTime.utcLocale = 'en-US';
 DateTime.utcOptions = {
@@ -49,4 +51,5 @@ DateTime.utcOptions = {
 };
 DateTime.utcFormatter = new Intl.DateTimeFormat(DateTime.utcLocale, DateTime.utcOptions);
 
-window.DateTime = DateTime;
+DateInterval.isoRegex = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
+DateInterval.stringRegex = /([\+\-]?\s*\d+)\s*(day|forthnight|fortnight|hour|minute|min|month|second|sec|week|year)s?/;

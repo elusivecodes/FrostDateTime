@@ -1,8 +1,8 @@
 {
   "name": "frostdatetime",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "FrostDateTime",
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
     "start": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"

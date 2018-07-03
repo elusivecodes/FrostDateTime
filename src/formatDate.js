@@ -5,15 +5,15 @@ DateTime.formatData = {
     // leap year
     leapYear: {
         token: 'L',
-        output: date => date.isLeapYear() ? 1 : 0
+        output: date => FrostDate.isLeapYear(date.getUTCFullYear()) ? 1 : 0
     },
 
     // year
     year: {
         token: 'Y',
-        regex: () => '(\\d{4})',
+        regex: () => '(\\d{1,4})',
         input: (date, value) => date.year = value,
-        output: date => padString(date.year(), 4)
+        output: date => date.getUTCFullYear()
     },
 
     // year short
@@ -25,7 +25,7 @@ DateTime.formatData = {
             date.year = value;
         },
         output: date => {
-            const year = '' + date.year();
+            const year = '' + date.getUTCFullYear();
             return year.substring(year.length - 2);
         }
     },
@@ -33,7 +33,7 @@ DateTime.formatData = {
     // iso year
     isoYear: {
         token: 'o',
-        output: date => date.isoYear()
+        output: date => DateTime.getIsoYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     },
 
     /* MONTH */
@@ -42,38 +42,38 @@ DateTime.formatData = {
     monthName: {
         token: 'F',
         regex: () =>  '(' + DateTime.lang.months.full.join('|') + ')',
-        input: (date, value) => date.month = value,
-        output: date => date.monthName()
+        input: (date, value) => date.month = DateTime.getMonthFromName(value),
+        output: date => DateTime.getMonthName(date.getUTCMonth())
     },
 
     // month name short
     monthNameShort: {
         token: 'M',
         regex: () =>  '(' + DateTime.lang.months.short.join('|') + ')',
-        input: (date, value) => date.month = value,
-        output: date => date.monthName('short')
+        input: (date, value) => date.month = DateTime.getMonthFromName(value, 'short'),
+        output: date => DateTime.getMonthName(date.getUTCMonth(), 'short')
     },
 
     // month
     month: {
         token: 'm',
         regex: () => '(\\d{2})',
-        input: (date, value) => date.month = value,
-        output: date => padString(date.month(), 2)
+        input: (date, value) => date.month = value - 1,
+        output: date => Frost.padString(date.getUTCMonth() + 1, 2)
     },
 
     // month short
     monthShort: {
         token: 'n',
         regex: () => '(\\d{1,2})',
-        input: (date, value) => date.month = value,
-        output: date => date.month()
+        input: (date, value) => date.month = value - 1,
+        output: date => date.getUTCMonth() + 1
     },
 
     // days in month
     daysInMonth: {
         token: 't',
-        output: date => date.daysInMonth()
+        output: date => DateTime.daysInMonth(date.getUTCFullYear(), date.getUTCMonth())
     },
 
     /* WEEKS */
@@ -81,7 +81,7 @@ DateTime.formatData = {
     // iso week
     isoWeek: {
         token: 'W',
-        output: date => date.isoWeek()
+        output: date => DateTime.getIsoWeek(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     },
 
     /* DAYS */
@@ -91,7 +91,7 @@ DateTime.formatData = {
         token: 'z',
         regex: () => '(\\d{1,3})',
         input: (date, value) => date.dayOfYear = value + 1,
-        output: date => date.dayOfYear() - 1
+        output: date => DateTime.dayOfYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - 1
     },
 
     // date
@@ -99,7 +99,7 @@ DateTime.formatData = {
         token: 'd',
         regex: () => '(\\d{2})',
         input: (date, value) => date.date = value,
-        output: date => padString(date.date(), 2)
+        output: date => Frost.padString(date.getUTCDate(), 2)
     },
 
     // date short
@@ -107,42 +107,42 @@ DateTime.formatData = {
         token: 'j',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.date = value,
-        output: date => date.date()
+        output: date => date.getUTCDate()
     },
 
     // ordinal suffix
     dateSuffix: {
         token: 'S',
         regex: () =>  '(' + DateTime.lang.ordinal.join('|') + ')',
-        output: date => date.dateSuffix()
+        output: date => DateTime.dateSuffix(date.getUTCDate())
     },
 
     // iso day
     isoDay: {
         token: 'N',
-        output: date => date.isoDay()
+        output: date => DateTime.getIsoDay(date.getUTCDay())
     },
 
     // day of week
     day: {
         token: 'w',
-        output: date => date.day()
+        output: date => date.getUTCDay()
     },
 
     // day name
     dayName: {
         token: 'l',
         regex: () =>  '(' + DateTime.lang.days.full.join('|') + ')',
-        input: (date, value) => date.day = value,
-        output: date => date.dayName()
+        input: (date, value) => date.day = DateTime.getDayFromName(value),
+        output: date => DateTime.getDayName(date.getUTCDay())
     },
 
     // day name short
     dayNameShort: {
         token: 'D',
         regex: () =>  '(' + DateTime.lang.days.short.join('|') + ')',
-        input: (date, value) => date.day = value,
-        output: date => date.dayName('short')
+        input: (date, value) => date.day = DateTime.getDayFromName(value, 'short'),
+        output: date => DateTime.getDayName(date.getUTCDay(), 'short')
     },
 
     /* TIME */
@@ -152,7 +152,7 @@ DateTime.formatData = {
         token: 'H',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value,
-        output: date => padString(date.hours(), 2)
+        output: date => Frost.padString(date.getUTCHours(), 2)
     },
 
     // hours short (24)
@@ -160,7 +160,7 @@ DateTime.formatData = {
         token: 'G',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.hours = value,
-        output: date => date.hours()
+        output: date => date.getUTCHours()
     },
 
     // hours (12)
@@ -168,7 +168,7 @@ DateTime.formatData = {
         token: 'h',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => padString(date.hours() % 12, 2)
+        output: date => Frost.padString(date.getUTCHours() % 12 || 12, 2)
     },
 
     // hours short (12)
@@ -176,7 +176,7 @@ DateTime.formatData = {
         token: 'g',
         regex: () => '(\\d{1,2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => date.hours() % 12
+        output: date => date.getUTCHours() % 12 || 12
     },
 
     // minutes
@@ -184,7 +184,7 @@ DateTime.formatData = {
         token: 'i',
         regex: () => '(\\d{2})',
         input: (date, value) => date.minutes = value,
-        output: date => padString(date.minutes(), 2)
+        output: date => Frost.padString(date.getUTCMinutes(), 2)
     },
 
     // seconds
@@ -192,7 +192,7 @@ DateTime.formatData = {
         token: 's',
         regex: () => '(\\d{2})',
         input: (date, value) => date.seconds = value,
-        output: date => padString(date.seconds(), 2)
+        output: date => Frost.padString(date.getUTCSeconds(), 2)
     },
 
     // microseconds
@@ -200,13 +200,13 @@ DateTime.formatData = {
         token: 'u',
         regex: () => '(\\d{1,6})',
         input: (date, value) => date.milliseconds = value / 1000,
-        output: date => date.milliseconds() * 1000
+        output: date => date.getUTCMilliseconds() * 1000
     },
 
     // milliseconds
     milliseconds: {
         token: 'v',
-        output: date => date.milliseconds()
+        output: date => date.getUTCMilliseconds()
     },
 
     /* TIMEZONE */
@@ -216,50 +216,44 @@ DateTime.formatData = {
         token: 'e',
         regex: () => '(\\w+\\/\\w+|\\w+)',
         input: (date, value) => date.timezone = value,
-        output: date => date.timezone()
+        output: (date, datetime) => datetime._timezone
     },
 
     // daylight savings
     dst: {
         token: 'I',
-        output: date => date.isDST() ? 1 : 0
+        output: (date, datetime) => datetime.isDST() ? 1 : 0
     },
 
     // offset
     offset: {
         token: 'O',
         regex: () => '([\\+\\-]\\d{4})',
-        input: (date, value) =>  (
+        input: (date, value) => date.offset = (
             parseInt(value.slice(1, 3))
             * 60
             + parseInt(value.slice(3, 5))
         )
         * (value[0] === '-' ? 1 : -1),
-        output: date => {
-            const offset = date.offset();
-            return (offset > 0 ? '-' : '+') +
-                padString(Math.abs(Math.floor(offset / 60)), 2) +
-                padString(offset % 60, 2);
-        }
+        output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
+            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
+            Frost.padString(datetime._offset % 60, 2)
     },
 
     // offset colon
     offsetColon: {
         token: 'P',
         regex: () => '([\\+\\-]\\d{2}\\:\\d{2})',
-        input: (date, value) =>  (
+        input: (date, value) => date.offset = (
             parseInt(value.slice(1, 3))
             * 60
             + parseInt(value.slice(4, 6))
         )
         * (value[0] === '-' ? 1 : -1),
-        output: date => {
-            const offset = date.offset();
-            return (offset > 0 ? '-' : '+') +
-                padString(Math.abs(Math.floor(offset / 60)), 2) + 
-                ':' + 
-                padString(offset % 60, 2);
-        }
+        output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
+            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
+            ':' + 
+            Frost.padString(datetime._offset % 60, 2)
     },
 
     // timezone abbreviated
@@ -268,14 +262,14 @@ DateTime.formatData = {
         regex: () => '([A-Z]{1,5})',
         input: (date, value) => date.timezone = date.timezone ||
             Object.keys(DateTime.timezones).find(timezone => timezone.abbr === value || timezone.abbrDST === value),
-        output: date => DateTime.timezoneAbbr(date.timezone(), date.isDST())
+        output: (date, datetime) => DateTime.timezoneAbbr(datetime._timezone, datetime.isDST())
     },
 
     // offset seconds
     offsetSeconds: {
         token: 'Z',
         input: (date, value) => date.offset = value / 60,
-        output: date => date.offset() * -1 * 60
+        output: (date, datetime) => datetime._offset * -60
     },
 
     /* FULL */
@@ -283,19 +277,19 @@ DateTime.formatData = {
     // timestamp
     iso8601: {
         token: 'c',
-        output: date => date.toISOString()
+        output: (date, datetime) => datetime.toISOString()
     },
 
     rfc2822: {
         token: 'r',
-        output: date => date.format(DateTime.formats.rfc822)
+        output: (date, datetime) => datetime.format(DateTime.formats.rfc822)
     },
 
     timestamp: {
         token: 'U',
         regex: () => '(\\d+)',
         input: (date, value) => date.timestamp = value,
-        output: date => date.timestamp()
+        output: (date, datetime) => datetime.getTime()
     },
 
     /* SPECIAL */
