@@ -75,7 +75,7 @@ Object.assign(DateTime.prototype, {
     },
 
     modify(interval, invert = false) {
-        if (Frost.isString(interval)) {
+        if (frost.isString(interval)) {
             interval = DateInterval.fromString(interval);
         }
 

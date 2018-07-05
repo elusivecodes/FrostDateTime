@@ -5,7 +5,7 @@ DateTime.formatData = {
     // leap year
     leapYear: {
         token: 'L',
-        output: date => FrostDate.isLeapYear(date.getUTCFullYear()) ? 1 : 0
+        output: date => DateTime.isLeapYear(date.getUTCFullYear()) ? 1 : 0
     },
 
     // year
@@ -59,7 +59,7 @@ DateTime.formatData = {
         token: 'm',
         regex: () => '(\\d{2})',
         input: (date, value) => date.month = value - 1,
-        output: date => Frost.padString(date.getUTCMonth() + 1, 2)
+        output: date => frost.padString(date.getUTCMonth() + 1, 2)
     },
 
     // month short
@@ -99,7 +99,7 @@ DateTime.formatData = {
         token: 'd',
         regex: () => '(\\d{2})',
         input: (date, value) => date.date = value,
-        output: date => Frost.padString(date.getUTCDate(), 2)
+        output: date => frost.padString(date.getUTCDate(), 2)
     },
 
     // date short
@@ -152,7 +152,7 @@ DateTime.formatData = {
         token: 'H',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value,
-        output: date => Frost.padString(date.getUTCHours(), 2)
+        output: date => frost.padString(date.getUTCHours(), 2)
     },
 
     // hours short (24)
@@ -168,7 +168,7 @@ DateTime.formatData = {
         token: 'h',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => Frost.padString(date.getUTCHours() % 12 || 12, 2)
+        output: date => frost.padString(date.getUTCHours() % 12 || 12, 2)
     },
 
     // hours short (12)
@@ -184,7 +184,7 @@ DateTime.formatData = {
         token: 'i',
         regex: () => '(\\d{2})',
         input: (date, value) => date.minutes = value,
-        output: date => Frost.padString(date.getUTCMinutes(), 2)
+        output: date => frost.padString(date.getUTCMinutes(), 2)
     },
 
     // seconds
@@ -192,7 +192,7 @@ DateTime.formatData = {
         token: 's',
         regex: () => '(\\d{2})',
         input: (date, value) => date.seconds = value,
-        output: date => Frost.padString(date.getUTCSeconds(), 2)
+        output: date => frost.padString(date.getUTCSeconds(), 2)
     },
 
     // microseconds
@@ -236,8 +236,8 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
-            Frost.padString(datetime._offset % 60, 2)
+            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
+            frost.padString(datetime._offset % 60, 2)
     },
 
     // offset colon
@@ -251,9 +251,9 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
+            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
             ':' + 
-            Frost.padString(datetime._offset % 60, 2)
+            frost.padString(datetime._offset % 60, 2)
     },
 
     // timezone abbreviated

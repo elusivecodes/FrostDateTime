@@ -20,4 +20,4 @@ class DateTimeImmutable extends DateTime {
     }
 }
 
-Frost.DateTimeImmutable = DateTimeImmutable;
+frost.DateTimeImmutable = DateTimeImmutable;

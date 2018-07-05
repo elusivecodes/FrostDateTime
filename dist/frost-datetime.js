@@ -1,24 +1,15 @@
-(function(Frost) {
+(function(frost) {
 
 class DateInterval {
-    constructor(interval) {
-        if (interval) {
-            const match = interval.match(DateInterval.isoRegex);
+    constructor(interval = '') {
+        const match = interval.match(DateInterval.isoRegex);
 
-            this.y = match[1] || 0;
-            this.m = match[2] || 0;
-            this.d = match[4] ? match[4] * 7 : match[3] || 0;
-            this.h = match[5] || 0;
-            this.i = match[6] || 0;
-            this.s = match[7] || 0;
-        } else {
-            this.y = 0;
-            this.m = 0;
-            this.d = 0;
-            this.h = 0;
-            this.i = 0;
-            this.s = 0;
-        }
+        this.y = match[1] || 0;
+        this.m = match[2] || 0;
+        this.d = match[4] ? match[4] * 7 : match[3] || 0;
+        this.h = match[5] || 0;
+        this.i = match[6] || 0;
+        this.s = match[7] || 0;
 
         this.days = null;
         this.invert = false;
@@ -85,18 +76,18 @@ class DateInterval {
     }
 }
 
-Frost.DateInterval = DateInterval;
+frost.DateInterval = DateInterval;
 class DateTime {
     constructor(date = null, timezone = null, offset = null) {
 
         let timestamp;
         if (date === null) {
             timestamp = Date.now();
-        } else if (Frost.isArray(date)) {
+        } else if (frost.isArray(date)) {
             timestamp = Date.UTC(...date);
-        } else if (Frost.isNumeric(date)) {
+        } else if (frost.isNumeric(date)) {
             timestamp = date;
-        } else if (Frost.isString(date)) {
+        } else if (frost.isString(date)) {
             timestamp = Date.parse(date);
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
@@ -116,7 +107,7 @@ class DateTime {
         this._timezone = timezone || DateTime.defaultTimezone;
         this._offset = DateTime.calculateTimezoneOffset(this._timezone, timestamp);
 
-        if (this._offset && Frost.isArray(date)) {
+        if (this._offset && frost.isArray(date)) {
             timestamp += this._offset * 60000;
         }
 
@@ -223,7 +214,7 @@ class DateTime {
 
 }
 
-Frost.DateTime = DateTime;
+frost.DateTime = DateTime;
 class DateTimeImmutable extends DateTime {
     constructor() {
         super(...arguments);
@@ -246,175 +237,7 @@ class DateTimeImmutable extends DateTime {
     }
 }
 
-Frost.DateTimeImmutable = DateTimeImmutable;
-Object.assign(DateTime.prototype, {
-
-    add(interval) {
-        return this.modify(interval);
-    },
-
-    date(date = false) {
-        return date === false ?
-            this.getDate() :
-            this.setDate(date);
-    },
-
-    day(day = false) {
-        return day === false ?
-            this.getDay() :
-            this.setDay(day);
-    },
-
-    dayName(type = 'full') {
-        return DateTime.getDayName(this.getDay(), type);
-    },
-
-    dayOfYear(day = false) {
-        return day === false ?
-            this.getDayOfYear() :
-            this.setDayOfYear(day);
-    },
-
-    hours(hours = false) {
-        return hours === false ?
-            this.getHours() :
-            this.setHours(hours);
-    },
-
-    isoDay(day = false) {
-        return day === false ?
-            this.getIsoDay() :
-            this.setIsoDay(day);
-    },
-
-    isoWeek(week = false) {
-        return week === false ?
-            this.getIsoWeek() :
-            this.setIsoWeek(week);
-    },
-
-    isoYear(year = false) {
-        return year === false ?
-            this.getIsoYear() :
-            this.setIsoYear(year);
-    },
-
-    milliseconds(ms = false) {
-        return ms === false ?
-            this.getMilliseconds() :
-            this.setMilliseconds(ms);
-    },
-
-    minutes(minutes = false) {
-        return minutes === false ?
-            this.getMinutes() :
-            this.setMinutes(minutes);
-    },
-
-    modify(interval, invert = false) {
-        if (Frost.isString(interval)) {
-            interval = DateInterval.fromString(interval);
-        }
-
-        let modify = 1;
- 
-        if (interval.invert) {
-            modify *= -1;
-        }
-  
-        if (invert) {
-            modify *= -1;
-        }
-
-        const tempDate = new Date(this.getLocalTime());
-
-        if (interval.y) {
-            tempDate.setUTCFullYear(tempDate.getUTCFullYear() + (interval.y * modify));
-        }
-
-        if (interval.m) {
-            tempDate.setUTCMonth(tempDate.getUTCMonth() + (interval.m * modify));
-        }
-
-        if (interval.d) {
-            tempDate.setUTCDate(tempDate.getUTCDate() + (interval.d * modify));
-        }
-
-        if (interval.h) {
-            tempDate.setUTCHours(tempDate.getUTCHours() + (interval.h * modify));
-        }
-
-        if (interval.i) {
-            tempDate.setUTCMinutes(tempDate.getUTCMinutes() + (interval.i * modify));
-        }
-
-        if (interval.s) {
-            tempDate.setUTCSeconds(tempDate.getUTCSeconds() + (interval.s * modify));
-        }
-
-        if (interval.f) {
-            tempDate.setUTCTime(tempDate.getUTCTime() + (interval.f * modify));
-        }
-
-        return this.setLocalTime(tempDate.getTime());
-    },
-
-    month(month = false) {
-        return month === false ?
-            this.getMonth() + 1 :
-            this.setMonth(month - 1);
-    },
-
-    monthName(type = 'full') {
-        return DateTime.getMonthName(this.getMonth(), type);
-    },
-
-    offset(offset = false) {
-        return offset === false ?
-            this.getTimezoneOffset() :
-            this.setTimezoneOffset(offset);
-    },
-
-    quarter(quarter = false) {
-        return quarter === false ?
-            this.getQuarter() :
-            this.setQuarter(quarter);
-    },
-
-    seconds(seconds = false) {
-        return seconds === false ?
-            this.getSeconds() :
-            this.setSeconds(seconds);
-    },
-
-    sub(interval) {
-        return this.modify(interval, true);
-    },
-
-    time(time = false) {
-        return time === false ?
-            this.getTime() :
-            this.setTime(time);
-    },
-
-    timestamp(timestamp = false) {
-        return timestamp === false ?
-            this.getTimestamp() :
-            this.setTimestamp(timestamp);
-    },
-
-    timezone(timezone = false) {
-        return timezone === false ?
-            this.getTimezone() :
-            this.setTimezone(timezone);
-    },
-
-    year(year = false) {
-        return year === false ?
-            this.getFullYear() :
-            this.setFullYear(year);
-    }
-});
+frost.DateTimeImmutable = DateTimeImmutable;
 Object.assign(DateTime.prototype, {
 
     // Returns the date of the month in local timezone
@@ -426,6 +249,11 @@ Object.assign(DateTime.prototype, {
     // (0 - Sunday, 6 - Saturday)
     getDay() {
         return new Date(this.getLocalTime()).getUTCDay();
+    },
+
+    // Returns the name of the day of the week in local timezone
+    getDayName(type = 'full') {
+        return DateTime.getDayName(this.getDay(), type);
     },
 
     // Returns the day of the year in local timezone
@@ -481,6 +309,11 @@ Object.assign(DateTime.prototype, {
         return new Date(this.getLocalTime()).getUTCMonth();
     },
 
+    // Returns the name of the month in local timezone
+    getMonthName(type = 'full') {
+        return DateTime.getMonthName(this.getMonth(), type);
+    },
+
     // Returns the quarter of the year in local timezone
     // (1, 4)
     getQuarter() {
@@ -504,6 +337,10 @@ Object.assign(DateTime.prototype, {
     // (0 - Sunday, 6 - Saturday)
     setDay(day) {
         day = DateTime.parseDay(day);
+
+        if (day === null) {
+            return this;
+        }
 
         const tempDate = new Date(this.getLocalTime());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDate.getUTCDay() + day);
@@ -553,6 +390,10 @@ Object.assign(DateTime.prototype, {
     setIsoDay(day) {
         day = DateTime.parseDay(day);
 
+        if (day === null) {
+            return this;
+        }
+
         const tempDate = new Date(this.getLocalTime());
         const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
@@ -562,6 +403,8 @@ Object.assign(DateTime.prototype, {
     // Sets the ISO week of the year in local timezone
     setIsoWeek(week, day = null) {
         const tempDate = new Date(this.getLocalTime());
+
+        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -583,6 +426,8 @@ Object.assign(DateTime.prototype, {
         if (week === null) {
             week = DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
         }
+
+        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -615,10 +460,14 @@ Object.assign(DateTime.prototype, {
     // Sets the month in local timezone
     // (0, 11)
     setMonth(month, date = null) {
-        const tempDate = new Date(this.getLocalTime());
- 
         month = DateTime.parseMonth(month);
 
+        if (month === null) {
+            return this;
+        }
+
+        const tempDate = new Date(this.getLocalTime());
+ 
         if (date === null) {
             date = tempDate.getUTCDate();
             const daysInMonth = DateTime.daysInMonth(tempDate.getUTCFullYear(), month);
@@ -649,6 +498,118 @@ Object.assign(DateTime.prototype, {
 });
 Object.assign(DateTime.prototype, {
 
+    add(interval) {
+        return this.modify(interval);
+    },
+
+    date(date = false) {
+        return date === false ?
+            this.getDate() :
+            this.setDate(date);
+    },
+
+    day(day = false) {
+        return day === false ?
+            this.getDay() :
+            this.setDay(day);
+    },
+
+    dayOfYear(day = false) {
+        return day === false ?
+            this.getDayOfYear() :
+            this.setDayOfYear(day);
+    },
+
+    hours(hours = false) {
+        return hours === false ?
+            this.getHours() :
+            this.setHours(hours);
+    },
+
+    isoDay(day = false) {
+        return day === false ?
+            this.getIsoDay() :
+            this.setIsoDay(day);
+    },
+
+    isoWeek(week = false) {
+        return week === false ?
+            this.getIsoWeek() :
+            this.setIsoWeek(week);
+    },
+
+    isoYear(year = false) {
+        return year === false ?
+            this.getIsoYear() :
+            this.setIsoYear(year);
+    },
+
+    milliseconds(ms = false) {
+        return ms === false ?
+            this.getMilliseconds() :
+            this.setMilliseconds(ms);
+    },
+
+    minutes(minutes = false) {
+        return minutes === false ?
+            this.getMinutes() :
+            this.setMinutes(minutes);
+    },
+
+    month(month = false) {
+        return month === false ?
+            this.getMonth() + 1 :
+            this.setMonth(month - 1);
+    },
+
+    offset(offset = false) {
+        return offset === false ?
+            this.getTimezoneOffset() :
+            this.setTimezoneOffset(offset);
+    },
+
+    quarter(quarter = false) {
+        return quarter === false ?
+            this.getQuarter() :
+            this.setQuarter(quarter);
+    },
+
+    seconds(seconds = false) {
+        return seconds === false ?
+            this.getSeconds() :
+            this.setSeconds(seconds);
+    },
+
+    sub(interval) {
+        return this.modify(interval, true);
+    },
+
+    time(time = false) {
+        return time === false ?
+            this.getTime() :
+            this.setTime(time);
+    },
+
+    timestamp(timestamp = false) {
+        return timestamp === false ?
+            this.getTimestamp() :
+            this.setTimestamp(timestamp);
+    },
+
+    timezone(timezone = false) {
+        return timezone === false ?
+            this.getTimezone() :
+            this.setTimezone(timezone);
+    },
+
+    year(year = false) {
+        return year === false ?
+            this.getFullYear() :
+            this.setFullYear(year);
+    }
+});
+Object.assign(DateTime.prototype, {
+
     // Returns the date of the month in UTC timezone
     getUTCDate() {
         return this._date.getUTCDate();
@@ -658,6 +619,10 @@ Object.assign(DateTime.prototype, {
     // (0 - Sunday, 6 - Saturday)
     getUTCDay() {
         return this._date.getUTCDay();
+    },
+
+    getUTCDayName(type = 'full') {
+        return DateTime.getDayName(this.getUTCDay(), type);
     },
 
     // Returns the day of the year in UTC timezone
@@ -710,6 +675,10 @@ Object.assign(DateTime.prototype, {
         return this._date.getUTCMonth();
     },
 
+    getUTCMonthName(type = 'full') {
+        return DateTime.getMonthName(this.getUTCMonth(), type);
+    },
+
     // Returns the quarter of the year in UTC timezone
     // (1, 4)
     getUTCQuarter() {
@@ -733,6 +702,10 @@ Object.assign(DateTime.prototype, {
     // (0 - Sunday, 6 - Saturday)
     setUTCDay(day) {
         day = DateTime.parseDay(day);
+
+        if (day === null) {
+            return this;
+        }
 
         const tempDate = new Date(this.getTime());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDate.getUTCDay() + day);
@@ -782,6 +755,10 @@ Object.assign(DateTime.prototype, {
     setUTCIsoDay(day) {
         day = DateTime.parseDay(day);
 
+        if (day === null) {
+            return this;
+        }
+
         const tempDate = new Date(this.getTime());
         const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
@@ -791,6 +768,8 @@ Object.assign(DateTime.prototype, {
     // Sets the ISO week of the year in UTC timezone
     setUTCIsoWeek(week, day = null) {
         const tempDate = new Date(this.getTime());
+
+        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -812,6 +791,8 @@ Object.assign(DateTime.prototype, {
         if (week === null) {
             week = DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
         }
+
+        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -844,9 +825,13 @@ Object.assign(DateTime.prototype, {
     // Sets the month in UTC timezone
     // (0, 11)
     setUTCMonth(month, date = null) {
-        const tempDate = new Date(this.getTime());
-  
         month = DateTime.parseMonth(month);
+
+        if (month === null) {
+            return this;
+        }
+
+        const tempDate = new Date(this.getTime());
 
         if (date === null) {
             date = tempDate.getUTCDate();
@@ -952,6 +937,54 @@ Object.assign(DateTime.prototype, {
         return DateTime.isoWeeksInYear(this.getFullYear());
     },
 
+    modify(interval, invert = false) {
+        if (frost.isString(interval)) {
+            interval = DateInterval.fromString(interval);
+        }
+
+        let modify = 1;
+ 
+        if (interval.invert) {
+            modify *= -1;
+        }
+  
+        if (invert) {
+            modify *= -1;
+        }
+
+        const tempDate = new Date(this.getLocalTime());
+
+        if (interval.y) {
+            tempDate.setUTCFullYear(tempDate.getUTCFullYear() + (interval.y * modify));
+        }
+
+        if (interval.m) {
+            tempDate.setUTCMonth(tempDate.getUTCMonth() + (interval.m * modify));
+        }
+
+        if (interval.d) {
+            tempDate.setUTCDate(tempDate.getUTCDate() + (interval.d * modify));
+        }
+
+        if (interval.h) {
+            tempDate.setUTCHours(tempDate.getUTCHours() + (interval.h * modify));
+        }
+
+        if (interval.i) {
+            tempDate.setUTCMinutes(tempDate.getUTCMinutes() + (interval.i * modify));
+        }
+
+        if (interval.s) {
+            tempDate.setUTCSeconds(tempDate.getUTCSeconds() + (interval.s * modify));
+        }
+
+        if (interval.f) {
+            tempDate.setUTCTime(tempDate.getUTCTime() + (interval.f * modify));
+        }
+
+        return this.setLocalTime(tempDate.getTime());
+    },
+
     standardOffset() {
         return DateTime.standardOffset(this.getFullYear(), this._timezone);
     }
@@ -964,7 +997,7 @@ DateTime.formatData = {
     // leap year
     leapYear: {
         token: 'L',
-        output: date => FrostDate.isLeapYear(date.getUTCFullYear()) ? 1 : 0
+        output: date => DateTime.isLeapYear(date.getUTCFullYear()) ? 1 : 0
     },
 
     // year
@@ -1018,7 +1051,7 @@ DateTime.formatData = {
         token: 'm',
         regex: () => '(\\d{2})',
         input: (date, value) => date.month = value - 1,
-        output: date => Frost.padString(date.getUTCMonth() + 1, 2)
+        output: date => frost.padString(date.getUTCMonth() + 1, 2)
     },
 
     // month short
@@ -1058,7 +1091,7 @@ DateTime.formatData = {
         token: 'd',
         regex: () => '(\\d{2})',
         input: (date, value) => date.date = value,
-        output: date => Frost.padString(date.getUTCDate(), 2)
+        output: date => frost.padString(date.getUTCDate(), 2)
     },
 
     // date short
@@ -1111,7 +1144,7 @@ DateTime.formatData = {
         token: 'H',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value,
-        output: date => Frost.padString(date.getUTCHours(), 2)
+        output: date => frost.padString(date.getUTCHours(), 2)
     },
 
     // hours short (24)
@@ -1127,7 +1160,7 @@ DateTime.formatData = {
         token: 'h',
         regex: () => '(\\d{2})',
         input: (date, value) => date.hours = value % 12,
-        output: date => Frost.padString(date.getUTCHours() % 12 || 12, 2)
+        output: date => frost.padString(date.getUTCHours() % 12 || 12, 2)
     },
 
     // hours short (12)
@@ -1143,7 +1176,7 @@ DateTime.formatData = {
         token: 'i',
         regex: () => '(\\d{2})',
         input: (date, value) => date.minutes = value,
-        output: date => Frost.padString(date.getUTCMinutes(), 2)
+        output: date => frost.padString(date.getUTCMinutes(), 2)
     },
 
     // seconds
@@ -1151,7 +1184,7 @@ DateTime.formatData = {
         token: 's',
         regex: () => '(\\d{2})',
         input: (date, value) => date.seconds = value,
-        output: date => Frost.padString(date.getUTCSeconds(), 2)
+        output: date => frost.padString(date.getUTCSeconds(), 2)
     },
 
     // microseconds
@@ -1195,8 +1228,8 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
-            Frost.padString(datetime._offset % 60, 2)
+            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
+            frost.padString(datetime._offset % 60, 2)
     },
 
     // offset colon
@@ -1210,9 +1243,9 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            Frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
+            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
             ':' + 
-            Frost.padString(datetime._offset % 60, 2)
+            frost.padString(datetime._offset % 60, 2)
     },
 
     // timezone abbreviated
@@ -1315,7 +1348,7 @@ DateInterval.formatData = {
 
     years: {
         token: 'Y',
-        output: interval => Frost.padString(interval.y, 2)
+        output: interval => frost.padString(interval.y, 2)
     },
 
     yearsShort: {
@@ -1325,7 +1358,7 @@ DateInterval.formatData = {
 
     months: {
         token: 'M',
-        output: interval => Frost.padString(interval.m, 2)
+        output: interval => frost.padString(interval.m, 2)
     },
 
     monthsShort: {
@@ -1335,7 +1368,7 @@ DateInterval.formatData = {
 
     days: {
         token: 'D',
-        output: interval => Frost.padString(interval.d, 2)
+        output: interval => frost.padString(interval.d, 2)
     },
 
     daysShort: {
@@ -1350,7 +1383,7 @@ DateInterval.formatData = {
 
     hours: {
         token: 'H',
-        output: interval => Frost.padString(interval.h, 2)
+        output: interval => frost.padString(interval.h, 2)
     },
 
     hoursShort: {
@@ -1360,7 +1393,7 @@ DateInterval.formatData = {
 
     minutes: {
         token: 'I',
-        output: interval => Frost.padString(interval.i, 2)
+        output: interval => frost.padString(interval.i, 2)
     },
 
     minutesShort: {
@@ -1370,7 +1403,7 @@ DateInterval.formatData = {
 
     seconds: {
         token: 'S',
-        output: interval => Frost.padString(interval.s, 2)
+        output: interval => frost.padString(interval.s, 2)
     },
 
     secondsShort: {
@@ -1380,7 +1413,7 @@ DateInterval.formatData = {
 
     microseconds: {
         token: 'F',
-        output: interval => Frost.padString(interval.f, 6)
+        output: interval => frost.padString(interval.f, 6)
     },
 
     microsecondsShort: {
@@ -1524,7 +1557,7 @@ Object.assign(DateTime, {
             let date;
             if (dateData.dayOfYear && ( ! dateData.month || ! dateData.date)) {
                 month = 0;
-                date = dateData.dayOfyear();
+                date = dateData.dayOfyear;
             } else {
                 month = dateData.month - 1 || now.getMonth();
                 date = dateData.date || now.getDate();
@@ -1545,7 +1578,7 @@ Object.assign(DateTime, {
     },
 
     getDayFromName(day, type = 'full') {
-        const index = DateTime.lang.days[type].findIndex(value => Frost.matchesString(value, day, true));
+        const index = DateTime.lang.days[type].findIndex(value => frost.matchesString(value, day, true));
         return index >= 0 ? index : false;
     },
 
@@ -1554,7 +1587,7 @@ Object.assign(DateTime, {
     },
 
     getMonthFromName(month, type = 'full') {
-        const index = DateTime.lang.months[type].findIndex(value => Frost.matchesString(value, month, true));
+        const index = DateTime.lang.months[type].findIndex(value => frost.matchesString(value, month, true));
         return index >= 0 ? index : false;
     },
 
@@ -1595,7 +1628,7 @@ Object.assign(DateTime, {
     },
 
     parseDay(day) {
-        return Frost.isNumeric(day) ? day :
+        return day === null || frost.isNumeric(day) ? day :
             DateTime.getDayFromName(day) ||
             DateTime.getDayFromName(day, 'short') ||
             DateTime.getDayFromName(day, 'min') ||
@@ -1603,7 +1636,7 @@ Object.assign(DateTime, {
     },
 
     parseMonth(month) {
-        return Frost.isNumeric(month) ? month :
+        return month === null || frost.isNumeric(month) ? month :
             DateTime.getMonthFromName(month) ||
             DateTime.getMonthFromName(month, 'short') ||
             null;
@@ -1629,1374 +1662,1374 @@ Object.assign(DateTime, {
 });
 
 DateTime.timezones = {
-	'Z': {
-		abbr: 'Z'
-	},
-	'Africa/Abidjan': {
-		abbr: 'GMT'
-	},
-	'Africa/Accra': {
-		abbr: 'GMT'
-	},
-	'Africa/Addis_Ababa': {
-		abbr: 'EAT'
-	},
-	'Africa/Algiers': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Africa/Asmara': {
-		abbr: 'EAT'
-	},
-	'Africa/Asmera': {
-		abbr: 'EAT'
-	},
-	'Africa/Bamako': {
-		abbr: 'GMT'
-	},
-	'Africa/Bangui': {
-		abbr: 'WAT'
-	},
-	'Africa/Banjul': {
-		abbr: 'GMT'
-	},
-	'Africa/Bissau': {
-		abbr: 'GMT'
-	},
-	'Africa/Blantyre': {
-		abbr: 'CAT'
-	},
-	'Africa/Brazzaville': {
-		abbr: 'WAT'
-	},
-	'Africa/Bujumbura': {
-		abbr: 'CAT'
-	},
-	'Africa/Cairo': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Africa/Casablanca': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Africa/Ceuta': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Africa/Conakry': {
-		abbr: 'GMT'
-	},
-	'Africa/Dakar': {
-		abbr: 'GMT'
-	},
-	'Africa/Dar_es_Salaam': {
-		abbr: 'EAT'
-	},
-	'Africa/Djibouti': {
-		abbr: 'EAT'
-	},
-	'Africa/Douala': {
-		abbr: 'WAT'
-	},
-	'Africa/El_Aaiun': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Africa/Freetown': {
-		abbr: 'GMT'
-	},
-	'Africa/Gaborone': {
-		abbr: 'CAT'
-	},
-	'Africa/Harare': {
-		abbr: 'CAT'
-	},
-	'Africa/Johannesburg': {
-		abbr: 'SAST',
-		abbrDST: 'SAST'
-	},
-	'Africa/Juba': {
-		abbr: 'EAT',
-		abbrDST: 'CAST'
-	},
-	'Africa/Kampala': {
-		abbr: 'EAT'
-	},
-	'Africa/Khartoum': {
-		abbr: 'EAT',
-		abbrDST: 'CAST'
-	},
-	'Africa/Kigali': {
-		abbr: 'CAT'
-	},
-	'Africa/Kinshasa': {
-		abbr: 'WAT'
-	},
-	'Africa/Lagos': {
-		abbr: 'WAT'
-	},
-	'Africa/Libreville': {
-		abbr: 'WAT'
-	},
-	'Africa/Lome': {
-		abbr: 'GMT'
-	},
-	'Africa/Luanda': {
-		abbr: 'WAT'
-	},
-	'Africa/Lubumbashi': {
-		abbr: 'CAT'
-	},
-	'Africa/Lusaka': {
-		abbr: 'CAT'
-	},
-	'Africa/Malabo': {
-		abbr: 'WAT'
-	},
-	'Africa/Maputo': {
-		abbr: 'CAT'
-	},
-	'Africa/Maseru': {
-		abbr: 'SAST',
-		abbrDST: 'SAST'
-	},
-	'Africa/Mbabane': {
-		abbr: 'SAST',
-		abbrDST: 'SAST'
-	},
-	'Africa/Mogadishu': {
-		abbr: 'EAT'
-	},
-	'Africa/Monrovia': {
-		abbr: 'MMT'
-	},
-	'Africa/Nairobi': {
-		abbr: 'EAT'
-	},
-	'Africa/Ndjamena': {
-		abbr: 'WAT',
-		abbrDST: 'WAST'
-	},
-	'Africa/Niamey': {
-		abbr: 'WAT'
-	},
-	'Africa/Nouakchott': {
-		abbr: 'GMT'
-	},
-	'Africa/Ouagadougou': {
-		abbr: 'GMT'
-	},
-	'Africa/Porto-Novo': {
-		abbr: 'WAT'
-	},
-	'Africa/Sao_Tome': {
-		abbr: 'GMT'
-	},
-	'Africa/Timbuktu': {
-		abbr: 'GMT'
-	},
-	'Africa/Tripoli': {
-		abbr: 'EET',
-		abbrDST: 'CEST'
-	},
-	'Africa/Tunis': {
-		abbr: 'PMT',
-		abbrDST: 'CEST'
-	},
-	'Africa/Windhoek': {
-		abbr: 'WAT',
-		abbrDST: 'WAST'
-	},
-	'America/Adak': {
-		abbr: 'NST',
-		abbrDST: 'NWT'
-	},
-	'America/Anchorage': {
-		abbr: 'YST',
-		abbrDST: 'AWT'
-	},
-	'America/Anguilla': {
-		abbr: 'AST'
-	},
-	'America/Antigua': {
-		abbr: 'AST'
-	},
-	'America/Argentina/Buenos_Aires': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Catamarca': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/ComodRivadavia': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Cordoba': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Jujuy': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/La_Rioja': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Mendoza': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Rio_Gallegos': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Salta': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/San_Juan': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/San_Luis': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Tucuman': {
-		abbr: 'CMT'
-	},
-	'America/Argentina/Ushuaia': {
-		abbr: 'CMT'
-	},
-	'America/Aruba': {
-		abbr: 'AST'
-	},
-	'America/Asuncion': {
-		abbr: 'AMT'
-	},
-	'America/Atikokan': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Atka': {
-		abbr: 'NST',
-		abbrDST: 'NWT'
-	},
-	'America/Bahia_Banderas': {
-		abbr: 'PST',
-		abbrDST: 'MDT'
-	},
-	'America/Barbados': {
-		abbr: 'BMT',
-		abbrDST: 'ADT'
-	},
-	'America/Belize': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Blanc-Sablon': {
-		abbr: 'AST',
-		abbrDST: 'AWT'
-	},
-	'America/Bogota': {
-		abbr: 'BMT'
-	},
-	'America/Boise': {
-		abbr: 'PST',
-		abbrDST: 'PDT'
-	},
-	'America/Buenos_Aires': {
-		abbr: 'CMT'
-	},
-	'America/Cambridge_Bay': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Cancun': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Caracas': {
-		abbr: 'CMT'
-	},
-	'America/Catamarca': {
-		abbr: 'CMT'
-	},
-	'America/Cayman': {
-		abbr: 'EST'
-	},
-	'America/Chicago': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Chihuahua': {
-		abbr: 'MST',
-		abbrDST: 'MDT'
-	},
-	'America/Coral_Harbour': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Cordoba': {
-		abbr: 'CMT'
-	},
-	'America/Costa_Rica': {
-		abbr: 'SJMT',
-		abbrDST: 'CDT'
-	},
-	'America/Creston': {
-		abbr: 'PST'
-	},
-	'America/Curacao': {
-		abbr: 'AST'
-	},
-	'America/Danmarkshavn': {
-		abbr: 'GMT'
-	},
-	'America/Dawson': {
-		abbr: 'YST',
-		abbrDST: 'YWT'
-	},
-	'America/Dawson_Creek': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Denver': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Detroit': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Dominica': {
-		abbr: 'AST'
-	},
-	'America/Edmonton': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/El_Salvador': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Ensenada': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Fort_Nelson': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Fort_Wayne': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Glace_Bay': {
-		abbr: 'AST',
-		abbrDST: 'AWT'
-	},
-	'America/Goose_Bay': {
-		abbr: 'NST',
-		abbrDST: 'NWT'
-	},
-	'America/Grand_Turk': {
-		abbr: 'KMT',
-		abbrDST: 'EDT'
-	},
-	'America/Grenada': {
-		abbr: 'AST'
-	},
-	'America/Guadeloupe': {
-		abbr: 'AST'
-	},
-	'America/Guatemala': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Guayaquil': {
-		abbr: 'QMT'
-	},
-	'America/Halifax': {
-		abbr: 'AST',
-		abbrDST: 'AWT'
-	},
-	'America/Havana': {
-		abbr: 'HMT',
-		abbrDST: 'CDT'
-	},
-	'America/Hermosillo': {
-		abbr: 'PST',
-		abbrDST: 'MDT'
-	},
-	'America/Indiana/Indianapolis': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Knox': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Indiana/Marengo': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Petersburg': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Tell_City': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Vevay': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Vincennes': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indiana/Winamac': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Indianapolis': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Inuvik': {
-		abbr: 'PST',
-		abbrDST: 'PDDT'
-	},
-	'America/Iqaluit': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Jamaica': {
-		abbr: 'KMT',
-		abbrDST: 'EDT'
-	},
-	'America/Jujuy': {
-		abbr: 'CMT'
-	},
-	'America/Juneau': {
-		abbr: 'YST',
-		abbrDST: 'YDT'
-	},
-	'America/Kentucky/Louisville': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Kentucky/Monticello': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Knox_IN': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Kralendijk': {
-		abbr: 'AST'
-	},
-	'America/La_Paz': {
-		abbr: 'CMT',
-		abbrDST: 'BOST'
-	},
-	'America/Los_Angeles': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Louisville': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Lower_Princes': {
-		abbr: 'AST'
-	},
-	'America/Managua': {
-		abbr: 'MMT',
-		abbrDST: 'CDT'
-	},
-	'America/Marigot': {
-		abbr: 'AST'
-	},
-	'America/Martinique': {
-		abbr: 'FFMT',
-		abbrDST: 'ADT'
-	},
-	'America/Matamoros': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Mazatlan': {
-		abbr: 'PST',
-		abbrDST: 'MDT'
-	},
-	'America/Mendoza': {
-		abbr: 'CMT'
-	},
-	'America/Menominee': {
-		abbr: 'EST',
-		abbrDST: 'CWT'
-	},
-	'America/Merida': {
-		abbr: 'EST',
-		abbrDST: 'CDT'
-	},
-	'America/Metlakatla': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Mexico_City': {
-		abbr: 'MST',
-		abbrDST: 'CWT'
-	},
-	'America/Miquelon': {
-		abbr: 'AST'
-	},
-	'America/Moncton': {
-		abbr: 'EST',
-		abbrDST: 'AWT'
-	},
-	'America/Monterrey': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Montevideo': {
-		abbr: 'MMT'
-	},
-	'America/Montreal': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Montserrat': {
-		abbr: 'AST'
-	},
-	'America/Nassau': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/New_York': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Nipigon': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Nome': {
-		abbr: 'YST',
-		abbrDST: 'NWT'
-	},
-	'America/North_Dakota/Beulah': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/North_Dakota/Center': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/North_Dakota/New_Salem': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Ojinaga': {
-		abbr: 'MST',
-		abbrDST: 'MDT'
-	},
-	'America/Panama': {
-		abbr: 'EST'
-	},
-	'America/Pangnirtung': {
-		abbr: 'EST',
-		abbrDST: 'EDT'
-	},
-	'America/Paramaribo': {
-		abbr: 'PMT'
-	},
-	'America/Phoenix': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Port-au-Prince': {
-		abbr: 'PPMT',
-		abbrDST: 'EDT'
-	},
-	'America/Port_of_Spain': {
-		abbr: 'AST'
-	},
-	'America/Puerto_Rico': {
-		abbr: 'AST',
-		abbrDST: 'AWT'
-	},
-	'America/Punta_Arenas': {
-		abbr: 'SMT'
-	},
-	'America/Rainy_River': {
-		abbr: 'CST',
-		abbrDST: 'CWT'
-	},
-	'America/Rankin_Inlet': {
-		abbr: 'EST',
-		abbrDST: 'CDT'
-	},
-	'America/Regina': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Resolute': {
-		abbr: 'EST',
-		abbrDST: 'CDT'
-	},
-	'America/Rosario': {
-		abbr: 'CMT'
-	},
-	'America/Santa_Isabel': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Santiago': {
-		abbr: 'SMT'
-	},
-	'America/Santo_Domingo': {
-		abbr: 'SDMT',
-		abbrDST: 'EDT'
-	},
-	'America/Shiprock': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Sitka': {
-		abbr: 'YST',
-		abbrDST: 'PWT'
-	},
-	'America/St_Barthelemy': {
-		abbr: 'AST'
-	},
-	'America/St_Johns': {
-		abbr: 'NST',
-		abbrDST: 'NWT'
-	},
-	'America/St_Kitts': {
-		abbr: 'AST'
-	},
-	'America/St_Lucia': {
-		abbr: 'AST'
-	},
-	'America/St_Thomas': {
-		abbr: 'AST'
-	},
-	'America/St_Vincent': {
-		abbr: 'AST'
-	},
-	'America/Swift_Current': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'America/Tegucigalpa': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'America/Thule': {
-		abbr: 'AST',
-		abbrDST: 'ADT'
-	},
-	'America/Thunder_Bay': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Tijuana': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Toronto': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'America/Tortola': {
-		abbr: 'AST'
-	},
-	'America/Vancouver': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'America/Virgin': {
-		abbr: 'AST'
-	},
-	'America/Whitehorse': {
-		abbr: 'YST',
-		abbrDST: 'YWT'
-	},
-	'America/Winnipeg': {
-		abbr: 'CST',
-		abbrDST: 'CWT'
-	},
-	'America/Yakutat': {
-		abbr: 'YST',
-		abbrDST: 'YWT'
-	},
-	'America/Yellowknife': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'Antarctica/Macquarie': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Antarctica/McMurdo': {
-		abbr: 'NZST',
-		abbrDST: 'NZST'
-	},
-	'Antarctica/South_Pole': {
-		abbr: 'NZST',
-		abbrDST: 'NZST'
-	},
-	'Arctic/Longyearbyen': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Asia/Amman': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Asia/Baghdad': {
-		abbr: 'BMT'
-	},
-	'Asia/Bangkok': {
-		abbr: 'BMT'
-	},
-	'Asia/Beirut': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Asia/Calcutta': {
-		abbr: 'MMT'
-	},
-	'Asia/Chongqing': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Chungking': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Colombo': {
-		abbr: 'MMT'
-	},
-	'Asia/Dacca': {
-		abbr: 'HMT'
-	},
-	'Asia/Damascus': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Asia/Dhaka': {
-		abbr: 'HMT'
-	},
-	'Asia/Famagusta': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Asia/Gaza': {
-		abbr: 'IST',
-		abbrDST: 'IDT'
-	},
-	'Asia/Harbin': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Hebron': {
-		abbr: 'IST',
-		abbrDST: 'IDT'
-	},
-	'Asia/Ho_Chi_Minh': {
-		abbr: 'PLMT'
-	},
-	'Asia/Hong_Kong': {
-		abbr: 'JST',
-		abbrDST: 'HKST'
-	},
-	'Asia/Irkutsk': {
-		abbr: 'IMT'
-	},
-	'Asia/Istanbul': {
-		abbr: 'IMT',
-		abbrDST: 'EEST'
-	},
-	'Asia/Jakarta': {
-		abbr: 'WIB'
-	},
-	'Asia/Jayapura': {
-		abbr: 'WIT'
-	},
-	'Asia/Jerusalem': {
-		abbr: 'JMT',
-		abbrDST: 'IDT'
-	},
-	'Asia/Karachi': {
-		abbr: 'PKT',
-		abbrDST: 'PKST'
-	},
-	'Asia/Kolkata': {
-		abbr: 'MMT'
-	},
-	'Asia/Kuala_Lumpur': {
-		abbr: 'SMT'
-	},
-	'Asia/Macao': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Macau': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Makassar': {
-		abbr: 'WITA'
-	},
-	'Asia/Nicosia': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Asia/Phnom_Penh': {
-		abbr: 'BMT'
-	},
-	'Asia/Pontianak': {
-		abbr: 'WITA'
-	},
-	'Asia/Pyongyang': {
-		abbr: 'KST'
-	},
-	'Asia/Rangoon': {
-		abbr: 'RMT'
-	},
-	'Asia/Saigon': {
-		abbr: 'PLMT'
-	},
-	'Asia/Seoul': {
-		abbr: 'KST',
-		abbrDST: 'KDT'
-	},
-	'Asia/Shanghai': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Singapore': {
-		abbr: 'SMT'
-	},
-	'Asia/Taipei': {
-		abbr: 'JST',
-		abbrDST: 'CDT'
-	},
-	'Asia/Tbilisi': {
-		abbr: 'TBMT'
-	},
-	'Asia/Tehran': {
-		abbr: 'TMT'
-	},
-	'Asia/Tel_Aviv': {
-		abbr: 'JMT',
-		abbrDST: 'IDT'
-	},
-	'Asia/Tokyo': {
-		abbr: 'JST',
-		abbrDST: 'JDT'
-	},
-	'Asia/Ujung_Pandang': {
-		abbr: 'WITA'
-	},
-	'Asia/Vientiane': {
-		abbr: 'BMT'
-	},
-	'Asia/Yangon': {
-		abbr: 'RMT'
-	},
-	'Asia/Yekaterinburg': {
-		abbr: 'PMT'
-	},
-	'Atlantic/Azores': {
-		abbr: 'WET'
-	},
-	'Atlantic/Bermuda': {
-		abbr: 'AST',
-		abbrDST: 'ADT'
-	},
-	'Atlantic/Canary': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Atlantic/Faeroe': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Atlantic/Faroe': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Atlantic/Jan_Mayen': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Atlantic/Madeira': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Atlantic/Reykjavik': {
-		abbr: 'GMT'
-	},
-	'Atlantic/St_Helena': {
-		abbr: 'GMT'
-	},
-	'Atlantic/Stanley': {
-		abbr: 'SMT'
-	},
-	'Australia/ACT': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Adelaide': {
-		abbr: 'CAST',
-		abbrDST: 'ACDT'
-	},
-	'Australia/Brisbane': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Broken_Hill': {
-		abbr: 'ACST',
-		abbrDST: 'ACDT'
-	},
-	'Australia/Canberra': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Currie': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Darwin': {
-		abbr: 'ACST',
-		abbrDST: 'ACDT'
-	},
-	'Australia/Hobart': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/LHI': {
-		abbr: 'AEST'
-	},
-	'Australia/Lindeman': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Lord_Howe': {
-		abbr: 'AEST'
-	},
-	'Australia/Melbourne': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/NSW': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/North': {
-		abbr: 'ACST',
-		abbrDST: 'ACDT'
-	},
-	'Australia/Perth': {
-		abbr: 'AWST',
-		abbrDST: 'AWDT'
-	},
-	'Australia/Queensland': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/South': {
-		abbr: 'ACST',
-		abbrDST: 'ACDT'
-	},
-	'Australia/Sydney': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Tasmania': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/Victoria': {
-		abbr: 'AEST',
-		abbrDST: 'AEDT'
-	},
-	'Australia/West': {
-		abbr: 'AWST',
-		abbrDST: 'AWDT'
-	},
-	'Australia/Yancowinna': {
-		abbr: 'ACST',
-		abbrDST: 'ACDT'
-	},
-	'Canada/Atlantic': {
-		abbr: 'AST',
-		abbrDST: 'AWT'
-	},
-	'Canada/Central': {
-		abbr: 'CST',
-		abbrDST: 'CWT'
-	},
-	'Canada/Eastern': {
-		abbr: 'EST',
-		abbrDST: 'EWT'
-	},
-	'Canada/Mountain': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'Canada/Newfoundland': {
-		abbr: 'NST',
-		abbrDST: 'NWT'
-	},
-	'Canada/Pacific': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'Canada/Saskatchewan': {
-		abbr: 'MST',
-		abbrDST: 'MWT'
-	},
-	'Canada/Yukon': {
-		abbr: 'YST',
-		abbrDST: 'YWT'
-	},
-	'Chile/Continental': {
-		abbr: 'SMT'
-	},
-	'Chile/EasterIsland': {
-		abbr: 'EMT'
-	},
-	'Etc/GMT': {
-		abbr: 'GMT'
-	},
-	'Etc/Greenwich': {
-		abbr: 'GMT'
-	},
-	'Etc/UCT': {
-		abbr: 'UCT'
-	},
-	'Etc/UTC': {
-		abbr: 'UTC'
-	},
-	'Etc/Universal': {
-		abbr: 'UTC'
-	},
-	'Etc/Zulu': {
-		abbr: 'UTC'
-	},
-	'Europe/Amsterdam': {
-		abbr: 'CET',
-		abbrDST: 'NST'
-	},
-	'Europe/Andorra': {
-		abbr: 'WET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Athens': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Europe/Belfast': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Europe/Belgrade': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Berlin': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Bratislava': {
-		abbr: 'PMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Brussels': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Bucharest': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Europe/Budapest': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Busingen': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Chisinau': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Copenhagen': {
-		abbr: 'CMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Dublin': {
-		abbr: 'IST',
-		abbrDST: 'IST'
-	},
-	'Europe/Gibraltar': {
-		abbr: 'GMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Guernsey': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Europe/Helsinki': {
-		abbr: 'HMT',
-		abbrDST: 'EEST'
-	},
-	'Europe/Isle_of_Man': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Europe/Istanbul': {
-		abbr: 'IMT',
-		abbrDST: 'EEST'
-	},
-	'Europe/Jersey': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Europe/Kaliningrad': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Kiev': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Lisbon': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Ljubljana': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/London': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Europe/Luxembourg': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Madrid': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Malta': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Mariehamn': {
-		abbr: 'HMT',
-		abbrDST: 'EEST'
-	},
-	'Europe/Minsk': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Monaco': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Moscow': {
-		abbr: 'MSK',
-		abbrDST: 'MST'
-	},
-	'Europe/Nicosia': {
-		abbr: 'EET',
-		abbrDST: 'EEST'
-	},
-	'Europe/Oslo': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Paris': {
-		abbr: 'WET',
-		abbrDST: 'WEST'
-	},
-	'Europe/Podgorica': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Prague': {
-		abbr: 'PMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Riga': {
-		abbr: 'RMT',
-		abbrDST: 'MSD'
-	},
-	'Europe/Rome': {
-		abbr: 'RMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/San_Marino': {
-		abbr: 'RMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Sarajevo': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Simferopol': {
-		abbr: 'SMT',
-		abbrDST: 'MSD'
-	},
-	'Europe/Skopje': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Sofia': {
-		abbr: 'IMT',
-		abbrDST: 'EEST'
-	},
-	'Europe/Stockholm': {
-		abbr: 'SET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Tallinn': {
-		abbr: 'TMT',
-		abbrDST: 'MSD'
-	},
-	'Europe/Tirane': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Tiraspol': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Uzhgorod': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Vaduz': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Vatican': {
-		abbr: 'RMT',
-		abbrDST: 'CEST'
-	},
-	'Europe/Vienna': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Vilnius': {
-		abbr: 'WMT',
-		abbrDST: 'MSD'
-	},
-	'Europe/Warsaw': {
-		abbr: 'WMT',
-		abbrDST: 'EEST'
-	},
-	'Europe/Zagreb': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'Europe/Zaporozhye': {
-		abbr: 'MSK',
-		abbrDST: 'MSD'
-	},
-	'Europe/Zurich': {
-		abbr: 'CET',
-		abbrDST: 'CEST'
-	},
-	'GB': {
-		abbr: 'GMT',
-		abbrDST: 'BST'
-	},
-	'Indian/Antananarivo': {
-		abbr: 'EAT'
-	},
-	'Indian/Comoro': {
-		abbr: 'EAT'
-	},
-	'Indian/Maldives': {
-		abbr: 'MMT'
-	},
-	'Indian/Mayotte': {
-		abbr: 'EAT'
-	},
-	'Mexico/BajaNorte': {
-		abbr: 'PST',
-		abbrDST: 'PWT'
-	},
-	'Mexico/BajaSur': {
-		abbr: 'PST',
-		abbrDST: 'MDT'
-	},
-	'Mexico/General': {
-		abbr: 'MST',
-		abbrDST: 'CWT'
-	},
-	'NZ': {
-		abbr: 'NZST',
-		abbrDST: 'NZST'
-	},
-	'PRC': {
-		abbr: 'CST',
-		abbrDST: 'CDT'
-	},
-	'Pacific/Auckland': {
-		abbr: 'NZST',
-		abbrDST: 'NZST'
-	},
-	'Pacific/Bougainville': {
-		abbr: 'PMMT'
-	},
-	'Pacific/Easter': {
-		abbr: 'EMT'
-	},
-	'Pacific/Guam': {
-		abbr: 'GST'
-	},
-	'Pacific/Honolulu': {
-		abbr: 'HST',
-		abbrDST: 'HDT'
-	},
-	'Pacific/Johnston': {
-		abbr: 'HST',
-		abbrDST: 'HDT'
-	},
-	'Pacific/Midway': {
-		abbr: 'SST'
-	},
-	'Pacific/Pago_Pago': {
-		abbr: 'SST'
-	},
-	'Pacific/Port_Moresby': {
-		abbr: 'PMMT'
-	},
-	'Pacific/Saipan': {
-		abbr: 'GST'
-	},
-	'Pacific/Samoa': {
-		abbr: 'SST'
-	},
-	'ROC': {
-		abbr: 'JST',
-		abbrDST: 'CDT'
-	},
-	'ROK': {
-		abbr: 'KST',
-		abbrDST: 'KDT'
-	},
-	'UTC': {
-		abbr: 'UTC'
-	}
+    'Z': {
+        abbr: 'Z'
+    },
+    'Africa/Abidjan': {
+        abbr: 'GMT'
+    },
+    'Africa/Accra': {
+        abbr: 'GMT'
+    },
+    'Africa/Addis_Ababa': {
+        abbr: 'EAT'
+    },
+    'Africa/Algiers': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Africa/Asmara': {
+        abbr: 'EAT'
+    },
+    'Africa/Asmera': {
+        abbr: 'EAT'
+    },
+    'Africa/Bamako': {
+        abbr: 'GMT'
+    },
+    'Africa/Bangui': {
+        abbr: 'WAT'
+    },
+    'Africa/Banjul': {
+        abbr: 'GMT'
+    },
+    'Africa/Bissau': {
+        abbr: 'GMT'
+    },
+    'Africa/Blantyre': {
+        abbr: 'CAT'
+    },
+    'Africa/Brazzaville': {
+        abbr: 'WAT'
+    },
+    'Africa/Bujumbura': {
+        abbr: 'CAT'
+    },
+    'Africa/Cairo': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Africa/Casablanca': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Africa/Ceuta': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Africa/Conakry': {
+        abbr: 'GMT'
+    },
+    'Africa/Dakar': {
+        abbr: 'GMT'
+    },
+    'Africa/Dar_es_Salaam': {
+        abbr: 'EAT'
+    },
+    'Africa/Djibouti': {
+        abbr: 'EAT'
+    },
+    'Africa/Douala': {
+        abbr: 'WAT'
+    },
+    'Africa/El_Aaiun': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Africa/Freetown': {
+        abbr: 'GMT'
+    },
+    'Africa/Gaborone': {
+        abbr: 'CAT'
+    },
+    'Africa/Harare': {
+        abbr: 'CAT'
+    },
+    'Africa/Johannesburg': {
+        abbr: 'SAST',
+        abbrDST: 'SAST'
+    },
+    'Africa/Juba': {
+        abbr: 'EAT',
+        abbrDST: 'CAST'
+    },
+    'Africa/Kampala': {
+        abbr: 'EAT'
+    },
+    'Africa/Khartoum': {
+        abbr: 'EAT',
+        abbrDST: 'CAST'
+    },
+    'Africa/Kigali': {
+        abbr: 'CAT'
+    },
+    'Africa/Kinshasa': {
+        abbr: 'WAT'
+    },
+    'Africa/Lagos': {
+        abbr: 'WAT'
+    },
+    'Africa/Libreville': {
+        abbr: 'WAT'
+    },
+    'Africa/Lome': {
+        abbr: 'GMT'
+    },
+    'Africa/Luanda': {
+        abbr: 'WAT'
+    },
+    'Africa/Lubumbashi': {
+        abbr: 'CAT'
+    },
+    'Africa/Lusaka': {
+        abbr: 'CAT'
+    },
+    'Africa/Malabo': {
+        abbr: 'WAT'
+    },
+    'Africa/Maputo': {
+        abbr: 'CAT'
+    },
+    'Africa/Maseru': {
+        abbr: 'SAST',
+        abbrDST: 'SAST'
+    },
+    'Africa/Mbabane': {
+        abbr: 'SAST',
+        abbrDST: 'SAST'
+    },
+    'Africa/Mogadishu': {
+        abbr: 'EAT'
+    },
+    'Africa/Monrovia': {
+        abbr: 'MMT'
+    },
+    'Africa/Nairobi': {
+        abbr: 'EAT'
+    },
+    'Africa/Ndjamena': {
+        abbr: 'WAT',
+        abbrDST: 'WAST'
+    },
+    'Africa/Niamey': {
+        abbr: 'WAT'
+    },
+    'Africa/Nouakchott': {
+        abbr: 'GMT'
+    },
+    'Africa/Ouagadougou': {
+        abbr: 'GMT'
+    },
+    'Africa/Porto-Novo': {
+        abbr: 'WAT'
+    },
+    'Africa/Sao_Tome': {
+        abbr: 'GMT'
+    },
+    'Africa/Timbuktu': {
+        abbr: 'GMT'
+    },
+    'Africa/Tripoli': {
+        abbr: 'EET',
+        abbrDST: 'CEST'
+    },
+    'Africa/Tunis': {
+        abbr: 'PMT',
+        abbrDST: 'CEST'
+    },
+    'Africa/Windhoek': {
+        abbr: 'WAT',
+        abbrDST: 'WAST'
+    },
+    'America/Adak': {
+        abbr: 'NST',
+        abbrDST: 'NWT'
+    },
+    'America/Anchorage': {
+        abbr: 'YST',
+        abbrDST: 'AWT'
+    },
+    'America/Anguilla': {
+        abbr: 'AST'
+    },
+    'America/Antigua': {
+        abbr: 'AST'
+    },
+    'America/Argentina/Buenos_Aires': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Catamarca': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/ComodRivadavia': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Cordoba': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Jujuy': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/La_Rioja': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Mendoza': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Rio_Gallegos': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Salta': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/San_Juan': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/San_Luis': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Tucuman': {
+        abbr: 'CMT'
+    },
+    'America/Argentina/Ushuaia': {
+        abbr: 'CMT'
+    },
+    'America/Aruba': {
+        abbr: 'AST'
+    },
+    'America/Asuncion': {
+        abbr: 'AMT'
+    },
+    'America/Atikokan': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Atka': {
+        abbr: 'NST',
+        abbrDST: 'NWT'
+    },
+    'America/Bahia_Banderas': {
+        abbr: 'PST',
+        abbrDST: 'MDT'
+    },
+    'America/Barbados': {
+        abbr: 'BMT',
+        abbrDST: 'ADT'
+    },
+    'America/Belize': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Blanc-Sablon': {
+        abbr: 'AST',
+        abbrDST: 'AWT'
+    },
+    'America/Bogota': {
+        abbr: 'BMT'
+    },
+    'America/Boise': {
+        abbr: 'PST',
+        abbrDST: 'PDT'
+    },
+    'America/Buenos_Aires': {
+        abbr: 'CMT'
+    },
+    'America/Cambridge_Bay': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Cancun': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Caracas': {
+        abbr: 'CMT'
+    },
+    'America/Catamarca': {
+        abbr: 'CMT'
+    },
+    'America/Cayman': {
+        abbr: 'EST'
+    },
+    'America/Chicago': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Chihuahua': {
+        abbr: 'MST',
+        abbrDST: 'MDT'
+    },
+    'America/Coral_Harbour': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Cordoba': {
+        abbr: 'CMT'
+    },
+    'America/Costa_Rica': {
+        abbr: 'SJMT',
+        abbrDST: 'CDT'
+    },
+    'America/Creston': {
+        abbr: 'PST'
+    },
+    'America/Curacao': {
+        abbr: 'AST'
+    },
+    'America/Danmarkshavn': {
+        abbr: 'GMT'
+    },
+    'America/Dawson': {
+        abbr: 'YST',
+        abbrDST: 'YWT'
+    },
+    'America/Dawson_Creek': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Denver': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Detroit': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Dominica': {
+        abbr: 'AST'
+    },
+    'America/Edmonton': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/El_Salvador': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Ensenada': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Fort_Nelson': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Fort_Wayne': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Glace_Bay': {
+        abbr: 'AST',
+        abbrDST: 'AWT'
+    },
+    'America/Goose_Bay': {
+        abbr: 'NST',
+        abbrDST: 'NWT'
+    },
+    'America/Grand_Turk': {
+        abbr: 'KMT',
+        abbrDST: 'EDT'
+    },
+    'America/Grenada': {
+        abbr: 'AST'
+    },
+    'America/Guadeloupe': {
+        abbr: 'AST'
+    },
+    'America/Guatemala': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Guayaquil': {
+        abbr: 'QMT'
+    },
+    'America/Halifax': {
+        abbr: 'AST',
+        abbrDST: 'AWT'
+    },
+    'America/Havana': {
+        abbr: 'HMT',
+        abbrDST: 'CDT'
+    },
+    'America/Hermosillo': {
+        abbr: 'PST',
+        abbrDST: 'MDT'
+    },
+    'America/Indiana/Indianapolis': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Knox': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Indiana/Marengo': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Petersburg': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Tell_City': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Vevay': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Vincennes': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indiana/Winamac': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Indianapolis': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Inuvik': {
+        abbr: 'PST',
+        abbrDST: 'PDDT'
+    },
+    'America/Iqaluit': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Jamaica': {
+        abbr: 'KMT',
+        abbrDST: 'EDT'
+    },
+    'America/Jujuy': {
+        abbr: 'CMT'
+    },
+    'America/Juneau': {
+        abbr: 'YST',
+        abbrDST: 'YDT'
+    },
+    'America/Kentucky/Louisville': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Kentucky/Monticello': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Knox_IN': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Kralendijk': {
+        abbr: 'AST'
+    },
+    'America/La_Paz': {
+        abbr: 'CMT',
+        abbrDST: 'BOST'
+    },
+    'America/Los_Angeles': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Louisville': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Lower_Princes': {
+        abbr: 'AST'
+    },
+    'America/Managua': {
+        abbr: 'MMT',
+        abbrDST: 'CDT'
+    },
+    'America/Marigot': {
+        abbr: 'AST'
+    },
+    'America/Martinique': {
+        abbr: 'FFMT',
+        abbrDST: 'ADT'
+    },
+    'America/Matamoros': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Mazatlan': {
+        abbr: 'PST',
+        abbrDST: 'MDT'
+    },
+    'America/Mendoza': {
+        abbr: 'CMT'
+    },
+    'America/Menominee': {
+        abbr: 'EST',
+        abbrDST: 'CWT'
+    },
+    'America/Merida': {
+        abbr: 'EST',
+        abbrDST: 'CDT'
+    },
+    'America/Metlakatla': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Mexico_City': {
+        abbr: 'MST',
+        abbrDST: 'CWT'
+    },
+    'America/Miquelon': {
+        abbr: 'AST'
+    },
+    'America/Moncton': {
+        abbr: 'EST',
+        abbrDST: 'AWT'
+    },
+    'America/Monterrey': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Montevideo': {
+        abbr: 'MMT'
+    },
+    'America/Montreal': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Montserrat': {
+        abbr: 'AST'
+    },
+    'America/Nassau': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/New_York': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Nipigon': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Nome': {
+        abbr: 'YST',
+        abbrDST: 'NWT'
+    },
+    'America/North_Dakota/Beulah': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/North_Dakota/Center': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/North_Dakota/New_Salem': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Ojinaga': {
+        abbr: 'MST',
+        abbrDST: 'MDT'
+    },
+    'America/Panama': {
+        abbr: 'EST'
+    },
+    'America/Pangnirtung': {
+        abbr: 'EST',
+        abbrDST: 'EDT'
+    },
+    'America/Paramaribo': {
+        abbr: 'PMT'
+    },
+    'America/Phoenix': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Port-au-Prince': {
+        abbr: 'PPMT',
+        abbrDST: 'EDT'
+    },
+    'America/Port_of_Spain': {
+        abbr: 'AST'
+    },
+    'America/Puerto_Rico': {
+        abbr: 'AST',
+        abbrDST: 'AWT'
+    },
+    'America/Punta_Arenas': {
+        abbr: 'SMT'
+    },
+    'America/Rainy_River': {
+        abbr: 'CST',
+        abbrDST: 'CWT'
+    },
+    'America/Rankin_Inlet': {
+        abbr: 'EST',
+        abbrDST: 'CDT'
+    },
+    'America/Regina': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Resolute': {
+        abbr: 'EST',
+        abbrDST: 'CDT'
+    },
+    'America/Rosario': {
+        abbr: 'CMT'
+    },
+    'America/Santa_Isabel': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Santiago': {
+        abbr: 'SMT'
+    },
+    'America/Santo_Domingo': {
+        abbr: 'SDMT',
+        abbrDST: 'EDT'
+    },
+    'America/Shiprock': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Sitka': {
+        abbr: 'YST',
+        abbrDST: 'PWT'
+    },
+    'America/St_Barthelemy': {
+        abbr: 'AST'
+    },
+    'America/St_Johns': {
+        abbr: 'NST',
+        abbrDST: 'NWT'
+    },
+    'America/St_Kitts': {
+        abbr: 'AST'
+    },
+    'America/St_Lucia': {
+        abbr: 'AST'
+    },
+    'America/St_Thomas': {
+        abbr: 'AST'
+    },
+    'America/St_Vincent': {
+        abbr: 'AST'
+    },
+    'America/Swift_Current': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'America/Tegucigalpa': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'America/Thule': {
+        abbr: 'AST',
+        abbrDST: 'ADT'
+    },
+    'America/Thunder_Bay': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Tijuana': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Toronto': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'America/Tortola': {
+        abbr: 'AST'
+    },
+    'America/Vancouver': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'America/Virgin': {
+        abbr: 'AST'
+    },
+    'America/Whitehorse': {
+        abbr: 'YST',
+        abbrDST: 'YWT'
+    },
+    'America/Winnipeg': {
+        abbr: 'CST',
+        abbrDST: 'CWT'
+    },
+    'America/Yakutat': {
+        abbr: 'YST',
+        abbrDST: 'YWT'
+    },
+    'America/Yellowknife': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'Antarctica/Macquarie': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Antarctica/McMurdo': {
+        abbr: 'NZST',
+        abbrDST: 'NZST'
+    },
+    'Antarctica/South_Pole': {
+        abbr: 'NZST',
+        abbrDST: 'NZST'
+    },
+    'Arctic/Longyearbyen': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Asia/Amman': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Asia/Baghdad': {
+        abbr: 'BMT'
+    },
+    'Asia/Bangkok': {
+        abbr: 'BMT'
+    },
+    'Asia/Beirut': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Asia/Calcutta': {
+        abbr: 'MMT'
+    },
+    'Asia/Chongqing': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Chungking': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Colombo': {
+        abbr: 'MMT'
+    },
+    'Asia/Dacca': {
+        abbr: 'HMT'
+    },
+    'Asia/Damascus': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Asia/Dhaka': {
+        abbr: 'HMT'
+    },
+    'Asia/Famagusta': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Asia/Gaza': {
+        abbr: 'IST',
+        abbrDST: 'IDT'
+    },
+    'Asia/Harbin': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Hebron': {
+        abbr: 'IST',
+        abbrDST: 'IDT'
+    },
+    'Asia/Ho_Chi_Minh': {
+        abbr: 'PLMT'
+    },
+    'Asia/Hong_Kong': {
+        abbr: 'JST',
+        abbrDST: 'HKST'
+    },
+    'Asia/Irkutsk': {
+        abbr: 'IMT'
+    },
+    'Asia/Istanbul': {
+        abbr: 'IMT',
+        abbrDST: 'EEST'
+    },
+    'Asia/Jakarta': {
+        abbr: 'WIB'
+    },
+    'Asia/Jayapura': {
+        abbr: 'WIT'
+    },
+    'Asia/Jerusalem': {
+        abbr: 'JMT',
+        abbrDST: 'IDT'
+    },
+    'Asia/Karachi': {
+        abbr: 'PKT',
+        abbrDST: 'PKST'
+    },
+    'Asia/Kolkata': {
+        abbr: 'MMT'
+    },
+    'Asia/Kuala_Lumpur': {
+        abbr: 'SMT'
+    },
+    'Asia/Macao': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Macau': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Makassar': {
+        abbr: 'WITA'
+    },
+    'Asia/Nicosia': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Asia/Phnom_Penh': {
+        abbr: 'BMT'
+    },
+    'Asia/Pontianak': {
+        abbr: 'WITA'
+    },
+    'Asia/Pyongyang': {
+        abbr: 'KST'
+    },
+    'Asia/Rangoon': {
+        abbr: 'RMT'
+    },
+    'Asia/Saigon': {
+        abbr: 'PLMT'
+    },
+    'Asia/Seoul': {
+        abbr: 'KST',
+        abbrDST: 'KDT'
+    },
+    'Asia/Shanghai': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Singapore': {
+        abbr: 'SMT'
+    },
+    'Asia/Taipei': {
+        abbr: 'JST',
+        abbrDST: 'CDT'
+    },
+    'Asia/Tbilisi': {
+        abbr: 'TBMT'
+    },
+    'Asia/Tehran': {
+        abbr: 'TMT'
+    },
+    'Asia/Tel_Aviv': {
+        abbr: 'JMT',
+        abbrDST: 'IDT'
+    },
+    'Asia/Tokyo': {
+        abbr: 'JST',
+        abbrDST: 'JDT'
+    },
+    'Asia/Ujung_Pandang': {
+        abbr: 'WITA'
+    },
+    'Asia/Vientiane': {
+        abbr: 'BMT'
+    },
+    'Asia/Yangon': {
+        abbr: 'RMT'
+    },
+    'Asia/Yekaterinburg': {
+        abbr: 'PMT'
+    },
+    'Atlantic/Azores': {
+        abbr: 'WET'
+    },
+    'Atlantic/Bermuda': {
+        abbr: 'AST',
+        abbrDST: 'ADT'
+    },
+    'Atlantic/Canary': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Atlantic/Faeroe': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Atlantic/Faroe': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Atlantic/Jan_Mayen': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Atlantic/Madeira': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Atlantic/Reykjavik': {
+        abbr: 'GMT'
+    },
+    'Atlantic/St_Helena': {
+        abbr: 'GMT'
+    },
+    'Atlantic/Stanley': {
+        abbr: 'SMT'
+    },
+    'Australia/ACT': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Adelaide': {
+        abbr: 'CAST',
+        abbrDST: 'ACDT'
+    },
+    'Australia/Brisbane': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Broken_Hill': {
+        abbr: 'ACST',
+        abbrDST: 'ACDT'
+    },
+    'Australia/Canberra': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Currie': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Darwin': {
+        abbr: 'ACST',
+        abbrDST: 'ACDT'
+    },
+    'Australia/Hobart': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/LHI': {
+        abbr: 'AEST'
+    },
+    'Australia/Lindeman': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Lord_Howe': {
+        abbr: 'AEST'
+    },
+    'Australia/Melbourne': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/NSW': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/North': {
+        abbr: 'ACST',
+        abbrDST: 'ACDT'
+    },
+    'Australia/Perth': {
+        abbr: 'AWST',
+        abbrDST: 'AWDT'
+    },
+    'Australia/Queensland': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/South': {
+        abbr: 'ACST',
+        abbrDST: 'ACDT'
+    },
+    'Australia/Sydney': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Tasmania': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/Victoria': {
+        abbr: 'AEST',
+        abbrDST: 'AEDT'
+    },
+    'Australia/West': {
+        abbr: 'AWST',
+        abbrDST: 'AWDT'
+    },
+    'Australia/Yancowinna': {
+        abbr: 'ACST',
+        abbrDST: 'ACDT'
+    },
+    'Canada/Atlantic': {
+        abbr: 'AST',
+        abbrDST: 'AWT'
+    },
+    'Canada/Central': {
+        abbr: 'CST',
+        abbrDST: 'CWT'
+    },
+    'Canada/Eastern': {
+        abbr: 'EST',
+        abbrDST: 'EWT'
+    },
+    'Canada/Mountain': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'Canada/Newfoundland': {
+        abbr: 'NST',
+        abbrDST: 'NWT'
+    },
+    'Canada/Pacific': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'Canada/Saskatchewan': {
+        abbr: 'MST',
+        abbrDST: 'MWT'
+    },
+    'Canada/Yukon': {
+        abbr: 'YST',
+        abbrDST: 'YWT'
+    },
+    'Chile/Continental': {
+        abbr: 'SMT'
+    },
+    'Chile/EasterIsland': {
+        abbr: 'EMT'
+    },
+    'Etc/GMT': {
+        abbr: 'GMT'
+    },
+    'Etc/Greenwich': {
+        abbr: 'GMT'
+    },
+    'Etc/UCT': {
+        abbr: 'UCT'
+    },
+    'Etc/UTC': {
+        abbr: 'UTC'
+    },
+    'Etc/Universal': {
+        abbr: 'UTC'
+    },
+    'Etc/Zulu': {
+        abbr: 'UTC'
+    },
+    'Europe/Amsterdam': {
+        abbr: 'CET',
+        abbrDST: 'NST'
+    },
+    'Europe/Andorra': {
+        abbr: 'WET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Athens': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Europe/Belfast': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Europe/Belgrade': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Berlin': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Bratislava': {
+        abbr: 'PMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Brussels': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Bucharest': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Europe/Budapest': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Busingen': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Chisinau': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Copenhagen': {
+        abbr: 'CMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Dublin': {
+        abbr: 'IST',
+        abbrDST: 'IST'
+    },
+    'Europe/Gibraltar': {
+        abbr: 'GMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Guernsey': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Europe/Helsinki': {
+        abbr: 'HMT',
+        abbrDST: 'EEST'
+    },
+    'Europe/Isle_of_Man': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Europe/Istanbul': {
+        abbr: 'IMT',
+        abbrDST: 'EEST'
+    },
+    'Europe/Jersey': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Europe/Kaliningrad': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Kiev': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Lisbon': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Ljubljana': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/London': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Europe/Luxembourg': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Madrid': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Malta': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Mariehamn': {
+        abbr: 'HMT',
+        abbrDST: 'EEST'
+    },
+    'Europe/Minsk': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Monaco': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Moscow': {
+        abbr: 'MSK',
+        abbrDST: 'MST'
+    },
+    'Europe/Nicosia': {
+        abbr: 'EET',
+        abbrDST: 'EEST'
+    },
+    'Europe/Oslo': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Paris': {
+        abbr: 'WET',
+        abbrDST: 'WEST'
+    },
+    'Europe/Podgorica': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Prague': {
+        abbr: 'PMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Riga': {
+        abbr: 'RMT',
+        abbrDST: 'MSD'
+    },
+    'Europe/Rome': {
+        abbr: 'RMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/San_Marino': {
+        abbr: 'RMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Sarajevo': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Simferopol': {
+        abbr: 'SMT',
+        abbrDST: 'MSD'
+    },
+    'Europe/Skopje': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Sofia': {
+        abbr: 'IMT',
+        abbrDST: 'EEST'
+    },
+    'Europe/Stockholm': {
+        abbr: 'SET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Tallinn': {
+        abbr: 'TMT',
+        abbrDST: 'MSD'
+    },
+    'Europe/Tirane': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Tiraspol': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Uzhgorod': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Vaduz': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Vatican': {
+        abbr: 'RMT',
+        abbrDST: 'CEST'
+    },
+    'Europe/Vienna': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Vilnius': {
+        abbr: 'WMT',
+        abbrDST: 'MSD'
+    },
+    'Europe/Warsaw': {
+        abbr: 'WMT',
+        abbrDST: 'EEST'
+    },
+    'Europe/Zagreb': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'Europe/Zaporozhye': {
+        abbr: 'MSK',
+        abbrDST: 'MSD'
+    },
+    'Europe/Zurich': {
+        abbr: 'CET',
+        abbrDST: 'CEST'
+    },
+    'GB': {
+        abbr: 'GMT',
+        abbrDST: 'BST'
+    },
+    'Indian/Antananarivo': {
+        abbr: 'EAT'
+    },
+    'Indian/Comoro': {
+        abbr: 'EAT'
+    },
+    'Indian/Maldives': {
+        abbr: 'MMT'
+    },
+    'Indian/Mayotte': {
+        abbr: 'EAT'
+    },
+    'Mexico/BajaNorte': {
+        abbr: 'PST',
+        abbrDST: 'PWT'
+    },
+    'Mexico/BajaSur': {
+        abbr: 'PST',
+        abbrDST: 'MDT'
+    },
+    'Mexico/General': {
+        abbr: 'MST',
+        abbrDST: 'CWT'
+    },
+    'NZ': {
+        abbr: 'NZST',
+        abbrDST: 'NZST'
+    },
+    'PRC': {
+        abbr: 'CST',
+        abbrDST: 'CDT'
+    },
+    'Pacific/Auckland': {
+        abbr: 'NZST',
+        abbrDST: 'NZST'
+    },
+    'Pacific/Bougainville': {
+        abbr: 'PMMT'
+    },
+    'Pacific/Easter': {
+        abbr: 'EMT'
+    },
+    'Pacific/Guam': {
+        abbr: 'GST'
+    },
+    'Pacific/Honolulu': {
+        abbr: 'HST',
+        abbrDST: 'HDT'
+    },
+    'Pacific/Johnston': {
+        abbr: 'HST',
+        abbrDST: 'HDT'
+    },
+    'Pacific/Midway': {
+        abbr: 'SST'
+    },
+    'Pacific/Pago_Pago': {
+        abbr: 'SST'
+    },
+    'Pacific/Port_Moresby': {
+        abbr: 'PMMT'
+    },
+    'Pacific/Saipan': {
+        abbr: 'GST'
+    },
+    'Pacific/Samoa': {
+        abbr: 'SST'
+    },
+    'ROC': {
+        abbr: 'JST',
+        abbrDST: 'CDT'
+    },
+    'ROK': {
+        abbr: 'KST',
+        abbrDST: 'KDT'
+    },
+    'UTC': {
+        abbr: 'UTC'
+    }
 };
 DateTime.lang = {
     ampm: {
@@ -3054,4 +3087,4 @@ DateTime.utcFormatter = new Intl.DateTimeFormat(DateTime.utcLocale, DateTime.utc
 DateInterval.isoRegex = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
 DateInterval.stringRegex = /([\+\-]?\s*\d+)\s*(day|forthnight|fortnight|hour|minute|min|month|second|sec|week|year)s?/;
 
-})(Frost);
+})(frost);

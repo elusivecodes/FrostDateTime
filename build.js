@@ -7,11 +7,11 @@ const srcFolder = 'src';
 const distFolder = 'dist';
 
 const name = 'frost-datetime';
-const wrapper = `(function(Frost) {
+const wrapper = `(function(frost) {
 
 %%CODE%%
 
-})(Frost);`;
+})(frost);`;
 
 loadFiles(srcFolder, '.js').then(jsChain);
 

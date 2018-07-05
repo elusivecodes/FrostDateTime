@@ -74,4 +74,4 @@ class DateInterval {
     }
 }
 
-Frost.DateInterval = DateInterval;
+frost.DateInterval = DateInterval;

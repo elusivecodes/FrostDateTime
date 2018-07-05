@@ -7,7 +7,7 @@ DateInterval.formatData = {
 
     years: {
         token: 'Y',
-        output: interval => Frost.padString(interval.y, 2)
+        output: interval => frost.padString(interval.y, 2)
     },
 
     yearsShort: {
@@ -17,7 +17,7 @@ DateInterval.formatData = {
 
     months: {
         token: 'M',
-        output: interval => Frost.padString(interval.m, 2)
+        output: interval => frost.padString(interval.m, 2)
     },
 
     monthsShort: {
@@ -27,7 +27,7 @@ DateInterval.formatData = {
 
     days: {
         token: 'D',
-        output: interval => Frost.padString(interval.d, 2)
+        output: interval => frost.padString(interval.d, 2)
     },
 
     daysShort: {
@@ -42,7 +42,7 @@ DateInterval.formatData = {
 
     hours: {
         token: 'H',
-        output: interval => Frost.padString(interval.h, 2)
+        output: interval => frost.padString(interval.h, 2)
     },
 
     hoursShort: {
@@ -52,7 +52,7 @@ DateInterval.formatData = {
 
     minutes: {
         token: 'I',
-        output: interval => Frost.padString(interval.i, 2)
+        output: interval => frost.padString(interval.i, 2)
     },
 
     minutesShort: {
@@ -62,7 +62,7 @@ DateInterval.formatData = {
 
     seconds: {
         token: 'S',
-        output: interval => Frost.padString(interval.s, 2)
+        output: interval => frost.padString(interval.s, 2)
     },
 
     secondsShort: {
@@ -72,7 +72,7 @@ DateInterval.formatData = {
 
     microseconds: {
         token: 'F',
-        output: interval => Frost.padString(interval.f, 6)
+        output: interval => frost.padString(interval.f, 6)
     },
 
     microsecondsShort: {

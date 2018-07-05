@@ -145,7 +145,7 @@ Object.assign(DateTime, {
     },
 
     getDayFromName(day, type = 'full') {
-        const index = DateTime.lang.days[type].findIndex(value => Frost.matchesString(value, day, true));
+        const index = DateTime.lang.days[type].findIndex(value => frost.matchesString(value, day, true));
         return index >= 0 ? index : false;
     },
 
@@ -154,7 +154,7 @@ Object.assign(DateTime, {
     },
 
     getMonthFromName(month, type = 'full') {
-        const index = DateTime.lang.months[type].findIndex(value => Frost.matchesString(value, month, true));
+        const index = DateTime.lang.months[type].findIndex(value => frost.matchesString(value, month, true));
         return index >= 0 ? index : false;
     },
 
@@ -195,7 +195,7 @@ Object.assign(DateTime, {
     },
 
     parseDay(day) {
-        return day === null || Frost.isNumeric(day) ? day :
+        return day === null || frost.isNumeric(day) ? day :
             DateTime.getDayFromName(day) ||
             DateTime.getDayFromName(day, 'short') ||
             DateTime.getDayFromName(day, 'min') ||
@@ -203,7 +203,7 @@ Object.assign(DateTime, {
     },
 
     parseMonth(month) {
-        return month === null || Frost.isNumeric(month) ? month :
+        return month === null || frost.isNumeric(month) ? month :
             DateTime.getMonthFromName(month) ||
             DateTime.getMonthFromName(month, 'short') ||
             null;

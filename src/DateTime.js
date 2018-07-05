@@ -4,11 +4,11 @@ class DateTime {
         let timestamp;
         if (date === null) {
             timestamp = Date.now();
-        } else if (Frost.isArray(date)) {
+        } else if (frost.isArray(date)) {
             timestamp = Date.UTC(...date);
-        } else if (Frost.isNumeric(date)) {
+        } else if (frost.isNumeric(date)) {
             timestamp = date;
-        } else if (Frost.isString(date)) {
+        } else if (frost.isString(date)) {
             timestamp = Date.parse(date);
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
@@ -28,7 +28,7 @@ class DateTime {
         this._timezone = timezone || DateTime.defaultTimezone;
         this._offset = DateTime.calculateTimezoneOffset(this._timezone, timestamp);
 
-        if (this._offset && Frost.isArray(date)) {
+        if (this._offset && frost.isArray(date)) {
             timestamp += this._offset * 60000;
         }
 
@@ -135,4 +135,4 @@ class DateTime {
 
 }
 
-Frost.DateTime = DateTime;
+frost.DateTime = DateTime;
