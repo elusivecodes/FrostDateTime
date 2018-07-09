@@ -59,7 +59,7 @@ DateTime.formatData = {
         token: 'm',
         regex: () => '(\\d{2})',
         input: (date, value) => date.month = value - 1,
-        output: date => frost.padString(date.getUTCMonth() + 1, 2)
+        output: date => padString(date.getUTCMonth() + 1, 2)
     },
 
     // month short
@@ -90,8 +90,8 @@ DateTime.formatData = {
     dayOfYear: {
         token: 'z',
         regex: () => '(\\d{1,3})',
-        input: (date, value) => date.dayOfYear = value + 1,
-        output: date => DateTime.dayOfYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - 1
+        input: (date, value) => date.dayOfYear = value,
+        output: date => DateTime.dayOfYear(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     },
 
     // date
@@ -99,7 +99,7 @@ DateTime.formatData = {
         token: 'd',
         regex: () => '(\\d{2})',
         input: (date, value) => date.date = value,
-        output: date => frost.padString(date.getUTCDate(), 2)
+        output: date => padString(date.getUTCDate(), 2)
     },
 
     // date short
@@ -147,19 +147,38 @@ DateTime.formatData = {
 
     /* TIME */
 
+    amppm: {
+        token: 'a',
+        regex: () => '(' + DateTime.lang.ampm.lower.join('|') + ')',
+        input: (date, value) => date.pm = DateTime.lang.ampm.lower.indexOf(value),
+        output: date => date.getUTCHours() < 12 ? DateTime.lang.ampm.lower[0] : DateTime.lang.ampm.lower[1]
+    },
+
+    amppmUpper: {
+        token: 'A',
+        regex: () => '(' + DateTime.lang.ampm.lower.join('|') + ')',
+        input: (date, value) => date.pm = DateTime.lang.ampm.upper.indexOf(value),
+        output: date => date.getUTCHours() < 12 ? DateTime.lang.ampm.upper[0] : DateTime.lang.ampm.upper[1]
+    },
+
+    beat: {
+        token: 'B',
+        output: date => Math.round((date.getUTCHours() + (date.getUTCMinutes() / 60)) / 24 * 1000)
+    },
+
     // hours (24)
     hours24: {
         token: 'H',
         regex: () => '(\\d{2})',
-        input: (date, value) => date.hours = value,
-        output: date => frost.padString(date.getUTCHours(), 2)
+        input: (date, value) => date.hours24 = value,
+        output: date => padString(date.getUTCHours(), 2)
     },
 
     // hours short (24)
     hours24Short: {
         token: 'G',
         regex: () => '(\\d{1,2})',
-        input: (date, value) => date.hours = value,
+        input: (date, value) => date.hours24 = value,
         output: date => date.getUTCHours()
     },
 
@@ -167,15 +186,15 @@ DateTime.formatData = {
     hours12: {
         token: 'h',
         regex: () => '(\\d{2})',
-        input: (date, value) => date.hours = value % 12,
-        output: date => frost.padString(date.getUTCHours() % 12 || 12, 2)
+        input: (date, value) => date.hours12 = value % 12,
+        output: date => padString(date.getUTCHours() % 12 || 12, 2)
     },
 
     // hours short (12)
     hours12Short: {
         token: 'g',
         regex: () => '(\\d{1,2})',
-        input: (date, value) => date.hours = value % 12,
+        input: (date, value) => date.hours12 = value % 12,
         output: date => date.getUTCHours() % 12 || 12
     },
 
@@ -184,7 +203,7 @@ DateTime.formatData = {
         token: 'i',
         regex: () => '(\\d{2})',
         input: (date, value) => date.minutes = value,
-        output: date => frost.padString(date.getUTCMinutes(), 2)
+        output: date => padString(date.getUTCMinutes(), 2)
     },
 
     // seconds
@@ -192,7 +211,7 @@ DateTime.formatData = {
         token: 's',
         regex: () => '(\\d{2})',
         input: (date, value) => date.seconds = value,
-        output: date => frost.padString(date.getUTCSeconds(), 2)
+        output: date => padString(date.getUTCSeconds(), 2)
     },
 
     // microseconds
@@ -236,8 +255,8 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
-            frost.padString(datetime._offset % 60, 2)
+            padString(Math.abs(Math.floor(datetime._offset / 60)), 2) +
+            padString(datetime._offset % 60, 2)
     },
 
     // offset colon
@@ -251,9 +270,9 @@ DateTime.formatData = {
         )
         * (value[0] === '-' ? 1 : -1),
         output: (date, datetime) => (datetime._offset > 0 ? '-' : '+') +
-            frost.padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
+            padString(Math.abs(Math.floor(datetime._offset / 60)), 2) + 
             ':' + 
-            frost.padString(datetime._offset % 60, 2)
+            padString(datetime._offset % 60, 2)
     },
 
     // timezone abbreviated

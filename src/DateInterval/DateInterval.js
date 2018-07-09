@@ -73,5 +73,3 @@ class DateInterval {
         return interval;
     }
 }
-
-frost.DateInterval = DateInterval;

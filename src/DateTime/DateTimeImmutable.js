@@ -16,8 +16,8 @@ class DateTimeImmutable extends DateTime {
     }
 
     setTimezoneOffset(offset) {
-        return new DateTimeImmutable(this._date.getTime(), this._timezone, offset);
+        const timestamp = this._date.getTime();
+        const timezone = DateTime.timezoneFromOffset(timestamp, offset);
+        return new DateTimeImmutable(timestamp, timezone || this._timezone);
     }
 }
-
-frost.DateTimeImmutable = DateTimeImmutable;

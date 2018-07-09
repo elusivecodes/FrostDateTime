@@ -1,57 +1,53 @@
 const path = require('path');
+const fs = require('fs');
 const filepath = require('filepath');
-const concat = require('concat');
 const UglifyJS = require('uglify-es');
 
 const srcFolder = 'src';
 const distFolder = 'dist';
 
 const name = 'frost-datetime';
-const wrapper = `(function(frost) {
 
-%%CODE%%
+// load files and wrapper
+let wrapper;
+let code = [];
 
-})(frost);`;
-
-loadFiles(srcFolder, '.js').then(jsChain);
-
-function jsChain(files) {
-    if ( ! files.length) {
+filepath.create(srcFolder).recurse(fullPath => {
+    if ( ! fullPath.isFile()) {
         return;
     }
 
-    concat(files)
-    .then(code => {
-        code = wrapper.replace('%%CODE%%', code);
-        const destination = path.join(distFolder, name + '.js');
-        filepath.create(destination).write(code);
-        return code;
-    })
-    .then(UglifyJS.minify)
-    .then(result => {
-        if (result.error) {
-            console.error(result.error);
+    if (path.extname(fullPath.path) === '.js') {
+        const fileName = path.basename(fullPath.path, '.js');
+        const data = fs.readFileSync(fullPath.path, 'utf8');
+
+        if (fileName === 'wrapper') {
+            wrapper = data;
         } else {
-            const destination = path.join(distFolder, name + '.min.js');
-            filepath.create(destination).write(result.code);
+            code.push(data);
         }
-    })
-    .catch(console.error);
-}
+    }
+});
 
-function loadFiles(folder, ext) {
-    return new Promise (resolve => {
-        const results = [];
+// concatenate code
+code = code.join('\r\n\r\n');
 
-        filepath.create(folder).recurse(path => {
-            if ( ! path.isFile()) {
-                return;
-            }
+// indent code
+code = code.replace(/^(?!\s*$)/mg, ' '.repeat(4));
 
-            if (path.extname(path.path) === ext) {
-                results.push(path.path);
-            }
-        });
-        resolve(results);
-    });
+// inject code to wrapper
+code = wrapper.replace('// {{code}}', code);
+
+// write file
+const destination = path.join(distFolder, name + '.js');
+filepath.create(destination).write(code);
+
+// minify
+const minified = UglifyJS.minify(code);
+
+if (minified.error) {
+    console.error(minified.error);
+} else {
+    const destination = path.join(distFolder, name + '.min.js');
+    filepath.create(destination).write(minified.code);
 }

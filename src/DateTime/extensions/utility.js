@@ -6,6 +6,10 @@ Object.assign(DateTime.prototype, {
         return this;
     },
 
+    add(interval) {
+        return this.modify(interval);
+    },
+
     dateSuffix() {
         return DateTime.dateSuffix(this.getDate());
     },
@@ -75,7 +79,7 @@ Object.assign(DateTime.prototype, {
     },
 
     modify(interval, invert = false) {
-        if (frost.isString(interval)) {
+        if (interval === '' + interval) {
             interval = DateInterval.fromString(interval);
         }
 
@@ -124,6 +128,10 @@ Object.assign(DateTime.prototype, {
 
     standardOffset() {
         return DateTime.standardOffset(this.getFullYear(), this._timezone);
+    },
+
+    sub(interval) {
+        return this.modify(interval, true);
     }
 
 });

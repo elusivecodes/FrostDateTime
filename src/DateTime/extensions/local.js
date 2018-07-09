@@ -1,5 +1,11 @@
 Object.assign(DateTime.prototype, {
 
+    getBeat() {
+        const tempDate = new Date(this.getLocalTime());
+        const hours = tempDate.getUTCHours() + (tempDate.getUTCMinutes() / 60);
+        return Math.round(hours / 24 * 1000);
+    },
+
     // Returns the date of the month in local timezone
     getDate() {
         return new Date(this.getLocalTime()).getUTCDate();
@@ -86,6 +92,14 @@ Object.assign(DateTime.prototype, {
         return new Date(this.getLocalTime()).getUTCSeconds();
     },
 
+    setBeat(beat) {
+        const tempDate = new Date(this.getLocalTime());
+        tempDate.setUTCHours(0);
+        tempDate.setUTCMinutes(0);
+        tempDate.setUTCSeconds(beat * 86.4);
+        return this.setLocalTime(tempDate.getTime());
+    },
+
     // Sets the date of the month in local timezone
     setDate() {
         const tempDate = new Date(this.getLocalTime());
@@ -96,12 +110,6 @@ Object.assign(DateTime.prototype, {
     // Sets the day of the week in local timezone
     // (0 - Sunday, 6 - Saturday)
     setDay(day) {
-        day = DateTime.parseDay(day);
-
-        if (day === null) {
-            return this;
-        }
-
         const tempDate = new Date(this.getLocalTime());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDate.getUTCDay() + day);
         return this.setLocalTime(tempDate.getTime());
@@ -118,8 +126,6 @@ Object.assign(DateTime.prototype, {
     // Sets the full year in local timezone
     setFullYear(year, month = null, date = null) {
         const tempDate = new Date(this.getLocalTime());
-
-        month = DateTime.parseMonth(month);
 
         if (month === null) {
             month = tempDate.getUTCMonth();
@@ -148,12 +154,6 @@ Object.assign(DateTime.prototype, {
     // Sets the ISO day of the week in local timezone
     // (1 - Monday, 7 - Sunday)
     setIsoDay(day) {
-        day = DateTime.parseDay(day);
-
-        if (day === null) {
-            return this;
-        }
-
         const tempDate = new Date(this.getLocalTime());
         const tempDay = DateTime.getIsoDay(tempDate.getUTCDay());
         tempDate.setUTCDate(tempDate.getUTCDate() - tempDay + day);
@@ -163,8 +163,6 @@ Object.assign(DateTime.prototype, {
     // Sets the ISO week of the year in local timezone
     setIsoWeek(week, day = null) {
         const tempDate = new Date(this.getLocalTime());
-
-        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -186,8 +184,6 @@ Object.assign(DateTime.prototype, {
         if (week === null) {
             week = DateTime.getIsoWeek(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate());
         }
-
-        day = DateTime.parseDay(day);
 
         if (day === null) {
             day = DateTime.getIsoDay(tempDate.getUTCDay());
@@ -220,12 +216,6 @@ Object.assign(DateTime.prototype, {
     // Sets the month in local timezone
     // (0, 11)
     setMonth(month, date = null) {
-        month = DateTime.parseMonth(month);
-
-        if (month === null) {
-            return this;
-        }
-
         const tempDate = new Date(this.getLocalTime());
  
         if (date === null) {

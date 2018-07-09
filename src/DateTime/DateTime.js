@@ -1,14 +1,14 @@
 class DateTime {
-    constructor(date = null, timezone = null, offset = null) {
+    constructor(date = null, timezone = null) {
 
         let timestamp;
         if (date === null) {
             timestamp = Date.now();
-        } else if (frost.isArray(date)) {
+        } else if (Array.isArray(date)) {
             timestamp = Date.UTC(...date);
-        } else if (frost.isNumeric(date)) {
+        } else if (isNumeric(date)) {
             timestamp = date;
-        } else if (frost.isString(date)) {
+        } else if (data === '' + date) {
             timestamp = Date.parse(date);
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
@@ -17,18 +17,14 @@ class DateTime {
             return false;
         }
 
-        if ( ! timezone) {
-            if (offset !== null) {
-                timezone = DateTime.timezoneFromOffset(timestamp + offset * 60000, offset);
-            } else if (date instanceof DateTime) {
-                timezone = date.getTimezone();
-            }
+        if ( ! timezone && date instanceof DateTime) {
+            timezone = date.getTimezone();
         }
 
-        this._timezone = timezone || DateTime.defaultTimezone;
+        this._timezone = DateTime.timezones[timezone] ? timezone : DateTime.defaultTimezone;
         this._offset = DateTime.calculateTimezoneOffset(this._timezone, timestamp);
 
-        if (this._offset && frost.isArray(date)) {
+        if (this._offset && Array.isArray(date)) {
             timestamp += this._offset * 60000;
         }
 
@@ -86,7 +82,7 @@ class DateTime {
     }
 
     setTimezoneOffset(offset) {
-        const timezone = DateTime.timezoneFromOffset(this.getTime(), offset);
+        const timezone = DateTime.timezoneFromOffset(this._date.getTime(), offset);
         if (timezone) {
             this.setTimezone(timezone);
         }
@@ -134,5 +130,3 @@ class DateTime {
     }
 
 }
-
-frost.DateTime = DateTime;

@@ -37,7 +37,7 @@ Object.assign(DateTime, {
             date += this.daysInMonth(year, i);
         }
 
-        return date;
+        return date - 1;
     },
 
     daysInMonth(year, month) {
@@ -111,37 +111,96 @@ Object.assign(DateTime, {
         return this.fromObject(dateData);
     },
 
-    fromObject(dateData) {
+    fromObject(dateObject) {
 
-        let dateinit;
-        if (dateData.timestamp) {
-            dateinit = dateData.timestamp * 1000;
+        let dateData;
+        if (dateObject.timestamp) {
+            dateData = dateObject.timestamp * 1000;
         } else {
             const now = new Date();
-            const year = dateData.year || now.getFullYear();
 
-            let month;
-            let date;
-            if (dateData.dayOfYear && ( ! dateData.month || ! dateData.date)) {
-                month = 0;
-                date = dateData.dayOfyear;
+            let year = null;
+            let month = null;
+            let date = null;
+            let hours = null;
+            let minutes = null;
+            let seconds = null;
+            let millis = null;
+
+            if (dateObject.hasOwnProperty('year')) {
+                year = parseInt(dateObject.year);
             } else {
-                month = dateData.month - 1 || now.getMonth();
-                date = dateData.date || now.getDate();
+                year = now.getFullYear();
             }
 
-            dateinit = [
+            if (dateObject.hasOwnProperty('dayOfYear') && ( ! dateObject.hasOwnProperty('month') || ! dateObject.hasOwnProperty('date'))) {
+                month = 0;
+                date = parseInt(dateObject.dayOfyear) + 1;
+            } else {
+                if (dateObject.hasOwnProperty('month')) {
+                    month = parseInt(dateObject.month);
+                } else {
+                    month = now.getMonth();
+                }
+
+                if (dateObject.hasOwnProperty('date')) {
+                    date = parseInt(dateObject.date);
+                } else {
+                    date = now.getDate();
+                }
+            }
+
+            if (dateObject.hasOwnProperty('hours24')) {
+                hours = parseInt(dateObject.hours24);
+            } else if (dateObject.hasOwnProperty('hours12')) {
+                hours = parseInt(dateObject.hours12);
+                if (dateObject.pm === 1) {
+                    hours += 12;
+                }
+            } else {
+                hours = now.getHours();
+            }
+
+            if (dateObject.hasOwnProperty('minutes')) {
+                minutes = parseInt(dateObject.minutes);
+            } else {
+                minutes = now.getMinutes();
+            }
+
+            if (dateObject.hasOwnProperty('seconds')) {
+                seconds = parseInt(dateObject.seconds);
+            } else {
+                seconds = now.getSeconds();
+            }
+
+            if (dateObject.hasOwnProperty('milliseconds')) {
+                millis = parseInt(dateObject.milliseconds);
+            } else {
+                millis = now.getMilliseconds();
+            }
+
+            dateData = [
                 year,
                 month,
                 date,
-                dateData.hours || now.getHours(),
-                dateData.minutes || now.getMinutes(),
-                dateData.seconds || now.getSeconds(),
-                dateData.milliseconds || now.getMilliseconds()
+                hours,
+                minutes,
+                seconds,
+                millis
             ];
         }
 
-        return new this(dateinit, dateData.timezone || null, dateData.offset || null);
+        let timezone = null;
+        if (dateObject.hasOwnProperty('timezone')) {
+            timezone = dateObject.timezone;
+        } else if (dateObject.hasOwnProperty('offset')) {
+            const timestamp = Array.isArray(dateData) ?
+                Date.UTC(...dateData) :
+                dateData;
+            timezone = this.timezoneFromOffset(timestamp, dateObject.offset);
+        }
+
+        return new this(dateData, timezone);
     },
 
     getDayFromName(day, type = 'full') {
@@ -158,8 +217,8 @@ Object.assign(DateTime, {
         return index >= 0 ? index : false;
     },
 
-    getMonthName(day, type = 'full') {
-        return DateTime.lang.months[type][day];
+    getMonthName(month, type = 'full') {
+        return DateTime.lang.months[type][month];
     },
 
     getIsoDay(day) {
@@ -195,16 +254,14 @@ Object.assign(DateTime, {
     },
 
     parseDay(day) {
-        return day === null || frost.isNumeric(day) ? day :
-            DateTime.getDayFromName(day) ||
+        return DateTime.getDayFromName(day) ||
             DateTime.getDayFromName(day, 'short') ||
             DateTime.getDayFromName(day, 'min') ||
             null;
     },
 
     parseMonth(month) {
-        return month === null || frost.isNumeric(month) ? month :
-            DateTime.getMonthFromName(month) ||
+        return DateTime.getMonthFromName(month) ||
             DateTime.getMonthFromName(month, 'short') ||
             null;
     },
@@ -224,6 +281,6 @@ Object.assign(DateTime, {
 
     timezoneFromOffset(timestamp, offset) {
         return Object.keys(this.timezones)
-            .find(timezone => this.calculateTimezoneOffset(timezone, timestamp) === offset);
+            .find(timezone => this.calculateTimezoneOffset(timezone, timestamp) === offset) || null;
     }
 });
