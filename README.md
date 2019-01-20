@@ -11,7 +11,6 @@ It features full support for PHP DateTime formats, as well as timezones.
 - [Date Attributes](#date-attributes)
 - [ISO Attributes](#iso-attributes)
 - [Time Attributes](#time-attributes)
-- [UTC Attributes](#utc-attributes)
 - [Timezones](#timezones)
 - [Timestamps](#timestamps)
 - [Utility Methods](#utility-methods)
@@ -43,10 +42,13 @@ const date = new DateTimeImmutable(date, timezone);
 
 If you wish to parse a date string and you know the exact format, you can use the `fromFormat` static method.
 
-This method functions very differently from the native JS Date parser, and is fully compatible with the PHP [DateTime::createFromFormat();](http://php.net/manual/en/datetime.createfromformat.php) method.
+This method is fully compatible with the PHP [DateTime::createFromFormat();](http://php.net/manual/en/datetime.createfromformat.php) method.
+
+- `dateString` is a string representing the date you are parsing.
+- `formatString` is a string containing the format you wish to use for parsing.
 
 ```javascript
-const date = DateTime.fromFormat(dateString, format);
+const date = DateTime.fromFormat(dateString, formatString);
 ```
 
 
@@ -58,6 +60,8 @@ Once you have created a DateTime object, you can format it using a specific synt
 
 This method is fully compatible with the PHP [date();](http://php.net/manual/en/function.date.php) function.
 
+- `formatString` is a string containing the format you wish to output using.
+
 ```javascript
 const dateString = date.format(format);
 ```
@@ -67,23 +71,27 @@ const dateString = date.format(format);
 
 #### Year
 
-To get the year of a DateTime object according to the current timezone, use the `getFullYear()` method.
+To get the year of a DateTime object according to the current timezone, use the `getYear()` method.
 
 ```javascript
-const year = date.getFullYear();
+const year = date.getYear();
 ```
 
-You can also set the year according to the current timezone with the `setFullYear()` method.
+You can also set the year according to the current timezone with the `setYear()` method.
 
-The `month` and `date` parameters are optional, and will default to the current values.
+- `year` is an integer representing the year you wish to set the DateTime to.
+- `month` is an integer representing the month you wish to set the DateTime to, and will default to the current value.
+- `date` is an integer representing the date you wish to set the DateTime to, and will default to the current value.
+
+If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
 
 ```javascript
-date.setFullYear(year, month, date);
+date.setYear(year, month, date);
 ```
 
 #### Month
 
-To get the month of a DateTime object according to the current timezone, use the `getFullMonth()` method.
+To get the month of a DateTime object according to the current timezone, use the `getMonth()` method.
 
 The `month` returned will be between 0 (January) and 11 (December).
 
@@ -93,7 +101,10 @@ const month = date.getMonth();
 
 You can also set the month according to the current timezone with the `setMonth()` method.
 
-The `date` parameters is optional, and will default to the current value.
+- `month` is an integer representing the month you wish to set the DateTime to.
+- `date` is an integer representing the date you wish to set the DateTime to, and will default to the current value.
+
+If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
 
 ```javascript
 date.setMonth(month, date);
@@ -108,6 +119,8 @@ const date = date.getDate();
 ```
 
 You can also set the date according to the current timezone with the `setDate()` method.
+
+- `date` is an integer representing the date you wish to set the DateTime to.
 
 ```javascript
 date.setDate(date);
@@ -395,45 +408,6 @@ The `standardOffset()` method returns the standard offset (non-daylight savings)
 
 ```javascript
 date.standardOffset();
-```
-
-
-## UTC Attributes
-
-```javascript
-const utcYear = date.getUTCFullYear();
-const utcMonth = date.getUTCMonth();
-const utcDate = date.getUTCDate();
-const utcDay = date.getUTCDay();
-const utcDayOfYear = date.getUTCDayOfYear();
-const utcQuarter = date.getUTCQuarter();
-
-const utcIsoYear = date.getUTCIsoYear();
-const utcIsoWeek = date.getUTCIsoWeek();
-const utcIsoDay = date.getUTCIsoDay();
-
-const utcHours = date.getUTCHours();
-const utcMinutes = date.getUTCMinutes();
-const utcSeconds = date.getUTCSeconds();
-const utcMillis = date.getUTCMilliseconds();
-```
-
-```javascript
-date.setUTCFullYear(utcYear, utcMonth, utcDate);
-date.setUTCMonth(utcMonth, utcDate);
-date.setUTCDate(utcDate);
-date.setUTCDay(utcDay);
-date.setUTCDayOfYear(utcDayOfYear);
-date.setUTCQuarter(utcQuarter);
-
-date.setUTCIsoYear(utcIsoYear, utcIsoWeek, utcIsoDay);
-date.setUTCIsoWeek(utcIsoWeek, utcIsoDay);
-date.setUTCIsoDay(utcIsoDay);
-
-date.setUTCHours(utcHours, utcMinutes, utcSeconds, utcMillis);
-date.setUTCMinutes(utcMinutes, utcSeconds, utcMillis);
-date.setUTCSeconds(utcSeconds, utcMillis);
-date.setUTCMilliseconds(utcMillis);
 ```
 
 

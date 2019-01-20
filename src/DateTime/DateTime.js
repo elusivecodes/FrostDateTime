@@ -1,5 +1,14 @@
-class DateTime {
-    constructor(date = null, timezone = null) {
+class DateTime
+{
+
+    /**
+     * New DateTime constructor
+     * @param {null|int|string|array|Date|DateTime} [date] The date to use for the new DateTime
+     * @param {?string} [timezone] The timezone to use for the new DateTime
+     * @returns {DateTime} The new DateTime object
+     */
+    constructor(date = null, timezone = null)
+    {
 
         let timestamp;
         if (date === null) {
@@ -8,125 +17,48 @@ class DateTime {
             timestamp = Date.UTC(...date);
         } else if (isNumeric(date)) {
             timestamp = date;
-        } else if (data === '' + date) {
+        } else if (date === '' + date) {
             timestamp = Date.parse(date);
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
         } else {
-            console.error('Invalid date supplied');
-            return false;
+            throw new Error('Invalid date supplied');
         }
 
-        if ( ! timezone && date instanceof DateTime) {
-            timezone = date.getTimezone();
+        if (!timezone) {
+            if (date instanceof DateTime) {
+                timezone = date.getTimezone();
+            } else {
+                timezone = DateTime.defaultTimezone;
+            }
+        } else if (!DateTime.timezones[timezone]) {
+            throw new Error('Invalid timezone supplied');
         }
 
-        this._timezone = DateTime.timezones[timezone] ? timezone : DateTime.defaultTimezone;
-        this._offset = DateTime.calculateTimezoneOffset(this._timezone, timestamp);
+        this.utcDate = new Date(timestamp);
+        this.timezone = timezone;
 
-        if (this._offset && Array.isArray(date)) {
-            timestamp += this._offset * 60000;
-        }
-
-        this._date = new Date(timestamp);
+        this._makeFormatter();
         this._checkOffset();
-    }
 
-    getLocalTime() {
-        return this._date.getTime() - (this._offset * 60000);
-    }
-
-    getLocalTimestamp() {
-        return (this._date.getTime() - (this._offset * 60000)) / 1000;
-    }
-
-    getTime() {
-        return this._date.getTime();
-    }
-
-    getTimestamp() {
-        return this._date.getTime() / 1000;
-    }
-
-    getTimezone() {
-        return this._timezone;
-    }
-
-    getTimezoneOffset() {
-        return this._offset;
-    }
-
-    setLocalTime(time) {
-        this._date.setTime(time + (this._offset * 60000));
-        return this._checkOffset();
-    }
-
-    setLocalTimestamp(timestamp) {
-        this._date.setTime((timestamp + (this._offset * 60000)) * 1000);
-        return this._checkOffset();
-    }
-
-    setTime(time) {
-        this._date.setTime(time);
-        return this._checkOffset();
-    }
-
-    setTimestamp(timestamp) {
-        this._date.setTime(timestamp * 1000);
-        return this._checkOffset();
-    }
-
-    setTimezone(timezone) {
-        this._timezone = timezone;
-        return this._checkOffset();
-    }
-
-    setTimezoneOffset(offset) {
-        const timezone = DateTime.timezoneFromOffset(this._date.getTime(), offset);
-        if (timezone) {
-            this.setTimezone(timezone);
+        if (this.offset && Array.isArray(date)) {
+            this.utcDate.setTime(this.getTime() + this.offset * 60000);
         }
-        return this;
+
+        this._checkOffset();
+        this._getTransition();
     }
 
-    toDateString() {
-        return this.format(DateTime.formats.string)
-    }
-
-    toLocaleDateString() {
-        return this._date.toLocaleDateString();
-    }
-
-    toLocaleString() {
-        return this._date.toLocaleString();
-    }
-
-    toLocaleTimeString() {
-        return this._date.toLocaleTimeString();
-    }
-
-    toISOString() {
-        return this.format(DateTime.formats.rfc3339_extended)
-    }
-
-    toString() {
-        return this.format(DateTime.formats.string);
-    }
-
-    toTimeString() {
-        return this.format(DateTime.formats.time);
-    }
-
-    toUTCString() {
-        return this._date.toUTCString();
-    }
-
-    valueOf() {
+    valueOf()
+    {
         return this.getTime();
     }
 
-    [Symbol.toPrimitive](hint) {
-        return this._date[Symbol.toPrimitive](hint);
+    [Symbol.toPrimitive](hint)
+    {
+        return hint === 'number' ?
+            this.valueOf() :
+            this.toString();
     }
 
 }

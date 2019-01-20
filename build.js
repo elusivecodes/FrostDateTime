@@ -1,7 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const filepath = require('filepath');
-const UglifyJS = require('uglify-es');
+const uglify = require('uglify-es');
+const babel = require('@babel/core');
 
 const srcFolder = 'src';
 const distFolder = 'dist';
@@ -10,10 +11,11 @@ const name = 'frost-datetime';
 
 // load files and wrapper
 let wrapper;
-let code = [];
+const files = [];
 
-filepath.create(srcFolder).recurse(fullPath => {
-    if ( ! fullPath.isFile()) {
+filepath.create(srcFolder).recurse(fullPath =>
+{
+    if (!fullPath.isFile()) {
         return;
     }
 
@@ -24,30 +26,56 @@ filepath.create(srcFolder).recurse(fullPath => {
         if (fileName === 'wrapper') {
             wrapper = data;
         } else {
-            code.push(data);
+            files.push(data);
         }
     }
 });
 
-// concatenate code
-code = code.join('\r\n\r\n');
-
-// indent code
-code = code.replace(/^(?!\s*$)/mg, ' '.repeat(4));
-
 // inject code to wrapper
-code = wrapper.replace('// {{code}}', code);
+const code = wrapper.replace(
+    '    // {{code}}',
+    files.join('\r\n\r\n')
+        .replace(
+            /^(?!\s*$)/mg,
+            ' '.repeat(4)
+        )
+);
 
 // write file
-const destination = path.join(distFolder, name + '.js');
-filepath.create(destination).write(code);
+fs.writeFileSync(
+    path.join(distFolder, name + '.js'),
+    code
+);
 
 // minify
-const minified = UglifyJS.minify(code);
+const minified = uglify.minify(code);
 
 if (minified.error) {
     console.error(minified.error);
 } else {
-    const destination = path.join(distFolder, name + '.min.js');
-    filepath.create(destination).write(minified.code);
+    fs.writeFileSync(
+        path.join(distFolder, name + '.min.js'),
+        minified.code
+    );
+}
+
+// es5 transpile
+const es5 = babel.transformSync(code, { presets: ['@babel/env'] });
+
+// write file
+fs.writeFileSync(
+    path.join(distFolder, name + '-es5.js'),
+    es5.code
+);
+
+// minify
+const minifiedes5 = uglify.minify(es5.code);
+
+if (minifiedes5.error) {
+    console.error(minifiedes5.error);
+} else {
+    fs.writeFileSync(
+        path.join(distFolder, name + '-es5.min.js'),
+        minifiedes5.code
+    );
 }

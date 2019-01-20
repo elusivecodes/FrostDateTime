@@ -1,92 +1,57 @@
 DateInterval.formatData = {
 
-    percent: {
-        token: '%',
-        output: () => '%'
-    },
+    /* YEAR */
 
-    years: {
-        token: 'Y',
-        output: interval => frost.padString(interval.y, 2)
-    },
+    Y: interval => DateInterval._formatNumber(interval.y, 2),
 
-    yearsShort: {
-        token: 'y',
-        output: interval => interval.y
-    },
+    y: interval => DateInterval._formatNumber(interval.y),
 
-    months: {
-        token: 'M',
-        output: interval => frost.padString(interval.m, 2)
-    },
+    /* MONTH */
 
-    monthsShort: {
-        token: 'm',
-        output: interval => interval.m
-    },
+    M: interval => DateInterval._formatNumber(interval.m, 2),
 
-    days: {
-        token: 'D',
-        output: interval => frost.padString(interval.d, 2)
-    },
+    m: interval => DateInterval._formatNumber(interval.m),
 
-    daysShort: {
-        token: 'D',
-        output: interval => interval.d
-    },
+    /* DAYS */
 
-    daysTotal: {
-        token: 'a',
-        output: interval => interval.days
-    },
+    D: interval => DateInterval._formatNumber(interval.d, 2),
 
-    hours: {
-        token: 'H',
-        output: interval => frost.padString(interval.h, 2)
-    },
+    d: interval => DateInterval._formatNumber(interval.d),
 
-    hoursShort: {
-        token: 'h',
-        output: interval => interval.h
-    },
+    a: interval => DateInterval._formatNumber(interval.days),
 
-    minutes: {
-        token: 'I',
-        output: interval => frost.padString(interval.i, 2)
-    },
+    /* HOURS */
 
-    minutesShort: {
-        token: 'i',
-        output: interval => interval.i
-    },
+    H: interval => DateInterval._formatNumber(interval.h, 2),
 
-    seconds: {
-        token: 'S',
-        output: interval => frost.padString(interval.s, 2)
-    },
+    h: interval => DateInterval._formatNumber(interval.h),
 
-    secondsShort: {
-        token: 's',
-        output: interval => interval.s
-    },
+    /* MINUTES */
 
-    microseconds: {
-        token: 'F',
-        output: interval => frost.padString(interval.f, 6)
-    },
+    I: interval => DateInterval._formatNumber(interval.i, 2),
 
-    microsecondsShort: {
-        token: 'f',
-        output: interval => interval.f
-    },
+    i: interval => DateInterval._formatNumber(interval.i),
 
-    sign: {
-        token: 'R',
-        output: interval => interval.invert ? '-' : '+'
-    },
+    /* SECONDS */
 
-    signShort: {
-        token: 'r',
-        output: interval => interval.invert ? '-' : ''
-    }
+    S: interval => DateInterval._formatNumber(interval.s, 2),
+
+    s: interval => DateInterval._formatNumber(interval.s),
+
+    /* MICROSECONDS */
+
+    F: interval => DateInterval._formatNumber(interval.f, 6),
+
+    f: interval => DateInterval._formatNumber(interval.f),
+
+    /* SIGN */
+
+    R: interval => interval.invert ?
+        '-' :
+        '+',
+
+    r: interval => interval.invert ?
+        '-' :
+        ''
+
 };

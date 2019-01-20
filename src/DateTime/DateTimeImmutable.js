@@ -1,23 +1,24 @@
-class DateTimeImmutable extends DateTime {
-    constructor() {
-        super(...arguments);
+class DateTimeImmutable extends DateTime
+{
+
+    /**
+     * Set the number of milliseconds since the UNIX epoch
+     * @param {int} time The number of milliseconds since the UNIX epoch to set
+     * @returns {DateTimeImmutable}
+     */
+    setTime(time)
+    {
+        return new DateTimeImmutable(time, this.timezone);
     }
 
-    setLocalTime(time) {
-        return new DateTimeImmutable(time + (this._offset * 60000), this._timezone);
+    /**
+     * Set the current timezone
+     * @param {string} timezone The name of the timezone to set
+     * @returns {DateTimeImmutable}
+     */
+    setTimezone(timezone)
+    {
+        return new DateTimeImmutable(this, timezone);
     }
 
-    setTime(time) {
-        return new DateTimeImmutable(time, this._timezone);
-    }
-
-    setTimezone(timezone) {
-        return new DateTimeImmutable(this._date.getTime(), timezone);
-    }
-
-    setTimezoneOffset(offset) {
-        const timestamp = this._date.getTime();
-        const timezone = DateTime.timezoneFromOffset(timestamp, offset);
-        return new DateTimeImmutable(timestamp, timezone || this._timezone);
-    }
 }

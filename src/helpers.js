@@ -1,11 +1,10 @@
-function padString(string, length, padding = 0) {
-    string = '' + string;
 
-    return string.length >= length ?
-        string :
-        new Array(length - string.length + 1).join(padding) + string;
-}
-
-function isNumeric(value) {
-    return ! isNaN(parseFloat(value)) && isFinite(value);
+/**
+ * Returns true if the value is numeric
+ * @param {*} value The value to test
+ * @returns {bool} Where the value is numeric
+ */
+function isNumeric(value)
+{
+    return !isNaN(parseFloat(value)) && isFinite(value);
 }

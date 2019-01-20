@@ -8,7 +8,7 @@
 
 })(window, function() {
 
-// {{code}}
+    // {{code}}
 
     return {
         DateTime,
