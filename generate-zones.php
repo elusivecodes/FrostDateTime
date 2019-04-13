@@ -130,3 +130,4 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
 // Output zones and values
 echo 'const zones = '.json_encode($zones, JSON_UNESCAPED_SLASHES).';';
 echo 'const values = '.json_encode($values, JSON_UNESCAPED_SLASHES).';';
+echo "\r\n";

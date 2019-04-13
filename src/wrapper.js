@@ -1,3 +1,7 @@
+/**
+ * FrostDateTime v1.0
+ * https://github.com/elusivecodes/FrostDateTime
+ */
 (function(global, factory) {
 
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -6,14 +10,14 @@
         Object.assign(global, factory());
     }
 
-})(window, function() {
+})(this, function() {
+    'use strict';
 
     // {{code}}
-
     return {
+        DateInterval,
         DateTime,
-        DateTimeImmutable,
-        DateInterval
+        DateTimeImmutable
     };
 
 });

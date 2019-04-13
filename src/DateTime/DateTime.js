@@ -1,24 +1,31 @@
-class DateTime
-{
+/**
+ * DateTime class
+ * @class
+ */
+class DateTime {
 
     /**
-     * New DateTime constructor
-     * @param {null|int|string|array|Date|DateTime} [date] The date to use for the new DateTime
-     * @param {?string} [timezone] The timezone to use for the new DateTime
-     * @returns {DateTime} The new DateTime object
+     * New DateTime constructor.
+     * @param {number|number[]|string|Date|DateTime} [date] The date to parse.
+     * @param {string} [timezone] The timezone.
+     * @returns {DateTime} A new DateTime object.
      */
-    constructor(date = null, timezone = null)
-    {
+    constructor(date = null, timezone = null) {
 
-        let timestamp;
+        let timestamp,
+            adjustOffset = false;
+
         if (date === null) {
             timestamp = Date.now();
         } else if (Array.isArray(date)) {
             timestamp = Date.UTC(...date);
-        } else if (isNumeric(date)) {
+            adjustOffset = true;
+        } else if (!isNaN(parseFloat(date)) && isFinite(date)) {
             timestamp = date;
-        } else if (date === '' + date) {
+        } else if (date === `${date}`) {
             timestamp = Date.parse(date);
+            timestamp -= new Date().getTimezoneOffset() * 60000;
+            adjustOffset = true;
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
         } else {
@@ -31,31 +38,37 @@ class DateTime
             } else {
                 timezone = DateTime.defaultTimezone;
             }
-        } else if (!DateTime.timezones[timezone]) {
+        } else if (!DateTime._timezones[timezone]) {
             throw new Error('Invalid timezone supplied');
         }
 
-        this.utcDate = new Date(timestamp);
-        this.timezone = timezone;
+        this._utcDate = new Date(timestamp);
+        this._timezone = timezone;
 
         this._makeFormatter();
         this._checkOffset();
 
-        if (this.offset && Array.isArray(date)) {
-            this.utcDate.setTime(this.getTime() + this.offset * 60000);
+        if (this._offset && adjustOffset) {
+            this._utcDate.setTime(this.getTime() + this._offset * 60000);
+            this._checkOffset();
         }
 
-        this._checkOffset();
         this._getTransition();
     }
 
-    valueOf()
-    {
+    /**
+     * Get the number of milliseconds since the UNIX epoch.
+     * @returns {number} The number of milliseconds since the UNIX epoch.
+     */
+    valueOf() {
         return this.getTime();
     }
 
-    [Symbol.toPrimitive](hint)
-    {
+    /**
+     * Return a primitive value of the DateTime.
+     * @returns {string|number}
+     */
+    [Symbol.toPrimitive](hint) {
         return hint === 'number' ?
             this.valueOf() :
             this.toString();

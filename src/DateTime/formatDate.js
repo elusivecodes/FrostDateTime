@@ -20,8 +20,7 @@ DateTime.formatData = {
         value: 'year',
         regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
         input: value => (value < 70 ? 2000 : 1900) + DateTime._parseNumber(value),
-        output: datetime =>
-        {
+        output: datetime => {
             const year = datetime.getFullYear().toString();
             return DateTime._formatNumber(year.substring(year.length - 2));
         }
@@ -105,7 +104,7 @@ DateTime.formatData = {
 
     // ordinal suffix
     S: {
-        regex: () => '(' + DateTime.lang.ordinal.join('|') + ')',
+        regex: () => '(st|[nr]d|th)',
         output: datetime => datetime.dateSuffix()
     },
 
@@ -140,21 +139,21 @@ DateTime.formatData = {
     // day period
     a: {
         value: 'pm',
-        regex: () => '(' + DateTime.lang.ampm.lower.join('|') + ')',
-        input: value => DateTime.lang.ampm.lower.findIndex(period => period === value),
+        regex: () => '(' + DateTime.lang.dayPeriods.lower.join('|') + ')',
+        input: value => DateTime.lang.dayPeriods.lower.findIndex(period => period === value),
         output: datetime => datetime.getHours() < 12 ?
-            DateTime.lang.ampm.lower[0] :
-            DateTime.lang.ampm.lower[1]
+            DateTime.lang.dayPeriods.lower[0] :
+            DateTime.lang.dayPeriods.lower[1]
     },
 
     // day period upper
     A: {
         value: 'pm',
-        regex: () => '(' + DateTime.lang.ampm.upper.join('|') + ')',
-        input: value => DateTime.lang.ampm.upper.findIndex(period => period === value),
+        regex: () => '(' + DateTime.lang.dayPeriods.upper.join('|') + ')',
+        input: value => DateTime.lang.dayPeriods.upper.findIndex(period => period === value),
         output: datetime => datetime.getHours() < 12 ?
-            DateTime.lang.ampm.upper[0] :
-            DateTime.lang.ampm.upper[1]
+            DateTime.lang.dayPeriods.upper[0] :
+            DateTime.lang.dayPeriods.upper[1]
     },
 
     // swatch time
@@ -230,7 +229,7 @@ DateTime.formatData = {
         value: 'timezone',
         regex: '([\\w\\/]+)',
         input: value => value,
-        output: datetime => datetime.timezone
+        output: datetime => datetime._timezone
     },
 
     // daylight savings
@@ -249,9 +248,9 @@ DateTime.formatData = {
                 + DateTime._parseNumber(value.slice(3, 5))
             )
             * (value[0] === '-' ? 1 : -1),
-        output: datetime => (datetime.offset > 0 ? '-' : '+') +
-            DateTime._formatNumber(Math.abs(Math.floor(datetime.offset / 60)), 2) +
-            DateTime._formatNumber((datetime.offset % 60), 2)
+        output: datetime => (datetime._offset > 0 ? '-' : '+') +
+            DateTime._formatNumber(Math.abs((datetime._offset / 60) | 0), 2) +
+            DateTime._formatNumber((datetime._offset % 60), 2)
     },
 
     // offset colon
@@ -265,14 +264,15 @@ DateTime.formatData = {
                 + DateTime._parseNumber(value.slice(4, 6))
             )
             * (value[0] === '-' ? 1 : -1),
-        output: datetime => (datetime.offset > 0 ? '-' : '+') +
-            DateTime._formatNumber(Math.abs(Math.floor(datetime.offset / 60)), 2) +
+        output: datetime => (datetime._offset > 0 ? '-' : '+') +
+            DateTime._formatNumber(Math.abs((datetime._offset / 60) | 0), 2) +
             ':' +
-            DateTime._formatNumber((datetime.offset % 60), 2)
+            DateTime._formatNumber((datetime._offset % 60), 2)
     },
 
     // timezone abbreviated
     T: {
+        value: 'timezoneAbbr',
         regex: '([A-Z]{1,5})',
         input: value => value,
         output: datetime => datetime.getTimezoneAbbr()
@@ -283,7 +283,7 @@ DateTime.formatData = {
         value: 'offset',
         regex: () => '([' + DateTime.lang.numberRegex + ']{1,5})',
         input: value => DateTime._parseNumber(value) / 60,
-        output: datetime => DateTime._formatNumber(datetime.offset * -60)
+        output: datetime => DateTime._formatNumber(datetime._offset * -60)
     },
 
     /* FULL */
@@ -315,7 +315,7 @@ DateTime.formatData = {
 
     // seperator
     '#': {
-        regex: () => '([' + DateTime.seperators.map(seperator => '\\' + seperator).join('') + '])'
+        regex: () => '([' + DateTime._seperators.map(seperator => '\\' + seperator).join('') + '])'
     },
 
     // wildcard
@@ -325,7 +325,7 @@ DateTime.formatData = {
 
     // wildcards
     '*': {
-        regex: () => '([^' + DateTime.seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegex + ']*)'
+        regex: () => '([^' + DateTime._seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegex + ']*)'
     },
 
     // reset

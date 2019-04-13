@@ -1,29 +1,42 @@
-// lang
-DateInterval.lang = {
-    intervals: {
-        day: '%d day',
-        days: '%d days',
-        hour: '%h hour',
-        hours: '%h hours',
-        minute: '%i minute',
-        minutes: '%i minutes',
-        month: '%m month',
-        months: '%m months',
-        second: '%s second',
-        seconds: '%s seconds',
-        year: '%y year',
-        years: '%y years'
-    },
-    relative: {
-        ago: '{interval} ago',
-        in: 'In {interval}',
-        now: 'Now'
-    },
-    seperator: ', '
-};
+Object.assign(DateInterval, {
 
-// ISO Regex
-DateInterval.isoRegex = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
+    // Language
+    lang: {
+        intervals: {
+            day: '%d day',
+            days: '%d days',
+            hour: '%h hour',
+            hours: '%h hours',
+            minute: '%i minute',
+            minutes: '%i minutes',
+            month: '%m month',
+            months: '%m months',
+            second: '%s second',
+            seconds: '%s seconds',
+            year: '%y year',
+            years: '%y years'
+        },
+        relative: {
+            ago: '%n ago',
+            in: 'In %n',
+            now: 'Now'
+        },
+        seperator: ', '
+    },
 
-// string Regex
-DateInterval.stringRegex = /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/;
+    langs: {
+        y: ['year', 'years'],
+        m: ['month', 'months'],
+        d: ['day', 'days'],
+        h: ['hour', 'hours'],
+        i: ['minute', 'minutes'],
+        s: ['second', 'seconds']
+    },
+
+    // ISO RegEx
+    isoRegex: /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/,
+
+    // String RegEx
+    stringRegex: /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/
+
+});

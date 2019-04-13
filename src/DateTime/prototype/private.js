@@ -1,62 +1,56 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Update the timezone offset for current timestamp
+     * Update the timezone offset for current timestamp.
      */
-    _checkOffset()
-    {
-        this.offset = this.timezone === 'UTC' ?
+    _checkOffset() {
+        this._offset = this._timezone === 'UTC' ?
             0 :
             (
-                new Date(DateTime.utcFormatter.format(this))
-                - new Date(this.formatter.format(this))
+                new Date(DateTime._utcFormatter.format(this))
+                - new Date(this._formatter.format(this))
             )
             / 60000;
     },
 
     /**
-     * Get the number of milliseconds since the UNIX epoch (offset to timezone)
-     * @returns {int} The number of milliseconds since the UNIX epoch (offset to timezone)
+     * Get the number of milliseconds since the UNIX epoch (offset to timezone).
+     * @returns {number} The number of milliseconds since the UNIX epoch (offset to timezone).
      */
-    _getOffsetTime()
-    {
-        return this.getTime() - (this.offset * 60000);
+    _getOffsetTime() {
+        return this.getTime() - (this._offset * 60000);
     },
 
     /**
-     * Update the timezone transition for current timestamp
+     * Update the timezone transition for current timestamp.
      */
-    _getTransition()
-    {
+    _getTransition() {
         const timestamp = this.getTimestamp();
 
-        this.transition = DateTime.timezones[this.timezone]
+        this._transition = DateTime._timezones[this._timezone]
             .find(transition =>
                 transition.start <= timestamp && transition.end >= timestamp
             );
     },
 
     /**
-     * Update the formatter for current timezone
+     * Update the formatter for current timezone.
      */
-    _makeFormatter()
-    {
-        this.formatter = new Intl.DateTimeFormat(DateTime.formatterLocale, {
-            ...DateTime.formatterOptions,
-            timeZone: this.timezone
+    _makeFormatter() {
+        this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, {
+            ...DateTime._formatterOptions,
+            timeZone: this._timezone
         });
     },
 
     /**
-     * Modify the DateTime by an interval
-     * @param {string|DateInterval} interval The interval to modify by
-     * @param {bool} [invert=false] Whether to invert the interval
-     * @return {DateTime}
+     * Modify the DateTime by an interval.
+     * @param {string|DateInterval} interval The DateInterval to modify using, or a date interval string.
+     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @return {DateTime} The DateTime object.
      */
-    // modify the current date by an interval
-    _modify(interval, invert = false)
-    {
-        if (interval === '' + interval) {
+    _modify(interval, invert = false) {
+        if (interval === `${interval}`) {
             interval = DateInterval.fromString(interval);
         }
 
@@ -104,13 +98,12 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the number of milliseconds since the UNIX epoch (offset to timezone)
-     * @param {int} time The number of milliseconds since the UNIX epoch to set (offset to timezone)
-     * @returns {DateTime}
+     * Set the number of milliseconds since the UNIX epoch (offset to timezone).
+     * @param {number} time The number of milliseconds since the UNIX epoch (offset to timezone).
+     * @returns {DateTime} The DateTime object.
      */
-    _setOffsetTime(time)
-    {
-        return this.setTime(time + (this.offset * 60000));
+    _setOffsetTime(time) {
+        return this.setTime(time + (this._offset * 60000));
     }
 
 });

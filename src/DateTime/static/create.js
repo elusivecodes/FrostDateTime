@@ -1,39 +1,39 @@
 Object.assign(DateTime, {
 
     /**
-     * Create a new DateTime from a date string and format string
-     * @param {string} dateString The date string
-     * @param {string} formatString The string the date is formatted in
-     * @returns {DateTime} The new DateTime object
+     * Create a new DateTime from a date string and format string.
+     * @param {string} dateString The date string to parse.
+     * @param {string} formatString The PHP date format string.
+     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @returns {DateTime} A new DateTime object.
      */
-    fromFormat(dateString, formatString)
-    {
+    fromFormat(dateString, formatString, timezone) {
         const data = {};
 
-        formatString.split('').forEach(token =>
-        {
-            if (this.seperators.includes(token)) {
+        for (const char of [...formatString]) {
+            if (this._seperators.includes(char)) {
                 dateString = dateString.substring(1);
                 return;
             }
 
-            if (!this.formatData[token] || !this.formatData[token].regex) {
-                throw new Error(`Invalid token in DateTime format: ${token}`);
+            if (!this.formatData[char] || !this.formatData[char].regex) {
+                throw new Error(`Invalid char in DateTime format: ${char}`);
             }
 
-            const regex = this.formatData[token].regex;
-            const regexp = typeof regex === 'function' ?
-                regex(token) :
-                regex;
-            const dateMatch = dateString.match(new RegExp('^' + regexp));
+            const regex = this.formatData[char].regex,
+                regexp = (typeof regex === 'function' ?
+                    regex(char) :
+                    regex
+                ),
+                dateMatch = dateString.match(new RegExp('^' + regexp));
 
             if (!dateMatch) {
-                throw new Error(`Unmatched token in DateTime string: ${token}`);
+                throw new Error(`Unmatched char in DateTime string: ${char}`);
             }
 
             dateString = dateString.substring(dateMatch[1].length);
 
-            if (['!', '|'].includes(token)) {
+            if (['!', '|'].includes(char)) {
                 const epoch = {
                     year: 1970,
                     month: 0,
@@ -47,7 +47,7 @@ Object.assign(DateTime, {
 
                 Object.assign(
                     data,
-                    token === '!' ?
+                    char === '!' ?
                         epoch :
                         {
                             ...epoch,
@@ -55,31 +55,47 @@ Object.assign(DateTime, {
                         }
                 );
             } else {
-                if (!this.formatData[token].input) {
-                    return;
+                if (!this.formatData[char].input) {
+                    continue;
                 }
 
-                const value = this.formatData[token].value;
-                data[value] = this.formatData[token].input(dateMatch[1]);
+                const value = this.formatData[char].value;
+                data[value] = this.formatData[char].input(dateMatch[1]);
             }
-        });
+        }
 
-        return this.fromObject(data);
+        return this.fromObject(data, timezone);
     },
 
     /**
-     * Create a new DateTime from an object containing date properties
-     * @param {object} dateObject The object containing date properties
-     * @returns {DateTime} The new DateTime object
+     * Create a new DateTime from an object containing date properties.
+     * @param {object} dateObject An object with date properties.
+     * @param {number} [dateObject.year] The year.
+     * @param {number} [dateObject.month] The month.
+     * @param {number} [dateObject.date] The date.
+     * @param {number} [dateObject.dayOfYear] The day of the year.
+     * @param {number} [dateObject.day] The day of the week.
+     * @param {number} [dateObject.hours] The hours.
+     * @param {number} [dateObject.minutes] The minutes.
+     * @param {number} [dateObject.seconds] The seconds.
+     * @param {number} [dateObject.milliseconds] The milliseconds.
+     * @param {Boolean} [dateObject.pm] Whether the hours are in PM.
+     * @param {number} [dateObject.timestamp] The number of seconds since the UNIX epoch.
+     * @param {string} [dateObject.timezone] The timezone.
+     * @param {string} [dateObject.timezoneAbbr] The timezone abbreviation.
+     * @param {number} [dateObject.offset] The timezone offset.
+     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @returns {DateTime} A new DateTime object.
      */
-    fromObject(dateObject)
-    {
-        let date;
-        if (dateObject.timestamp) {
-            date = dateObject.timestamp * 1000;
-        } else {
-            const now = new Date;
+    fromObject(dateObject, timezone) {
 
+        let currentDate,
+            currentDay,
+            currentTimezone;
+
+        if (dateObject.timestamp) {
+            currentDate = dateObject.timestamp * 1000;
+        } else {
             if (dateObject.hasOwnProperty('dayOfYear') &&
                 !(dateObject.hasOwnProperty('month') || dateObject.hasOwnProperty('date'))) {
                 dateObject.month = 0;
@@ -90,18 +106,23 @@ Object.assign(DateTime, {
                 dateObject.hours = (dateObject.hours % 12) + (dateObject.pm ? 12 : 0);
             }
 
-            const newDate = {
-                year: now.getFullYear(),
-                month: now.getMonth(),
-                date: now.getDate(),
-                hours: now.getHours(),
-                minutes: now.getMinues(),
-                seconds: now.getSeconds(),
-                milliseconds: now.getMilliseconds(),
-                ...DateObject
-            };
+            if (dateObject.hasOwnProperty('day') && !dateObject.hasOwnProperty('date')) {
+                currentDay = dateObject.day;
+            }
 
-            date = [
+            const now = new Date,
+                newDate = {
+                    year: now.getFullYear(),
+                    month: now.getMonth(),
+                    date: now.getDate(),
+                    hours: now.getHours(),
+                    minutes: now.getMinutes(),
+                    seconds: now.getSeconds(),
+                    milliseconds: now.getMilliseconds(),
+                    ...dateObject
+                };
+
+            currentDate = [
                 newDate.year,
                 newDate.month,
                 newDate.date,
@@ -112,12 +133,11 @@ Object.assign(DateTime, {
             ];
         }
 
-        let timezone = null;
         if (dateObject.hasOwnProperty('timezone')) {
-            timezone = dateObject.timezone;
+            currentTimezone = dateObject.timezone;
         } else if (dateObject.hasOwnProperty('offset') || dateObject.hasOwnProperty('timezoneAbbr')) {
-            timezone = this.timezoneFromAbbrOffset(
-                date,
+            currentTimezone = this.timezoneFromAbbrOffset(
+                currentDate,
                 dateObject.hasOwnProperty('timezoneAbbr') ?
                     dateObject.timezoneAbbr :
                     null,
@@ -127,7 +147,17 @@ Object.assign(DateTime, {
             );
         }
 
-        return new this(date, timezone);
+        let date = new this(currentDate, currentTimezone || timezone);
+
+        if (currentDay) {
+            date = date.setDay(currentDay);
+        }
+
+        if (timezone && currentTimezone) {
+            date = date.setTimezone(timezone);
+        }
+
+        return date;
     }
 
 });

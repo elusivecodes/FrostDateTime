@@ -1,73 +1,65 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Add a DateInterval to the DateTime
-     * @param {string|DateInterval} [interval] The interval to add
-     * @returns {DateTime}
+     * Add a DateInterval to the DateTime.
+     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
+     * @returns {DateTime} The DateTime object.
      */
-    add(interval)
-    {
+    add(interval) {
         return this._modify(interval);
     },
 
     /**
-     * Get the ordinal suffix for the date of the month
-     * @returns {string} The ordinal suffix
+     * Get the ordinal suffix for the date of the month.
+     * @returns {string} The ordinal suffix for the date of the month.
      */
-    dateSuffix()
-    {
+    dateSuffix() {
         return DateTime.lang.ordinal(this.getDate());
     },
 
     /**
-     * Get the number of days in the month
-     * @returns {int} The number of days in the month
+     * Get the number of days in the current month.
+     * @returns {number} The number of days in the current month.
      */
-    daysInMonth()
-    {
+    daysInMonth() {
         return DateTime.daysInMonth(this.getYear(), this.getMonth());
     },
 
     /**
-     * Get the number of days in the year
-     * @returns {int} The number of days in the year
+     * Get the number of days in the current year.
+     * @returns {number} The number of days in the current year.
      */
-    daysInYear()
-    {
+    daysInYear() {
         return DateTime.daysInYear(this.getYear());
     },
 
     /**
-     * Get the difference between two Dates
-     * @param {null|int|string|array|Date|DateTime} [other] The other Date to use for comparison
-     * @param {bool} [absolute=false] Whether the interval should always be positive
-     * @returns {DateInterval}
+     * Get the difference between two Dates.
+     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
+     * @returns {DateInterval} A new DateInterval object.
      */
-    diff(other, absolute = false)
-    {
-        const tempDate = new DateTime(other, this.timezone);
+    diff(other, absolute = false) {
+        const tempDate = new DateTime(other, this._timezone),
+            interval = new DateInterval;
 
-        const interval = new DateInterval;
-
-        if (this == tempDate) {
+        if (this.getTime() === tempDate.getTime()) {
             return inverval;
         }
 
-        const lessThan = this < tempDate;
-
-        const thisMonth = this.getMonth();
-        const thisDate = this.getDate();
-        const thisHour = this.getHours();
-        const thisMinute = this.getMinutes();
-        const thisSecond = this.getSeconds();
-        const thisMillisecond = this.getMilliseconds() * 1000;
-
-        const otherMonth = tempDate.getMonth();
-        const otherDate = tempDate.getDate();
-        const otherHour = tempDate.getHours();
-        const otherMinute = tempDate.getMinutes();
-        const otherSecond = tempDate.getSeconds();
-        const otherMillisecond = tempDate.getMilliseconds() * 1000;
+        const lessThan = this < tempDate,
+            thisMonth = this.getMonth(),
+            thisDate = this.getDate(),
+            thisHour = this.getHours(),
+            thisMinute = this.getMinutes(),
+            thisSecond = this.getSeconds(),
+            thisMillisecond = this.getMilliseconds() * 1000,
+            otherMonth = tempDate.getMonth(),
+            otherDate = tempDate.getDate(),
+            otherHour = tempDate.getHours(),
+            otherMinute = tempDate.getMinutes(),
+            otherSecond = tempDate.getSeconds(),
+            otherMillisecond = tempDate.getMilliseconds() * 1000;
 
         interval.y = Math.abs(this.getYear() - tempDate.getYear());
         interval.m = Math.abs(thisMonth - otherMonth);
@@ -76,7 +68,7 @@ Object.assign(DateTime.prototype, {
         interval.i = Math.abs(thisMinute - otherMinute);
         interval.s = Math.abs(thisSecond - otherSecond);
         interval.f = Math.abs(thisMillisecond - otherMillisecond);
-        interval.days = Math.floor(Math.abs((this - tempDate) / 86400000));
+        interval.days = (Math.abs((this - tempDate) / 86400000)) | 0;
         interval.invert = !absolute && lessThan;
 
         if (interval.y && interval.m &&
@@ -90,7 +82,10 @@ Object.assign(DateTime.prototype, {
             ((!lessThan && thisDate < otherDate) ||
                 (lessThan && thisDate > otherDate))) {
             interval.m--;
-            interval.d = (lessThan ? this.daysInMonth() : tempDate.daysInMonth()) - interval.d;
+            interval.d = (lessThan ?
+                this.daysInMonth() :
+                tempDate.daysInMonth()
+            ) - interval.d;
         }
 
         if (interval.d && interval.h &&
@@ -125,61 +120,56 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Returns true if the DateTime is in daylight savings
-     * @returns {bool} Whether the DateTime is in daylight savings
+     * Return true if the DateTime is in daylight savings.
+     * @returns {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
      */
-    isDST()
-    {
-        if (!this.transition.dst) {
+    isDST() {
+        if (!this._transition.dst) {
             return false;
         }
 
-        const year = this.getYear();
+        const year = this.getYear(),
+            dateA = new DateTime([year, 0, 1], this._timezone),
+            dateB = new DateTime([year, 5, 1], this._timezone);
 
-        const dateA = new DateTime([year, 0, 1], this.timezone);
-        const dateB = new DateTime([year, 5, 1], this.timezone);
-
-        if (dateA.getTimestamp() < this.transition.start) {
+        if (dateA.getTimestamp() < this._transition.start) {
             dateA.setYear(year + 1);
         }
 
-        if (dateB.getTimestamp() > this.transition.end) {
+        if (dateB.getTimestamp() > this._transition.end) {
             dateB.setYear(year - 1);
         }
 
-        if (dateA.getTimestamp() > this.transition.end || dateB.getTimestamp() < this.transition.start) {
-            dateA.setTimestamp(this.transition.start);
-            dateB.setTimestamp(this.transition.end);
+        if (dateA.getTimestamp() > this._transition.end || dateB.getTimestamp() < this._transition.start) {
+            dateA.setTimestamp(this._transition.start);
+            dateB.setTimestamp(this._transition.end);
         }
 
-        return this.offset < Math.max(dateA.offset, dateB.offset);
+        return this._offset < Math.max(dateA._offset, dateB._offset);
     },
 
     /**
-     * Returns true if the year is a leap year
-     * @returns {bool} Whether the year is a leap year
+     * Return true if the year is a leap year.
+     * @returns {Boolean} TRUE if the current year is a leap year, otherwise FALSE.
      */
-    isLeapYear()
-    {
+    isLeapYear() {
         return DateTime.isLeapYear(this.getYear());
     },
 
     /**
-     * Subtract an DateInterval to the DateTime
-     * @param {string|DateInterval} [interval] The interval to subtract
-     * @returns {DateTime}
+     * Subtract an DateInterval to the DateTime.
+     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @returns {DateTime} The DateTime object.
      */
-    sub(interval)
-    {
+    sub(interval) {
         return this._modify(interval, true);
     },
 
     /**
-     * Get the number of weeks in the ISO year
-     * @returns {int} The number of weeks in the ISO year
+     * Get the number of weeks in the current ISO year.
+     * @returns {number} The number of weeks in the current ISO year.
      */
-    weeksInISOYear()
-    {
+    weeksInISOYear() {
         return DateTime.weeksInISOYear(this.getISOYear());
     }
 

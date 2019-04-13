@@ -5,13 +5,14 @@
     "main": "build.js",
     "scripts": {
         "start": "node build.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node test.js",
+        "zones": "php generate-zones.php > src/DateTime/timezones.js"
     },
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "@babel/core": "^7.1.6",
-        "@babel/preset-env": "^7.1.6",
+        "@babel/core": "^7.3.4",
+        "@babel/preset-env": "^7.3.4",
         "filepath": "^1.1.0",
         "uglify-es": "^3.3.9"
     },

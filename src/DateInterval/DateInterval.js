@@ -1,13 +1,15 @@
-class DateInterval
-{
+/**
+ * DateInterval class
+ * @class
+ */
+class DateInterval {
 
     /**
-     * New DateInterval constructor
-     * @param {string} [interval] The ISO interval to use for the new interval
-     * @returns {DateInterval} The new DateInterval object
+     * New DateInterval constructor.
+     * @param {string} [interval] The ISO duration string.
+     * @returns {DateInterval} A new DateInterval object.
      */
-    constructor(interval = '')
-    {
+    constructor(interval = '') {
         this.y = 0;
         this.m = 0;
         this.d = 0;
@@ -33,94 +35,79 @@ class DateInterval
     }
 
     /**
-     * Format the current interval with a PHP DateInterval format string
-     * @param {string} formatString The string to use for formatting
-     * @returns {string} The formatted string of the current DateInterval
+     * Format the current interval with a PHP DateInterval format string.
+     * @param {string} formatString The format string to use.
+     * @returns {string} The formatted date interval.
      */
-    format(formatString)
-    {
-        let output = '';
-        let prefixed = false;
+    format(formatString) {
+        let output = '',
+            prefixed = false;
 
-        formatString.split('').forEach(char =>
-        {
+        for (const char of [...formatString]) {
             if (!prefixed && char === '%') {
                 prefixed = true;
-                return;
+                continue;
             }
 
             if (!prefixed || !DateInterval.formatData[char]) {
                 output += char;
                 prefixed = false;
-                return;
+                continue;
             }
 
             output += DateInterval.formatData[char](this);
-        });
+        }
 
         return output;
     }
 
     /**
-     * Format the current interval to a relative time string
-     * @param {int} [maxValues=1] The maximum number of values to include in the output
-     * @returns {string} The formatted string of the current DateInterval
+     * Format the current interval to a relative time string.
+     * @param {number} [maxValues=1] The maximum number of values to return.
+     * @returns {string} The formatted relative time string.
      */
-    toString(maxValues = 1)
-    {
-        const formats = [];
+    toString(maxValues = 1) {
+        const formats = [],
+            keys = ['y', 'm', 'd', 'h', 'i', 's'];
 
-        if (maxValues > 0 && this.y) {
-            formats.push(Math.abs(this.y) === 1 ? 'year' : 'years');
+        while (maxValues > 0 && keys.length) {
+            const key = keys.shift();
+
+            if (!this[key]) {
+                continue;
+            }
+
+            formats.push(
+                DateInterval.langs[key][Math.abs(this[key] === 1 ?
+                    0 :
+                    1
+                )]
+            );
             maxValues--;
         }
 
-        if (maxValues > 0 && this.m) {
-            formats.push(Math.abs(this.m) === 1 ? 'month' : 'months');
-            maxValues--;
-        }
-
-        if (maxValues > 0 && this.d) {
-            formats.push(Math.abs(this.d) === 1 ? 'day' : 'days');
-            maxValues--;
-        }
-
-        if (maxValues > 0 && this.h) {
-            formats.push(Math.abs(this.h) === 1 ? 'hour' : 'hours');
-            maxValues--;
-        }
-
-        if (maxValues > 0 && this.i) {
-            formats.push(Math.abs(this.i) === 1 ? 'minute' : 'minutes');
-            maxValues--;
-        }
-
-        if (maxValues > 0 && this.s) {
-            formats.push(Math.abs(this.s) === 1 ? 'second' : 'seconds');
-            maxValues--;
-        }
-
-        return formats.length > 0 ?
-            DateInterval.lang.relative[this.invert ? 'ago' : 'in']
-                .replace(
-                    '{interval}',
-                    this.format(
-                        formats.map(f => DateInterval.lang.intervals[f])
-                            .join(DateInterval.lang.seperator)
-                    )
-                ) :
+        return formats.length ?
+            DateInterval.lang.relative[this.invert ?
+                'ago' :
+                'in'
+            ].replace(
+                '%n',
+                this.format(
+                    formats.map(f => DateInterval.lang.intervals[f])
+                        .join(DateInterval.lang.seperator)
+                )
+            ) :
             DateInterval.lang.relative.now;
     }
 
     /**
-     * Create a new DateInterval from the relative parts of the string
-     * @param {string} time The date with relative parts
-     * @returns {DateInterval} The new DateInterval object
+     * Create a new DateInterval from the relative parts of the string.
+     * @param {string} time The date with relative parts.
+     * @returns {DateInterval} A new DateInterval object.
      */
-    static fromString(time)
-    {
-        const interval = new this;
-        const regex = new RegExp(DateInterval.stringRegex, 'gi');
+    static fromString(time) {
+        const interval = new this,
+            regex = new RegExp(DateInterval.stringRegex, 'gi');
 
         let match;
         while (match = regex.exec(time)) {
@@ -157,13 +144,12 @@ class DateInterval
     }
 
     /**
-     * Format a number to string (optionally zero-padded)
-     * @param {int} value The number to format
-     * @param {int} [padding] The number of digits to pad the number to
-     * @returns {string} The formatted number
+     * Format a number to string (optionally zero-padded).
+     * @param {number} value The number to format.
+     * @param {number} [padding] The number of digits to zero-pad to.
+     * @returns {string} The formatted number string.
      */
-    static _formatNumber(number, padding = 0)
-    {
+    static _formatNumber(number, padding = 0) {
         return `${number}`.padStart(padding, 0);
     }
 
