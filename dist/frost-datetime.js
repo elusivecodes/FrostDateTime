@@ -39,13 +39,33 @@
             const match = interval.match(DateInterval.isoRegex);
 
             if (match) {
-                this.y += match[1];
-                this.m += match[2];
-                this.d += match[3];
-                this.d += match[4] * 7;
-                this.h += match[5];
-                this.i += match[6];
-                this.s += match[7];
+                if (match[1]) {
+                    this.y += parseInt(match[1]);
+                }
+
+                if (match[2]) {
+                    this.m += parseInt(match[2]);
+                }
+
+                if (match[3]) {
+                    this.d += parseInt(match[3]);
+                }
+
+                if (match[4]) {
+                    this.d += parseInt(match[4]) * 7;
+                }
+
+                if (match[5]) {
+                    this.h += parseInt(match[5]);
+                }
+
+                if (match[6]) {
+                    this.i += parseInt(match[6]);
+                }
+
+                if (match[7]) {
+                    this.s += parseInt(match[7]);
+                }
             }
         }
 
