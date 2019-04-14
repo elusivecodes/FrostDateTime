@@ -187,6 +187,14 @@ The `month` returned will be between *0* (January) and *11* (December).
 const month = date.getMonth();
 ```
 
+Get the name of the month in current timezone.
+
+- `type` can be either "*full*" or "*short*", and will default to "*full*" if it is not set.
+
+```javascript
+const monthName = date.getMonthName(type);
+```
+
 Set the month in current timezone.
 
 - `month` is a number representing the month (between *0* and *11*).
@@ -224,6 +232,14 @@ The `day` returned will be between *0* (Sunday) and *6* (Saturday).
 
 ```javascript
 const day = date.getDay();
+```
+
+Get the name of the day of the week in current timezone.
+
+- `type` can be either "*full*", "*short*" or "*min*", and will default to "*full*" if it is not set.
+
+```javascript
+const dayName = date.getDayName(type);
 ```
 
 Set the day of the week in current timezone.
@@ -496,7 +512,7 @@ date.setTimestamp(timestamp);
 
 #### Add
 
-Add a duration to the DateTime.
+Add a duration to the date.
 
 - `duration` can be either a *DateInterval* object or a relative date string.
 
@@ -506,7 +522,7 @@ date.add(duration);
 
 #### Subtract
 
-Subtract an duration from the DateTime.
+Subtract a duration from the date.
 
 - `duration` can be either a *DateInterval* object or a relative date string.
 

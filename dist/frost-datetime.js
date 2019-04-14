@@ -1255,7 +1255,7 @@
     Object.assign(DateTime.prototype, {
 
         /**
-         * Add a duration to the DateTime.
+         * Add a duration to the date.
          * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
          * @returns {DateTime} The DateTime object.
          */
@@ -1388,7 +1388,7 @@
         },
 
         /**
-         * Subtract an duration from the DateTime.
+         * Subtract a duration from the date.
          * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
          * @returns {DateTime} The DateTime object.
          */
