@@ -1,3 +1,8 @@
+/**
+ * DateTime Properties
+ */
+
+// get resolved options
 const resolvedOptions = Intl.DateTimeFormat().resolvedOptions();
 
 Object.assign(DateTime, {
@@ -100,7 +105,7 @@ DateTime.prototype.getFullYear = DateTime.prototype.getYear;
 DateTime.prototype.setFullYear = DateTime.prototype.setYear;
 
 /**
- * Populate timezones
+ * Populate Timezones
  */
 
 for (const timezone of Object.keys(zones)) {

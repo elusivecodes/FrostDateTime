@@ -1,3 +1,7 @@
+/**
+ * DateTime Attributes (Get)
+ */
+
 Object.assign(DateTime.prototype, {
 
     /**

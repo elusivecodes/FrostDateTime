@@ -1,3 +1,7 @@
+/**
+ * DateInterval Format Data
+ */
+
 DateInterval.formatData = {
 
     /* YEAR */

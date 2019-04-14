@@ -1,3 +1,7 @@
+/**
+ * DateTime (Static) Utility
+ */
+
 Object.assign(DateTime, {
 
     /**

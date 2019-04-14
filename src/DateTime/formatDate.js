@@ -1,3 +1,7 @@
+/**
+ * DateTime Format Data
+ */
+
 DateTime.formatData = {
 
     /* YEAR */

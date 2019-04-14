@@ -1,3 +1,7 @@
+/**
+ * DateTime Utility
+ */
+
 Object.assign(DateTime.prototype, {
 
     /**

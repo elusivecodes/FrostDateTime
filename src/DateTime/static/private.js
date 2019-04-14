@@ -1,3 +1,7 @@
+/**
+ * DateTime (Static) Internal
+ */
+
 Object.assign(DateTime, {
 
     /**

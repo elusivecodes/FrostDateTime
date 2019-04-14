@@ -1,3 +1,7 @@
+/**
+ * DateTime Internal
+ */
+
 Object.assign(DateTime.prototype, {
 
     /**

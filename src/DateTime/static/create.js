@@ -1,3 +1,7 @@
+/**
+ * DateTime (Static) Creation
+ */
+
 Object.assign(DateTime, {
 
     /**

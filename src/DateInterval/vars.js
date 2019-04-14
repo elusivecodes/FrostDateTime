@@ -1,3 +1,7 @@
+/**
+ * DateInterval Properties
+ */
+
 Object.assign(DateInterval, {
 
     // Language
