@@ -14,6 +14,7 @@ It features full support for PHP DateTime formats, as well as timezones.
 - [Timezones](#timezones)
 - [Timestamps](#timestamps)
 - [Utility Methods](#utility-methods)
+- [Static Methods](#static-methods)
 - [Date Intervals](#date-intervals)
 
 
@@ -115,7 +116,7 @@ Format the current date using *Date*'s native *toLocaleString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
 
-If a timezone is not specified in options, the timezone of the DateTime will be used.
+If a timezone is not specified in options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeString = date.toLocaleString(locale, options);
@@ -130,7 +131,7 @@ Format the current date using *Date*'s native *toLocaleDateString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
 
-If a timezone is not specified in options, the timezone of the DateTime will be used.
+If a timezone is not specified in options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeDateString = date.toLocaleDateString(locale, options);
@@ -145,7 +146,7 @@ Format the current date using *Date*'s native *toLocaleTimeString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
 
-If a timezone is not specified in options, the timezone of the DateTime will be used.
+If a timezone is not specified in options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeTimeString = date.toLocaleTimeString(locale, options);
@@ -209,7 +210,7 @@ const date = date.getDate();
 
 Set the date in current timezone.
 
-- `date` is a number representing the date you wish to set the DateTime to.
+- `date` is a number representing the date.
 
 ```javascript
 date.setDate(date);
@@ -513,61 +514,115 @@ Subtract an duration from the DateTime.
 date.sub(duration);
 ```
 
-#### Start Of
+#### Start Of Year
 
-You can set the date to the start of a specific period using the following methods.
-
-The date will be set to the first millisecond of the given period according to the current timezone.
+Set the date to the first millisecond of the year in current timezone.
 
 ```javascript
-// year
 date.startOfYear();
+```
 
-// month
+#### End Of Year
+
+Set the date to the last millisecond of the year in current timezone.
+
+```javascript
+date.endOfYear();
+```
+
+#### Start Of Month
+
+Set the date to the first millisecond of the month in current timezone.
+
+```javascript
 date.startOfMonth();
+```
 
-// week
+#### End Of Month
+
+Set the date to the last millisecond of the month in current timezone.
+
+```javascript
+date.endOfMonth();
+```
+
+#### Start Of Week
+
+Set the date to the first millisecond of the week in current timezone.
+
+```javascript
 date.startOfWeek();
+```
 
-// day
+#### End Of Week
+
+Set the date to the last millisecond of the week in current timezone.
+
+```javascript
+date.endOfWeek();
+```
+
+#### Start Of Day
+
+Set the date to the first millisecond of the day in current timezone.
+
+```javascript
 date.startOfDay();
+```
 
-// hour
+#### End Of Day
+
+Set the date to the last millisecond of the day in current timezone.
+
+```javascript
+date.endOfDay();
+```
+
+#### Start Of Hour
+
+Set the date to the first millisecond of the hour in current timezone.
+
+```javascript
 date.startOfHour();
+```
 
-// minute
+#### End Of Hour
+
+Set the date to the last millisecond of the hour in current timezone.
+
+```javascript
+date.endOfHour();
+```
+
+#### Start Of Minute
+
+Set the date to the first millisecond of the minute in current timezone.
+
+```javascript
 date.startOfMinute();
+```
 
-// second
+#### End Of Minute
+
+Set the date to the last millisecond of the minute in current timezone.
+
+```javascript
+date.endOfMinute();
+```
+
+#### Start Of Second
+
+Set the date to the first millisecond of the second in current timezone.
+
+```javascript
 date.startOfSecond();
 ```
 
-#### End Of
+#### End Of Second
 
-You can set the date to the end of a specific period using the following methods.
-
-The date will be set to the last millisecond of the given period according to the current timezone.
+Set the date to the last millisecond of the second in current timezone.
 
 ```javascript
-// year
-date.endOfYear();
-
-// month
-date.endOfMonth();
-
-// week
-date.endOfWeek();
-
-// day
-date.endOfDay();
-
-// hour
-date.endOfHour();
-
-// minute
-date.endOfMinute();
-
-// second
 date.endOfSecond();
 ```
 
@@ -576,7 +631,7 @@ date.endOfSecond();
 
 #### Clone
 
-Create a new DateTime using the current date and timezone.
+Create a new *DateTime* using the current date and timezone.
 
 ```javascript
 const clone = date.clone();
@@ -587,7 +642,7 @@ const clone = date.clone();
 Get the ordinal suffix for the date of the month.
 
 ```javascript
-date.dateSuffix();
+const dateSuffix = date.dateSuffix();
 ```
 
 #### Days In Month
@@ -595,7 +650,7 @@ date.dateSuffix();
 Get the number of days in the current month.
 
 ```javascript
-date.daysInMonth();
+const daysInMonth = date.daysInMonth();
 ```
 
 #### Days In Year
@@ -603,7 +658,7 @@ date.daysInMonth();
 Get the number of days in the current year.
 
 ```javascript
-date.daysInYear();
+const daysInYear = date.daysInYear();
 ```
 
 #### Difference
@@ -621,10 +676,10 @@ const diff = date.diff(otherDate, absolute);
 
 #### Is DST?
 
-Return *true* if the DateTime is in daylight savings.
+Return *true* if the *DateTime* is in daylight savings.
 
 ```javascript
-date.isDST();
+const isDST = date.isDST();
 ```
 
 #### Is Leap Year?
@@ -632,15 +687,71 @@ date.isDST();
 Return *true* if the year is a leap year.
 
 ```javascript
-date.isLeapYear();
+const isLeapYear = date.isLeapYear();
 ```
 
-#### ISO Weeks In Year
+#### Weeks In ISO Year
 
 Get the number of weeks in the current ISO year.
 
 ```javascript
-date.isoWeeksInYear();
+const weeksInISOYear = date.weeksInISOYear();
+```
+
+
+## Static Methods
+
+#### Day Of Year
+
+Get the day of the year for a year, month and date.
+
+- `year` is a number representing the year.
+- `month` is a number representing the month (between *0* and *11*).
+- `date` is a number representing the date.
+
+```javascript
+const dayOfYear = DateTime.dayOfYear(year, month, date);
+```
+
+#### Days In Month
+
+Get the number of days in a month, from a year and month.
+
+- `year` is a number representing the year.
+- `month` is a number representing the month (between *0* and *11*).
+
+```javascript
+const daysInMonth = DateTime.daysInMonth(year, month);
+```
+
+#### Days In Year
+
+Get the number of days in a year.
+
+- `year` is a number representing the year.
+
+```javascript
+const daysInYear = DateTime.daysInYear();
+```
+
+#### Is Leap Year?
+
+Return *true* if the year is a leap year.
+
+- `year` is a number representing the year.
+
+```javascript
+const isLeapYear = DateTime.isLeapYear();
+```
+
+#### Weeks In ISO Year
+
+Get the number of ISO weeks in a year.
+
+- `year` is a number representing the year.
+
+```javascript
+const weeksInISOYear = DateTime.weeksInISOYear(year);
 ```
 
 
