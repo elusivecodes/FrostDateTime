@@ -2,12 +2,12 @@ Object.assign(DateTime, {
 
     /**
      * Create a new DateTime from a date string and format string.
-     * @param {string} dateString The date string to parse.
      * @param {string} formatString The PHP date format string.
+     * @param {string} dateString The date string to parse.
      * @param {string} [timezone] The timezone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromFormat(dateString, formatString, timezone) {
+    fromFormat(formatString, dateString, timezone) {
         const data = {};
 
         for (const char of [...formatString]) {

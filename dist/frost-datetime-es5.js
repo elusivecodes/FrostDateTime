@@ -419,13 +419,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     _createClass(DateTimeImmutable, [{
-      key: "setTime",
+      key: "clone",
 
+      /**
+       * Create a new DateTimeImmutable using the current date and timezone.
+       * @returns {DateTimeImmutable} A new DateTimeImmutable object.
+       */
+      value: function clone() {
+        return new DateTimeImmutable(this);
+      }
       /**
        * Set the number of milliseconds since the UNIX epoch.
        * @param {number} time The number of milliseconds since the UNIX epoch.
        * @returns {DateTimeImmutable} A new DateTimeImmutable object.
        */
+
+    }, {
+      key: "setTime",
       value: function setTime(time) {
         return new DateTimeImmutable(time, this._timezone);
       }
@@ -1326,6 +1336,137 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
   Object.assign(DateTime.prototype, {
     /**
+     * Add a duration to the DateTime.
+     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
+     * @returns {DateTime} The DateTime object.
+     */
+    add: function add(interval) {
+      return this._modify(interval);
+    },
+
+    /**
+     * Set the date to the last millisecond of the day in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfDay: function endOfDay() {
+      return this.setHours(23).endOfHour();
+    },
+
+    /**
+     * Set the date to the last millisecond of the hour in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfHour: function endOfHour() {
+      return this.setMinutes(59).endOfMinute();
+    },
+
+    /**
+     * Set the date to the last millisecond of the minute in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfMinute: function endOfMinute() {
+      return this.setSeconds(59).endOfSecond();
+    },
+
+    /**
+     * Set the date to the last millisecond of the month in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfMonth: function endOfMonth() {
+      return this.setDate(this.daysInMonth()).endOfDay();
+    },
+
+    /**
+     * Set the date to the last millisecond of the second in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfSecond: function endOfSecond() {
+      return this.setMilliseconds(999);
+    },
+
+    /**
+     * Set the date to the last millisecond of the week in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfWeek: function endOfWeek() {
+      return this.setISODay(7).endOfDay();
+    },
+
+    /**
+     * Set the date to the last millisecond of the year in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    endOfYear: function endOfYear() {
+      return this.setMonth(11).endOfMonth();
+    },
+
+    /**
+     * Set the date to the first millisecond of the day in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfDay: function startOfDay() {
+      return this.setHours(0).startOfHour();
+    },
+
+    /**
+     * Set the date to the first millisecond of the hour in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfHour: function startOfHour() {
+      return this.setMinutes(0).startOfMinute();
+    },
+
+    /**
+     * Set the date to the first millisecond of the minute in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfMinute: function startOfMinute() {
+      return this.setSeconds(0).startOfSecond();
+    },
+
+    /**
+     * Set the date to the first millisecond of the month in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfMonth: function startOfMonth() {
+      return this.setDate(1).startOfDay();
+    },
+
+    /**
+     * Set the date to the first millisecond of the second in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfSecond: function startOfSecond() {
+      return this.setMilliseconds(0);
+    },
+
+    /**
+     * Set the date to the first millisecond of the week in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfWeek: function startOfWeek() {
+      return this.setISODay(1).startOfDay();
+    },
+
+    /**
+     * Set the date to the first millisecond of the year in current timezone.
+     * @returns {DateTime} The DateTime object.
+     */
+    startOfYear: function startOfYear() {
+      return this.setMonth(0).startOfMonth();
+    },
+
+    /**
+     * Subtract an duration from the DateTime.
+     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @returns {DateTime} The DateTime object.
+     */
+    sub: function sub(interval) {
+      return this._modify(interval, true);
+    }
+  });
+  Object.assign(DateTime.prototype, {
+    /**
      * Format the current date with a PHP DateTime format string.
      * @param {string} formatString The string to use for formatting.
      * @returns {string} The formatted date string.
@@ -1576,12 +1717,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   });
   Object.assign(DateTime.prototype, {
     /**
-     * Add a DateInterval to the DateTime.
-     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
-     * @returns {DateTime} The DateTime object.
+     * Create a new DateTime using the current date and timezone.
+     * @returns {DateTime} A new DateTime object.
      */
-    add: function add(interval) {
-      return this._modify(interval);
+    clone: function clone() {
+      return new DateTime(this);
     },
 
     /**
@@ -1717,15 +1857,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Subtract an DateInterval to the DateTime.
-     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
-     * @returns {DateTime} The DateTime object.
-     */
-    sub: function sub(interval) {
-      return this._modify(interval, true);
-    },
-
-    /**
      * Get the number of weeks in the current ISO year.
      * @returns {number} The number of weeks in the current ISO year.
      */
@@ -1736,12 +1867,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   Object.assign(DateTime, {
     /**
      * Create a new DateTime from a date string and format string.
-     * @param {string} dateString The date string to parse.
      * @param {string} formatString The PHP date format string.
+     * @param {string} dateString The date string to parse.
      * @param {string} [timezone] The timezone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromFormat: function fromFormat(dateString, formatString, timezone) {
+    fromFormat: function fromFormat(formatString, dateString, timezone) {
       var data = {};
 
       var _arr3 = _toConsumableArray(formatString);

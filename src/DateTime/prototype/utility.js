@@ -1,12 +1,11 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Add a DateInterval to the DateTime.
-     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
-     * @returns {DateTime} The DateTime object.
+     * Create a new DateTime using the current date and timezone.
+     * @returns {DateTime} A new DateTime object.
      */
-    add(interval) {
-        return this._modify(interval);
+    clone() {
+        return new DateTime(this);
     },
 
     /**
@@ -154,15 +153,6 @@ Object.assign(DateTime.prototype, {
      */
     isLeapYear() {
         return DateTime.isLeapYear(this.getYear());
-    },
-
-    /**
-     * Subtract an DateInterval to the DateTime.
-     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
-     * @returns {DateTime} The DateTime object.
-     */
-    sub(interval) {
-        return this._modify(interval, true);
     },
 
     /**

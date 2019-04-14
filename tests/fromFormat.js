@@ -6,150 +6,150 @@ console.log('-- Testing fromFormat method');
 
 console.log('\x1b[0m');
 console.log('Testing year');
-assert.equal(DateTime.fromFormat('2018', 'Y').getYear(), 2018);
-assert.equal(DateTime.fromFormat('1950', 'Y').getYear(), 1950);
+assert.equal(DateTime.fromFormat('Y', '2018').getYear(), 2018);
+assert.equal(DateTime.fromFormat('Y', '1950').getYear(), 1950);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing short year');
-assert.equal(DateTime.fromFormat('18', 'y').getYear(), 2018);
-assert.equal(DateTime.fromFormat('70', 'y').getYear(), 1970);
+assert.equal(DateTime.fromFormat('y', '18').getYear(), 2018);
+assert.equal(DateTime.fromFormat('y', '70').getYear(), 1970);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing month name');
-assert.equal(DateTime.fromFormat('January', 'F').getMonth(), 0);
-assert.equal(DateTime.fromFormat('June', 'F').getMonth(), 5);
+assert.equal(DateTime.fromFormat('F', 'January').getMonth(), 0);
+assert.equal(DateTime.fromFormat('F', 'June').getMonth(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing short month name');
-assert.equal(DateTime.fromFormat('Jan', 'M').getMonth(), 0);
-assert.equal(DateTime.fromFormat('Jun', 'M').getMonth(), 5);
+assert.equal(DateTime.fromFormat('M', 'Jan').getMonth(), 0);
+assert.equal(DateTime.fromFormat('M', 'Jun').getMonth(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 2-digit month');
-assert.equal(DateTime.fromFormat('01', 'm').getMonth(), 0);
-assert.equal(DateTime.fromFormat('06', 'm').getMonth(), 5);
+assert.equal(DateTime.fromFormat('m', '01').getMonth(), 0);
+assert.equal(DateTime.fromFormat('m', '06').getMonth(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing month');
-assert.equal(DateTime.fromFormat('1', 'n').getMonth(), 0);
-assert.equal(DateTime.fromFormat('6', 'n').getMonth(), 5);
+assert.equal(DateTime.fromFormat('n', '1').getMonth(), 0);
+assert.equal(DateTime.fromFormat('n', '6').getMonth(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 2-digit date');
-assert.equal(DateTime.fromFormat('01', 'd').getDate(), 1);
-assert.equal(DateTime.fromFormat('25', 'd').getDate(), 25);
+assert.equal(DateTime.fromFormat('d', '01').getDate(), 1);
+assert.equal(DateTime.fromFormat('d', '25').getDate(), 25);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing date');
-assert.equal(DateTime.fromFormat('1', 'j').getDate(), 1);
-assert.equal(DateTime.fromFormat('25', 'j').getDate(), 25);
+assert.equal(DateTime.fromFormat('j', '1').getDate(), 1);
+assert.equal(DateTime.fromFormat('j', '25').getDate(), 25);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing ordinal suffix');
-assert.equal(DateTime.fromFormat('1st', 'jS').getDate(), 1);
-assert.equal(DateTime.fromFormat('25th', 'jS').getDate(), 25);
+assert.equal(DateTime.fromFormat('jS', '1st').getDate(), 1);
+assert.equal(DateTime.fromFormat('jS', '25th').getDate(), 25);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing day name');
-assert.equal(DateTime.fromFormat('Monday', 'l').getDay(), 1);
-assert.equal(DateTime.fromFormat('Friday', 'l').getDay(), 5);
+assert.equal(DateTime.fromFormat('l', 'Monday').getDay(), 1);
+assert.equal(DateTime.fromFormat('l', 'Friday').getDay(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing short day name');
-assert.equal(DateTime.fromFormat('Mon', 'D').getDay(), 1);
-assert.equal(DateTime.fromFormat('Fri', 'D').getDay(), 5);
+assert.equal(DateTime.fromFormat('D', 'Mon').getDay(), 1);
+assert.equal(DateTime.fromFormat('D', 'Fri').getDay(), 5);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing lower-case day period');
-assert.equal(DateTime.fromFormat('5am', 'ga').getHours(), 5);
-assert.equal(DateTime.fromFormat('5pm', 'ga').getHours(), 17);
+assert.equal(DateTime.fromFormat('ga', '5am').getHours(), 5);
+assert.equal(DateTime.fromFormat('ga', '5pm').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing upper-case day period');
-assert.equal(DateTime.fromFormat('5AM', 'gA').getHours(), 5);
-assert.equal(DateTime.fromFormat('5PM', 'gA').getHours(), 17);
+assert.equal(DateTime.fromFormat('gA', '5AM').getHours(), 5);
+assert.equal(DateTime.fromFormat('gA', '5PM').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 2-digit 24-hour');
-assert.equal(DateTime.fromFormat('05', 'H').getHours(), 5);
-assert.equal(DateTime.fromFormat('17', 'H').getHours(), 17);
+assert.equal(DateTime.fromFormat('H', '05').getHours(), 5);
+assert.equal(DateTime.fromFormat('H', '17').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 24-hour');
-assert.equal(DateTime.fromFormat('5', 'G').getHours(), 5);
-assert.equal(DateTime.fromFormat('17', 'G').getHours(), 17);
+assert.equal(DateTime.fromFormat('G', '5').getHours(), 5);
+assert.equal(DateTime.fromFormat('G', '17').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 2-digit 12-hour');
-assert.equal(DateTime.fromFormat('05', 'h').getHours(), 5);
-assert.equal(DateTime.fromFormat('05PM', 'hA').getHours(), 17);
+assert.equal(DateTime.fromFormat('h', '05').getHours(), 5);
+assert.equal(DateTime.fromFormat('hA', '05PM').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing 12-hour');
-assert.equal(DateTime.fromFormat('5', 'g').getHours(), 5);
-assert.equal(DateTime.fromFormat('5PM', 'gA').getHours(), 17);
+assert.equal(DateTime.fromFormat('g', '5').getHours(), 5);
+assert.equal(DateTime.fromFormat('gA', '5PM').getHours(), 17);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing minute');
-assert.equal(DateTime.fromFormat('01', 'i').getMinutes(), 1);
-assert.equal(DateTime.fromFormat('59', 'i').getMinutes(), 59);
+assert.equal(DateTime.fromFormat('i', '01').getMinutes(), 1);
+assert.equal(DateTime.fromFormat('i', '59').getMinutes(), 59);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
-console.log('Testing minute');
-assert.equal(DateTime.fromFormat('01', 's').getSeconds(), 1);
-assert.equal(DateTime.fromFormat('59', 's').getSeconds(), 59);
+console.log('Testing second');
+assert.equal(DateTime.fromFormat('s', '01').getSeconds(), 1);
+assert.equal(DateTime.fromFormat('s', '59').getSeconds(), 59);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing microsecond');
-assert.equal(DateTime.fromFormat('500000', 'u').format('u'), '500000');
-assert.equal(DateTime.fromFormat('750000', 'u').format('u'), '750000');
+assert.equal(DateTime.fromFormat('u', '500000').format('u'), '500000');
+assert.equal(DateTime.fromFormat('u', '750000').format('u'), '750000');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing timezone');
-assert.equal(DateTime.fromFormat('UTC', 'e').getTimezone(), 'UTC');
-assert.equal(DateTime.fromFormat('America/New_York', 'e').getTimezone(), 'America/New_York');
+assert.equal(DateTime.fromFormat('e', 'UTC').getTimezone(), 'UTC');
+assert.equal(DateTime.fromFormat('e', 'America/New_York').getTimezone(), 'America/New_York');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing timezone abbreviation');
-assert.equal(DateTime.fromFormat('UTC', 'T').getTimezone(), 'UTC');
-assert.equal(DateTime.fromFormat('AEST', 'T').getTimezone(), 'Australia/Brisbane');
+assert.equal(DateTime.fromFormat('T', 'UTC').getTimezone(), 'UTC');
+assert.equal(DateTime.fromFormat('T', 'AEST').getTimezone(), 'Australia/Brisbane');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing offset');
-assert.equal(DateTime.fromFormat('+0000', 'O').getTimezoneOffset(), 0);
-assert.equal(DateTime.fromFormat('+1000', 'O').getTimezoneOffset(), -600);
+assert.equal(DateTime.fromFormat('O', '+0000').getTimezoneOffset(), 0);
+assert.equal(DateTime.fromFormat('O', '+1000').getTimezoneOffset(), -600);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing offset with colon');
-assert.equal(DateTime.fromFormat('+00:00', 'P').getTimezoneOffset(), 0);
-assert.equal(DateTime.fromFormat('+10:00', 'P').getTimezoneOffset(), -600);
+assert.equal(DateTime.fromFormat('P', '+00:00').getTimezoneOffset(), 0);
+assert.equal(DateTime.fromFormat('P', '+10:00').getTimezoneOffset(), -600);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing timestamp');
-assert.equal(DateTime.fromFormat('123456789', 'U').getTimestamp(), 123456789);
-assert.equal(DateTime.fromFormat('987654321', 'U').getTimestamp(), 987654321);
+assert.equal(DateTime.fromFormat('U', '123456789').getTimestamp(), 123456789);
+assert.equal(DateTime.fromFormat('U', '987654321').getTimestamp(), 987654321);
 console.log('\x1b[32m', 'passed');
