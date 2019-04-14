@@ -1975,7 +1975,7 @@
             if (dateObject.hasOwnProperty('timezone')) {
                 currentTimezone = dateObject.timezone;
             } else if (dateObject.hasOwnProperty('offset') || dateObject.hasOwnProperty('timezoneAbbr')) {
-                currentTimezone = this.timezoneFromAbbrOffset(
+                currentTimezone = this._timezoneFromAbbrOffset(
                     currentDate,
                     dateObject.hasOwnProperty('timezoneAbbr') ?
                         dateObject.timezoneAbbr :
@@ -2055,6 +2055,30 @@
             }
 
             return parseInt(value);
+        },
+
+        /**
+         * Return a timezone for a date using an abbreviated name or offset.
+         * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
+         * @param {string} [abbr] The timezone abbreviation.
+         * @param {number} [offset] The timezone offset.
+         * @returns {string} The timezone name.
+         */
+        _timezoneFromAbbrOffset(date, abbr = null, offset = null) {
+            if (abbr === 'UTC' || offset === 0) {
+                return 'UTC';
+            }
+
+            return Object.keys(this._timezones)
+                .find(timezone => {
+                    try {
+                        const tempDate = new DateTime(date, timezone);
+                        return (abbr === null || abbr === tempDate.getTimezoneAbbr())
+                            && (offset === null || offset === tempDate.getTimezoneOffset());
+                    } catch (error) {
+                        return;
+                    }
+                });
         }
 
     });
@@ -2112,30 +2136,6 @@
          */
         isLeapYear(year) {
             return new Date(year, 1, 29).getDate() === 29;
-        },
-
-        /**
-         * Return a timezone for a date using an abbreviated name or offset.
-         * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-         * @param {string} [abbr] The timezone abbreviation.
-         * @param {number} [offset] The timezone offset.
-         * @returns {string} The timezone name.
-         */
-        timezoneFromAbbrOffset(date, abbr = null, offset = null) {
-            if (abbr === 'UTC' || offset === 0) {
-                return 'UTC';
-            }
-
-            return Object.keys(this._timezones)
-                .find(timezone => {
-                    try {
-                        const tempDate = new DateTime(date, timezone);
-                        return (abbr === null || abbr === tempDate.getTimezoneAbbr())
-                            && (offset === null || offset === tempDate.getTimezoneOffset());
-                    } catch (error) {
-                        return;
-                    }
-                });
         },
 
         /**

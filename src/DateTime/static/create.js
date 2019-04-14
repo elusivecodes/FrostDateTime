@@ -136,7 +136,7 @@ Object.assign(DateTime, {
         if (dateObject.hasOwnProperty('timezone')) {
             currentTimezone = dateObject.timezone;
         } else if (dateObject.hasOwnProperty('offset') || dateObject.hasOwnProperty('timezoneAbbr')) {
-            currentTimezone = this.timezoneFromAbbrOffset(
+            currentTimezone = this._timezoneFromAbbrOffset(
                 currentDate,
                 dateObject.hasOwnProperty('timezoneAbbr') ?
                     dateObject.timezoneAbbr :

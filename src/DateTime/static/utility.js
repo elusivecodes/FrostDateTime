@@ -54,30 +54,6 @@ Object.assign(DateTime, {
     },
 
     /**
-     * Return a timezone for a date using an abbreviated name or offset.
-     * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-     * @param {string} [abbr] The timezone abbreviation.
-     * @param {number} [offset] The timezone offset.
-     * @returns {string} The timezone name.
-     */
-    timezoneFromAbbrOffset(date, abbr = null, offset = null) {
-        if (abbr === 'UTC' || offset === 0) {
-            return 'UTC';
-        }
-
-        return Object.keys(this._timezones)
-            .find(timezone => {
-                try {
-                    const tempDate = new DateTime(date, timezone);
-                    return (abbr === null || abbr === tempDate.getTimezoneAbbr())
-                        && (offset === null || offset === tempDate.getTimezoneOffset());
-                } catch (error) {
-                    return;
-                }
-            });
-    },
-
-    /**
      * Get the number of ISO weeks in a year.
      * @param {number} year  The year.
      * @returns {number} The number of ISO weeks in the year.

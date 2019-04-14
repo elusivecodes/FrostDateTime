@@ -2000,7 +2000,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       if (dateObject.hasOwnProperty('timezone')) {
         currentTimezone = dateObject.timezone;
       } else if (dateObject.hasOwnProperty('offset') || dateObject.hasOwnProperty('timezoneAbbr')) {
-        currentTimezone = this.timezoneFromAbbrOffset(currentDate, dateObject.hasOwnProperty('timezoneAbbr') ? dateObject.timezoneAbbr : null, dateObject.hasOwnProperty('offset') ? dateObject.offset : null);
+        currentTimezone = this._timezoneFromAbbrOffset(currentDate, dateObject.hasOwnProperty('timezoneAbbr') ? dateObject.timezoneAbbr : null, dateObject.hasOwnProperty('offset') ? dateObject.offset : null);
       }
 
       var date = new this(currentDate, currentTimezone || timezone);
@@ -2076,6 +2076,31 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       return parseInt(value);
+    },
+
+    /**
+     * Return a timezone for a date using an abbreviated name or offset.
+     * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
+     * @param {string} [abbr] The timezone abbreviation.
+     * @param {number} [offset] The timezone offset.
+     * @returns {string} The timezone name.
+     */
+    _timezoneFromAbbrOffset: function _timezoneFromAbbrOffset(date) {
+      var abbr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+      if (abbr === 'UTC' || offset === 0) {
+        return 'UTC';
+      }
+
+      return Object.keys(this._timezones).find(function (timezone) {
+        try {
+          var tempDate = new DateTime(date, timezone);
+          return (abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset());
+        } catch (error) {
+          return;
+        }
+      });
     }
   });
   Object.assign(DateTime, {
@@ -2122,31 +2147,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     isLeapYear: function isLeapYear(year) {
       return new Date(year, 1, 29).getDate() === 29;
-    },
-
-    /**
-     * Return a timezone for a date using an abbreviated name or offset.
-     * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-     * @param {string} [abbr] The timezone abbreviation.
-     * @param {number} [offset] The timezone offset.
-     * @returns {string} The timezone name.
-     */
-    timezoneFromAbbrOffset: function timezoneFromAbbrOffset(date) {
-      var abbr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-      if (abbr === 'UTC' || offset === 0) {
-        return 'UTC';
-      }
-
-      return Object.keys(this._timezones).find(function (timezone) {
-        try {
-          var tempDate = new DateTime(date, timezone);
-          return (abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset());
-        } catch (error) {
-          return;
-        }
-      });
     },
 
     /**
