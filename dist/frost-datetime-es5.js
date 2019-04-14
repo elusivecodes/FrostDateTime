@@ -114,23 +114,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var output = '',
             prefixed = false;
 
-        var _arr = _toConsumableArray(formatString);
+        for (var _i = 0, _arr = _toConsumableArray(formatString); _i < _arr.length; _i++) {
+          var _char = _arr[_i];
 
-        for (var _i = 0; _i < _arr.length; _i++) {
-          var char = _arr[_i];
-
-          if (!prefixed && char === '%') {
+          if (!prefixed && _char === '%') {
             prefixed = true;
             continue;
           }
 
-          if (!prefixed || !DateInterval.formatData[char]) {
-            output += char;
+          if (!prefixed || !DateInterval.formatData[_char]) {
+            output += _char;
             prefixed = false;
             continue;
           }
 
-          output += DateInterval.formatData[char](this);
+          output += DateInterval.formatData[_char](this);
         }
 
         return output;
@@ -313,7 +311,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       },
       relative: {
         ago: '%n ago',
-        in: 'In %n',
+        "in": 'In %n',
         now: 'Now'
       },
       seperator: ', '
@@ -537,7 +535,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     M: {
       value: 'month',
       regex: function regex() {
-        return '(' + DateTime.lang.months.short.join('|') + ')';
+        return '(' + DateTime.lang.months["short"].join('|') + ')';
       },
       input: function input(value) {
         return DateTime.lang.months['short'].findIndex(function (month) {
@@ -668,10 +666,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     D: {
       value: 'day',
       regex: function regex() {
-        return '(' + DateTime.lang.days.short.join('|') + ')';
+        return '(' + DateTime.lang.days["short"].join('|') + ')';
       },
       input: function input(value) {
-        return DateTime.lang.days.short.findIndex(function (day) {
+        return DateTime.lang.days["short"].findIndex(function (day) {
           return day === value;
         });
       },
@@ -1495,23 +1493,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var output = '',
           escaped = false;
 
-      var _arr2 = _toConsumableArray(formatString);
+      for (var _i2 = 0, _arr2 = _toConsumableArray(formatString); _i2 < _arr2.length; _i2++) {
+        var _char2 = _arr2[_i2];
 
-      for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-        var char = _arr2[_i2];
-
-        if (!escaped && char === '\\') {
+        if (!escaped && _char2 === '\\') {
           escaped = true;
           continue;
         }
 
-        if (escaped || !DateTime.formatData[char] || !DateTime.formatData[char].output) {
-          output += char;
+        if (escaped || !DateTime.formatData[_char2] || !DateTime.formatData[_char2].output) {
+          output += _char2;
           escaped = false;
           continue;
         }
 
-        output += DateTime.formatData[char].output(this);
+        output += DateTime.formatData[_char2].output(this);
       }
 
       return output;
@@ -1895,31 +1891,29 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     fromFormat: function fromFormat(formatString, dateString, timezone) {
       var data = {};
 
-      var _arr3 = _toConsumableArray(formatString);
+      for (var _i3 = 0, _arr3 = _toConsumableArray(formatString); _i3 < _arr3.length; _i3++) {
+        var _char3 = _arr3[_i3];
 
-      for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
-        var char = _arr3[_i3];
-
-        if (this._seperators.includes(char)) {
+        if (this._seperators.includes(_char3)) {
           dateString = dateString.substring(1);
           return;
         }
 
-        if (!this.formatData[char] || !this.formatData[char].regex) {
-          throw new Error("Invalid char in DateTime format: ".concat(char));
+        if (!this.formatData[_char3] || !this.formatData[_char3].regex) {
+          throw new Error("Invalid char in DateTime format: ".concat(_char3));
         }
 
-        var regex = this.formatData[char].regex,
-            regexp = typeof regex === 'function' ? regex(char) : regex,
+        var regex = this.formatData[_char3].regex,
+            regexp = typeof regex === 'function' ? regex(_char3) : regex,
             dateMatch = dateString.match(new RegExp('^' + regexp));
 
         if (!dateMatch) {
-          throw new Error("Unmatched char in DateTime string: ".concat(char));
+          throw new Error("Unmatched char in DateTime string: ".concat(_char3));
         }
 
         dateString = dateString.substring(dateMatch[1].length);
 
-        if (['!', '|'].includes(char)) {
+        if (['!', '|'].includes(_char3)) {
           var epoch = {
             year: 1970,
             month: 0,
@@ -1930,14 +1924,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             seconds: 0,
             milliseconds: 0
           };
-          Object.assign(data, char === '!' ? epoch : _objectSpread({}, epoch, data));
+          Object.assign(data, _char3 === '!' ? epoch : _objectSpread({}, epoch, data));
         } else {
-          if (!this.formatData[char].input) {
+          if (!this.formatData[_char3].input) {
             continue;
           }
 
-          var value = this.formatData[char].value;
-          data[value] = this.formatData[char].input(dateMatch[1]);
+          var value = this.formatData[_char3].value;
+          data[value] = this.formatData[_char3].input(dateMatch[1]);
         }
       }
 
@@ -2621,11 +2615,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       },
       days: {
         min: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-        short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+        "short": ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
         full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
       },
       months: {
-        short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        "short": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
       },
       numberRegex: '\\d',
@@ -2677,10 +2671,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
    * Populate timezones
    */
 
-  var _arr4 = Object.keys(zones);
-
   var _loop = function _loop() {
-    var timezone = _arr4[_i4];
+    var timezone = _Object$keys[_i4];
     var parts = values[zones[timezone]].split('|'),
         abbr = parts.shift().split(';').map(function (a) {
       return a || 'LMT';
@@ -2700,7 +2692,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  for (var _i4 = 0; _i4 < _arr4.length; _i4++) {
+  for (var _i4 = 0, _Object$keys = Object.keys(zones); _i4 < _Object$keys.length; _i4++) {
     _loop();
   }
 
