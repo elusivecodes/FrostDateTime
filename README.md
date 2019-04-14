@@ -113,7 +113,7 @@ Format the current date using *Date*'s native *toLocaleString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
+For a full list of supported options, see the [DateTime.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
 
 If a timezone is not specified in options, the timezone of the DateTime will be used.
 
@@ -128,7 +128,7 @@ Format the current date using *Date*'s native *toLocaleDateString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleDateString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
+For a full list of supported options, see the [DateTime.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
 
 If a timezone is not specified in options, the timezone of the DateTime will be used.
 
@@ -143,7 +143,7 @@ Format the current date using *Date*'s native *toLocaleTimeString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleTimeString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
+For a full list of supported options, see the [DateTime.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
 
 If a timezone is not specified in options, the timezone of the DateTime will be used.
 
@@ -666,12 +666,12 @@ const duration = DateInterval.fromString(time);
 
 Format the current interval to a relative time string.
 
-- `maxValues` is a number indicating the maximum values to output.
+- `maxValues` is a number indicating the maximum values to output, and will default to *1*.
 
 Values are output in order of most significant to least significant (years first), where the value is greater or less than 0.
 
 ```javascript
-const durationString = duration.toString(maxValues);
+const relativeString = duration.toString(maxValues);
 ```
 
 #### Format

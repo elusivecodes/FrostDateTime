@@ -2,6 +2,16 @@ const assert = require('assert').strict;
 const DateTime = require('../dist/frost-datetime.min').DateTime;
 
 console.log('\x1b[0m');
+console.log('Testing clone method');
+const d1 = new DateTime([2018, 0, 1]);
+const c1 = d1.clone();
+assert.equal(c1.getTime(), d1.getTime());
+assert.equal(c1.getTimezone(), d1.getTimezone());
+d1.setYear(2019);
+assert.notEqual(c1.getTime(), d1.getTime());
+console.log('\x1b[32m', 'passed');
+
+console.log('\x1b[0m');
 console.log('Testing dateSuffix method');
 assert.equal(new DateTime([2018, 0, 1]).dateSuffix(), 'st');
 assert.equal(new DateTime([2018, 0, 2]).dateSuffix(), 'nd');
