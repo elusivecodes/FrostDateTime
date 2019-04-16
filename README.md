@@ -46,7 +46,7 @@ This method is fully compatible with the PHP [DateTime::createFromFormat](http:/
 
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
-- `timezone` is a string representing the timezome name of the date, and will default to the system timezone.
+- `timezone` is a string representing the timezone name of the date, and will default to the system timezone.
 
 ```javascript
 const date = DateTime.fromFormat(formatString, dateString, timezone);
