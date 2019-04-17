@@ -389,6 +389,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       this._utcDate = new Date(timestamp);
       this._timezone = timezone;
+      this.isValid = true;
 
       this._makeFormatter();
 
@@ -1929,14 +1930,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {DateTime} A new DateTime object.
      */
     fromFormat: function fromFormat(formatString, dateString, timezone) {
-      var data = {};
+      var data = {},
+          originalDateString = dateString;
 
       for (var _i3 = 0, _arr3 = _toConsumableArray(formatString); _i3 < _arr3.length; _i3++) {
         var _char3 = _arr3[_i3];
 
         if (this._seperators.includes(_char3)) {
           dateString = dateString.substring(1);
-          return;
+          continue;
         }
 
         if (!this.formatData[_char3] || !this.formatData[_char3].regex) {
@@ -1975,7 +1977,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       }
 
-      return this.fromObject(data, timezone);
+      var date = this.fromObject(data);
+      date.isValid = date.format(formatString) === originalDateString;
+
+      if (timezone && timezone !== date.getTimezone()) {
+        date.setTimezone(timezone);
+      }
+
+      return date;
     },
 
     /**

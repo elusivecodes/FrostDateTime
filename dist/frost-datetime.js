@@ -345,6 +345,7 @@
 
             this._utcDate = new Date(timestamp);
             this._timezone = timezone;
+            this.isValid = true;
 
             this._makeFormatter();
             this._checkOffset();
@@ -1887,12 +1888,13 @@
          * @returns {DateTime} A new DateTime object.
          */
         fromFormat(formatString, dateString, timezone) {
-            const data = {};
+            const data = {},
+                originalDateString = dateString;
 
             for (const char of [...formatString]) {
                 if (this._seperators.includes(char)) {
                     dateString = dateString.substring(1);
-                    return;
+                    continue;
                 }
 
                 if (!this.formatData[char] || !this.formatData[char].regex) {
@@ -1943,7 +1945,15 @@
                 }
             }
 
-            return this.fromObject(data, timezone);
+            const date = this.fromObject(data);
+
+            date.isValid = date.format(formatString) === originalDateString;
+
+            if (timezone && timezone !== date.getTimezone()) {
+                date.setTimezone(timezone);
+            }
+
+            return date;
         },
 
         /**

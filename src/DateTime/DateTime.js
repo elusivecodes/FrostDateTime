@@ -44,6 +44,7 @@ class DateTime {
 
         this._utcDate = new Date(timestamp);
         this._timezone = timezone;
+        this.isValid = true;
 
         this._makeFormatter();
         this._checkOffset();
