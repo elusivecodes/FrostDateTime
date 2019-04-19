@@ -562,9 +562,9 @@
 
         // day period
         a: {
-            value: 'pm',
+            value: 'dayPeriod',
             regex: () => '(' + DateTime.lang.dayPeriods.lower.join('|') + ')',
-            input: value => DateTime.lang.dayPeriods.lower.findIndex(period => period === value),
+            input: value => DateTime.lang.dayPeriods.lower.findIndex(period => period === value) ? 'pm' : 'am',
             output: datetime => datetime.getHours() < 12 ?
                 DateTime.lang.dayPeriods.lower[0] :
                 DateTime.lang.dayPeriods.lower[1]
@@ -572,9 +572,9 @@
 
         // day period upper
         A: {
-            value: 'pm',
+            value: 'dayPeriod',
             regex: () => '(' + DateTime.lang.dayPeriods.upper.join('|') + ')',
-            input: value => DateTime.lang.dayPeriods.upper.findIndex(period => period === value),
+            input: value => DateTime.lang.dayPeriods.upper.findIndex(period => period === value) ? 'pm' : 'am',
             output: datetime => datetime.getHours() < 12 ?
                 DateTime.lang.dayPeriods.upper[0] :
                 DateTime.lang.dayPeriods.upper[1]
@@ -2006,8 +2006,16 @@
                     dateObject.date = dateObject.dayOfYear;
                 }
 
-                if ('hours' in dateObject && 'pm' in dateObject) {
-                    dateObject.hours = (dateObject.hours % 12) + (dateObject.pm ? 12 : 0);
+                if ('dayPeriod' in dateObject) {
+                    if ('hours' in dateObject) {
+                        dateObject.hours = dateObject.hours % 12;
+                    } else {
+                        dateObject.hours = 0
+                    }
+
+                    if (dateObject.dayPeriod === 'pm') {
+                        dateObject.hours += 12;
+                    }
                 }
 
                 if ('day' in dateObject && !('date' in dateObject)) {

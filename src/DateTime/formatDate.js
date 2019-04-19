@@ -142,9 +142,9 @@ DateTime.formatData = {
 
     // day period
     a: {
-        value: 'pm',
+        value: 'dayPeriod',
         regex: () => '(' + DateTime.lang.dayPeriods.lower.join('|') + ')',
-        input: value => DateTime.lang.dayPeriods.lower.findIndex(period => period === value),
+        input: value => DateTime.lang.dayPeriods.lower.findIndex(period => period === value) ? 'pm' : 'am',
         output: datetime => datetime.getHours() < 12 ?
             DateTime.lang.dayPeriods.lower[0] :
             DateTime.lang.dayPeriods.lower[1]
@@ -152,9 +152,9 @@ DateTime.formatData = {
 
     // day period upper
     A: {
-        value: 'pm',
+        value: 'dayPeriod',
         regex: () => '(' + DateTime.lang.dayPeriods.upper.join('|') + ')',
-        input: value => DateTime.lang.dayPeriods.upper.findIndex(period => period === value),
+        input: value => DateTime.lang.dayPeriods.upper.findIndex(period => period === value) ? 'pm' : 'am',
         output: datetime => datetime.getHours() < 12 ?
             DateTime.lang.dayPeriods.upper[0] :
             DateTime.lang.dayPeriods.upper[1]

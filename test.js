@@ -7,6 +7,7 @@ try {
     require('./tests/format');
     require('./tests/fromFormat');
     require('./tests/manipulate');
+    require('./tests/transition');
     require('./tests/utility');
     require('./tests/diff');
 

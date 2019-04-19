@@ -115,8 +115,16 @@ Object.assign(DateTime, {
                 dateObject.date = dateObject.dayOfYear;
             }
 
-            if ('hours' in dateObject && 'pm' in dateObject) {
-                dateObject.hours = (dateObject.hours % 12) + (dateObject.pm ? 12 : 0);
+            if ('dayPeriod' in dateObject) {
+                if ('hours' in dateObject) {
+                    dateObject.hours = dateObject.hours % 12;
+                } else {
+                    dateObject.hours = 0
+                }
+
+                if (dateObject.dayPeriod === 'pm') {
+                    dateObject.hours += 12;
+                }
             }
 
             if ('day' in dateObject && !('date' in dateObject)) {
