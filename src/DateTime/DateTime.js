@@ -50,8 +50,14 @@ class DateTime {
         this._checkOffset();
 
         if (this._offset && adjustOffset) {
+            const offset = this._offset;
             this._utcDate.setTime(this.getTime() + this._offset * 60000);
             this._checkOffset();
+
+            // compensate for DST transitions
+            if (offset !== this._offset) {
+                this._utcDate.setTime(this._utcDate.getTime() - (offset - this._offset) * 60000);
+            }
         }
 
         this._getTransition();

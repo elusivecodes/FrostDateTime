@@ -74,7 +74,7 @@ Object.assign(DateTime, {
         date.isValid = date.format(formatString) === originalDateString;
 
         if (timezone && timezone !== date.getTimezone()) {
-            date.setTimezone(timezone);
+            date.setTimezone(timezone, true);
         }
 
         return date;
@@ -109,17 +109,17 @@ Object.assign(DateTime, {
         if (dateObject.timestamp) {
             currentDate = dateObject.timestamp * 1000;
         } else {
-            if (dateObject.hasOwnProperty('dayOfYear') &&
-                !(dateObject.hasOwnProperty('month') || dateObject.hasOwnProperty('date'))) {
+            if ('dayOfYear' in dateObject &&
+                !('month' in dateObject || 'date' in dateObject)) {
                 dateObject.month = 0;
                 dateObject.date = dateObject.dayOfYear;
             }
 
-            if (dateObject.hasOwnProperty('hours') && dateObject.hasOwnProperty('pm')) {
+            if ('hours' in dateObject && 'pm' in dateObject) {
                 dateObject.hours = (dateObject.hours % 12) + (dateObject.pm ? 12 : 0);
             }
 
-            if (dateObject.hasOwnProperty('day') && !dateObject.hasOwnProperty('date')) {
+            if ('day' in dateObject && !('date' in dateObject)) {
                 currentDay = dateObject.day;
             }
 
@@ -146,15 +146,15 @@ Object.assign(DateTime, {
             ];
         }
 
-        if (dateObject.hasOwnProperty('timezone')) {
+        if ('timezone' in dateObject) {
             currentTimezone = dateObject.timezone;
-        } else if (dateObject.hasOwnProperty('offset') || dateObject.hasOwnProperty('timezoneAbbr')) {
+        } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
             currentTimezone = this._timezoneFromAbbrOffset(
                 currentDate,
-                dateObject.hasOwnProperty('timezoneAbbr') ?
+                'timezoneAbbr' in dateObject ?
                     dateObject.timezoneAbbr :
                     null,
-                dateObject.hasOwnProperty('offset') ?
+                'offset' in dateObject ?
                     dateObject.offset :
                     null
             );
@@ -164,6 +164,14 @@ Object.assign(DateTime, {
 
         if (currentDay) {
             date = date.setDay(currentDay);
+        }
+
+        // compensate for DST transitions
+        if ('offset' in dateObject) {
+            const offset = date.getTimezoneOffset();
+            if (offset !== dateObject.offset) {
+                date.setTime(date.getTime() - (offset - dateObject.offset) * 60000);
+            }
         }
 
         if (timezone && currentTimezone) {

@@ -253,14 +253,23 @@ Object.assign(DateTime.prototype, {
      * @param {string} timezone The name of the timezone.
      * @returns {DateTime} The DateTime object.
      */
-    setTimezone(timezone) {
+    setTimezone(timezone, adjust = false) {
         if (!DateTime._timezones[timezone]) {
             throw new Error('Invalid timezone supplied');
         }
 
         this._timezone = timezone;
         this._makeFormatter();
+
+        const offset = this._offset;
+
         this._checkOffset();
+
+        // compensate for DST transitions
+        if (adjust && offset !== this._offset) {
+            this._utcDate.setTime(this._utcDate.getTime() - (offset - this._offset) * 60000);
+        }
+
         this._getTransition();
 
         return this;

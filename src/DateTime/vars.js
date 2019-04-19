@@ -1,5 +1,5 @@
 /**
- * DateTime Properties
+ * DateTime (Static) Properties
  */
 
 // get resolved options
