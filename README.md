@@ -460,7 +460,7 @@ const timezone = date.getTimezone();
 
 Set the current timezone.
 
-- `timezone` is the name of the new timezone.
+- `timezone` is the name of the new timezone, which can be either "*UTC*" or a supported value from the [IANA timezone database](https://www.iana.org/time-zones).
 - `adjust` is a boolean indicating whether to compensate for adjustments to the offset, and will default to *false*.
 
 ```javascript
