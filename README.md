@@ -21,7 +21,7 @@ It features full support for PHP DateTime formats, as well as timezones.
 
 ## Date Creation
 
-- `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native [*Date.UTC*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) method, and will default to the current timestamp.
 - `timezone` is a string representing the timezone name of the date, and will default to the system timezone.
 
 ```javascript
@@ -46,7 +46,11 @@ This method is fully compatible with the PHP [DateTime::createFromFormat](http:/
 
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
-- `timezone` is a string representing the timezone name of the date, and will default to the system timezone.
+- `timezone` is a string representing the timezone name of the date, and will default to the system timezone (unless a timezone is specified in the `dateString`).
+
+If the `dateString` contains timezone or offset information, and the `timezone` argument is also passed, the created *DateTime* will be converted to the new `timezone`, otherwise the `timezone` will be used during date creation.
+
+The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
 ```javascript
 const date = DateTime.fromFormat(formatString, dateString, timezone);
