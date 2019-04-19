@@ -754,7 +754,7 @@ Get the number of days in a year.
 - `year` is a number representing the year.
 
 ```javascript
-const daysInYear = DateTime.daysInYear();
+const daysInYear = DateTime.daysInYear(year);
 ```
 
 #### Is Leap Year?
@@ -764,7 +764,7 @@ Return *true* if the year is a leap year.
 - `year` is a number representing the year.
 
 ```javascript
-const isLeapYear = DateTime.isLeapYear();
+const isLeapYear = DateTime.isLeapYear(year);
 ```
 
 #### Weeks In ISO Year
@@ -802,7 +802,7 @@ Format the current interval to a relative time string.
 
 - `maxValues` is a number indicating the maximum values to output, and will default to *1*.
 
-Values are output in order of most significant to least significant (years first), where the value is greater or less than 0.
+Values are output in order of most significant to least significant (years first), where the value is not equal to *0*.
 
 ```javascript
 const relativeString = duration.toString(maxValues);
