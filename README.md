@@ -458,10 +458,13 @@ Get the name of the current timezone.
 const timezone = date.getTimezone();
 ```
 
-Set the name of the current timezone.
+Set the current timezone.
+
+- `timezone` is the name of the new timezone.
+- `adjust` is a boolean indicating whether to compensate for adjustments to the offset, and will default to *false*.
 
 ```javascript
-date.setTimezone(timezone);
+date.setTimezone(timezone, adjust);
 ```
 
 #### Timezone Abbreviation
