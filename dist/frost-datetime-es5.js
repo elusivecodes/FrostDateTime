@@ -2173,14 +2173,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         return 'UTC';
       }
 
-      return Object.keys(this._timezones).find(function (timezone) {
+      for (var timezone in this._timezones) {
         try {
           var tempDate = new DateTime(date, timezone);
-          return (abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset());
-        } catch (error) {
-          return;
-        }
-      });
+
+          if ((abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset())) {
+            return timezone;
+          }
+        } catch (error) {}
+      }
     }
   });
   /**
@@ -2766,8 +2767,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
    * Populate Timezones
    */
 
-  var _loop = function _loop() {
-    var timezone = _Object$keys[_i4];
+  var _loop = function _loop(timezone) {
     var parts = values[zones[timezone]].split('|'),
         abbr = parts.shift().split(';').map(function (a) {
       return a || 'LMT';
@@ -2787,8 +2787,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  for (var _i4 = 0, _Object$keys = Object.keys(zones); _i4 < _Object$keys.length; _i4++) {
-    _loop();
+  for (var timezone in zones) {
+    _loop(timezone);
   }
 
   return {

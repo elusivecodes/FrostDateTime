@@ -70,16 +70,17 @@ Object.assign(DateTime, {
             return 'UTC';
         }
 
-        return Object.keys(this._timezones)
-            .find(timezone => {
-                try {
-                    const tempDate = new DateTime(date, timezone);
-                    return (abbr === null || abbr === tempDate.getTimezoneAbbr())
-                        && (offset === null || offset === tempDate.getTimezoneOffset());
-                } catch (error) {
-                    return;
+        for (const timezone in this._timezones) {
+            try {
+                const tempDate = new DateTime(date, timezone);
+                if (
+                    (abbr === null || abbr === tempDate.getTimezoneAbbr()) &&
+                    (offset === null || offset === tempDate.getTimezoneOffset())
+                ) {
+                    return timezone;
                 }
-            });
+            } catch (error) { }
+        }
     }
 
 });

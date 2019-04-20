@@ -108,7 +108,7 @@ DateTime.prototype.setFullYear = DateTime.prototype.setYear;
  * Populate Timezones
  */
 
-for (const timezone of Object.keys(zones)) {
+for (const timezone in zones) {
     const parts = values[zones[timezone]].split('|'),
         abbr = parts.shift().split(';')
             .map(a => a || 'LMT'),
