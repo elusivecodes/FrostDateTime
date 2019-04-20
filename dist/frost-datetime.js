@@ -1995,7 +1995,8 @@
 
             let currentDate,
                 currentDay,
-                currentTimezone;
+                currentTimezone,
+                currentOffset;
 
             if (dateObject.timestamp) {
                 currentDate = dateObject.timestamp * 1000;
@@ -2047,8 +2048,9 @@
 
             if ('timezone' in dateObject) {
                 currentTimezone = dateObject.timezone;
+                currentOffset = dateObject.offset;
             } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-                currentTimezone = this._timezoneFromAbbrOffset(
+                [currentTimezone, currentOffset] = this._timezoneFromAbbrOffset(
                     currentDate,
                     'timezoneAbbr' in dateObject ?
                         dateObject.timezoneAbbr :
@@ -2057,6 +2059,7 @@
                         dateObject.offset :
                         null
                 );
+                dateObject.offset = currentOffset;
             }
 
             let date = new this(currentDate, currentTimezone || timezone);
@@ -2066,10 +2069,10 @@
             }
 
             // compensate for DST transitions
-            if ('offset' in dateObject) {
+            if (currentOffset) {
                 const offset = date.getTimezoneOffset();
-                if (offset !== dateObject.offset) {
-                    date.setTime(date.getTime() - (offset - dateObject.offset) * 60000);
+                if (offset !== currentOffset) {
+                    date.setTime(date.getTime() - (offset - currentOffset) * 60000);
                 }
             }
 
@@ -2150,26 +2153,36 @@
          * @returns {string} The timezone name.
          */
         _timezoneFromAbbrOffset(date, abbr = null, offset = null) {
-            if (abbr === 'UTC' || offset === 0) {
-                return 'UTC';
+            if (
+                (abbr === null || abbr === 'UTC') &&
+                (offset === null || offset === 0)
+            ) {
+                return ['UTC', 0];
             }
 
             const tempDate = new DateTime(date, 'UTC');
+            const tempDateDst = new DateTime(date, 'UTC');
+            tempDateDst.setTime(tempDateDst.getTime() - 3600000);
+
             for (const timezone in this._timezones) {
                 try {
-                    tempDate.setTimezone(tempDate, true);
-                    const dateOffset = tempDate.getTimezoneOffset();
-
-                    // compensate for DST transitions
-                    if (offset !== null && offset !== dateOffset) {
-                        tempDate.setTime(tempDate.getTime() - (dateOffset - offset) * 60000);
-                    }
+                    tempDate.setTimezone(timezone, true);
 
                     if (
                         (abbr === null || abbr === tempDate.getTimezoneAbbr()) &&
                         (offset === null || offset === tempDate.getTimezoneOffset())
                     ) {
-                        return timezone;
+                        return [timezone, tempDate.getTimezoneOffset()];
+                    }
+
+                    tempDateDst.setTimezone(timezone, true);
+
+                    if (
+                        tempDateDst.isDST() &&
+                        (abbr === null || abbr === tempDateDst.getTimezoneAbbr()) &&
+                        (offset === null || offset === tempDateDst.getTimezoneOffset())
+                    ) {
+                        return [timezone, tempDateDst.getTimezoneOffset()];
                     }
                 } catch (error) { }
             }

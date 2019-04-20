@@ -1,5 +1,13 @@
 "use strict";
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -2024,7 +2032,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {DateTime} A new DateTime object.
      */
     fromObject: function fromObject(dateObject, timezone) {
-      var currentDate, currentDay, currentTimezone;
+      var currentDate, currentDay, currentTimezone, currentOffset;
 
       if (dateObject.timestamp) {
         currentDate = dateObject.timestamp * 1000;
@@ -2066,8 +2074,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if ('timezone' in dateObject) {
         currentTimezone = dateObject.timezone;
+        currentOffset = dateObject.offset;
       } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-        currentTimezone = this._timezoneFromAbbrOffset(currentDate, 'timezoneAbbr' in dateObject ? dateObject.timezoneAbbr : null, 'offset' in dateObject ? dateObject.offset : null);
+        var _this$_timezoneFromAb = this._timezoneFromAbbrOffset(currentDate, 'timezoneAbbr' in dateObject ? dateObject.timezoneAbbr : null, 'offset' in dateObject ? dateObject.offset : null);
+
+        var _this$_timezoneFromAb2 = _slicedToArray(_this$_timezoneFromAb, 2);
+
+        currentTimezone = _this$_timezoneFromAb2[0];
+        currentOffset = _this$_timezoneFromAb2[1];
+        dateObject.offset = currentOffset;
       }
 
       var date = new this(currentDate, currentTimezone || timezone);
@@ -2077,11 +2092,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       } // compensate for DST transitions
 
 
-      if ('offset' in dateObject) {
+      if (currentOffset) {
         var offset = date.getTimezoneOffset();
 
-        if (offset !== dateObject.offset) {
-          date.setTime(date.getTime() - (offset - dateObject.offset) * 60000);
+        if (offset !== currentOffset) {
+          date.setTime(date.getTime() - (offset - currentOffset) * 60000);
         }
       }
 
@@ -2169,23 +2184,26 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var abbr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-      if (abbr === 'UTC' || offset === 0) {
-        return 'UTC';
+      if ((abbr === null || abbr === 'UTC') && (offset === null || offset === 0)) {
+        return ['UTC', 0];
       }
 
       var tempDate = new DateTime(date, 'UTC');
+      var tempDateDst = new DateTime(date, 'UTC');
+      tempDateDst.setTime(tempDateDst.getTime() - 3600000);
 
       for (var timezone in this._timezones) {
         try {
-          tempDate.setTimezone(tempDate, true);
-          var dateOffset = tempDate.getTimezoneOffset(); // compensate for DST transitions
-
-          if (offset !== null && offset !== dateOffset) {
-            tempDate.setTime(tempDate.getTime() - (dateOffset - offset) * 60000);
-          }
+          tempDate.setTimezone(timezone, true);
 
           if ((abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset())) {
-            return timezone;
+            return [timezone, tempDate.getTimezoneOffset()];
+          }
+
+          tempDateDst.setTimezone(timezone, true);
+
+          if (tempDateDst.isDST() && (abbr === null || abbr === tempDateDst.getTimezoneAbbr()) && (offset === null || offset === tempDateDst.getTimezoneOffset())) {
+            return [timezone, tempDateDst.getTimezoneOffset()];
           }
         } catch (error) {}
       }

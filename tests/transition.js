@@ -44,4 +44,24 @@ assert.equal(
     str2
 );
 
+const format2 = 'd/m/Y h:i:s T';
+
+const str5 = '07/04/2019 02:01:00 ACST';
+assert.equal(
+    DateTime.fromFormat(format2, str5).format(format2),
+    str5
+);
+
+const str6 = '07/04/2019 03:01:00 ACST';
+assert.equal(
+    DateTime.fromFormat(format2, str6).format(format2),
+    str6
+);
+
+const str7 = '07/04/2019 02:01:00 ACDT';
+assert.equal(
+    DateTime.fromFormat(format2, str7).format(format2),
+    str7
+);
+
 console.log('\x1b[32m', 'passed');

@@ -104,7 +104,8 @@ Object.assign(DateTime, {
 
         let currentDate,
             currentDay,
-            currentTimezone;
+            currentTimezone,
+            currentOffset;
 
         if (dateObject.timestamp) {
             currentDate = dateObject.timestamp * 1000;
@@ -156,8 +157,9 @@ Object.assign(DateTime, {
 
         if ('timezone' in dateObject) {
             currentTimezone = dateObject.timezone;
+            currentOffset = dateObject.offset;
         } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-            currentTimezone = this._timezoneFromAbbrOffset(
+            [currentTimezone, currentOffset] = this._timezoneFromAbbrOffset(
                 currentDate,
                 'timezoneAbbr' in dateObject ?
                     dateObject.timezoneAbbr :
@@ -166,6 +168,7 @@ Object.assign(DateTime, {
                     dateObject.offset :
                     null
             );
+            dateObject.offset = currentOffset;
         }
 
         let date = new this(currentDate, currentTimezone || timezone);
@@ -175,10 +178,10 @@ Object.assign(DateTime, {
         }
 
         // compensate for DST transitions
-        if ('offset' in dateObject) {
+        if (currentOffset) {
             const offset = date.getTimezoneOffset();
-            if (offset !== dateObject.offset) {
-                date.setTime(date.getTime() - (offset - dateObject.offset) * 60000);
+            if (offset !== currentOffset) {
+                date.setTime(date.getTime() - (offset - currentOffset) * 60000);
             }
         }
 
