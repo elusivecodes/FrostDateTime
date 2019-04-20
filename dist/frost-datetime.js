@@ -2154,9 +2154,17 @@
                 return 'UTC';
             }
 
+            const tempDate = new DateTime(date, 'UTC');
             for (const timezone in this._timezones) {
                 try {
-                    const tempDate = new DateTime(date, timezone);
+                    tempDate.setTimezone(tempDate, true);
+                    const dateOffset = tempDate.getTimezoneOffset();
+
+                    // compensate for DST transitions
+                    if (offset !== null && offset !== dateOffset) {
+                        tempDate.setTime(tempDate.getTime() - (dateOffset - offset) * 60000);
+                    }
+
                     if (
                         (abbr === null || abbr === tempDate.getTimezoneAbbr()) &&
                         (offset === null || offset === tempDate.getTimezoneOffset())

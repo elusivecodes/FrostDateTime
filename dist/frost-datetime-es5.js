@@ -2173,9 +2173,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         return 'UTC';
       }
 
+      var tempDate = new DateTime(date, 'UTC');
+
       for (var timezone in this._timezones) {
         try {
-          var tempDate = new DateTime(date, timezone);
+          tempDate.setTimezone(tempDate, true);
+          var dateOffset = tempDate.getTimezoneOffset(); // compensate for DST transitions
+
+          if (offset !== null && offset !== dateOffset) {
+            tempDate.setTime(tempDate.getTime() - (dateOffset - offset) * 60000);
+          }
 
           if ((abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset())) {
             return timezone;
