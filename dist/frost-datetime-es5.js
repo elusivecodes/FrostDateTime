@@ -355,8 +355,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   function () {
     /**
      * New DateTime constructor.
-     * @param {number|number[]|string|Date|DateTime} [date] The date to parse.
-     * @param {string} [timezone] The timezone.
+     * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
+     * @param {null|string} [timezone] The timezone.
      * @returns {DateTime} A new DateTime object.
      */
     function DateTime() {
@@ -1219,7 +1219,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     /**
      * Set the ISO day of the week in current timezone (and optionally, day of the week).
      * @param {number} week The ISO week.
-     * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISOWeek: function setISOWeek(week) {
@@ -1237,8 +1237,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     /**
      * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
      * @param {number} year The ISO year.
-     * @param {number} [week] The ISO week.
-     * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @param {null|number} [week] The ISO week.
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISOYear: function setISOYear(year) {
@@ -1283,7 +1283,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     /**
      * Set the month in current timezone (and optionally, date).
      * @param {number} month The month. (0, 11)
-     * @param {number} [date] The date of the month.
+     * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setMonth: function setMonth(month) {
@@ -1378,8 +1378,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     /**
      * Set the year in current timezone (and optionally, month and date).
      * @param {number} year The year.
-     * @param {number} [month] The month. (0, 11)
-     * @param {number} [date] The date of the month.
+     * @param {null|number} [month] The month. (0, 11)
+     * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setYear: function setYear(year) {
@@ -2175,12 +2175,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     /**
      * Return a timezone for a date using an abbreviated name or offset.
-     * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-     * @param {string} [abbr] The timezone abbreviation.
-     * @param {number} [offset] The timezone offset.
+     * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
+     * @param {null|string} [abbr] The timezone abbreviation.
+     * @param {null|number} [offset] The timezone offset.
      * @returns {string} The timezone name.
      */
-    _timezoneFromAbbrOffset: function _timezoneFromAbbrOffset(date) {
+    _timezoneFromAbbrOffset: function _timezoneFromAbbrOffset() {
+      var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var abbr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 

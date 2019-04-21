@@ -6,8 +6,8 @@ class DateTime {
 
     /**
      * New DateTime constructor.
-     * @param {number|number[]|string|Date|DateTime} [date] The date to parse.
-     * @param {string} [timezone] The timezone.
+     * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
+     * @param {null|string} [timezone] The timezone.
      * @returns {DateTime} A new DateTime object.
      */
     constructor(date = null, timezone = null) {

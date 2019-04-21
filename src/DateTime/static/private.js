@@ -60,12 +60,12 @@ Object.assign(DateTime, {
 
     /**
      * Return a timezone for a date using an abbreviated name or offset.
-     * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-     * @param {string} [abbr] The timezone abbreviation.
-     * @param {number} [offset] The timezone offset.
+     * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
+     * @param {null|string} [abbr] The timezone abbreviation.
+     * @param {null|number} [offset] The timezone offset.
      * @returns {string} The timezone name.
      */
-    _timezoneFromAbbrOffset(date, abbr = null, offset = null) {
+    _timezoneFromAbbrOffset(date = null, abbr = null, offset = null) {
         if (
             (abbr === null || abbr === 'UTC') &&
             (offset === null || offset === 0)

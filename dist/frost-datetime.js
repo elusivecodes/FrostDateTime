@@ -307,8 +307,8 @@
 
         /**
          * New DateTime constructor.
-         * @param {number|number[]|string|Date|DateTime} [date] The date to parse.
-         * @param {string} [timezone] The timezone.
+         * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
+         * @param {null|string} [timezone] The timezone.
          * @returns {DateTime} A new DateTime object.
          */
         constructor(date = null, timezone = null) {
@@ -1070,7 +1070,7 @@
         /**
          * Set the ISO day of the week in current timezone (and optionally, day of the week).
          * @param {number} week The ISO week.
-         * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+         * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
          * @returns {DateTime} The DateTime object.
          */
         setISOWeek(week, day = null) {
@@ -1096,8 +1096,8 @@
         /**
          * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
          * @param {number} year The ISO year.
-         * @param {number} [week] The ISO week.
-         * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+         * @param {null|number} [week] The ISO week.
+         * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
          * @returns {DateTime} The DateTime object.
          */
         setISOYear(year, week = null, day = null) {
@@ -1154,7 +1154,7 @@
         /**
          * Set the month in current timezone (and optionally, date).
          * @param {number} month The month. (0, 11)
-         * @param {number} [date] The date of the month.
+         * @param {null|number} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
         setMonth(month, date = null) {
@@ -1257,8 +1257,8 @@
         /**
          * Set the year in current timezone (and optionally, month and date).
          * @param {number} year The year.
-         * @param {number} [month] The month. (0, 11)
-         * @param {number} [date] The date of the month.
+         * @param {null|number} [month] The month. (0, 11)
+         * @param {null|number} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
         setYear(year, month = null, date = null) {
@@ -2147,12 +2147,12 @@
 
         /**
          * Return a timezone for a date using an abbreviated name or offset.
-         * @param {number|number[]|string|Date|DateTime} date The date to use when testing.
-         * @param {string} [abbr] The timezone abbreviation.
-         * @param {number} [offset] The timezone offset.
+         * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
+         * @param {null|string} [abbr] The timezone abbreviation.
+         * @param {null|number} [offset] The timezone offset.
          * @returns {string} The timezone name.
          */
-        _timezoneFromAbbrOffset(date, abbr = null, offset = null) {
+        _timezoneFromAbbrOffset(date = null, abbr = null, offset = null) {
             if (
                 (abbr === null || abbr === 'UTC') &&
                 (offset === null || offset === 0)

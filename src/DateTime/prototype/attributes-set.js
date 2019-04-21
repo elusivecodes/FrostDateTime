@@ -91,7 +91,7 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the ISO day of the week in current timezone (and optionally, day of the week).
      * @param {number} week The ISO week.
-     * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISOWeek(week, day = null) {
@@ -117,8 +117,8 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
      * @param {number} year The ISO year.
-     * @param {number} [week] The ISO week.
-     * @param {number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @param {null|number} [week] The ISO week.
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISOYear(year, week = null, day = null) {
@@ -175,7 +175,7 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the month in current timezone (and optionally, date).
      * @param {number} month The month. (0, 11)
-     * @param {number} [date] The date of the month.
+     * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setMonth(month, date = null) {
@@ -278,8 +278,8 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the year in current timezone (and optionally, month and date).
      * @param {number} year The year.
-     * @param {number} [month] The month. (0, 11)
-     * @param {number} [date] The date of the month.
+     * @param {null|number} [month] The month. (0, 11)
+     * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setYear(year, month = null, date = null) {
