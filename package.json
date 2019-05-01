@@ -1,20 +1,19 @@
 {
     "name": "frostdatetime",
     "version": "1.0.0",
-    "description": "FrostDateTime",
+    "description": "FrostDateTime is a free, open-source date manipulation library for JavaScript.",
     "main": "build.js",
     "scripts": {
         "start": "node build.js",
         "test": "node test.js",
         "zones": "php generate-zones.php > src/DateTime/timezones.js"
     },
-    "author": "",
+    "author": "Elusive",
     "license": "MIT",
     "devDependencies": {
         "@babel/core": "^7.4.3",
         "@babel/preset-env": "^7.4.3",
         "filepath": "^1.1.0",
         "uglify-es": "^3.3.9"
-    },
-    "dependencies": {}
+    }
 }

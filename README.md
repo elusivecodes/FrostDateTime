@@ -5,7 +5,8 @@
 It features full support for PHP DateTime formats, as well as timezones.
 
 
-## Table of contents
+## Table Of Contents
+- [Installation](#installation)
 - [Date Creation](#date-creation)
 - [Date Formatting](#date-formatting)
 - [Date Attributes](#date-attributes)
@@ -19,7 +20,14 @@ It features full support for PHP DateTime formats, as well as timezones.
 
 
 
-## Date Creation
+## Installation
+
+```html
+<script type="text/javascript" src="/path/to/frost-datetime.min.js"></script>
+```
+
+
+### Date Creation
 
 - `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native [*Date.UTC*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) method, and will default to the current timestamp.
 - `timezone` is a string representing the timezone name of the date, and will default to the system timezone.
