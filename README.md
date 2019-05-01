@@ -167,13 +167,138 @@ const localeTimeString = date.toLocaleTimeString(locale, options);
 
 ## Date Attributes
 
-**Year**
+**Get Date**
+
+Get the date in current timezone.
+
+```javascript
+const date = date.getDate();
+```
+
+**Get Day**
+
+Get the day of the week in current timezone.
+
+The `day` returned will be between *0* (Sunday) and *6* (Saturday).
+
+```javascript
+const day = date.getDay();
+```
+
+**Get Day Name**
+
+Get the name of the day of the week in current timezone.
+
+- `type` can be either "*full*", "*short*" or "*min*", and will default to "*full*" if it is not set.
+
+```javascript
+const dayName = date.getDayName(type);
+```
+
+**Get Day Of Year**
+
+Get the day of the year in current timezone.
+
+The `dayOfYear` returned will be between *0* and *365*.
+
+```javascript
+const dayOfYear = date.getDayOfYear();
+```
+
+**Get Month**
+
+Get the month in current timezone.
+
+The `month` returned will be between *0* (January) and *11* (December).
+
+```javascript
+const month = date.getMonth();
+```
+
+**Get Month Name**
+
+Get the name of the month in current timezone.
+
+- `type` can be either "*full*" or "*short*", and will default to "*full*" if it is not set.
+
+```javascript
+const monthName = date.getMonthName(type);
+```
+
+**Get Quarter**
+
+Get the quarter of the year in current timezone.
+
+The `quarter` returned will be between *1* and *4*.
+
+```javascript
+const quarter = date.getQuarter();
+```
+
+**Get Year**
 
 Get the year in current timezone.
 
 ```javascript
 const year = date.getYear();
 ```
+
+**Set Date**
+
+Set the date in current timezone.
+
+- `date` is a number representing the date.
+
+```javascript
+date.setDate(date);
+```
+
+**Set Day**
+
+Set the day of the week in current timezone.
+
+- `day` is a number representing the day of the week (between *0* and *6*).
+
+```javascript
+date.setDay(day);
+```
+
+**Set Day Of Year**
+
+Set the day of the year in current timezone.
+
+- `dayOfYear` is a number representing the day of the year (between *0* and *365*).
+
+```javascript
+date.setDayOfYear(dayOfYear);
+```
+
+**Set Month**
+
+Set the month in current timezone.
+
+- `month` is a number representing the month (between *0* and *11*).
+- `date` is a number representing the date, and will default to the current value.
+
+If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
+
+To disable date clamping, set the property `DateTime.clampDates` to *false*.
+
+```javascript
+date.setMonth(month, date);
+```
+
+**Set Quarter**
+
+Set the quarter of the year in current timezone.
+
+- `quarter` is a number representing the quarter between *1* and *4*.
+
+```javascript
+date.setQuarter(quarter);
+```
+
+**Set Year**
 
 Set the year in current timezone.
 
@@ -189,119 +314,30 @@ To disable date clamping, set the property `DateTime.clampDates` to *false*.
 date.setYear(year, month, date);
 ```
 
-**Month**
-
-Get the month in current timezone.
-
-The `month` returned will be between *0* (January) and *11* (December).
-
-```javascript
-const month = date.getMonth();
-```
-
-Get the name of the month in current timezone.
-
-- `type` can be either "*full*" or "*short*", and will default to "*full*" if it is not set.
-
-```javascript
-const monthName = date.getMonthName(type);
-```
-
-Set the month in current timezone.
-
-- `month` is a number representing the month (between *0* and *11*).
-- `date` is a number representing the date, and will default to the current value.
-
-If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
-
-To disable date clamping, set the property `DateTime.clampDates` to *false*.
-
-```javascript
-date.setMonth(month, date);
-```
-
-**Date**
-
-Get the date in current timezone.
-
-```javascript
-const date = date.getDate();
-```
-
-Set the date in current timezone.
-
-- `date` is a number representing the date.
-
-```javascript
-date.setDate(date);
-```
-
-**Day Of Week**
-
-Get the day of the week in current timezone.
-
-The `day` returned will be between *0* (Sunday) and *6* (Saturday).
-
-```javascript
-const day = date.getDay();
-```
-
-Get the name of the day of the week in current timezone.
-
-- `type` can be either "*full*", "*short*" or "*min*", and will default to "*full*" if it is not set.
-
-```javascript
-const dayName = date.getDayName(type);
-```
-
-Set the day of the week in current timezone.
-
-- `day` is a number representing the day of the week (between *0* and *6*).
-
-```javascript
-date.setDay(day);
-```
-
-**Day Of Year**
-
-Get the day of the year in current timezone.
-
-The `dayOfYear` returned will be between *0* and *365*.
-
-```javascript
-const dayOfYear = date.getDayOfYear();
-```
-
-Set the day of the year in current timezone.
-
-- `dayOfYear` is a number representing the day of the year (between *0* and *365*).
-
-```javascript
-date.setDayOfYear(dayOfYear);
-```
-
-**Quarter**
-
-Get the quarter of the year in current timezone.
-
-The `quarter` returned will be between *1* and *4*.
-
-```javascript
-const quarter = date.getQuarter();
-```
-
-Set the quarter of the year in current timezone.
-
-- `quarter` is a number representing the quarter between *1* and *4*.
-
-```javascript
-date.setQuarter(quarter);
-```
-
 
 ## ISO Attributes
 
-**ISO Year**
+**Get ISO Day**
+
+Get the ISO day of the week in current timezone.
+
+The `isoDay` returned will be between *1* (Monday) and *7* (Sunday).
+
+```javascript
+const isoDay = date.getISODay();
+```
+
+**Get ISO Week**
+
+Get the ISO week in current timezone.
+
+The `isoWeek` returned will be between *1*  and *53* (week staring on Monday).
+
+```javascript
+const isoWeek = date.getISOWeek();
+```
+
+**Get ISO Year**
 
 Get the ISO year in current timezone.
 
@@ -310,6 +346,29 @@ This method is identical to `getYear()` except in cases where the ISO week belon
 ```javascript
 const isoYear = date.getISOYear();
 ```
+
+**Set ISO Day**
+
+Set the ISO day of the week in current timezone.
+
+- `isoDay` is a number representing the ISO day (between *1* and *7*).
+
+```javascript
+date.setISODay(isoDay);
+```
+
+**Set ISO Week**
+
+Set the ISO week in current timezone.
+
+- `isoWeek` is a number representing the ISO week.
+- `isoDay` is a number representing the ISO day (between *1* and *7*), and will default to the current value.
+
+```javascript
+date.setISOWeek(isoWeek, isoDay);
+```
+
+**Get ISO Year**
 
 Set the ISO year in current timezone.
 
@@ -321,45 +380,20 @@ Set the ISO year in current timezone.
 date.setISOYear(isoYear, isoWeek, isoDay);
 ```
 
-**ISO Week**
-
-Get the ISO week in current timezone.
-
-The `isoWeek` returned will be between *1*  and *53* (week staring on Monday).
-
-```javascript
-const isoWeek = date.getISOWeek();
-```
-
-Set the ISO week in current timezone.
-
-- `isoWeek` is a number representing the ISO week.
-- `isoDay` is a number representing the ISO day (between *1* and *7*), and will default to the current value.
-
-```javascript
-date.setISOWeek(isoWeek, isoDay);
-```
-
-**ISO Day**
-
-Get the ISO day of the week in current timezone.
-
-The `isoDay` returned will be between *1* (Monday) and *7* (Sunday).
-
-```javascript
-const isoDay = date.getISODay();
-```
-
-- `isoDay` is a number representing the ISO day (between *1* and *7*).
-
-```javascript
-date.setISODay(isoDay);
-```
-
 
 ## Time Attributes
 
-**Hours**
+**Get Beat (Internet Swatch Time)**
+
+Get the internet swatch time beat in current timezone.
+
+The `beat` returned will be between *0* and *999*.
+
+```javascript
+const beat = date.getBeat();
+```
+
+**Get Hours**
 
 Get the hours of the day in current timezone.
 
@@ -368,6 +402,48 @@ The `hours` returned will be between *0* and *23*.
 ```javascript
 const hours = date.getHours();
 ```
+
+**Get Milliseconds**
+
+Get the milliseconds of the second in current timezone.
+
+The `millis` returned will be between *0* and *999*.
+
+```javascript
+const millis = date.getMilliseconds();
+```
+
+**Get Minutes**
+
+Get the minutes of the hour in current timezone.
+
+The `minutes` returned will be between *0* and *59*.
+
+```javascript
+const minutes = date.getMinutes();
+```
+
+**Get Seconds**
+
+Get the seconds of the minute in current timezone.
+
+The `seconds` returned will be between *0* and *59*.
+
+```javascript
+const seconds = date.getSeconds();
+```
+
+**Set Beat (Internet Swatch Time)**
+
+Set the internet swatch time beat in current timezone.
+
+- `beat` is a number representing the beat of the day (between *0* and *999*).
+
+```javascript
+date.setBeat(beat);
+```
+
+**Set Hours**
 
 Set the hours of the day in current timezone.
 
@@ -380,15 +456,17 @@ Set the hours of the day in current timezone.
 date.setHours(hours, minutes, seconds, millis);
 ```
 
-**Minutes**
+**Set Milliseconds**
 
-Get the minutes of the hour in current timezone.
+Set the milliseconds of the second in current timezone.
 
-The `minutes` returned will be between *0* and *59*.
+- `millis` is a number representing the milliseconds of the second (between *0* and *999*).
 
 ```javascript
-const minutes = date.getMinutes();
+date.setMilliseconds(millis);
 ```
+
+**Set Minutes**
 
 Set the minutes of the hour in current timezone.
 
@@ -400,15 +478,7 @@ Set the minutes of the hour in current timezone.
 date.setMinutes(minutes, seconds, millis);
 ```
 
-**Seconds**
-
-Get the seconds of the minute in current timezone.
-
-The `seconds` returned will be between *0* and *59*.
-
-```javascript
-const seconds = date.getSeconds();
-```
+**Set Seconds**
 
 Set the seconds of the minute in current timezone.
 
@@ -419,52 +489,34 @@ Set the seconds of the minute in current timezone.
 date.setSeconds(seconds, millis);
 ```
 
-**Milliseconds**
-
-Get the milliseconds of the second in current timezone.
-
-The `millis` returned will be between *0* and *999*.
-
-```javascript
-const millis = date.getMilliseconds();
-```
-
-Set the milliseconds of the second in current timezone.
-
-- `millis` is a number representing the milliseconds of the second (between *0* and *999*).
-
-```javascript
-date.setMilliseconds(millis);
-```
-
-**Beat (Internet Swatch Time)**
-
-Get the internet swatch time beat in current timezone.
-
-The `beat` returned will be between *0* and *999*.
-
-```javascript
-const beat = date.getBeat();
-```
-
-Set the internet swatch time beat in current timezone.
-
-- `beat` is a number representing the beat of the day (between *0* and *999*).
-
-```javascript
-date.setBeat(beat);
-```
-
 
 ## Timezone Attributes
 
-**Timezone**
+**Get Timezone**
 
 Get the name of the current timezone.
 
 ```javascript
 const timezone = date.getTimezone();
 ```
+
+**Get Timezone Abbreviation**
+
+Get the abbreviated name of the current timezone.
+
+```javascript
+const abbreviation = date.getTimezoneAbbr();
+```
+
+**Get Timezone Offset**
+
+Get the UTC offset (in minutes) of the current timezone.
+
+```javascript
+const offset = date.getTimezoneOffset();
+```
+
+**Set Timezone**
 
 Set the current timezone.
 
@@ -475,26 +527,10 @@ Set the current timezone.
 date.setTimezone(timezone, adjust);
 ```
 
-**Timezone Abbreviation**
-
-Get the abbreviated name of the current timezone.
-
-```javascript
-const abbreviation = date.getTimezoneAbbr();
-```
-
-**Timezone Offset**
-
-Get the UTC offset (in minutes) of the current timezone.
-
-```javascript
-const offset = date.getTimezoneOffset();
-```
-
 
 ## Timestamps
 
-**In Milliseconds**
+**Get Milliseconds**
 
 Get the number of milliseconds since the UNIX epoch.
 
@@ -502,19 +538,23 @@ Get the number of milliseconds since the UNIX epoch.
 const time = date.getTime();
 ```
 
-Set the number of milliseconds since the UNIX epoch.
-
-```javascript
-date.setTime(time);
-```
-
-**In Seconds**
+**Get Seconds**
 
 Get the number of seconds since the UNIX epoch.
 
 ```javascript
 const timestamp = date.getTimestamp();
 ```
+
+**Set Milliseconds**
+
+Set the number of milliseconds since the UNIX epoch.
+
+```javascript
+date.setTime(time);
+```
+
+**Set Seconds**
 
 Set the number of seconds since the UNIX epoch.
 
