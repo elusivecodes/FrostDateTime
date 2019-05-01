@@ -27,7 +27,7 @@ It features full support for PHP DateTime formats, as well as timezones.
 ```
 
 
-### Date Creation
+## Date Creation
 
 - `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native [*Date.UTC*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) method, and will default to the current timestamp.
 - `timezone` is a string representing the timezone name of the date, and will default to the system timezone.
@@ -36,7 +36,7 @@ It features full support for PHP DateTime formats, as well as timezones.
 const date = new DateTime(date, timezone);
 ```
 
-#### Immutable DateTime
+**Immutable DateTime**
 
 By default, *DateTime* objects are mutable, but if you wish to create an immutable reference you can use the following syntax.
 
@@ -46,7 +46,7 @@ Immutable *DateTime* objects return a new *DateTimeImmutable* whenever they are 
 const date = new DateTimeImmutable(date, timezone);
 ```
 
-#### From Format
+**From Format**
 
 If you wish to parse a date string and you know the exact format, you can use the `fromFormat` static method.
 
@@ -67,7 +67,7 @@ const date = DateTime.fromFormat(formatString, dateString, timezone);
 
 ## Date Formatting
 
-#### Format
+**Format**
 
 Once you have created a *DateTime* object, you can get a string representation using a specific format with the `format` method.
 
@@ -79,7 +79,7 @@ This method is fully compatible with the PHP [date](http://php.net/manual/en/fun
 const dateString = date.format(formatString);
 ```
 
-#### To String
+**To String**
 
 Format the current date using "*D M d Y H:i:s O (e)*".
 
@@ -87,7 +87,7 @@ Format the current date using "*D M d Y H:i:s O (e)*".
 const string = date.toString();
 ```
 
-#### To Date String
+**To Date String**
 
 Format the current date using "*D M d Y*".
 
@@ -95,7 +95,7 @@ Format the current date using "*D M d Y*".
 const dateString = date.toDateString();
 ```
 
-#### To ISO String
+**To ISO String**
 
 Format the current date using "*Y-m-d\TH:i:s.vP*".
 
@@ -103,7 +103,7 @@ Format the current date using "*Y-m-d\TH:i:s.vP*".
 const isoString = date.toISOString();
 ```
 
-#### To Time String
+**To Time String**
 
 Format the current date using "*H:i:s O (e)*".
 
@@ -111,7 +111,7 @@ Format the current date using "*H:i:s O (e)*".
 const timeString = date.toTimeString();
 ```
 
-#### To UTC String
+**To UTC String**
 
 Format the current date in UTC timezone using "*D M d Y H:i:s O (e)*".
 
@@ -119,7 +119,7 @@ Format the current date in UTC timezone using "*D M d Y H:i:s O (e)*".
 const utcString = date.toUTCString();
 ```
 
-#### To Locale String
+**To Locale String**
 
 Format the current date using *Date*'s native *toLocaleString* method.
 
@@ -134,7 +134,7 @@ If a timezone is not specified in options, the timezone of the *DateTime* will b
 const localeString = date.toLocaleString(locale, options);
 ```
 
-#### To Locale Date String
+**To Locale Date String**
 
 Format the current date using *Date*'s native *toLocaleDateString* method.
 
@@ -149,7 +149,7 @@ If a timezone is not specified in options, the timezone of the *DateTime* will b
 const localeDateString = date.toLocaleDateString(locale, options);
 ```
 
-#### To Locale Time String
+**To Locale Time String**
 
 Format the current date using *Date*'s native *toLocaleTimeString* method.
 
@@ -167,7 +167,7 @@ const localeTimeString = date.toLocaleTimeString(locale, options);
 
 ## Date Attributes
 
-#### Year
+**Year**
 
 Get the year in current timezone.
 
@@ -189,7 +189,7 @@ To disable date clamping, set the property `DateTime.clampDates` to *false*.
 date.setYear(year, month, date);
 ```
 
-#### Month
+**Month**
 
 Get the month in current timezone.
 
@@ -220,7 +220,7 @@ To disable date clamping, set the property `DateTime.clampDates` to *false*.
 date.setMonth(month, date);
 ```
 
-#### Date
+**Date**
 
 Get the date in current timezone.
 
@@ -236,7 +236,7 @@ Set the date in current timezone.
 date.setDate(date);
 ```
 
-#### Day Of Week
+**Day Of Week**
 
 Get the day of the week in current timezone.
 
@@ -262,7 +262,7 @@ Set the day of the week in current timezone.
 date.setDay(day);
 ```
 
-#### Day Of Year
+**Day Of Year**
 
 Get the day of the year in current timezone.
 
@@ -280,7 +280,7 @@ Set the day of the year in current timezone.
 date.setDayOfYear(dayOfYear);
 ```
 
-#### Quarter
+**Quarter**
 
 Get the quarter of the year in current timezone.
 
@@ -301,7 +301,7 @@ date.setQuarter(quarter);
 
 ## ISO Attributes
 
-#### ISO Year
+**ISO Year**
 
 Get the ISO year in current timezone.
 
@@ -321,7 +321,7 @@ Set the ISO year in current timezone.
 date.setISOYear(isoYear, isoWeek, isoDay);
 ```
 
-#### ISO Week
+**ISO Week**
 
 Get the ISO week in current timezone.
 
@@ -340,7 +340,7 @@ Set the ISO week in current timezone.
 date.setISOWeek(isoWeek, isoDay);
 ```
 
-#### ISO Day
+**ISO Day**
 
 Get the ISO day of the week in current timezone.
 
@@ -359,7 +359,7 @@ date.setISODay(isoDay);
 
 ## Time Attributes
 
-#### Hours
+**Hours**
 
 Get the hours of the day in current timezone.
 
@@ -380,7 +380,7 @@ Set the hours of the day in current timezone.
 date.setHours(hours, minutes, seconds, millis);
 ```
 
-#### Minutes
+**Minutes**
 
 Get the minutes of the hour in current timezone.
 
@@ -400,7 +400,7 @@ Set the minutes of the hour in current timezone.
 date.setMinutes(minutes, seconds, millis);
 ```
 
-#### Seconds
+**Seconds**
 
 Get the seconds of the minute in current timezone.
 
@@ -419,7 +419,7 @@ Set the seconds of the minute in current timezone.
 date.setSeconds(seconds, millis);
 ```
 
-#### Milliseconds
+**Milliseconds**
 
 Get the milliseconds of the second in current timezone.
 
@@ -437,7 +437,7 @@ Set the milliseconds of the second in current timezone.
 date.setMilliseconds(millis);
 ```
 
-#### Beat (Internet Swatch Time)
+**Beat (Internet Swatch Time)**
 
 Get the internet swatch time beat in current timezone.
 
@@ -458,7 +458,7 @@ date.setBeat(beat);
 
 ## Timezone Attributes
 
-#### Timezone
+**Timezone**
 
 Get the name of the current timezone.
 
@@ -475,7 +475,7 @@ Set the current timezone.
 date.setTimezone(timezone, adjust);
 ```
 
-#### Timezone Abbreviation
+**Timezone Abbreviation**
 
 Get the abbreviated name of the current timezone.
 
@@ -483,7 +483,7 @@ Get the abbreviated name of the current timezone.
 const abbreviation = date.getTimezoneAbbr();
 ```
 
-#### Timezone Offset
+**Timezone Offset**
 
 Get the UTC offset (in minutes) of the current timezone.
 
@@ -494,7 +494,7 @@ const offset = date.getTimezoneOffset();
 
 ## Timestamps
 
-#### In Milliseconds
+**In Milliseconds**
 
 Get the number of milliseconds since the UNIX epoch.
 
@@ -508,7 +508,7 @@ Set the number of milliseconds since the UNIX epoch.
 date.setTime(time);
 ```
 
-#### In Seconds
+**In Seconds**
 
 Get the number of seconds since the UNIX epoch.
 
@@ -525,7 +525,7 @@ date.setTimestamp(timestamp);
 
 ## Manipulation
 
-#### Add
+**Add**
 
 Add a duration to the date.
 
@@ -535,7 +535,7 @@ Add a duration to the date.
 date.add(duration);
 ```
 
-#### Subtract
+**Subtract**
 
 Subtract a duration from the date.
 
@@ -545,7 +545,7 @@ Subtract a duration from the date.
 date.sub(duration);
 ```
 
-#### Start Of Year
+**Start Of Year**
 
 Set the date to the first millisecond of the year in current timezone.
 
@@ -553,7 +553,7 @@ Set the date to the first millisecond of the year in current timezone.
 date.startOfYear();
 ```
 
-#### End Of Year
+**End Of Year**
 
 Set the date to the last millisecond of the year in current timezone.
 
@@ -561,7 +561,7 @@ Set the date to the last millisecond of the year in current timezone.
 date.endOfYear();
 ```
 
-#### Start Of Month
+**Start Of Month**
 
 Set the date to the first millisecond of the month in current timezone.
 
@@ -569,7 +569,7 @@ Set the date to the first millisecond of the month in current timezone.
 date.startOfMonth();
 ```
 
-#### End Of Month
+**End Of Month**
 
 Set the date to the last millisecond of the month in current timezone.
 
@@ -577,7 +577,7 @@ Set the date to the last millisecond of the month in current timezone.
 date.endOfMonth();
 ```
 
-#### Start Of Week
+**Start Of Week**
 
 Set the date to the first millisecond of the week in current timezone.
 
@@ -585,7 +585,7 @@ Set the date to the first millisecond of the week in current timezone.
 date.startOfWeek();
 ```
 
-#### End Of Week
+**End Of Week**
 
 Set the date to the last millisecond of the week in current timezone.
 
@@ -593,7 +593,7 @@ Set the date to the last millisecond of the week in current timezone.
 date.endOfWeek();
 ```
 
-#### Start Of Day
+**Start Of Day**
 
 Set the date to the first millisecond of the day in current timezone.
 
@@ -601,7 +601,7 @@ Set the date to the first millisecond of the day in current timezone.
 date.startOfDay();
 ```
 
-#### End Of Day
+**End Of Day**
 
 Set the date to the last millisecond of the day in current timezone.
 
@@ -609,7 +609,7 @@ Set the date to the last millisecond of the day in current timezone.
 date.endOfDay();
 ```
 
-#### Start Of Hour
+**Start Of Hour**
 
 Set the date to the first millisecond of the hour in current timezone.
 
@@ -617,7 +617,7 @@ Set the date to the first millisecond of the hour in current timezone.
 date.startOfHour();
 ```
 
-#### End Of Hour
+**End Of Hour**
 
 Set the date to the last millisecond of the hour in current timezone.
 
@@ -625,7 +625,7 @@ Set the date to the last millisecond of the hour in current timezone.
 date.endOfHour();
 ```
 
-#### Start Of Minute
+**Start Of Minute**
 
 Set the date to the first millisecond of the minute in current timezone.
 
@@ -633,7 +633,7 @@ Set the date to the first millisecond of the minute in current timezone.
 date.startOfMinute();
 ```
 
-#### End Of Minute
+**End Of Minute**
 
 Set the date to the last millisecond of the minute in current timezone.
 
@@ -641,7 +641,7 @@ Set the date to the last millisecond of the minute in current timezone.
 date.endOfMinute();
 ```
 
-#### Start Of Second
+**Start Of Second**
 
 Set the date to the first millisecond of the second in current timezone.
 
@@ -649,7 +649,7 @@ Set the date to the first millisecond of the second in current timezone.
 date.startOfSecond();
 ```
 
-#### End Of Second
+**End Of Second**
 
 Set the date to the last millisecond of the second in current timezone.
 
@@ -660,7 +660,7 @@ date.endOfSecond();
 
 ## Utility Methods
 
-#### Clone
+**Clone**
 
 Create a new *DateTime* using the current date and timezone.
 
@@ -668,7 +668,7 @@ Create a new *DateTime* using the current date and timezone.
 const clone = date.clone();
 ```
 
-#### Date Suffix
+**Date Suffix**
 
 Get the ordinal suffix for the date of the month.
 
@@ -676,7 +676,7 @@ Get the ordinal suffix for the date of the month.
 const dateSuffix = date.dateSuffix();
 ```
 
-#### Days In Month
+**Days In Month**
 
 Get the number of days in the current month.
 
@@ -684,7 +684,7 @@ Get the number of days in the current month.
 const daysInMonth = date.daysInMonth();
 ```
 
-#### Days In Year
+**Days In Year**
 
 Get the number of days in the current year.
 
@@ -692,7 +692,7 @@ Get the number of days in the current year.
 const daysInYear = date.daysInYear();
 ```
 
-#### Difference
+**Difference**
 
 Get the difference between two Dates.
 
@@ -705,7 +705,7 @@ This method returns a new *DateInterval* object.
 const diff = date.diff(otherDate, absolute);
 ```
 
-#### Is DST?
+**Is DST?**
 
 Return *true* if the *DateTime* is in daylight savings.
 
@@ -713,7 +713,7 @@ Return *true* if the *DateTime* is in daylight savings.
 const isDST = date.isDST();
 ```
 
-#### Is Leap Year?
+**Is Leap Year?**
 
 Return *true* if the year is a leap year.
 
@@ -721,7 +721,7 @@ Return *true* if the year is a leap year.
 const isLeapYear = date.isLeapYear();
 ```
 
-#### Weeks In ISO Year
+**Weeks In ISO Year**
 
 Get the number of weeks in the current ISO year.
 
@@ -732,7 +732,7 @@ const weeksInISOYear = date.weeksInISOYear();
 
 ## Static Methods
 
-#### Day Of Year
+**Day Of Year**
 
 Get the day of the year for a year, month and date.
 
@@ -744,7 +744,7 @@ Get the day of the year for a year, month and date.
 const dayOfYear = DateTime.dayOfYear(year, month, date);
 ```
 
-#### Days In Month
+**Days In Month**
 
 Get the number of days in a month, from a year and month.
 
@@ -755,7 +755,7 @@ Get the number of days in a month, from a year and month.
 const daysInMonth = DateTime.daysInMonth(year, month);
 ```
 
-#### Days In Year
+**Days In Year**
 
 Get the number of days in a year.
 
@@ -765,7 +765,7 @@ Get the number of days in a year.
 const daysInYear = DateTime.daysInYear(year);
 ```
 
-#### Is Leap Year?
+**Is Leap Year?**
 
 Return *true* if the year is a leap year.
 
@@ -775,7 +775,7 @@ Return *true* if the year is a leap year.
 const isLeapYear = DateTime.isLeapYear(year);
 ```
 
-#### Weeks In ISO Year
+**Weeks In ISO Year**
 
 Get the number of ISO weeks in a year.
 
@@ -794,7 +794,7 @@ const weeksInISOYear = DateTime.weeksInISOYear(year);
 const duration = new DateInterval(interval);
 ```
 
-#### From String
+**From String**
 
 Create a new DateInterval from the relative parts of the string.
 
@@ -804,7 +804,7 @@ Create a new DateInterval from the relative parts of the string.
 const duration = DateInterval.fromString(time);
 ```
 
-#### To String
+**To String**
 
 Format the current interval to a relative time string.
 
@@ -816,7 +816,7 @@ Values are output in order of most significant to least significant (years first
 const relativeString = duration.toString(maxValues);
 ```
 
-#### Format
+**Format**
 
 Format the current interval with a PHP DateInterval format string.
 
