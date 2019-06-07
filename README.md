@@ -577,7 +577,7 @@ date.add(durationString);
 
 **Add Interval**
 
-Add a DateInterval to the date.
+Add a *DateInterval* to the date.
 
 - `interval` is a *DateInterval*.
 
@@ -709,7 +709,7 @@ date.sub(durationString);
 
 **Subtract Interval**
 
-Subtract a DateInterval from the date.
+Subtract a *DateInterval* from the date.
 
 - `interval` is a *DateInterval* object.
 
