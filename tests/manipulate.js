@@ -1,5 +1,8 @@
 const assert = require('assert').strict;
-const DateTime = require('../dist/frost-datetime.min').DateTime;
+const { DateTime, DateInterval } = require('../dist/frost-datetime.min');
+
+const oneYear = new DateInterval('P1Y');
+const oneMonth = new DateInterval('P1M');
 
 console.log('\x1b[0m');
 console.log('Testing add method');
@@ -8,9 +11,21 @@ assert.equal(new DateTime([2018, 0, 1]).add('1 month').getMonth(), 1);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
+console.log('Testing addInterval method');
+assert.equal(new DateTime([2018, 0, 1]).addInterval(oneYear).getYear(), 2019);
+assert.equal(new DateTime([2018, 0, 1]).addInterval(oneMonth).getMonth(), 1);
+console.log('\x1b[32m', 'passed');
+
+console.log('\x1b[0m');
 console.log('Testing sub method');
 assert.equal(new DateTime([2018, 0, 1]).sub('1 year').getYear(), 2017);
 assert.equal(new DateTime([2018, 0, 1]).sub('1 month').getMonth(), 11);
+console.log('\x1b[32m', 'passed');
+
+console.log('\x1b[0m');
+console.log('Testing subInterval method');
+assert.equal(new DateTime([2018, 0, 1]).subInterval(oneYear).getYear(), 2017);
+assert.equal(new DateTime([2018, 0, 1]).subInterval(oneMonth).getMonth(), 11);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');

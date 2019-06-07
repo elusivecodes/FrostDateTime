@@ -48,16 +48,25 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Modify the DateTime by an interval.
-     * @param {string|DateInterval} interval The DateInterval to modify using, or a date interval string.
+     * Modify the DateTime by a duration.
+     * @param {string} durationString The relative date string to modify the date by.
      * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
      * @return {DateTime} The DateTime object.
      */
-    _modify(interval, invert = false) {
-        if (interval === `${interval}`) {
-            interval = DateInterval.fromString(interval);
-        }
+    _modify(durationString, invert = false) {
+        return this._modifyInterval(
+            DateInterval.fromString(durationString),
+            invert
+        );
+    },
 
+    /**
+     * Modify the DateTime by a DateInterval.
+     * @param {DateInterval} interval The DateInterval to modify the date by.
+     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @return {DateTime} The DateTime object.
+     */
+    _modifyInterval(interval, invert = false) {
         let modify = 1;
 
         if (interval.invert) {

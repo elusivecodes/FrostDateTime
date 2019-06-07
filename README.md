@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It features full support for PHP DateTime formats, as well as timezones.
+It is a lightweight (~17kb gzipped) and modern library, and features full support for PHP DateTime formats, as well as timezones.
 
 
 ## Table Of Contents
@@ -128,7 +128,7 @@ Format the current date using *Date*'s native *toLocaleString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
 
-If a timezone is not specified in options, the timezone of the *DateTime* will be used.
+If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeString = date.toLocaleString(locale, options);
@@ -143,7 +143,7 @@ Format the current date using *Date*'s native *toLocaleDateString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
 
-If a timezone is not specified in options, the timezone of the *DateTime* will be used.
+If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeDateString = date.toLocaleDateString(locale, options);
@@ -158,7 +158,7 @@ Format the current date using *Date*'s native *toLocaleTimeString* method.
 
 For a full list of supported options, see the [DateTime.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
 
-If a timezone is not specified in options, the timezone of the *DateTime* will be used.
+If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
 ```javascript
 const localeTimeString = date.toLocaleTimeString(locale, options);
@@ -331,7 +331,7 @@ const isoDay = date.getISODay();
 
 Get the ISO week in current timezone.
 
-The `isoWeek` returned will be between *1*  and *53* (week staring on Monday).
+The `isoWeek` returned will be between *1*  and *53* (week starting on Monday).
 
 ```javascript
 const isoWeek = date.getISOWeek();
@@ -521,7 +521,7 @@ const offset = date.getTimezoneOffset();
 Set the current timezone.
 
 - `timezone` is the name of the new timezone, which can be either "*UTC*" or a supported value from the [IANA timezone database](https://www.iana.org/time-zones).
-- `adjust` is a boolean indicating whether to compensate for adjustments to the offset, and will default to *false*.
+- `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
 
 ```javascript
 date.setTimezone(timezone, adjust);
@@ -569,76 +569,20 @@ date.setTimestamp(timestamp);
 
 Add a duration to the date.
 
-- `duration` can be either a *DateInterval* object or a relative date string.
+- `durationString` is a relative date string.
 
 ```javascript
-date.add(duration);
+date.add(durationString);
 ```
 
-**Subtract**
+**Add Interval**
 
-Subtract a duration from the date.
+Add a DateInterval to the date.
 
-- `duration` can be either a *DateInterval* object or a relative date string.
-
-```javascript
-date.sub(duration);
-```
-
-**Start Of Year**
-
-Set the date to the first millisecond of the year in current timezone.
+- `interval` is a *DateInterval*.
 
 ```javascript
-date.startOfYear();
-```
-
-**End Of Year**
-
-Set the date to the last millisecond of the year in current timezone.
-
-```javascript
-date.endOfYear();
-```
-
-**Start Of Month**
-
-Set the date to the first millisecond of the month in current timezone.
-
-```javascript
-date.startOfMonth();
-```
-
-**End Of Month**
-
-Set the date to the last millisecond of the month in current timezone.
-
-```javascript
-date.endOfMonth();
-```
-
-**Start Of Week**
-
-Set the date to the first millisecond of the week in current timezone.
-
-```javascript
-date.startOfWeek();
-```
-
-**End Of Week**
-
-Set the date to the last millisecond of the week in current timezone.
-
-```javascript
-date.endOfWeek();
-```
-
-**Start Of Day**
-
-Set the date to the first millisecond of the day in current timezone.
-
-```javascript
-date.startOfDay();
+date.addInterval(interval);
 ```
 
 **End Of Day**
@@ -649,28 +593,12 @@ Set the date to the last millisecond of the day in current timezone.
 date.endOfDay();
 ```
 
-**Start Of Hour**
-
-Set the date to the first millisecond of the hour in current timezone.
-
-```javascript
-date.startOfHour();
-```
-
 **End Of Hour**
 
 Set the date to the last millisecond of the hour in current timezone.
 
 ```javascript
 date.endOfHour();
-```
-
-**Start Of Minute**
-
-Set the date to the first millisecond of the minute in current timezone.
-
-```javascript
-date.startOfMinute();
 ```
 
 **End Of Minute**
@@ -681,12 +609,12 @@ Set the date to the last millisecond of the minute in current timezone.
 date.endOfMinute();
 ```
 
-**Start Of Second**
+**End Of Month**
 
-Set the date to the first millisecond of the second in current timezone.
+Set the date to the last millisecond of the month in current timezone.
 
 ```javascript
-date.startOfSecond();
+date.endOfMonth();
 ```
 
 **End Of Second**
@@ -695,6 +623,98 @@ Set the date to the last millisecond of the second in current timezone.
 
 ```javascript
 date.endOfSecond();
+```
+
+**End Of Week**
+
+Set the date to the last millisecond of the week in current timezone.
+
+```javascript
+date.endOfWeek();
+```
+
+**End Of Year**
+
+Set the date to the last millisecond of the year in current timezone.
+
+```javascript
+date.endOfYear();
+```
+
+**Start Of Day**
+
+Set the date to the first millisecond of the day in current timezone.
+
+```javascript
+date.startOfDay();
+```
+
+**Start Of Hour**
+
+Set the date to the first millisecond of the hour in current timezone.
+
+```javascript
+date.startOfHour();
+```
+
+**Start Of Minute**
+
+Set the date to the first millisecond of the minute in current timezone.
+
+```javascript
+date.startOfMinute();
+```
+
+**Start Of Month**
+
+Set the date to the first millisecond of the month in current timezone.
+
+```javascript
+date.startOfMonth();
+```
+
+**Start Of Second**
+
+Set the date to the first millisecond of the second in current timezone.
+
+```javascript
+date.startOfSecond();
+```
+
+**Start Of Week**
+
+Set the date to the first millisecond of the week in current timezone.
+
+```javascript
+date.startOfWeek();
+```
+
+**Start Of Year**
+
+Set the date to the first millisecond of the year in current timezone.
+
+```javascript
+date.startOfYear();
+```
+
+**Subtract**
+
+Subtract a duration from the date.
+
+- `durationString` is a relative date string.
+
+```javascript
+date.sub(durationString);
+```
+
+**Subtract Interval**
+
+Subtract a DateInterval from the date.
+
+- `interval` is a *DateInterval* object.
+
+```javascript
+date.subInterval(interval);
 ```
 
 

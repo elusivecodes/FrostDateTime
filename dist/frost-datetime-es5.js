@@ -39,7 +39,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
- * FrostDateTime v1.0
+ * FrostDateTime v1.0.1
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function (global, factory) {
@@ -1406,11 +1406,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   Object.assign(DateTime.prototype, {
     /**
      * Add a duration to the date.
-     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
+     * @param {string} [durationString] The relative date string to add to the current date.
      * @returns {DateTime} The DateTime object.
      */
-    add: function add(interval) {
-      return this._modify(interval);
+    add: function add(durationString) {
+      return this._modify(durationString);
+    },
+
+    /**
+     * Add a DateInterval to the date.
+     * @param {DateInterval} [interval] The DateInterval to add to the current date.
+     * @returns {DateTime} The DateTime object.
+     */
+    addInterval: function addInterval(interval) {
+      return this._modifyInterval(interval);
     },
 
     /**
@@ -1527,11 +1536,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     /**
      * Subtract a duration from the date.
-     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @param {string} [durationString] The relative date string to subtract from the current date.
      * @returns {DateTime} The DateTime object.
      */
-    sub: function sub(interval) {
-      return this._modify(interval, true);
+    sub: function sub(durationString) {
+      return this._modify(durationString, true);
+    },
+
+    /**
+     * Subtract a DateInterval to the date.
+     * @param {DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @returns {DateTime} The DateTime object.
+     */
+    subInterval: function subInterval(interval) {
+      return this._modifyInterval(interval, true);
     }
   });
   /**
@@ -1726,18 +1744,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Modify the DateTime by an interval.
-     * @param {string|DateInterval} interval The DateInterval to modify using, or a date interval string.
+     * Modify the DateTime by a duration.
+     * @param {string} durationString The relative date string to modify the date by.
      * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
      * @return {DateTime} The DateTime object.
      */
-    _modify: function _modify(interval) {
+    _modify: function _modify(durationString) {
       var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return this._modifyInterval(DateInterval.fromString(durationString), invert);
+    },
 
-      if (interval === "".concat(interval)) {
-        interval = DateInterval.fromString(interval);
-      }
-
+    /**
+     * Modify the DateTime by a DateInterval.
+     * @param {DateInterval} interval The DateInterval to modify the date by.
+     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @return {DateTime} The DateTime object.
+     */
+    _modifyInterval: function _modifyInterval(interval) {
+      var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var modify = 1;
 
       if (interval.invert) {

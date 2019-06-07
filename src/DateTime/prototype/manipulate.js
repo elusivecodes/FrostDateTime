@@ -6,11 +6,20 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Add a duration to the date.
-     * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
+     * @param {string} [durationString] The relative date string to add to the current date.
      * @returns {DateTime} The DateTime object.
      */
-    add(interval) {
-        return this._modify(interval);
+    add(durationString) {
+        return this._modify(durationString);
+    },
+
+    /**
+     * Add a DateInterval to the date.
+     * @param {DateInterval} [interval] The DateInterval to add to the current date.
+     * @returns {DateTime} The DateTime object.
+     */
+    addInterval(interval) {
+        return this._modifyInterval(interval);
     },
 
     /**
@@ -139,11 +148,20 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Subtract a duration from the date.
-     * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @param {string} [durationString] The relative date string to subtract from the current date.
      * @returns {DateTime} The DateTime object.
      */
-    sub(interval) {
-        return this._modify(interval, true);
+    sub(durationString) {
+        return this._modify(durationString, true);
+    },
+
+    /**
+     * Subtract a DateInterval to the date.
+     * @param {DateInterval} [interval] The DateInterval to subtract from the current date.
+     * @returns {DateTime} The DateTime object.
+     */
+    subInterval(interval) {
+        return this._modifyInterval(interval, true);
     }
 
 });

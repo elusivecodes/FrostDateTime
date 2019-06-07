@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v1.0
+ * FrostDateTime v1.0.1
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -1297,11 +1297,20 @@
 
         /**
          * Add a duration to the date.
-         * @param {string|DateInterval} [interval] The DateInterval to add to the current date, or a date interval string.
+         * @param {string} [durationString] The relative date string to add to the current date.
          * @returns {DateTime} The DateTime object.
          */
-        add(interval) {
-            return this._modify(interval);
+        add(durationString) {
+            return this._modify(durationString);
+        },
+
+        /**
+         * Add a DateInterval to the date.
+         * @param {DateInterval} [interval] The DateInterval to add to the current date.
+         * @returns {DateTime} The DateTime object.
+         */
+        addInterval(interval) {
+            return this._modifyInterval(interval);
         },
 
         /**
@@ -1430,11 +1439,20 @@
 
         /**
          * Subtract a duration from the date.
-         * @param {string|DateInterval} [interval] The DateInterval to subtract from the current date.
+         * @param {string} [durationString] The relative date string to subtract from the current date.
          * @returns {DateTime} The DateTime object.
          */
-        sub(interval) {
-            return this._modify(interval, true);
+        sub(durationString) {
+            return this._modify(durationString, true);
+        },
+
+        /**
+         * Subtract a DateInterval to the date.
+         * @param {DateInterval} [interval] The DateInterval to subtract from the current date.
+         * @returns {DateTime} The DateTime object.
+         */
+        subInterval(interval) {
+            return this._modifyInterval(interval, true);
         }
 
     });
@@ -1655,16 +1673,25 @@
         },
 
         /**
-         * Modify the DateTime by an interval.
-         * @param {string|DateInterval} interval The DateInterval to modify using, or a date interval string.
+         * Modify the DateTime by a duration.
+         * @param {string} durationString The relative date string to modify the date by.
          * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
          * @return {DateTime} The DateTime object.
          */
-        _modify(interval, invert = false) {
-            if (interval === `${interval}`) {
-                interval = DateInterval.fromString(interval);
-            }
+        _modify(durationString, invert = false) {
+            return this._modifyInterval(
+                DateInterval.fromString(durationString),
+                invert
+            );
+        },
 
+        /**
+         * Modify the DateTime by a DateInterval.
+         * @param {DateInterval} interval The DateInterval to modify the date by.
+         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+         * @return {DateTime} The DateTime object.
+         */
+        _modifyInterval(interval, invert = false) {
             let modify = 1;
 
             if (interval.invert) {
