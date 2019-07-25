@@ -21,7 +21,7 @@ class DateInterval {
         this.days = null;
         this.invert = false;
 
-        const match = interval.match(DateInterval.isoRegex);
+        const match = interval.match(DateInterval._isoRegExp);
 
         if (match) {
             if (match[1]) {
@@ -127,10 +127,10 @@ class DateInterval {
      */
     static fromString(time) {
         const interval = new this,
-            regex = new RegExp(DateInterval.stringRegex, 'gi');
+            regExp = new RegExp(DateInterval._stringRegExp, 'gi');
 
         let match;
-        while (match = regex.exec(time)) {
+        while (match = regExp.exec(time)) {
             const value = parseInt(match[1]);
 
             if (match[2]) {

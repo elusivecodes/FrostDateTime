@@ -14,7 +14,7 @@ DateTime.formatData = {
     // year
     Y: {
         value: 'year',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,4})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,4})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getFullYear())
     },
@@ -22,7 +22,7 @@ DateTime.formatData = {
     // year short
     y: {
         value: 'year',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => (value < 70 ? 2000 : 1900) + DateTime._parseNumber(value),
         output: datetime => {
             const year = datetime.getFullYear().toString();
@@ -56,7 +56,7 @@ DateTime.formatData = {
     // month
     m: {
         value: 'month',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value) - 1,
         output: datetime => DateTime._formatNumber((datetime.getMonth() + 1), 2)
     },
@@ -64,7 +64,7 @@ DateTime.formatData = {
     // month short
     n: {
         value: 'month',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
         input: value => DateTime._parseNumber(value) - 1,
         output: datetime => DateTime._formatNumber(datetime.getMonth() + 1)
     },
@@ -85,7 +85,7 @@ DateTime.formatData = {
 
     // day of year
     z: {
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,3})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,3})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getDayOfYear())
     },
@@ -93,7 +93,7 @@ DateTime.formatData = {
     // date
     d: {
         value: 'date',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getDate(), 2)
     },
@@ -101,7 +101,7 @@ DateTime.formatData = {
     // date short
     j: {
         value: 'date',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getDate())
     },
@@ -168,7 +168,7 @@ DateTime.formatData = {
     // hours (24)
     H: {
         value: 'hours',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getHours(), 2)
     },
@@ -176,7 +176,7 @@ DateTime.formatData = {
     // hours short (24)
     G: {
         value: 'hours',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getHours())
     },
@@ -184,7 +184,7 @@ DateTime.formatData = {
     // hours (12)
     h: {
         value: 'hours',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value) % 12,
         output: datetime => DateTime._formatNumber((datetime.getHours() % 12 || 12), 2)
     },
@@ -192,7 +192,7 @@ DateTime.formatData = {
     // hours short (12)
     g: {
         value: 'hours',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
         input: value => DateTime._parseNumber(value) % 12,
         output: datetime => DateTime._formatNumber(datetime.getHours() % 12 || 12)
     },
@@ -200,7 +200,7 @@ DateTime.formatData = {
     // minutes
     i: {
         value: 'minutes',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getMinutes(), 2)
     },
@@ -208,7 +208,7 @@ DateTime.formatData = {
     // seconds
     s: {
         value: 'seconds',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getSeconds(), 2)
     },
@@ -216,7 +216,7 @@ DateTime.formatData = {
     // microseconds
     u: {
         value: 'milliseconds',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,6})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,6})',
         input: value => DateTime._parseNumber(value) / 1000,
         output: datetime => DateTime._formatNumber(datetime.getMilliseconds() * 1000)
     },
@@ -244,7 +244,7 @@ DateTime.formatData = {
     // offset
     O: {
         value: 'offset',
-        regex: () => '([\\+\\-][' + DateTime.lang.numberRegex + ']{4})',
+        regex: () => '([\\+\\-][' + DateTime.lang.numberRegExp + ']{4})',
         input: value =>
             (
                 DateTime._parseNumber(value.slice(1, 3))
@@ -260,7 +260,7 @@ DateTime.formatData = {
     // offset colon
     P: {
         value: 'offset',
-        regex: () => '([\\+\\-][' + DateTime.lang.numberRegex + ']{2}\\:[' + DateTime.lang.numberRegex + ']{2})',
+        regex: () => '([\\+\\-][' + DateTime.lang.numberRegExp + ']{2}\\:[' + DateTime.lang.numberRegExp + ']{2})',
         input: value =>
             (
                 DateTime._parseNumber(value.slice(1, 3))
@@ -285,7 +285,7 @@ DateTime.formatData = {
     // offset seconds
     Z: {
         value: 'offset',
-        regex: () => '([' + DateTime.lang.numberRegex + ']{1,5})',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']{1,5})',
         input: value => DateTime._parseNumber(value) / 60,
         output: datetime => DateTime._formatNumber(datetime._offset * -60)
     },
@@ -305,7 +305,7 @@ DateTime.formatData = {
     // timestamp
     U: {
         value: 'timestamp',
-        regex: () => '([' + DateTime.lang.numberRegex + ']+)',
+        regex: () => '([' + DateTime.lang.numberRegExp + ']+)',
         input: value => DateTime._parseNumber(value),
         output: datetime => DateTime._formatNumber(datetime.getTime())
     },
@@ -329,7 +329,7 @@ DateTime.formatData = {
 
     // wildcards
     '*': {
-        regex: () => '([^' + DateTime._seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegex + ']*)'
+        regex: () => '([^' + DateTime._seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegExp + ']*)'
     },
 
     // reset

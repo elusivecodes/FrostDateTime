@@ -26,11 +26,11 @@ Object.assign(DateTime, {
             }
 
             const regex = this.formatData[char].regex,
-                regexp = (typeof regex === 'function' ?
+                regExp = (typeof regex === 'function' ?
                     regex(char) :
                     regex
                 ),
-                dateMatch = dateString.match(new RegExp('^' + regexp));
+                dateMatch = dateString.match(new RegExp(`^${regExp}`));
 
             if (!dateMatch) {
                 throw new Error(`Unmatched char in DateTime string: ${char}`);

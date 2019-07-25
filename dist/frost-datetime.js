@@ -37,7 +37,7 @@
             this.days = null;
             this.invert = false;
 
-            const match = interval.match(DateInterval.isoRegex);
+            const match = interval.match(DateInterval._isoRegExp);
 
             if (match) {
                 if (match[1]) {
@@ -143,10 +143,10 @@
          */
         static fromString(time) {
             const interval = new this,
-                regex = new RegExp(DateInterval.stringRegex, 'gi');
+                regExp = new RegExp(DateInterval._stringRegExp, 'gi');
 
             let match;
-            while (match = regex.exec(time)) {
+            while (match = regExp.exec(time)) {
                 const value = parseInt(match[1]);
 
                 if (match[2]) {
@@ -292,11 +292,11 @@
             s: ['second', 'seconds']
         },
 
-        // ISO RegEx
-        isoRegex: /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/,
+        // ISO RegExp
+        _isoRegExp: /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/,
 
-        // String RegEx
-        stringRegex: /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/
+        // String RegExp
+        _stringRegExp: /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/
 
     });
 
@@ -435,7 +435,7 @@
         // year
         Y: {
             value: 'year',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,4})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,4})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getFullYear())
         },
@@ -443,7 +443,7 @@
         // year short
         y: {
             value: 'year',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => (value < 70 ? 2000 : 1900) + DateTime._parseNumber(value),
             output: datetime => {
                 const year = datetime.getFullYear().toString();
@@ -477,7 +477,7 @@
         // month
         m: {
             value: 'month',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value) - 1,
             output: datetime => DateTime._formatNumber((datetime.getMonth() + 1), 2)
         },
@@ -485,7 +485,7 @@
         // month short
         n: {
             value: 'month',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
             input: value => DateTime._parseNumber(value) - 1,
             output: datetime => DateTime._formatNumber(datetime.getMonth() + 1)
         },
@@ -506,7 +506,7 @@
 
         // day of year
         z: {
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,3})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,3})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getDayOfYear())
         },
@@ -514,7 +514,7 @@
         // date
         d: {
             value: 'date',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getDate(), 2)
         },
@@ -522,7 +522,7 @@
         // date short
         j: {
             value: 'date',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getDate())
         },
@@ -589,7 +589,7 @@
         // hours (24)
         H: {
             value: 'hours',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getHours(), 2)
         },
@@ -597,7 +597,7 @@
         // hours short (24)
         G: {
             value: 'hours',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getHours())
         },
@@ -605,7 +605,7 @@
         // hours (12)
         h: {
             value: 'hours',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value) % 12,
             output: datetime => DateTime._formatNumber((datetime.getHours() % 12 || 12), 2)
         },
@@ -613,7 +613,7 @@
         // hours short (12)
         g: {
             value: 'hours',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,2})',
             input: value => DateTime._parseNumber(value) % 12,
             output: datetime => DateTime._formatNumber(datetime.getHours() % 12 || 12)
         },
@@ -621,7 +621,7 @@
         // minutes
         i: {
             value: 'minutes',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getMinutes(), 2)
         },
@@ -629,7 +629,7 @@
         // seconds
         s: {
             value: 'seconds',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{2})',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getSeconds(), 2)
         },
@@ -637,7 +637,7 @@
         // microseconds
         u: {
             value: 'milliseconds',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,6})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,6})',
             input: value => DateTime._parseNumber(value) / 1000,
             output: datetime => DateTime._formatNumber(datetime.getMilliseconds() * 1000)
         },
@@ -665,7 +665,7 @@
         // offset
         O: {
             value: 'offset',
-            regex: () => '([\\+\\-][' + DateTime.lang.numberRegex + ']{4})',
+            regex: () => '([\\+\\-][' + DateTime.lang.numberRegExp + ']{4})',
             input: value =>
                 (
                     DateTime._parseNumber(value.slice(1, 3))
@@ -681,7 +681,7 @@
         // offset colon
         P: {
             value: 'offset',
-            regex: () => '([\\+\\-][' + DateTime.lang.numberRegex + ']{2}\\:[' + DateTime.lang.numberRegex + ']{2})',
+            regex: () => '([\\+\\-][' + DateTime.lang.numberRegExp + ']{2}\\:[' + DateTime.lang.numberRegExp + ']{2})',
             input: value =>
                 (
                     DateTime._parseNumber(value.slice(1, 3))
@@ -706,7 +706,7 @@
         // offset seconds
         Z: {
             value: 'offset',
-            regex: () => '([' + DateTime.lang.numberRegex + ']{1,5})',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']{1,5})',
             input: value => DateTime._parseNumber(value) / 60,
             output: datetime => DateTime._formatNumber(datetime._offset * -60)
         },
@@ -726,7 +726,7 @@
         // timestamp
         U: {
             value: 'timestamp',
-            regex: () => '([' + DateTime.lang.numberRegex + ']+)',
+            regex: () => '([' + DateTime.lang.numberRegExp + ']+)',
             input: value => DateTime._parseNumber(value),
             output: datetime => DateTime._formatNumber(datetime.getTime())
         },
@@ -750,7 +750,7 @@
 
         // wildcards
         '*': {
-            regex: () => '([^' + DateTime._seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegex + ']*)'
+            regex: () => '([^' + DateTime._seperators.map(seperator => '\\' + seperator) + DateTime.lang.numberRegExp + ']*)'
         },
 
         // reset
@@ -1945,11 +1945,11 @@
                 }
 
                 const regex = this.formatData[char].regex,
-                    regexp = (typeof regex === 'function' ?
+                    regExp = (typeof regex === 'function' ?
                         regex(char) :
                         regex
                     ),
-                    dateMatch = dateString.match(new RegExp('^' + regexp));
+                    dateMatch = dateString.match(new RegExp(`^${regExp}`));
 
                 if (!dateMatch) {
                     throw new Error(`Unmatched char in DateTime string: ${char}`);
@@ -2342,7 +2342,7 @@
                 short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             },
-            numberRegex: '\\d',
+            numberRegExp: '\\d',
             numbers: false,
             ordinal: value => {
                 const j = value % 10;

@@ -8,7 +8,7 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { keys.push.apply(keys, Object.getOwnPropertySymbols(object)); } if (enumerableOnly) keys = keys.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -81,7 +81,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.f = 0;
       this.days = null;
       this.invert = false;
-      var match = interval.match(DateInterval.isoRegex);
+      var match = interval.match(DateInterval._isoRegExp);
 
       if (match) {
         if (match[1]) {
@@ -183,10 +183,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       key: "fromString",
       value: function fromString(time) {
         var interval = new this(),
-            regex = new RegExp(DateInterval.stringRegex, 'gi');
+            regExp = new RegExp(DateInterval._stringRegExp, 'gi');
         var match;
 
-        while (match = regex.exec(time)) {
+        while (match = regExp.exec(time)) {
           var value = parseInt(match[1]);
 
           if (match[2]) {
@@ -344,10 +344,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       i: ['minute', 'minutes'],
       s: ['second', 'seconds']
     },
-    // ISO RegEx
-    isoRegex: /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/,
-    // String RegEx
-    stringRegex: /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/
+    // ISO RegExp
+    _isoRegExp: /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/,
+    // String RegExp
+    _stringRegExp: /([\+\-]?\s*\d+)\s*(?:(years?)|(months?)|(fortnights?|forthnights?)|(weeks?)|(days?)|(hours?)|(minutes?|mins?)|(seconds?|secs?))/
   });
   /**
    * DateTime class
@@ -517,7 +517,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Y: {
       value: 'year',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,4})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,4})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -530,7 +530,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     y: {
       value: 'year',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return (value < 70 ? 2000 : 1900) + DateTime._parseNumber(value);
@@ -582,7 +582,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     m: {
       value: 'month',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) - 1;
@@ -595,7 +595,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     n: {
       value: 'month',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,2})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) - 1;
@@ -623,7 +623,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     // day of year
     z: {
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,3})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,3})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -636,7 +636,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     d: {
       value: 'date',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -649,7 +649,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     j: {
       value: 'date',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,2})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -751,7 +751,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     H: {
       value: 'hours',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -764,7 +764,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     G: {
       value: 'hours',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,2})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -777,7 +777,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     h: {
       value: 'hours',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) % 12;
@@ -790,7 +790,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     g: {
       value: 'hours',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,2})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) % 12;
@@ -803,7 +803,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     i: {
       value: 'minutes',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -816,7 +816,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     s: {
       value: 'seconds',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{2})';
+        return '([' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -829,7 +829,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     u: {
       value: 'milliseconds',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,6})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,6})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) / 1000;
@@ -867,7 +867,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     O: {
       value: 'offset',
       regex: function regex() {
-        return '([\\+\\-][' + DateTime.lang.numberRegex + ']{4})';
+        return '([\\+\\-][' + DateTime.lang.numberRegExp + ']{4})';
       },
       input: function input(value) {
         return (DateTime._parseNumber(value.slice(1, 3)) * 60 + DateTime._parseNumber(value.slice(3, 5))) * (value[0] === '-' ? 1 : -1);
@@ -880,7 +880,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     P: {
       value: 'offset',
       regex: function regex() {
-        return '([\\+\\-][' + DateTime.lang.numberRegex + ']{2}\\:[' + DateTime.lang.numberRegex + ']{2})';
+        return '([\\+\\-][' + DateTime.lang.numberRegExp + ']{2}\\:[' + DateTime.lang.numberRegExp + ']{2})';
       },
       input: function input(value) {
         return (DateTime._parseNumber(value.slice(1, 3)) * 60 + DateTime._parseNumber(value.slice(4, 6))) * (value[0] === '-' ? 1 : -1);
@@ -904,7 +904,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Z: {
       value: 'offset',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']{1,5})';
+        return '([' + DateTime.lang.numberRegExp + ']{1,5})';
       },
       input: function input(value) {
         return DateTime._parseNumber(value) / 60;
@@ -931,7 +931,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     U: {
       value: 'timestamp',
       regex: function regex() {
-        return '([' + DateTime.lang.numberRegex + ']+)';
+        return '([' + DateTime.lang.numberRegExp + ']+)';
       },
       input: function input(value) {
         return DateTime._parseNumber(value);
@@ -963,7 +963,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       regex: function regex() {
         return '([^' + DateTime._seperators.map(function (seperator) {
           return '\\' + seperator;
-        }) + DateTime.lang.numberRegex + ']*)';
+        }) + DateTime.lang.numberRegExp + ']*)';
       }
     },
     // reset
@@ -1998,8 +1998,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
 
         var regex = this.formatData[_char3].regex,
-            regexp = typeof regex === 'function' ? regex(_char3) : regex,
-            dateMatch = dateString.match(new RegExp('^' + regexp));
+            regExp = typeof regex === 'function' ? regex(_char3) : regex,
+            dateMatch = dateString.match(new RegExp("^".concat(regExp)));
 
         if (!dateMatch) {
           throw new Error("Unmatched char in DateTime string: ".concat(_char3));
@@ -2772,7 +2772,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         "short": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
       },
-      numberRegex: '\\d',
+      numberRegExp: '\\d',
       numbers: false,
       ordinal: function ordinal(value) {
         var j = value % 10;

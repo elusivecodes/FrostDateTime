@@ -50,7 +50,7 @@ Object.assign(DateTime, {
             short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         },
-        numberRegex: '\\d',
+        numberRegExp: '\\d',
         numbers: false,
         ordinal: value => {
             const j = value % 10;
