@@ -121,7 +121,7 @@ const utcString = date.toUTCString();
 
 **To Locale String**
 
-Format the current date using *Date*'s native *toLocaleString* method.
+Format the current date using *Date*'s native `toLocaleString()` method.
 
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
@@ -136,7 +136,7 @@ const localeString = date.toLocaleString(locale, options);
 
 **To Locale Date String**
 
-Format the current date using *Date*'s native *toLocaleDateString* method.
+Format the current date using *Date*'s native `toLocaleDateString()` method.
 
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
@@ -151,7 +151,7 @@ const localeDateString = date.toLocaleDateString(locale, options);
 
 **To Locale Time String**
 
-Format the current date using *Date*'s native *toLocaleTimeString* method.
+Format the current date using *Date*'s native `toLocaleTimeString()` method.
 
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
