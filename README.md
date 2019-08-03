@@ -126,7 +126,7 @@ Format the current date using *Date*'s native *toLocaleString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
+For a full list of supported options, see the [Date.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
 
 If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
@@ -141,7 +141,7 @@ Format the current date using *Date*'s native *toLocaleDateString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
+For a full list of supported options, see the [Date.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
 
 If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
@@ -156,7 +156,7 @@ Format the current date using *Date*'s native *toLocaleTimeString* method.
 - `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
 - `options` is an object containing options for formatting.
 
-For a full list of supported options, see the [DateTime.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
+For a full list of supported options, see the [Date.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
 
 If a timezone is not specified in the options, the timezone of the *DateTime* will be used.
 
@@ -848,6 +848,8 @@ const weeksInISOYear = DateTime.weeksInISOYear(year);
 
 ## Date Intervals
 
+A *DateInterval* represents a period of time (years, months, days, hours etc.), and can be created using the *DateTime* `diff()` method, from a string, or using the constructor.
+
 - `interval` is an [ISO-8601 duration string](https://en.wikipedia.org/wiki/ISO_8601#Durations).
 
 ```javascript
@@ -856,7 +858,7 @@ const duration = new DateInterval(interval);
 
 **From String**
 
-Create a new DateInterval from the relative parts of the string.
+Create a new *DateInterval* from the relative parts of the string.
 
 - `time` is a date string with relative parts, compatible with the PHP [DateInterval::createFromDateString](https://www.php.net/manual/en/dateinterval.createfromdatestring.php) method.
 
