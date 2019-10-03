@@ -5,7 +5,7 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Set the internet swatch time beat in current timezone.
+     * Set the internet swatch time beat in current timeZone.
      * @param {number} beat The internet swatch time beat.
      * @returns {DateTime} The DateTime object.
      */
@@ -23,46 +23,43 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date of the month in current timezone.
+     * Set the date of the month in current timeZone.
      * @param {number} date The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setDate(date) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCDate(date)
+            this._offsetDate.setUTCDate(date)
         );
     },
 
     /**
-     * Set the day of the week in current timezone.
+     * Set the day of the week in current timeZone.
      * @param {number} day The day of the week. (0 - Sunday, 6 - Saturday)
      * @returns {DateTime} The DateTime object.
      */
     setDay(day) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCDate(this.getDate() - this.getDay() + day)
+            this._offsetDate.setUTCDate(this.getDate() - this.getDay() + day)
         );
     },
 
     /**
-     * Set the day of the year in current timezone.
+     * Set the day of the year in current timeZone.
      * @param {number} day The day of the year. (1, 366)
      * @returns {DateTime} The DateTime object.
      */
     setDayOfYear(day) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCMonth(
-                    0,
-                    day
-                )
+            this._offsetDate.setUTCMonth(
+                0,
+                day
+            )
         );
     },
 
     /**
-     * Set the hours in current timezone (and optionally, minutes, seconds and milliseconds).
+     * Set the hours in current timeZone (and optionally, minutes, seconds and milliseconds).
      * @param {number} hours The hours. (0, 23)
      * @param {number} [minutes] The minutes. (0, 59)
      * @param {number} [seconds] The seconds. (0, 59)
@@ -71,25 +68,23 @@ Object.assign(DateTime.prototype, {
      */
     setHours(...args) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCHours(...args)
+            this._offsetDate.setUTCHours(...args)
         );
     },
 
     /**
-     * Set the ISO day of the week in current timezone.
+     * Set the ISO day of the week in current timeZone.
      * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISODay(day) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCDate(this.getDate() - this.getISODay() + day)
+            this._offsetDate.setUTCDate(this.getDate() - this.getISODay() + day)
         );
     },
 
     /**
-     * Set the ISO day of the week in current timezone (and optionally, day of the week).
+     * Set the ISO day of the week in current timeZone (and optionally, day of the week).
      * @param {number} week The ISO week.
      * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
@@ -99,23 +94,22 @@ Object.assign(DateTime.prototype, {
             day = this.getISODay();
         }
 
-        const tempDate = new Date(this._getOffsetTime());
-        tempDate.setUTCMonth(
+        this._offsetDate.setUTCMonth(
             0,
             4 + ((week - 1) * 7)
         );
 
         return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - DateTime._isoDay(tempDate.getUTCDay())
+            this._offsetDate.setUTCDate(
+                this._offsetDate.getUTCDate()
+                - DateTime._isoDay(this._offsetDate.getUTCDay())
                 + day
             )
         );
     },
 
     /**
-     * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
+     * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
      * @param {number} year The ISO year.
      * @param {null|number} [week] The ISO week.
      * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
@@ -130,36 +124,34 @@ Object.assign(DateTime.prototype, {
             day = this.getISODay();
         }
 
-        const tempDate = new Date(this._getOffsetTime());
-        tempDate.setUTCFullYear(
+        this._offsetDate.setUTCFullYear(
             year,
             0,
             4 + ((week - 1) * 7)
         );
 
         return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - DateTime._isoDay(tempDate.getUTCDay())
+            this._offsetDate.setUTCDate(
+                this._offsetDate.getUTCDate()
+                - DateTime._isoDay(this._offsetDate.getUTCDay())
                 + day
             )
         );
     },
 
     /**
-     * Set the milliseconds in current timezone.
+     * Set the milliseconds in current timeZone.
      * @param {number} milliseconds The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
     setMilliseconds(ms) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCMilliseconds(ms)
+            this._offsetDate.setUTCMilliseconds(ms)
         );
     },
 
     /**
-     * Set the minutes in current timezone (and optionally, seconds and milliseconds).
+     * Set the minutes in current timeZone (and optionally, seconds and milliseconds).
      * @param {number} minutes The minutes. (0, 59)
      * @param {number} [seconds] The seconds. (0, 59)
      * @param {number} [milliseconds] The milliseconds.
@@ -167,13 +159,12 @@ Object.assign(DateTime.prototype, {
      */
     setMinutes(...args) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCMinutes(...args)
+            this._offsetDate.setUTCMinutes(...args)
         );
     },
 
     /**
-     * Set the month in current timezone (and optionally, date).
+     * Set the month in current timeZone (and optionally, date).
      * @param {number} month The month. (0, 11)
      * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
@@ -190,36 +181,33 @@ Object.assign(DateTime.prototype, {
         }
 
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCMonth(
-                    month,
-                    date
-                )
+            this._offsetDate.setUTCMonth(
+                month,
+                date
+            )
         );
     },
 
     /**
-     * Set the quarter of the year in current timezone.
+     * Set the quarter of the year in current timeZone.
      * @param {number} quarter The quarter of the year. (1, 4)
      * @returns {DateTime} The DateTime object.
      */
     setQuarter(quarter) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCMonth(quarter * 3 - 3)
+            this._offsetDate.setUTCMonth(quarter * 3 - 3)
         );
     },
 
     /**
-     * Set the seconds in current timezone (and optionally, milliseconds).
+     * Set the seconds in current timeZone (and optionally, milliseconds).
      * @param {number} seconds The seconds. (0, 59)
      * @param {number} [milliseconds] The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
     setSeconds(...args) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCSeconds(...args)
+            this._offsetDate.setUTCSeconds(...args)
         );
     },
 
@@ -235,6 +223,7 @@ Object.assign(DateTime.prototype, {
         if (timestamp < this._transition.start || timestamp > this._transition.end) {
             this._getTransition();
         }
+        this._offsetDate.setTime(this._getOffsetTime());
 
         return this;
     },
@@ -249,16 +238,16 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the current timezone.
-     * @param {string} timezone The name of the timezone.
+     * Set the current timeZone.
+     * @param {string} timeZone The name of the timeZone.
      * @returns {DateTime} The DateTime object.
      */
-    setTimezone(timezone, adjust = false) {
-        if (!DateTime._timezones[timezone]) {
-            throw new Error('Invalid timezone supplied');
+    setTimeZone(timeZone, adjust = false) {
+        if (!DateTime._timeZones[timeZone]) {
+            throw new Error('Invalid timeZone supplied');
         }
 
-        this._timezone = timezone;
+        this._timeZone = timeZone;
         this._makeFormatter();
 
         const offset = this._offset;
@@ -276,7 +265,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the year in current timezone (and optionally, month and date).
+     * Set the year in current timeZone (and optionally, month and date).
      * @param {number} year The year.
      * @param {null|number} [month] The month. (0, 11)
      * @param {null|number} [date] The date of the month.
@@ -298,12 +287,11 @@ Object.assign(DateTime.prototype, {
         }
 
         return this._setOffsetTime(
-            new Date(this._getOffsetTime())
-                .setUTCFullYear(
-                    year,
-                    month,
-                    date
-                )
+            this._offsetDate.setUTCFullYear(
+                year,
+                month,
+                date
+            )
         );
     }
 

@@ -5,7 +5,7 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Get the internet swatch time beat in current timezone.
+     * Get the internet swatch time beat in current timeZone.
      * @returns {number} The internet swatch time beat.
      */
     getBeat() {
@@ -22,34 +22,23 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the date of the month in current timezone.
+     * Get the date of the month in current timeZone.
      * @returns {number} The date of the month.
      */
     getDate() {
-        return new Date(this._getOffsetTime())
-            .getUTCDate();
+        return this._offsetDate.getUTCDate();
     },
 
     /**
-     * Get the day of the week in current timezone.
+     * Get the day of the week in current timeZone.
      * @returns {number} The day of the week. (0 - Sunday, 6 - Saturday)
      */
     getDay() {
-        return new Date(this._getOffsetTime())
-            .getUTCDay();
+        return this._offsetDate.getUTCDay();
     },
 
     /**
-     * Get the name of the day of the week in current timezone.
-     * @param {string} [type=full] The type of day name to return.
-     * @returns {string} The name of the day of the week.
-     */
-    getDayName(type = 'full') {
-        return DateTime.lang.days[type][this.getDay()];
-    },
-
-    /**
-     * Get the day of the year in current timezone.
+     * Get the day of the year in current timeZone.
      * @returns {number} The day of the year. (1, 366)
      */
     getDayOfYear() {
@@ -61,16 +50,15 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the hours of the day in current timezone.
+     * Get the hours of the day in current timeZone.
      * @returns {number} The hours of the day. (0, 23)
      */
     getHours() {
-        return new Date(this._getOffsetTime())
-            .getUTCHours();
+        return this._offsetDate.getUTCHours();
     },
 
     /**
-     * Get the ISO day of the week in current timezone.
+     * Get the ISO day of the week in current timeZone.
      * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
      */
     getISODay() {
@@ -78,7 +66,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the ISO week in current timezone.
+     * Get the ISO week in current timeZone.
      * @returns {number} The ISO week. (1, 53)
      */
     getISOWeek() {
@@ -93,7 +81,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the ISO year in current timezone.
+     * Get the ISO year in current timeZone.
      * @returns {number} The ISO year.
      */
     getISOYear() {
@@ -106,43 +94,31 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the milliseconds in current timezone.
+     * Get the milliseconds in current timeZone.
      * @returns {number} The milliseconds.
      */
     getMilliseconds() {
-        return new Date(this._getOffsetTime())
-            .getUTCMilliseconds();
+        return this._offsetDate.getUTCMilliseconds();
     },
 
     /**
-     * Get the minutes in current timezone.
+     * Get the minutes in current timeZone.
      * @returns {number} The minutes. (0, 59)
      */
     getMinutes() {
-        return new Date(this._getOffsetTime())
-            .getUTCMinutes();
+        return this._offsetDate.getUTCMinutes();
     },
 
     /**
-     * Get the month in current timezone.
+     * Get the month in current timeZone.
      * @returns {number} The month. (0, 11)
      */
     getMonth() {
-        return new Date(this._getOffsetTime())
-            .getUTCMonth();
+        return this._offsetDate.getUTCMonth();
     },
 
     /**
-     * Get the name of the month in current timezone.
-     * @param {string} [type=full] The type of month name to return.
-     * @returns {string} The name of the month.
-     */
-    getMonthName(type = 'full') {
-        return DateTime.lang.months[type][this.getMonth()];
-    },
-
-    /**
-     * Get the quarter of the year in current timezone.
+     * Get the quarter of the year in current timeZone.
      * @returns {number} The quarter of the year. (1, 4)
      */
     getQuarter() {
@@ -150,12 +126,11 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the seconds in current timezone.
+     * Get the seconds in current timeZone.
      * @returns {number} The seconds. (0, 59)
      */
     getSeconds() {
-        return new Date(this._getOffsetTime())
-            .getUTCSeconds();
+        return this._offsetDate.getUTCSeconds();
     },
 
     /**
@@ -175,38 +150,37 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the name of the current timezone.
-     * @returns {string} The name of the current timezone.
+     * Get the name of the current timeZone.
+     * @returns {string} The name of the current timeZone.
      */
-    getTimezone() {
-        return this._timezone;
+    getTimeZone() {
+        return this._timeZone;
     },
 
     /**
-     * Get the abbreviated name of the current timezone.
-     * @returns {string} The abbreviated name of the current timezone.
+     * Get the abbreviated name of the current timeZone.
+     * @returns {string} The abbreviated name of the current timeZone.
      */
-    getTimezoneAbbr() {
+    getTimeZoneAbbr() {
         return this.isDST() ?
             this._transition.dst :
             this._transition.abbr;
     },
 
     /**
-     * Get the UTC offset (in minutes) of the current timezone.
-     * @returns {number} The UTC offset (in minutes) of the current timezone.
+     * Get the UTC offset (in minutes) of the current timeZone.
+     * @returns {number} The UTC offset (in minutes) of the current timeZone.
      */
-    getTimezoneOffset() {
+    getTimeZoneOffset() {
         return this._offset;
     },
 
     /**
-     * Get the year in current timezone.
+     * Get the year in current timeZone.
      * @returns {number} The year.
      */
     getYear() {
-        return new Date(this._getOffsetTime())
-            .getUTCFullYear();
+        return this._offsetDate.getUTCFullYear();
     }
 
 });

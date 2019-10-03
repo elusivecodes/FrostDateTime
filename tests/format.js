@@ -175,7 +175,7 @@ assert.equal(new DateTime([2018, 5, 30, 23, 0, 59, 750]).format('v'), '750');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
-console.log('Testing timezone');
+console.log('Testing timeZone');
 assert.equal(new DateTime([2018, 0, 1], 'UTC').format('e'), 'UTC');
 assert.equal(new DateTime([2018, 5, 30, 23, 0, 59, 750], 'Australia/Brisbane').format('e'), 'Australia/Brisbane');
 console.log('\x1b[32m', 'passed');

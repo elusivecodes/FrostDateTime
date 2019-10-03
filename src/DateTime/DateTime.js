@@ -7,10 +7,10 @@ class DateTime {
     /**
      * New DateTime constructor.
      * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
-     * @param {null|string} [timezone] The timezone.
+     * @param {null|string} [timeZone] The timeZone.
      * @returns {DateTime} A new DateTime object.
      */
-    constructor(date = null, timezone = null) {
+    constructor(date = null, timeZone = null) {
 
         let timestamp,
             adjustOffset = false;
@@ -24,7 +24,7 @@ class DateTime {
             timestamp = date;
         } else if (date === `${date}`) {
             timestamp = Date.parse(date);
-            timestamp -= new Date().getTimezoneOffset() * 60000;
+            timestamp -= new Date().getTimeZoneOffset() * 60000;
             adjustOffset = true;
         } else if (date instanceof Date || date instanceof DateTime) {
             timestamp = date.getTime();
@@ -32,18 +32,18 @@ class DateTime {
             throw new Error('Invalid date supplied');
         }
 
-        if (!timezone) {
+        if (!timeZone) {
             if (date instanceof DateTime) {
-                timezone = date.getTimezone();
+                timeZone = date.getTimeZone();
             } else {
-                timezone = DateTime.defaultTimezone;
+                timeZone = DateTime.defaultTimeZone;
             }
-        } else if (!DateTime._timezones[timezone]) {
-            throw new Error('Invalid timezone supplied');
+        } else if (!(timeZone in DateTime._timeZones)) {
+            throw new Error('Invalid timeZone supplied');
         }
 
         this._utcDate = new Date(timestamp);
-        this._timezone = timezone;
+        this._timeZone = timeZone;
         this.isValid = true;
 
         this._makeFormatter();
@@ -61,6 +61,7 @@ class DateTime {
         }
 
         this._getTransition();
+        this._offsetDate = new Date(this._getOffsetTime());
     }
 
     /**

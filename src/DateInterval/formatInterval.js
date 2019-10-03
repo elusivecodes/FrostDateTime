@@ -2,7 +2,7 @@
  * DateInterval Format Data
  */
 
-DateInterval.formatData = {
+DateInterval._formatData = {
 
     /* YEAR */
 

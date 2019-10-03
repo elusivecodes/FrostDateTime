@@ -44,30 +44,6 @@ assert.equal(
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
-console.log('Testing getDayName method');
-assert.equal(
-    new DateTime([2018, 1, 2])
-        .getDayName(),
-    'Friday'
-);
-assert.equal(
-    new DateTime([2015, 11, 31])
-        .getDayName(),
-    'Thursday'
-);
-assert.equal(
-    new DateTime([2018, 1, 2])
-        .getDayName('short'),
-    'Fri'
-);
-assert.equal(
-    new DateTime([2015, 11, 31])
-        .getDayName('short'),
-    'Thur'
-);
-console.log('\x1b[32m', 'passed');
-
-console.log('\x1b[0m');
 console.log('Testing getDayOfYear method');
 assert.equal(
     new DateTime([2018, 1, 2])
@@ -176,30 +152,6 @@ assert.equal(
     new DateTime([2015, 11, 31])
         .getMonth(),
     11
-);
-console.log('\x1b[32m', 'passed');
-
-console.log('\x1b[0m');
-console.log('Testing getMonthName method');
-assert.equal(
-    new DateTime([2018, 1, 2])
-        .getMonthName(),
-    'February'
-);
-assert.equal(
-    new DateTime([2015, 11, 31])
-        .getMonthName(),
-    'December'
-);
-assert.equal(
-    new DateTime([2018, 1, 2])
-        .getMonthName('short'),
-    'Feb'
-);
-assert.equal(
-    new DateTime([2015, 11, 31])
-        .getMonthName('short'),
-    'Dec'
 );
 console.log('\x1b[32m', 'passed');
 

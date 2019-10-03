@@ -125,27 +125,27 @@ assert.equal(DateTime.fromFormat('u', '750000').format('u'), '750000');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
-console.log('Testing timezone');
-assert.equal(DateTime.fromFormat('e', 'UTC').getTimezone(), 'UTC');
-assert.equal(DateTime.fromFormat('e', 'America/New_York').getTimezone(), 'America/New_York');
+console.log('Testing timeZone');
+assert.equal(DateTime.fromFormat('e', 'UTC').getTimeZone(), 'UTC');
+assert.equal(DateTime.fromFormat('e', 'America/New_York').getTimeZone(), 'America/New_York');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
-console.log('Testing timezone abbreviation');
-assert.equal(DateTime.fromFormat('T', 'UTC').getTimezone(), 'UTC');
-assert.equal(DateTime.fromFormat('T', 'AEST').getTimezone(), 'Australia/Brisbane');
+console.log('Testing timeZone abbreviation');
+assert.equal(DateTime.fromFormat('T', 'UTC').getTimeZone(), 'UTC');
+assert.equal(DateTime.fromFormat('T', 'AEST').getTimeZone(), 'Australia/Brisbane');
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing offset');
-assert.equal(DateTime.fromFormat('O', '+0000').getTimezoneOffset(), 0);
-assert.equal(DateTime.fromFormat('O', '+1000').getTimezoneOffset(), -600);
+assert.equal(DateTime.fromFormat('O', '+0000').getTimeZoneOffset(), 0);
+assert.equal(DateTime.fromFormat('O', '+1000').getTimeZoneOffset(), -600);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');
 console.log('Testing offset with colon');
-assert.equal(DateTime.fromFormat('P', '+00:00').getTimezoneOffset(), 0);
-assert.equal(DateTime.fromFormat('P', '+10:00').getTimezoneOffset(), -600);
+assert.equal(DateTime.fromFormat('P', '+00:00').getTimeZoneOffset(), 0);
+assert.equal(DateTime.fromFormat('P', '+10:00').getTimeZoneOffset(), -600);
 console.log('\x1b[32m', 'passed');
 
 console.log('\x1b[0m');

@@ -1,5 +1,5 @@
 /**
- * DateTime (Static) Internal
+ * DateTime (Static) Helpers
  */
 
 Object.assign(DateTime, {
@@ -59,13 +59,13 @@ Object.assign(DateTime, {
     },
 
     /**
-     * Return a timezone for a date using an abbreviated name or offset.
+     * Return a timeZone and offset for a date using an abbreviated name or offset.
      * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
-     * @param {null|string} [abbr] The timezone abbreviation.
-     * @param {null|number} [offset] The timezone offset.
-     * @returns {string} The timezone name.
+     * @param {null|string} [abbr] The timeZone abbreviation.
+     * @param {null|number} [offset] The timeZone offset.
+     * @returns {array} An array containing the timeZone name and offset.
      */
-    _timezoneFromAbbrOffset(date = null, abbr = null, offset = null) {
+    _timeZoneFromAbbrOffset(date = null, abbr = null, offset = null) {
         if (
             (abbr === null || abbr === 'UTC') &&
             (offset === null || offset === 0)
@@ -77,25 +77,25 @@ Object.assign(DateTime, {
         const tempDateDst = new DateTime(date, 'UTC');
         tempDateDst.setTime(tempDateDst.getTime() - 3600000);
 
-        for (const timezone in this._timezones) {
+        for (const timeZone in this._timeZones) {
             try {
-                tempDate.setTimezone(timezone, true);
+                tempDate.setTimeZone(timeZone, true);
 
                 if (
-                    (abbr === null || abbr === tempDate.getTimezoneAbbr()) &&
-                    (offset === null || offset === tempDate.getTimezoneOffset())
+                    (abbr === null || abbr === tempDate.getTimeZoneAbbr()) &&
+                    (offset === null || offset === tempDate.getTimeZoneOffset())
                 ) {
-                    return [timezone, tempDate.getTimezoneOffset()];
+                    return [timeZone, tempDate.getTimeZoneOffset()];
                 }
 
-                tempDateDst.setTimezone(timezone, true);
+                tempDateDst.setTimeZone(timeZone, true);
 
                 if (
                     tempDateDst.isDST() &&
-                    (abbr === null || abbr === tempDateDst.getTimezoneAbbr()) &&
-                    (offset === null || offset === tempDateDst.getTimezoneOffset())
+                    (abbr === null || abbr === tempDateDst.getTimeZoneAbbr()) &&
+                    (offset === null || offset === tempDateDst.getTimeZoneOffset())
                 ) {
-                    return [timezone, tempDateDst.getTimezoneOffset()];
+                    return [timeZone, tempDateDst.getTimeZoneOffset()];
                 }
             } catch (error) { }
         }

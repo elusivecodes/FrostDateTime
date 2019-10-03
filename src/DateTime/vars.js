@@ -13,8 +13,8 @@ Object.assign(DateTime, {
     // Default locale
     defaultLocale: resolvedOptions.locale,
 
-    // Default timezone
-    defaultTimezone: resolvedOptions.timeZone,
+    // Default timeZone
+    defaultTimeZone: resolvedOptions.timeZone,
 
     // Formats
     formats: {
@@ -92,8 +92,8 @@ Object.assign(DateTime, {
     // Seperators
     _seperators: [';', ':', '/', '.', ',', '-', '(', ')'],
 
-    // timezones
-    _timezones: {}
+    // timeZones
+    _timeZones: {}
 
 });
 
@@ -105,11 +105,11 @@ DateTime.prototype.getFullYear = DateTime.prototype.getYear;
 DateTime.prototype.setFullYear = DateTime.prototype.setYear;
 
 /**
- * Populate Timezones
+ * Populate TimeZones
  */
 
-for (const timezone in zones) {
-    const parts = values[zones[timezone]].split('|'),
+for (const timeZone in zones) {
+    const parts = values[zones[timeZone]].split('|'),
         abbr = parts.shift().split(';')
             .map(a => a || 'LMT'),
         transitions = parts.shift().split(';')
@@ -121,7 +121,7 @@ for (const timezone in zones) {
                 return data;
             });
 
-    DateTime._timezones[timezone] = transitions.map((transition, i) => ({
+    DateTime._timeZones[timeZone] = transitions.map((transition, i) => ({
         start: transition[0],
         end: i == transitions.length - 1 ?
             Number.MAX_VALUE :

@@ -8,73 +8,73 @@ Object.assign(DateTime, {
      * Create a new DateTime from a date string and format string.
      * @param {string} formatString The PHP date format string.
      * @param {string} dateString The date string to parse.
-     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @param {string} [timeZone] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromFormat(formatString, dateString, timezone) {
-        const data = {},
-            originalDateString = dateString;
+    fromFormat(formatString, dateString, timeZone) {
+        const originalDateString = dateString,
+            data = [...formatString].reduce(
+                (acc, char) => {
+                    if (this._seperators.includes(char)) {
+                        dateString = dateString.substring(1);
+                        return acc;
+                    }
 
-        for (const char of [...formatString]) {
-            if (this._seperators.includes(char)) {
-                dateString = dateString.substring(1);
-                continue;
-            }
+                    if (!this._formatData[char] || !this._formatData[char].regex) {
+                        throw new Error(`Invalid char in DateTime format: ${char}`);
+                    }
 
-            if (!this.formatData[char] || !this.formatData[char].regex) {
-                throw new Error(`Invalid char in DateTime format: ${char}`);
-            }
+                    const regex = this._formatData[char].regex,
+                        regExp = (typeof regex === 'function' ?
+                            regex(char) :
+                            regex
+                        ),
+                        dateMatch = dateString.match(new RegExp(`^${regExp}`));
 
-            const regex = this.formatData[char].regex,
-                regExp = (typeof regex === 'function' ?
-                    regex(char) :
-                    regex
-                ),
-                dateMatch = dateString.match(new RegExp(`^${regExp}`));
+                    if (!dateMatch) {
+                        throw new Error(`Unmatched char in DateTime string: ${char}`);
+                    }
 
-            if (!dateMatch) {
-                throw new Error(`Unmatched char in DateTime string: ${char}`);
-            }
+                    dateString = dateString.substring(dateMatch[1].length);
 
-            dateString = dateString.substring(dateMatch[1].length);
+                    if (['!', '|'].includes(char)) {
+                        const epoch = {
+                            year: 1970,
+                            month: 0,
+                            date: 1,
+                            hours: 0,
+                            pm: 0,
+                            minutes: 0,
+                            seconds: 0,
+                            milliseconds: 0
+                        };
 
-            if (['!', '|'].includes(char)) {
-                const epoch = {
-                    year: 1970,
-                    month: 0,
-                    date: 1,
-                    hours: 0,
-                    pm: 0,
-                    minutes: 0,
-                    seconds: 0,
-                    milliseconds: 0
-                };
+                        return Object.assign(
+                            acc,
+                            char === '!' ?
+                                epoch :
+                                {
+                                    ...epoch,
+                                    ...data
+                                }
+                        );
+                    }
 
-                Object.assign(
-                    data,
-                    char === '!' ?
-                        epoch :
-                        {
-                            ...epoch,
-                            ...data
-                        }
-                );
-            } else {
-                if (!this.formatData[char].input) {
-                    continue;
-                }
+                    if (this._formatData[char].input) {
+                        const value = this._formatData[char].value;
+                        acc[value] = this._formatData[char].input(dateMatch[1]);
+                    }
 
-                const value = this.formatData[char].value;
-                data[value] = this.formatData[char].input(dateMatch[1]);
-            }
-        }
-
-        const date = this.fromObject(data);
+                    return acc;
+                },
+                {}
+            ),
+            date = this.fromObject(data);
 
         date.isValid = date.format(formatString) === originalDateString;
 
-        if (timezone && timezone !== date.getTimezone()) {
-            date.setTimezone(timezone, true);
+        if (timeZone && timeZone !== date.getTimeZone()) {
+            date.setTimeZone(timeZone, true);
         }
 
         return date;
@@ -94,17 +94,17 @@ Object.assign(DateTime, {
      * @param {number} [dateObject.milliseconds] The milliseconds.
      * @param {Boolean} [dateObject.pm] Whether the hours are in PM.
      * @param {number} [dateObject.timestamp] The number of seconds since the UNIX epoch.
-     * @param {string} [dateObject.timezone] The timezone.
-     * @param {string} [dateObject.timezoneAbbr] The timezone abbreviation.
-     * @param {number} [dateObject.offset] The timezone offset.
-     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @param {string} [dateObject.timeZone] The timeZone.
+     * @param {string} [dateObject.timeZoneAbbr] The timeZone abbreviation.
+     * @param {number} [dateObject.offset] The timeZone offset.
+     * @param {string} [timeZone] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromObject(dateObject, timezone) {
+    fromObject(dateObject, timeZone) {
 
         let currentDate,
             currentDay,
-            currentTimezone,
+            currentTimeZone,
             currentOffset;
 
         if (dateObject.timestamp) {
@@ -155,14 +155,14 @@ Object.assign(DateTime, {
             ];
         }
 
-        if ('timezone' in dateObject) {
-            currentTimezone = dateObject.timezone;
+        if ('timeZone' in dateObject) {
+            currentTimeZone = dateObject.timeZone;
             currentOffset = dateObject.offset;
-        } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-            [currentTimezone, currentOffset] = this._timezoneFromAbbrOffset(
+        } else if ('offset' in dateObject || 'timeZoneAbbr' in dateObject) {
+            [currentTimeZone, currentOffset] = this._timeZoneFromAbbrOffset(
                 currentDate,
-                'timezoneAbbr' in dateObject ?
-                    dateObject.timezoneAbbr :
+                'timeZoneAbbr' in dateObject ?
+                    dateObject.timeZoneAbbr :
                     null,
                 'offset' in dateObject ?
                     dateObject.offset :
@@ -171,7 +171,7 @@ Object.assign(DateTime, {
             dateObject.offset = currentOffset;
         }
 
-        let date = new this(currentDate, currentTimezone || timezone);
+        let date = new this(currentDate, currentTimeZone || timeZone);
 
         if (currentDay) {
             date = date.setDay(currentDay);
@@ -179,14 +179,14 @@ Object.assign(DateTime, {
 
         // compensate for DST transitions
         if (currentOffset) {
-            const offset = date.getTimezoneOffset();
+            const offset = date.getTimeZoneOffset();
             if (offset !== currentOffset) {
                 date.setTime(date.getTime() - (offset - currentOffset) * 60000);
             }
         }
 
-        if (timezone && currentTimezone) {
-            date = date.setTimezone(timezone);
+        if (timeZone && currentTimeZone) {
+            date = date.setTimeZone(timeZone);
         }
 
         return date;

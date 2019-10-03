@@ -123,27 +123,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     _createClass(DateInterval, [{
       key: "format",
       value: function format(formatString) {
-        var output = '',
-            prefixed = false;
+        var _this = this;
 
-        for (var _i = 0, _arr = _toConsumableArray(formatString); _i < _arr.length; _i++) {
-          var _char = _arr[_i];
-
-          if (!prefixed && _char === '%') {
-            prefixed = true;
-            continue;
+        var escaped = false;
+        return _toConsumableArray(formatString).reduce(function (acc, _char) {
+          if (!escaped && _char === '%') {
+            escaped = true;
+          } else if (escaped || !DateInterval._formatData[_char]) {
+            acc += _char;
+            escaped = false;
+          } else {
+            acc += DateInterval._formatData[_char](_this);
           }
 
-          if (!prefixed || !DateInterval.formatData[_char]) {
-            output += _char;
-            prefixed = false;
-            continue;
-          }
-
-          output += DateInterval.formatData[_char](this);
-        }
-
-        return output;
+          return acc;
+        }, '');
       }
       /**
        * Format the current interval to a relative time string.
@@ -175,18 +169,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
       /**
        * Create a new DateInterval from the relative parts of the string.
-       * @param {string} time The date with relative parts.
+       * @param {string} durationString The date with relative parts.
        * @returns {DateInterval} A new DateInterval object.
        */
 
     }], [{
       key: "fromString",
-      value: function fromString(time) {
+      value: function fromString(durationString) {
         var interval = new this(),
             regExp = new RegExp(DateInterval._stringRegExp, 'gi');
         var match;
 
-        while (match = regExp.exec(time)) {
+        while (match = regExp.exec(durationString)) {
           var value = parseInt(match[1]);
 
           if (match[2]) {
@@ -240,7 +234,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
    */
 
 
-  DateInterval.formatData = {
+  DateInterval._formatData = {
     /* YEAR */
     Y: function Y(interval) {
       return DateInterval._formatNumber(interval.y, 2);
@@ -360,12 +354,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     /**
      * New DateTime constructor.
      * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
-     * @param {null|string} [timezone] The timezone.
+     * @param {null|string} [timeZone] The timeZone.
      * @returns {DateTime} A new DateTime object.
      */
     function DateTime() {
       var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var timezone = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var timeZone = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       _classCallCheck(this, DateTime);
 
@@ -381,7 +375,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         timestamp = date;
       } else if (date === "".concat(date)) {
         timestamp = Date.parse(date);
-        timestamp -= new Date().getTimezoneOffset() * 60000;
+        timestamp -= new Date().getTimeZoneOffset() * 60000;
         adjustOffset = true;
       } else if (date instanceof Date || date instanceof DateTime) {
         timestamp = date.getTime();
@@ -389,18 +383,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         throw new Error('Invalid date supplied');
       }
 
-      if (!timezone) {
+      if (!timeZone) {
         if (date instanceof DateTime) {
-          timezone = date.getTimezone();
+          timeZone = date.getTimeZone();
         } else {
-          timezone = DateTime.defaultTimezone;
+          timeZone = DateTime.defaultTimeZone;
         }
-      } else if (!DateTime._timezones[timezone]) {
-        throw new Error('Invalid timezone supplied');
+      } else if (!(timeZone in DateTime._timeZones)) {
+        throw new Error('Invalid timeZone supplied');
       }
 
       this._utcDate = new Date(timestamp);
-      this._timezone = timezone;
+      this._timeZone = timeZone;
       this.isValid = true;
 
       this._makeFormatter();
@@ -421,6 +415,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       this._getTransition();
+
+      this._offsetDate = new Date(this._getOffsetTime());
     }
     /**
      * Get the number of milliseconds since the UNIX epoch.
@@ -468,7 +464,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       key: "clone",
 
       /**
-       * Create a new DateTimeImmutable using the current date and timezone.
+       * Create a new DateTimeImmutable using the current date and timeZone.
        * @returns {DateTimeImmutable} A new DateTimeImmutable object.
        */
       value: function clone() {
@@ -483,18 +479,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }, {
       key: "setTime",
       value: function setTime(time) {
-        return new DateTimeImmutable(time, this._timezone);
+        return new DateTimeImmutable(time, this._timeZone);
       }
       /**
-       * Set the current timezone.
-       * @param {string} timezone The name of the timezone.
+       * Set the current timeZone.
+       * @param {string} timeZone The name of the timeZone.
        * @returns {DateTimeImmutable} A new DateTimeImmutable object.
        */
 
     }, {
-      key: "setTimezone",
-      value: function setTimezone(timezone) {
-        return new DateTimeImmutable(this, timezone);
+      key: "setTimeZone",
+      value: function setTimeZone(timeZone) {
+        return new DateTimeImmutable(this, timeZone);
       }
     }]);
 
@@ -505,7 +501,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
    */
 
 
-  DateTime.formatData = {
+  DateTime._formatData = {
     /* YEAR */
     // leap year
     L: {
@@ -560,7 +556,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
       },
       output: function output(datetime) {
-        return datetime.getMonthName();
+        return datetime.monthName();
       }
     },
     // month name short
@@ -575,7 +571,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
       },
       output: function output(datetime) {
-        return datetime.getMonthName('short');
+        return datetime.monthName('short');
       }
     },
     // month
@@ -691,7 +687,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
       },
       output: function output(datetime) {
-        return datetime.getDayName();
+        return datetime.dayName();
       }
     },
     // day name short
@@ -706,7 +702,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
       },
       output: function output(datetime) {
-        return datetime.getDayName('short');
+        return datetime.dayName('short');
       }
     },
 
@@ -846,15 +842,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /* TIMEZONE */
-    // timezone
+    // timeZone
     e: {
-      value: 'timezone',
+      value: 'timeZone',
       regex: '([\\w\\/]+)',
       input: function input(value) {
         return value;
       },
       output: function output(datetime) {
-        return datetime._timezone;
+        return datetime._timeZone;
       }
     },
     // daylight savings
@@ -889,15 +885,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         return (datetime._offset > 0 ? '-' : '+') + DateTime._formatNumber(Math.abs(datetime._offset / 60 | 0), 2) + ':' + DateTime._formatNumber(datetime._offset % 60, 2);
       }
     },
-    // timezone abbreviated
+    // timeZone abbreviated
     T: {
-      value: 'timezoneAbbr',
+      value: 'timeZoneAbbr',
       regex: '([A-Z]{1,5})',
       input: function input(value) {
         return value;
       },
       output: function output(datetime) {
-        return datetime.getTimezoneAbbr();
+        return datetime.getTimeZoneAbbr();
       }
     },
     // offset seconds
@@ -981,7 +977,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Object.assign(DateTime.prototype, {
     /**
-     * Get the internet swatch time beat in current timezone.
+     * Get the internet swatch time beat in current timeZone.
      * @returns {number} The internet swatch time beat.
      */
     getBeat: function getBeat() {
@@ -990,33 +986,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the date of the month in current timezone.
+     * Get the date of the month in current timeZone.
      * @returns {number} The date of the month.
      */
     getDate: function getDate() {
-      return new Date(this._getOffsetTime()).getUTCDate();
+      return this._offsetDate.getUTCDate();
     },
 
     /**
-     * Get the day of the week in current timezone.
+     * Get the day of the week in current timeZone.
      * @returns {number} The day of the week. (0 - Sunday, 6 - Saturday)
      */
     getDay: function getDay() {
-      return new Date(this._getOffsetTime()).getUTCDay();
+      return this._offsetDate.getUTCDay();
     },
 
     /**
-     * Get the name of the day of the week in current timezone.
-     * @param {string} [type=full] The type of day name to return.
-     * @returns {string} The name of the day of the week.
-     */
-    getDayName: function getDayName() {
-      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'full';
-      return DateTime.lang.days[type][this.getDay()];
-    },
-
-    /**
-     * Get the day of the year in current timezone.
+     * Get the day of the year in current timeZone.
      * @returns {number} The day of the year. (1, 366)
      */
     getDayOfYear: function getDayOfYear() {
@@ -1024,15 +1010,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the hours of the day in current timezone.
+     * Get the hours of the day in current timeZone.
      * @returns {number} The hours of the day. (0, 23)
      */
     getHours: function getHours() {
-      return new Date(this._getOffsetTime()).getUTCHours();
+      return this._offsetDate.getUTCHours();
     },
 
     /**
-     * Get the ISO day of the week in current timezone.
+     * Get the ISO day of the week in current timeZone.
      * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
      */
     getISODay: function getISODay() {
@@ -1040,7 +1026,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the ISO week in current timezone.
+     * Get the ISO week in current timeZone.
      * @returns {number} The ISO week. (1, 53)
      */
     getISOWeek: function getISOWeek() {
@@ -1051,7 +1037,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the ISO year in current timezone.
+     * Get the ISO year in current timeZone.
      * @returns {number} The ISO year.
      */
     getISOYear: function getISOYear() {
@@ -1059,41 +1045,31 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the milliseconds in current timezone.
+     * Get the milliseconds in current timeZone.
      * @returns {number} The milliseconds.
      */
     getMilliseconds: function getMilliseconds() {
-      return new Date(this._getOffsetTime()).getUTCMilliseconds();
+      return this._offsetDate.getUTCMilliseconds();
     },
 
     /**
-     * Get the minutes in current timezone.
+     * Get the minutes in current timeZone.
      * @returns {number} The minutes. (0, 59)
      */
     getMinutes: function getMinutes() {
-      return new Date(this._getOffsetTime()).getUTCMinutes();
+      return this._offsetDate.getUTCMinutes();
     },
 
     /**
-     * Get the month in current timezone.
+     * Get the month in current timeZone.
      * @returns {number} The month. (0, 11)
      */
     getMonth: function getMonth() {
-      return new Date(this._getOffsetTime()).getUTCMonth();
+      return this._offsetDate.getUTCMonth();
     },
 
     /**
-     * Get the name of the month in current timezone.
-     * @param {string} [type=full] The type of month name to return.
-     * @returns {string} The name of the month.
-     */
-    getMonthName: function getMonthName() {
-      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'full';
-      return DateTime.lang.months[type][this.getMonth()];
-    },
-
-    /**
-     * Get the quarter of the year in current timezone.
+     * Get the quarter of the year in current timeZone.
      * @returns {number} The quarter of the year. (1, 4)
      */
     getQuarter: function getQuarter() {
@@ -1101,11 +1077,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the seconds in current timezone.
+     * Get the seconds in current timeZone.
      * @returns {number} The seconds. (0, 59)
      */
     getSeconds: function getSeconds() {
-      return new Date(this._getOffsetTime()).getUTCSeconds();
+      return this._offsetDate.getUTCSeconds();
     },
 
     /**
@@ -1125,35 +1101,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Get the name of the current timezone.
-     * @returns {string} The name of the current timezone.
+     * Get the name of the current timeZone.
+     * @returns {string} The name of the current timeZone.
      */
-    getTimezone: function getTimezone() {
-      return this._timezone;
+    getTimeZone: function getTimeZone() {
+      return this._timeZone;
     },
 
     /**
-     * Get the abbreviated name of the current timezone.
-     * @returns {string} The abbreviated name of the current timezone.
+     * Get the abbreviated name of the current timeZone.
+     * @returns {string} The abbreviated name of the current timeZone.
      */
-    getTimezoneAbbr: function getTimezoneAbbr() {
+    getTimeZoneAbbr: function getTimeZoneAbbr() {
       return this.isDST() ? this._transition.dst : this._transition.abbr;
     },
 
     /**
-     * Get the UTC offset (in minutes) of the current timezone.
-     * @returns {number} The UTC offset (in minutes) of the current timezone.
+     * Get the UTC offset (in minutes) of the current timeZone.
+     * @returns {number} The UTC offset (in minutes) of the current timeZone.
      */
-    getTimezoneOffset: function getTimezoneOffset() {
+    getTimeZoneOffset: function getTimeZoneOffset() {
       return this._offset;
     },
 
     /**
-     * Get the year in current timezone.
+     * Get the year in current timeZone.
      * @returns {number} The year.
      */
     getYear: function getYear() {
-      return new Date(this._getOffsetTime()).getUTCFullYear();
+      return this._offsetDate.getUTCFullYear();
     }
   });
   /**
@@ -1162,7 +1138,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Object.assign(DateTime.prototype, {
     /**
-     * Set the internet swatch time beat in current timezone.
+     * Set the internet swatch time beat in current timeZone.
      * @param {number} beat The internet swatch time beat.
      * @returns {DateTime} The DateTime object.
      */
@@ -1171,34 +1147,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date of the month in current timezone.
+     * Set the date of the month in current timeZone.
      * @param {number} date The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setDate: function setDate(date) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCDate(date));
+      return this._setOffsetTime(this._offsetDate.setUTCDate(date));
     },
 
     /**
-     * Set the day of the week in current timezone.
+     * Set the day of the week in current timeZone.
      * @param {number} day The day of the week. (0 - Sunday, 6 - Saturday)
      * @returns {DateTime} The DateTime object.
      */
     setDay: function setDay(day) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCDate(this.getDate() - this.getDay() + day));
+      return this._setOffsetTime(this._offsetDate.setUTCDate(this.getDate() - this.getDay() + day));
     },
 
     /**
-     * Set the day of the year in current timezone.
+     * Set the day of the year in current timeZone.
      * @param {number} day The day of the year. (1, 366)
      * @returns {DateTime} The DateTime object.
      */
     setDayOfYear: function setDayOfYear(day) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCMonth(0, day));
+      return this._setOffsetTime(this._offsetDate.setUTCMonth(0, day));
     },
 
     /**
-     * Set the hours in current timezone (and optionally, minutes, seconds and milliseconds).
+     * Set the hours in current timeZone (and optionally, minutes, seconds and milliseconds).
      * @param {number} hours The hours. (0, 23)
      * @param {number} [minutes] The minutes. (0, 59)
      * @param {number} [seconds] The seconds. (0, 59)
@@ -1206,22 +1182,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {DateTime} The DateTime object.
      */
     setHours: function setHours() {
-      var _ref;
+      var _this$_offsetDate;
 
-      return this._setOffsetTime((_ref = new Date(this._getOffsetTime())).setUTCHours.apply(_ref, arguments));
+      return this._setOffsetTime((_this$_offsetDate = this._offsetDate).setUTCHours.apply(_this$_offsetDate, arguments));
     },
 
     /**
-     * Set the ISO day of the week in current timezone.
+     * Set the ISO day of the week in current timeZone.
      * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
      */
     setISODay: function setISODay(day) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCDate(this.getDate() - this.getISODay() + day));
+      return this._setOffsetTime(this._offsetDate.setUTCDate(this.getDate() - this.getISODay() + day));
     },
 
     /**
-     * Set the ISO day of the week in current timezone (and optionally, day of the week).
+     * Set the ISO day of the week in current timeZone (and optionally, day of the week).
      * @param {number} week The ISO week.
      * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
      * @returns {DateTime} The DateTime object.
@@ -1233,13 +1209,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         day = this.getISODay();
       }
 
-      var tempDate = new Date(this._getOffsetTime());
-      tempDate.setUTCMonth(0, 4 + (week - 1) * 7);
-      return this._setOffsetTime(tempDate.setUTCDate(tempDate.getUTCDate() - DateTime._isoDay(tempDate.getUTCDay()) + day));
+      this._offsetDate.setUTCMonth(0, 4 + (week - 1) * 7);
+
+      return this._setOffsetTime(this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() - DateTime._isoDay(this._offsetDate.getUTCDay()) + day));
     },
 
     /**
-     * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
+     * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
      * @param {number} year The ISO year.
      * @param {null|number} [week] The ISO week.
      * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
@@ -1257,35 +1233,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         day = this.getISODay();
       }
 
-      var tempDate = new Date(this._getOffsetTime());
-      tempDate.setUTCFullYear(year, 0, 4 + (week - 1) * 7);
-      return this._setOffsetTime(tempDate.setUTCDate(tempDate.getUTCDate() - DateTime._isoDay(tempDate.getUTCDay()) + day));
+      this._offsetDate.setUTCFullYear(year, 0, 4 + (week - 1) * 7);
+
+      return this._setOffsetTime(this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() - DateTime._isoDay(this._offsetDate.getUTCDay()) + day));
     },
 
     /**
-     * Set the milliseconds in current timezone.
+     * Set the milliseconds in current timeZone.
      * @param {number} milliseconds The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
     setMilliseconds: function setMilliseconds(ms) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCMilliseconds(ms));
+      return this._setOffsetTime(this._offsetDate.setUTCMilliseconds(ms));
     },
 
     /**
-     * Set the minutes in current timezone (and optionally, seconds and milliseconds).
+     * Set the minutes in current timeZone (and optionally, seconds and milliseconds).
      * @param {number} minutes The minutes. (0, 59)
      * @param {number} [seconds] The seconds. (0, 59)
      * @param {number} [milliseconds] The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
     setMinutes: function setMinutes() {
-      var _ref2;
+      var _this$_offsetDate2;
 
-      return this._setOffsetTime((_ref2 = new Date(this._getOffsetTime())).setUTCMinutes.apply(_ref2, arguments));
+      return this._setOffsetTime((_this$_offsetDate2 = this._offsetDate).setUTCMinutes.apply(_this$_offsetDate2, arguments));
     },
 
     /**
-     * Set the month in current timezone (and optionally, date).
+     * Set the month in current timeZone (and optionally, date).
      * @param {number} month The month. (0, 11)
      * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
@@ -1297,28 +1273,28 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         date = Math.min(this.getDate(), DateTime.daysInMonth(this.getYear(), month));
       }
 
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCMonth(month, date));
+      return this._setOffsetTime(this._offsetDate.setUTCMonth(month, date));
     },
 
     /**
-     * Set the quarter of the year in current timezone.
+     * Set the quarter of the year in current timeZone.
      * @param {number} quarter The quarter of the year. (1, 4)
      * @returns {DateTime} The DateTime object.
      */
     setQuarter: function setQuarter(quarter) {
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCMonth(quarter * 3 - 3));
+      return this._setOffsetTime(this._offsetDate.setUTCMonth(quarter * 3 - 3));
     },
 
     /**
-     * Set the seconds in current timezone (and optionally, milliseconds).
+     * Set the seconds in current timeZone (and optionally, milliseconds).
      * @param {number} seconds The seconds. (0, 59)
      * @param {number} [milliseconds] The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
     setSeconds: function setSeconds() {
-      var _ref3;
+      var _this$_offsetDate3;
 
-      return this._setOffsetTime((_ref3 = new Date(this._getOffsetTime())).setUTCSeconds.apply(_ref3, arguments));
+      return this._setOffsetTime((_this$_offsetDate3 = this._offsetDate).setUTCSeconds.apply(_this$_offsetDate3, arguments));
     },
 
     /**
@@ -1337,6 +1313,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         this._getTransition();
       }
 
+      this._offsetDate.setTime(this._getOffsetTime());
+
       return this;
     },
 
@@ -1350,18 +1328,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the current timezone.
-     * @param {string} timezone The name of the timezone.
+     * Set the current timeZone.
+     * @param {string} timeZone The name of the timeZone.
      * @returns {DateTime} The DateTime object.
      */
-    setTimezone: function setTimezone(timezone) {
+    setTimeZone: function setTimeZone(timeZone) {
       var adjust = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      if (!DateTime._timezones[timezone]) {
-        throw new Error('Invalid timezone supplied');
+      if (!DateTime._timeZones[timeZone]) {
+        throw new Error('Invalid timeZone supplied');
       }
 
-      this._timezone = timezone;
+      this._timeZone = timeZone;
 
       this._makeFormatter();
 
@@ -1380,7 +1358,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the year in current timezone (and optionally, month and date).
+     * Set the year in current timeZone (and optionally, month and date).
      * @param {number} year The year.
      * @param {null|number} [month] The month. (0, 11)
      * @param {null|number} [date] The date of the month.
@@ -1398,7 +1376,115 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         date = Math.min(this.getDate(), DateTime.daysInMonth(year, month));
       }
 
-      return this._setOffsetTime(new Date(this._getOffsetTime()).setUTCFullYear(year, month, date));
+      return this._setOffsetTime(this._offsetDate.setUTCFullYear(year, month, date));
+    }
+  });
+  /**
+   * DateTime Helpers
+   */
+
+  Object.assign(DateTime.prototype, {
+    /**
+     * Update the timeZone offset for current timestamp.
+     */
+    _checkOffset: function _checkOffset() {
+      this._offset = this._timeZone === 'UTC' ? 0 : (new Date(DateTime._utcFormatter.format(this)) - new Date(this._formatter.format(this))) / 60000;
+    },
+
+    /**
+     * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
+     */
+    _getOffsetTime: function _getOffsetTime() {
+      return this.getTime() - this._offset * 60000;
+    },
+
+    /**
+     * Update the timeZone transition for current timestamp.
+     */
+    _getTransition: function _getTransition() {
+      var timestamp = this.getTimestamp();
+      this._transition = DateTime._timeZones[this._timeZone].find(function (transition) {
+        return transition.start <= timestamp && transition.end >= timestamp;
+      });
+    },
+
+    /**
+     * Update the formatter for current timeZone.
+     */
+    _makeFormatter: function _makeFormatter() {
+      this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, _objectSpread({}, DateTime._formatterOptions, {
+        timeZone: this._timeZone
+      }));
+    },
+
+    /**
+     * Modify the DateTime by a duration.
+     * @param {string} durationString The relative date string to modify the date by.
+     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @return {DateTime} The DateTime object.
+     */
+    _modify: function _modify(durationString) {
+      var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      return this._modifyInterval(DateInterval.fromString(durationString), invert);
+    },
+
+    /**
+     * Modify the DateTime by a DateInterval.
+     * @param {DateInterval} interval The DateInterval to modify the date by.
+     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @return {DateTime} The DateTime object.
+     */
+    _modifyInterval: function _modifyInterval(interval) {
+      var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var modify = 1;
+
+      if (interval.invert) {
+        modify *= -1;
+      }
+
+      if (invert) {
+        modify *= -1;
+      }
+
+      if (interval.y) {
+        this._offsetDate.setUTCFullYear(this._offsetDate.getUTCFullYear() + interval.y * modify);
+      }
+
+      if (interval.m) {
+        this._offsetDate.setUTCMonth(this._offsetDate.getUTCMonth() + interval.m * modify);
+      }
+
+      if (interval.d) {
+        this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() + interval.d * modify);
+      }
+
+      if (interval.h) {
+        this._offsetDate.setUTCHours(this._offsetDate.getUTCHours() + interval.h * modify);
+      }
+
+      if (interval.i) {
+        this._offsetDate.setUTCMinutes(this._offsetDate.getUTCMinutes() + interval.i * modify);
+      }
+
+      if (interval.s) {
+        this._offsetDate.setUTCSeconds(this._offsetDate.getUTCSeconds() + interval.s * modify);
+      }
+
+      if (interval.f) {
+        this._offsetDate.setUTCTime(this._offsetDate.getUTCTime() + interval.f * modify);
+      }
+
+      return this._setOffsetTime(this._offsetDate.getTime());
+    },
+
+    /**
+     * Set the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @returns {DateTime} The DateTime object.
+     */
+    _setOffsetTime: function _setOffsetTime(time) {
+      return this.setTime(time + this._offset * 60000);
     }
   });
   /**
@@ -1425,7 +1511,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the day in current timezone.
+     * Set the date to the last millisecond of the day in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfDay: function endOfDay() {
@@ -1433,7 +1519,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the hour in current timezone.
+     * Set the date to the last millisecond of the hour in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfHour: function endOfHour() {
@@ -1441,7 +1527,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the minute in current timezone.
+     * Set the date to the last millisecond of the minute in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfMinute: function endOfMinute() {
@@ -1449,7 +1535,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the month in current timezone.
+     * Set the date to the last millisecond of the month in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfMonth: function endOfMonth() {
@@ -1457,7 +1543,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the second in current timezone.
+     * Set the date to the last millisecond of the second in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfSecond: function endOfSecond() {
@@ -1465,7 +1551,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the week in current timezone.
+     * Set the date to the last millisecond of the week in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfWeek: function endOfWeek() {
@@ -1473,7 +1559,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the last millisecond of the year in current timezone.
+     * Set the date to the last millisecond of the year in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfYear: function endOfYear() {
@@ -1481,7 +1567,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the day in current timezone.
+     * Set the date to the first millisecond of the day in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfDay: function startOfDay() {
@@ -1489,7 +1575,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the hour in current timezone.
+     * Set the date to the first millisecond of the hour in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfHour: function startOfHour() {
@@ -1497,7 +1583,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the minute in current timezone.
+     * Set the date to the first millisecond of the minute in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfMinute: function startOfMinute() {
@@ -1505,7 +1591,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the month in current timezone.
+     * Set the date to the first millisecond of the month in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfMonth: function startOfMonth() {
@@ -1513,7 +1599,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the second in current timezone.
+     * Set the date to the first millisecond of the second in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfSecond: function startOfSecond() {
@@ -1521,7 +1607,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the week in current timezone.
+     * Set the date to the first millisecond of the week in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfWeek: function startOfWeek() {
@@ -1529,7 +1615,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Set the date to the first millisecond of the year in current timezone.
+     * Set the date to the first millisecond of the year in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfYear: function startOfYear() {
@@ -1565,27 +1651,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {string} The formatted date string.
      */
     format: function format(formatString) {
-      var output = '',
-          escaped = false;
+      var _this2 = this;
 
-      for (var _i2 = 0, _arr2 = _toConsumableArray(formatString); _i2 < _arr2.length; _i2++) {
-        var _char2 = _arr2[_i2];
-
+      var escaped = false;
+      return _toConsumableArray(formatString).reduce(function (acc, _char2) {
         if (!escaped && _char2 === '\\') {
           escaped = true;
-          continue;
-        }
-
-        if (escaped || !DateTime.formatData[_char2] || !DateTime.formatData[_char2].output) {
-          output += _char2;
+        } else if (escaped || !DateTime._formatData[_char2] || !DateTime._formatData[_char2].output) {
+          acc += _char2;
           escaped = false;
-          continue;
+        } else {
+          acc += DateTime._formatData[_char2].output(_this2);
         }
 
-        output += DateTime.formatData[_char2].output(this);
-      }
-
-      return output;
+        return acc;
+      }, '');
     },
 
     /**
@@ -1618,7 +1698,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     toLocaleDateString: function toLocaleDateString(locales, options) {
       return this._utcDate.toLocaleDateString(locales || DateTime.defaultLocale, _objectSpread({
-        timeZone: this._timezone
+        timeZone: this._timeZone
       }, options));
     },
 
@@ -1644,7 +1724,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     toLocaleString: function toLocaleString(locales, options) {
       return this._utcDate.toLocaleString(locales || DateTime.defaultLocale, _objectSpread({
-        timeZone: this._timezone
+        timeZone: this._timeZone
       }, options));
     },
 
@@ -1670,7 +1750,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     toLocaleTimeString: function toLocaleTimeString(locales, options) {
       return this._utcDate.toLocaleTimeString(locales || DateTime.defaultLocale, _objectSpread({
-        timeZone: this._timezone
+        timeZone: this._timeZone
       }, options));
     },
 
@@ -1699,121 +1779,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Format the current date in UTC timezone using "D M d Y H:i:s O (e)".
+     * Format the current date in UTC timeZone using "D M d Y H:i:s O (e)".
      * @returns {string} The formatted date string.
      */
     toUTCString: function toUTCString() {
       return new DateTime(this.getTime(), 'UTC').toString();
-    }
-  });
-  /**
-   * DateTime Internal
-   */
-
-  Object.assign(DateTime.prototype, {
-    /**
-     * Update the timezone offset for current timestamp.
-     */
-    _checkOffset: function _checkOffset() {
-      this._offset = this._timezone === 'UTC' ? 0 : (new Date(DateTime._utcFormatter.format(this)) - new Date(this._formatter.format(this))) / 60000;
-    },
-
-    /**
-     * Get the number of milliseconds since the UNIX epoch (offset to timezone).
-     * @returns {number} The number of milliseconds since the UNIX epoch (offset to timezone).
-     */
-    _getOffsetTime: function _getOffsetTime() {
-      return this.getTime() - this._offset * 60000;
-    },
-
-    /**
-     * Update the timezone transition for current timestamp.
-     */
-    _getTransition: function _getTransition() {
-      var timestamp = this.getTimestamp();
-      this._transition = DateTime._timezones[this._timezone].find(function (transition) {
-        return transition.start <= timestamp && transition.end >= timestamp;
-      });
-    },
-
-    /**
-     * Update the formatter for current timezone.
-     */
-    _makeFormatter: function _makeFormatter() {
-      this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, _objectSpread({}, DateTime._formatterOptions, {
-        timeZone: this._timezone
-      }));
-    },
-
-    /**
-     * Modify the DateTime by a duration.
-     * @param {string} durationString The relative date string to modify the date by.
-     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
-     * @return {DateTime} The DateTime object.
-     */
-    _modify: function _modify(durationString) {
-      var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return this._modifyInterval(DateInterval.fromString(durationString), invert);
-    },
-
-    /**
-     * Modify the DateTime by a DateInterval.
-     * @param {DateInterval} interval The DateInterval to modify the date by.
-     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
-     * @return {DateTime} The DateTime object.
-     */
-    _modifyInterval: function _modifyInterval(interval) {
-      var invert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var modify = 1;
-
-      if (interval.invert) {
-        modify *= -1;
-      }
-
-      if (invert) {
-        modify *= -1;
-      }
-
-      var tempDate = new Date(this._getOffsetTime());
-
-      if (interval.y) {
-        tempDate.setUTCFullYear(tempDate.getUTCFullYear() + interval.y * modify);
-      }
-
-      if (interval.m) {
-        tempDate.setUTCMonth(tempDate.getUTCMonth() + interval.m * modify);
-      }
-
-      if (interval.d) {
-        tempDate.setUTCDate(tempDate.getUTCDate() + interval.d * modify);
-      }
-
-      if (interval.h) {
-        tempDate.setUTCHours(tempDate.getUTCHours() + interval.h * modify);
-      }
-
-      if (interval.i) {
-        tempDate.setUTCMinutes(tempDate.getUTCMinutes() + interval.i * modify);
-      }
-
-      if (interval.s) {
-        tempDate.setUTCSeconds(tempDate.getUTCSeconds() + interval.s * modify);
-      }
-
-      if (interval.f) {
-        tempDate.setUTCTime(tempDate.getUTCTime() + interval.f * modify);
-      }
-
-      return this._setOffsetTime(tempDate.getTime());
-    },
-
-    /**
-     * Set the number of milliseconds since the UNIX epoch (offset to timezone).
-     * @param {number} time The number of milliseconds since the UNIX epoch (offset to timezone).
-     * @returns {DateTime} The DateTime object.
-     */
-    _setOffsetTime: function _setOffsetTime(time) {
-      return this.setTime(time + this._offset * 60000);
     }
   });
   /**
@@ -1822,7 +1792,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   Object.assign(DateTime.prototype, {
     /**
-     * Create a new DateTime using the current date and timezone.
+     * Create a new DateTime using the current date and timeZone.
      * @returns {DateTime} A new DateTime object.
      */
     clone: function clone() {
@@ -1835,6 +1805,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     dateSuffix: function dateSuffix() {
       return DateTime.lang.ordinal(this.getDate());
+    },
+
+    /**
+     * Get the name of the day of the week in current timeZone.
+     * @param {string} [type=full] The type of day name to return.
+     * @returns {string} The name of the day of the week.
+     */
+    dayName: function dayName() {
+      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'full';
+      return DateTime.lang.days[type][this.getDay()];
     },
 
     /**
@@ -1861,7 +1841,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      */
     diff: function diff(other) {
       var absolute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var tempDate = new DateTime(other, this._timezone),
+      var tempDate = new DateTime(other, this._timeZone),
           interval = new DateInterval();
 
       if (this.getTime() === tempDate.getTime()) {
@@ -1934,8 +1914,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       var year = this.getYear(),
-          dateA = new DateTime([year, 0, 1], this._timezone),
-          dateB = new DateTime([year, 5, 1], this._timezone);
+          dateA = new DateTime([year, 0, 1], this._timeZone),
+          dateB = new DateTime([year, 5, 1], this._timeZone);
 
       if (dateA.getTimestamp() < this._transition.start) {
         dateA.setYear(year + 1);
@@ -1962,6 +1942,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
+     * Get the name of the month in current timeZone.
+     * @param {string} [type=full] The type of month name to return.
+     * @returns {string} The name of the month.
+     */
+    monthName: function monthName() {
+      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'full';
+      return DateTime.lang.months[type][this.getMonth()];
+    },
+
+    /**
      * Get the number of weeks in the current ISO year.
      * @returns {number} The number of weeks in the current ISO year.
      */
@@ -1978,26 +1968,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * Create a new DateTime from a date string and format string.
      * @param {string} formatString The PHP date format string.
      * @param {string} dateString The date string to parse.
-     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @param {string} [timeZone] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromFormat: function fromFormat(formatString, dateString, timezone) {
-      var data = {},
-          originalDateString = dateString;
+    fromFormat: function fromFormat(formatString, dateString, timeZone) {
+      var _this3 = this;
 
-      for (var _i3 = 0, _arr3 = _toConsumableArray(formatString); _i3 < _arr3.length; _i3++) {
-        var _char3 = _arr3[_i3];
-
-        if (this._seperators.includes(_char3)) {
+      var originalDateString = dateString,
+          data = _toConsumableArray(formatString).reduce(function (acc, _char3) {
+        if (_this3._seperators.includes(_char3)) {
           dateString = dateString.substring(1);
-          continue;
+          return acc;
         }
 
-        if (!this.formatData[_char3] || !this.formatData[_char3].regex) {
+        if (!_this3._formatData[_char3] || !_this3._formatData[_char3].regex) {
           throw new Error("Invalid char in DateTime format: ".concat(_char3));
         }
 
-        var regex = this.formatData[_char3].regex,
+        var regex = _this3._formatData[_char3].regex,
             regExp = typeof regex === 'function' ? regex(_char3) : regex,
             dateMatch = dateString.match(new RegExp("^".concat(regExp)));
 
@@ -2018,22 +2006,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             seconds: 0,
             milliseconds: 0
           };
-          Object.assign(data, _char3 === '!' ? epoch : _objectSpread({}, epoch, {}, data));
-        } else {
-          if (!this.formatData[_char3].input) {
-            continue;
-          }
-
-          var value = this.formatData[_char3].value;
-          data[value] = this.formatData[_char3].input(dateMatch[1]);
+          return Object.assign(acc, _char3 === '!' ? epoch : _objectSpread({}, epoch, {}, data));
         }
-      }
 
-      var date = this.fromObject(data);
+        if (_this3._formatData[_char3].input) {
+          var value = _this3._formatData[_char3].value;
+          acc[value] = _this3._formatData[_char3].input(dateMatch[1]);
+        }
+
+        return acc;
+      }, {}),
+          date = this.fromObject(data);
+
       date.isValid = date.format(formatString) === originalDateString;
 
-      if (timezone && timezone !== date.getTimezone()) {
-        date.setTimezone(timezone, true);
+      if (timeZone && timeZone !== date.getTimeZone()) {
+        date.setTimeZone(timeZone, true);
       }
 
       return date;
@@ -2053,14 +2041,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @param {number} [dateObject.milliseconds] The milliseconds.
      * @param {Boolean} [dateObject.pm] Whether the hours are in PM.
      * @param {number} [dateObject.timestamp] The number of seconds since the UNIX epoch.
-     * @param {string} [dateObject.timezone] The timezone.
-     * @param {string} [dateObject.timezoneAbbr] The timezone abbreviation.
-     * @param {number} [dateObject.offset] The timezone offset.
-     * @param {string} [timezone] The timezone to use for the new DateTime.
+     * @param {string} [dateObject.timeZone] The timeZone.
+     * @param {string} [dateObject.timeZoneAbbr] The timeZone abbreviation.
+     * @param {number} [dateObject.offset] The timeZone offset.
+     * @param {string} [timeZone] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromObject: function fromObject(dateObject, timezone) {
-      var currentDate, currentDay, currentTimezone, currentOffset;
+    fromObject: function fromObject(dateObject, timeZone) {
+      var currentDate, currentDay, currentTimeZone, currentOffset;
 
       if (dateObject.timestamp) {
         currentDate = dateObject.timestamp * 1000;
@@ -2100,20 +2088,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         currentDate = [newDate.year, newDate.month, newDate.date, newDate.hours, newDate.minutes, newDate.seconds, newDate.milliseconds];
       }
 
-      if ('timezone' in dateObject) {
-        currentTimezone = dateObject.timezone;
+      if ('timeZone' in dateObject) {
+        currentTimeZone = dateObject.timeZone;
         currentOffset = dateObject.offset;
-      } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-        var _this$_timezoneFromAb = this._timezoneFromAbbrOffset(currentDate, 'timezoneAbbr' in dateObject ? dateObject.timezoneAbbr : null, 'offset' in dateObject ? dateObject.offset : null);
+      } else if ('offset' in dateObject || 'timeZoneAbbr' in dateObject) {
+        var _this$_timeZoneFromAb = this._timeZoneFromAbbrOffset(currentDate, 'timeZoneAbbr' in dateObject ? dateObject.timeZoneAbbr : null, 'offset' in dateObject ? dateObject.offset : null);
 
-        var _this$_timezoneFromAb2 = _slicedToArray(_this$_timezoneFromAb, 2);
+        var _this$_timeZoneFromAb2 = _slicedToArray(_this$_timeZoneFromAb, 2);
 
-        currentTimezone = _this$_timezoneFromAb2[0];
-        currentOffset = _this$_timezoneFromAb2[1];
+        currentTimeZone = _this$_timeZoneFromAb2[0];
+        currentOffset = _this$_timeZoneFromAb2[1];
         dateObject.offset = currentOffset;
       }
 
-      var date = new this(currentDate, currentTimezone || timezone);
+      var date = new this(currentDate, currentTimeZone || timeZone);
 
       if (currentDay) {
         date = date.setDay(currentDay);
@@ -2121,22 +2109,22 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
       if (currentOffset) {
-        var offset = date.getTimezoneOffset();
+        var offset = date.getTimeZoneOffset();
 
         if (offset !== currentOffset) {
           date.setTime(date.getTime() - (offset - currentOffset) * 60000);
         }
       }
 
-      if (timezone && currentTimezone) {
-        date = date.setTimezone(timezone);
+      if (timeZone && currentTimeZone) {
+        date = date.setTimeZone(timeZone);
       }
 
       return date;
     }
   });
   /**
-   * DateTime (Static) Internal
+   * DateTime (Static) Helpers
    */
 
   Object.assign(DateTime, {
@@ -2147,7 +2135,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {string} The formatted number string.
      */
     _formatNumber: function _formatNumber(value, padding) {
-      var _this = this;
+      var _this4 = this;
 
       value = value.toString();
 
@@ -2156,7 +2144,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
 
       return this.lang.numbers ? value.replace(/./g, function (match) {
-        return _this.lang.numbers[match];
+        return _this4.lang.numbers[match];
       }) : value;
     },
 
@@ -2190,11 +2178,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {number} The parsed number.
      */
     _parseNumber: function _parseNumber(value) {
-      var _this2 = this;
+      var _this5 = this;
 
       if (this.lang.numbers) {
         value = value.replace(/./g, function (match) {
-          return _this2.lang.numbers.findIndex(match);
+          return _this5.lang.numbers.findIndex(match);
         });
       }
 
@@ -2202,13 +2190,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
 
     /**
-     * Return a timezone for a date using an abbreviated name or offset.
+     * Return a timeZone and offset for a date using an abbreviated name or offset.
      * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
-     * @param {null|string} [abbr] The timezone abbreviation.
-     * @param {null|number} [offset] The timezone offset.
-     * @returns {string} The timezone name.
+     * @param {null|string} [abbr] The timeZone abbreviation.
+     * @param {null|number} [offset] The timeZone offset.
+     * @returns {array} An array containing the timeZone name and offset.
      */
-    _timezoneFromAbbrOffset: function _timezoneFromAbbrOffset() {
+    _timeZoneFromAbbrOffset: function _timeZoneFromAbbrOffset() {
       var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var abbr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -2221,18 +2209,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var tempDateDst = new DateTime(date, 'UTC');
       tempDateDst.setTime(tempDateDst.getTime() - 3600000);
 
-      for (var timezone in this._timezones) {
+      for (var timeZone in this._timeZones) {
         try {
-          tempDate.setTimezone(timezone, true);
+          tempDate.setTimeZone(timeZone, true);
 
-          if ((abbr === null || abbr === tempDate.getTimezoneAbbr()) && (offset === null || offset === tempDate.getTimezoneOffset())) {
-            return [timezone, tempDate.getTimezoneOffset()];
+          if ((abbr === null || abbr === tempDate.getTimeZoneAbbr()) && (offset === null || offset === tempDate.getTimeZoneOffset())) {
+            return [timeZone, tempDate.getTimeZoneOffset()];
           }
 
-          tempDateDst.setTimezone(timezone, true);
+          tempDateDst.setTimeZone(timeZone, true);
 
-          if (tempDateDst.isDST() && (abbr === null || abbr === tempDateDst.getTimezoneAbbr()) && (offset === null || offset === tempDateDst.getTimezoneOffset())) {
-            return [timezone, tempDateDst.getTimezoneOffset()];
+          if (tempDateDst.isDST() && (abbr === null || abbr === tempDateDst.getTimeZoneAbbr()) && (offset === null || offset === tempDateDst.getTimeZoneOffset())) {
+            return [timeZone, tempDateDst.getTimeZoneOffset()];
           }
         } catch (error) {}
       }
@@ -2251,10 +2239,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      * @returns {number} The day of the year. (1, 366)
      */
     dayOfYear: function dayOfYear(year, month, date) {
-      var _this3 = this;
+      var _this6 = this;
 
       return new Array(month).fill().reduce(function (d, _, i) {
-        return d + _this3.daysInMonth(year, i);
+        return d + _this6.daysInMonth(year, i);
       }, date);
     },
 
@@ -2737,8 +2725,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     clampDates: true,
     // Default locale
     defaultLocale: resolvedOptions.locale,
-    // Default timezone
-    defaultTimezone: resolvedOptions.timeZone,
+    // Default timeZone
+    defaultTimeZone: resolvedOptions.timeZone,
     // Formats
     formats: {
       atom: 'Y-m-d\\TH:i:sP',
@@ -2809,8 +2797,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     _monthDays: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
     // Seperators
     _seperators: [';', ':', '/', '.', ',', '-', '(', ')'],
-    // timezones
-    _timezones: {}
+    // timeZones
+    _timeZones: {}
   }); // UTC formatter
 
   DateTime._utcFormatter = new Intl.DateTimeFormat(DateTime._formatterLocale, DateTime._formatterOptions); // Aliases
@@ -2818,11 +2806,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   DateTime.prototype.getFullYear = DateTime.prototype.getYear;
   DateTime.prototype.setFullYear = DateTime.prototype.setYear;
   /**
-   * Populate Timezones
+   * Populate TimeZones
    */
 
-  var _loop = function _loop(timezone) {
-    var parts = values[zones[timezone]].split('|'),
+  var _loop = function _loop(timeZone) {
+    var parts = values[zones[timeZone]].split('|'),
         abbr = parts.shift().split(';').map(function (a) {
       return a || 'LMT';
     }),
@@ -2831,7 +2819,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       data[0] = data[0] ? parseInt(data[0], 36) : -Number.MAX_VALUE;
       return data;
     });
-    DateTime._timezones[timezone] = transitions.map(function (transition, i) {
+    DateTime._timeZones[timeZone] = transitions.map(function (transition, i) {
       return {
         start: transition[0],
         end: i == transitions.length - 1 ? Number.MAX_VALUE : transitions[i + 1][0] - 1,
@@ -2841,8 +2829,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   };
 
-  for (var timezone in zones) {
-    _loop(timezone);
+  for (var timeZone in zones) {
+    _loop(timeZone);
   }
 
   return {

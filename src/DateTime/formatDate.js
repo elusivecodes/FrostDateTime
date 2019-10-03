@@ -2,7 +2,7 @@
  * DateTime Format Data
  */
 
-DateTime.formatData = {
+DateTime._formatData = {
 
     /* YEAR */
 
@@ -42,7 +42,7 @@ DateTime.formatData = {
         value: 'month',
         regex: () => '(' + DateTime.lang.months.full.join('|') + ')',
         input: value => DateTime.lang.months['full'].findIndex(month => month === value),
-        output: datetime => datetime.getMonthName()
+        output: datetime => datetime.monthName()
     },
 
     // month name short
@@ -50,7 +50,7 @@ DateTime.formatData = {
         value: 'month',
         regex: () => '(' + DateTime.lang.months.short.join('|') + ')',
         input: value => DateTime.lang.months['short'].findIndex(month => month === value),
-        output: datetime => datetime.getMonthName('short')
+        output: datetime => datetime.monthName('short')
     },
 
     // month
@@ -127,7 +127,7 @@ DateTime.formatData = {
         value: 'day',
         regex: () => '(' + DateTime.lang.days.full.join('|') + ')',
         input: value => DateTime.lang.days.full.findIndex(day => day === value),
-        output: datetime => datetime.getDayName()
+        output: datetime => datetime.dayName()
     },
 
     // day name short
@@ -135,7 +135,7 @@ DateTime.formatData = {
         value: 'day',
         regex: () => '(' + DateTime.lang.days.short.join('|') + ')',
         input: value => DateTime.lang.days.short.findIndex(day => day === value),
-        output: datetime => datetime.getDayName('short')
+        output: datetime => datetime.dayName('short')
     },
 
     /* TIME */
@@ -228,12 +228,12 @@ DateTime.formatData = {
 
     /* TIMEZONE */
 
-    // timezone
+    // timeZone
     e: {
-        value: 'timezone',
+        value: 'timeZone',
         regex: '([\\w\\/]+)',
         input: value => value,
-        output: datetime => datetime._timezone
+        output: datetime => datetime._timeZone
     },
 
     // daylight savings
@@ -274,12 +274,12 @@ DateTime.formatData = {
             DateTime._formatNumber((datetime._offset % 60), 2)
     },
 
-    // timezone abbreviated
+    // timeZone abbreviated
     T: {
-        value: 'timezoneAbbr',
+        value: 'timeZoneAbbr',
         regex: '([A-Z]{1,5})',
         input: value => value,
-        output: datetime => datetime.getTimezoneAbbr()
+        output: datetime => datetime.getTimeZoneAbbr()
     },
 
     // offset seconds

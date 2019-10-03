@@ -76,25 +76,21 @@
          * @returns {string} The formatted date interval.
          */
         format(formatString) {
-            let output = '',
-                prefixed = false;
-
-            for (const char of [...formatString]) {
-                if (!prefixed && char === '%') {
-                    prefixed = true;
-                    continue;
-                }
-
-                if (!prefixed || !DateInterval.formatData[char]) {
-                    output += char;
-                    prefixed = false;
-                    continue;
-                }
-
-                output += DateInterval.formatData[char](this);
-            }
-
-            return output;
+            let escaped = false;
+            return [...formatString].reduce(
+                (acc, char) => {
+                    if (!escaped && char === '%') {
+                        escaped = true;
+                    } else if (escaped || !DateInterval._formatData[char]) {
+                        acc += char;
+                        escaped = false;
+                    } else {
+                        acc += DateInterval._formatData[char](this);
+                    }
+                    return acc;
+                },
+                ''
+            );
         }
 
         /**
@@ -138,15 +134,15 @@
 
         /**
          * Create a new DateInterval from the relative parts of the string.
-         * @param {string} time The date with relative parts.
+         * @param {string} durationString The date with relative parts.
          * @returns {DateInterval} A new DateInterval object.
          */
-        static fromString(time) {
+        static fromString(durationString) {
             const interval = new this,
                 regExp = new RegExp(DateInterval._stringRegExp, 'gi');
 
             let match;
-            while (match = regExp.exec(time)) {
+            while (match = regExp.exec(durationString)) {
                 const value = parseInt(match[1]);
 
                 if (match[2]) {
@@ -195,7 +191,7 @@
      * DateInterval Format Data
      */
 
-    DateInterval.formatData = {
+    DateInterval._formatData = {
 
         /* YEAR */
 
@@ -309,10 +305,10 @@
         /**
          * New DateTime constructor.
          * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
-         * @param {null|string} [timezone] The timezone.
+         * @param {null|string} [timeZone] The timeZone.
          * @returns {DateTime} A new DateTime object.
          */
-        constructor(date = null, timezone = null) {
+        constructor(date = null, timeZone = null) {
 
             let timestamp,
                 adjustOffset = false;
@@ -326,7 +322,7 @@
                 timestamp = date;
             } else if (date === `${date}`) {
                 timestamp = Date.parse(date);
-                timestamp -= new Date().getTimezoneOffset() * 60000;
+                timestamp -= new Date().getTimeZoneOffset() * 60000;
                 adjustOffset = true;
             } else if (date instanceof Date || date instanceof DateTime) {
                 timestamp = date.getTime();
@@ -334,18 +330,18 @@
                 throw new Error('Invalid date supplied');
             }
 
-            if (!timezone) {
+            if (!timeZone) {
                 if (date instanceof DateTime) {
-                    timezone = date.getTimezone();
+                    timeZone = date.getTimeZone();
                 } else {
-                    timezone = DateTime.defaultTimezone;
+                    timeZone = DateTime.defaultTimeZone;
                 }
-            } else if (!DateTime._timezones[timezone]) {
-                throw new Error('Invalid timezone supplied');
+            } else if (!(timeZone in DateTime._timeZones)) {
+                throw new Error('Invalid timeZone supplied');
             }
 
             this._utcDate = new Date(timestamp);
-            this._timezone = timezone;
+            this._timeZone = timeZone;
             this.isValid = true;
 
             this._makeFormatter();
@@ -363,6 +359,7 @@
             }
 
             this._getTransition();
+            this._offsetDate = new Date(this._getOffsetTime());
         }
 
         /**
@@ -392,7 +389,7 @@
     class DateTimeImmutable extends DateTime {
 
         /**
-         * Create a new DateTimeImmutable using the current date and timezone.
+         * Create a new DateTimeImmutable using the current date and timeZone.
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         clone() {
@@ -405,16 +402,16 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTime(time) {
-            return new DateTimeImmutable(time, this._timezone);
+            return new DateTimeImmutable(time, this._timeZone);
         }
 
         /**
-         * Set the current timezone.
-         * @param {string} timezone The name of the timezone.
+         * Set the current timeZone.
+         * @param {string} timeZone The name of the timeZone.
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
-        setTimezone(timezone) {
-            return new DateTimeImmutable(this, timezone);
+        setTimeZone(timeZone) {
+            return new DateTimeImmutable(this, timeZone);
         }
 
     }
@@ -423,7 +420,7 @@
      * DateTime Format Data
      */
 
-    DateTime.formatData = {
+    DateTime._formatData = {
 
         /* YEAR */
 
@@ -463,7 +460,7 @@
             value: 'month',
             regex: () => '(' + DateTime.lang.months.full.join('|') + ')',
             input: value => DateTime.lang.months['full'].findIndex(month => month === value),
-            output: datetime => datetime.getMonthName()
+            output: datetime => datetime.monthName()
         },
 
         // month name short
@@ -471,7 +468,7 @@
             value: 'month',
             regex: () => '(' + DateTime.lang.months.short.join('|') + ')',
             input: value => DateTime.lang.months['short'].findIndex(month => month === value),
-            output: datetime => datetime.getMonthName('short')
+            output: datetime => datetime.monthName('short')
         },
 
         // month
@@ -548,7 +545,7 @@
             value: 'day',
             regex: () => '(' + DateTime.lang.days.full.join('|') + ')',
             input: value => DateTime.lang.days.full.findIndex(day => day === value),
-            output: datetime => datetime.getDayName()
+            output: datetime => datetime.dayName()
         },
 
         // day name short
@@ -556,7 +553,7 @@
             value: 'day',
             regex: () => '(' + DateTime.lang.days.short.join('|') + ')',
             input: value => DateTime.lang.days.short.findIndex(day => day === value),
-            output: datetime => datetime.getDayName('short')
+            output: datetime => datetime.dayName('short')
         },
 
         /* TIME */
@@ -649,12 +646,12 @@
 
         /* TIMEZONE */
 
-        // timezone
+        // timeZone
         e: {
-            value: 'timezone',
+            value: 'timeZone',
             regex: '([\\w\\/]+)',
             input: value => value,
-            output: datetime => datetime._timezone
+            output: datetime => datetime._timeZone
         },
 
         // daylight savings
@@ -695,12 +692,12 @@
                 DateTime._formatNumber((datetime._offset % 60), 2)
         },
 
-        // timezone abbreviated
+        // timeZone abbreviated
         T: {
-            value: 'timezoneAbbr',
+            value: 'timeZoneAbbr',
             regex: '([A-Z]{1,5})',
             input: value => value,
-            output: datetime => datetime.getTimezoneAbbr()
+            output: datetime => datetime.getTimeZoneAbbr()
         },
 
         // offset seconds
@@ -772,7 +769,7 @@
     Object.assign(DateTime.prototype, {
 
         /**
-         * Get the internet swatch time beat in current timezone.
+         * Get the internet swatch time beat in current timeZone.
          * @returns {number} The internet swatch time beat.
          */
         getBeat() {
@@ -789,34 +786,23 @@
         },
 
         /**
-         * Get the date of the month in current timezone.
+         * Get the date of the month in current timeZone.
          * @returns {number} The date of the month.
          */
         getDate() {
-            return new Date(this._getOffsetTime())
-                .getUTCDate();
+            return this._offsetDate.getUTCDate();
         },
 
         /**
-         * Get the day of the week in current timezone.
+         * Get the day of the week in current timeZone.
          * @returns {number} The day of the week. (0 - Sunday, 6 - Saturday)
          */
         getDay() {
-            return new Date(this._getOffsetTime())
-                .getUTCDay();
+            return this._offsetDate.getUTCDay();
         },
 
         /**
-         * Get the name of the day of the week in current timezone.
-         * @param {string} [type=full] The type of day name to return.
-         * @returns {string} The name of the day of the week.
-         */
-        getDayName(type = 'full') {
-            return DateTime.lang.days[type][this.getDay()];
-        },
-
-        /**
-         * Get the day of the year in current timezone.
+         * Get the day of the year in current timeZone.
          * @returns {number} The day of the year. (1, 366)
          */
         getDayOfYear() {
@@ -828,16 +814,15 @@
         },
 
         /**
-         * Get the hours of the day in current timezone.
+         * Get the hours of the day in current timeZone.
          * @returns {number} The hours of the day. (0, 23)
          */
         getHours() {
-            return new Date(this._getOffsetTime())
-                .getUTCHours();
+            return this._offsetDate.getUTCHours();
         },
 
         /**
-         * Get the ISO day of the week in current timezone.
+         * Get the ISO day of the week in current timeZone.
          * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
          */
         getISODay() {
@@ -845,7 +830,7 @@
         },
 
         /**
-         * Get the ISO week in current timezone.
+         * Get the ISO week in current timeZone.
          * @returns {number} The ISO week. (1, 53)
          */
         getISOWeek() {
@@ -860,7 +845,7 @@
         },
 
         /**
-         * Get the ISO year in current timezone.
+         * Get the ISO year in current timeZone.
          * @returns {number} The ISO year.
          */
         getISOYear() {
@@ -873,43 +858,31 @@
         },
 
         /**
-         * Get the milliseconds in current timezone.
+         * Get the milliseconds in current timeZone.
          * @returns {number} The milliseconds.
          */
         getMilliseconds() {
-            return new Date(this._getOffsetTime())
-                .getUTCMilliseconds();
+            return this._offsetDate.getUTCMilliseconds();
         },
 
         /**
-         * Get the minutes in current timezone.
+         * Get the minutes in current timeZone.
          * @returns {number} The minutes. (0, 59)
          */
         getMinutes() {
-            return new Date(this._getOffsetTime())
-                .getUTCMinutes();
+            return this._offsetDate.getUTCMinutes();
         },
 
         /**
-         * Get the month in current timezone.
+         * Get the month in current timeZone.
          * @returns {number} The month. (0, 11)
          */
         getMonth() {
-            return new Date(this._getOffsetTime())
-                .getUTCMonth();
+            return this._offsetDate.getUTCMonth();
         },
 
         /**
-         * Get the name of the month in current timezone.
-         * @param {string} [type=full] The type of month name to return.
-         * @returns {string} The name of the month.
-         */
-        getMonthName(type = 'full') {
-            return DateTime.lang.months[type][this.getMonth()];
-        },
-
-        /**
-         * Get the quarter of the year in current timezone.
+         * Get the quarter of the year in current timeZone.
          * @returns {number} The quarter of the year. (1, 4)
          */
         getQuarter() {
@@ -917,12 +890,11 @@
         },
 
         /**
-         * Get the seconds in current timezone.
+         * Get the seconds in current timeZone.
          * @returns {number} The seconds. (0, 59)
          */
         getSeconds() {
-            return new Date(this._getOffsetTime())
-                .getUTCSeconds();
+            return this._offsetDate.getUTCSeconds();
         },
 
         /**
@@ -942,38 +914,37 @@
         },
 
         /**
-         * Get the name of the current timezone.
-         * @returns {string} The name of the current timezone.
+         * Get the name of the current timeZone.
+         * @returns {string} The name of the current timeZone.
          */
-        getTimezone() {
-            return this._timezone;
+        getTimeZone() {
+            return this._timeZone;
         },
 
         /**
-         * Get the abbreviated name of the current timezone.
-         * @returns {string} The abbreviated name of the current timezone.
+         * Get the abbreviated name of the current timeZone.
+         * @returns {string} The abbreviated name of the current timeZone.
          */
-        getTimezoneAbbr() {
+        getTimeZoneAbbr() {
             return this.isDST() ?
                 this._transition.dst :
                 this._transition.abbr;
         },
 
         /**
-         * Get the UTC offset (in minutes) of the current timezone.
-         * @returns {number} The UTC offset (in minutes) of the current timezone.
+         * Get the UTC offset (in minutes) of the current timeZone.
+         * @returns {number} The UTC offset (in minutes) of the current timeZone.
          */
-        getTimezoneOffset() {
+        getTimeZoneOffset() {
             return this._offset;
         },
 
         /**
-         * Get the year in current timezone.
+         * Get the year in current timeZone.
          * @returns {number} The year.
          */
         getYear() {
-            return new Date(this._getOffsetTime())
-                .getUTCFullYear();
+            return this._offsetDate.getUTCFullYear();
         }
 
     });
@@ -985,7 +956,7 @@
     Object.assign(DateTime.prototype, {
 
         /**
-         * Set the internet swatch time beat in current timezone.
+         * Set the internet swatch time beat in current timeZone.
          * @param {number} beat The internet swatch time beat.
          * @returns {DateTime} The DateTime object.
          */
@@ -1003,46 +974,43 @@
         },
 
         /**
-         * Set the date of the month in current timezone.
+         * Set the date of the month in current timeZone.
          * @param {number} date The date of the month.
          * @returns {DateTime} The DateTime object.
          */
         setDate(date) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCDate(date)
+                this._offsetDate.setUTCDate(date)
             );
         },
 
         /**
-         * Set the day of the week in current timezone.
+         * Set the day of the week in current timeZone.
          * @param {number} day The day of the week. (0 - Sunday, 6 - Saturday)
          * @returns {DateTime} The DateTime object.
          */
         setDay(day) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCDate(this.getDate() - this.getDay() + day)
+                this._offsetDate.setUTCDate(this.getDate() - this.getDay() + day)
             );
         },
 
         /**
-         * Set the day of the year in current timezone.
+         * Set the day of the year in current timeZone.
          * @param {number} day The day of the year. (1, 366)
          * @returns {DateTime} The DateTime object.
          */
         setDayOfYear(day) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCMonth(
-                        0,
-                        day
-                    )
+                this._offsetDate.setUTCMonth(
+                    0,
+                    day
+                )
             );
         },
 
         /**
-         * Set the hours in current timezone (and optionally, minutes, seconds and milliseconds).
+         * Set the hours in current timeZone (and optionally, minutes, seconds and milliseconds).
          * @param {number} hours The hours. (0, 23)
          * @param {number} [minutes] The minutes. (0, 59)
          * @param {number} [seconds] The seconds. (0, 59)
@@ -1051,25 +1019,23 @@
          */
         setHours(...args) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCHours(...args)
+                this._offsetDate.setUTCHours(...args)
             );
         },
 
         /**
-         * Set the ISO day of the week in current timezone.
+         * Set the ISO day of the week in current timeZone.
          * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
          * @returns {DateTime} The DateTime object.
          */
         setISODay(day) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCDate(this.getDate() - this.getISODay() + day)
+                this._offsetDate.setUTCDate(this.getDate() - this.getISODay() + day)
             );
         },
 
         /**
-         * Set the ISO day of the week in current timezone (and optionally, day of the week).
+         * Set the ISO day of the week in current timeZone (and optionally, day of the week).
          * @param {number} week The ISO week.
          * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
          * @returns {DateTime} The DateTime object.
@@ -1079,23 +1045,22 @@
                 day = this.getISODay();
             }
 
-            const tempDate = new Date(this._getOffsetTime());
-            tempDate.setUTCMonth(
+            this._offsetDate.setUTCMonth(
                 0,
                 4 + ((week - 1) * 7)
             );
 
             return this._setOffsetTime(
-                tempDate.setUTCDate(
-                    tempDate.getUTCDate()
-                    - DateTime._isoDay(tempDate.getUTCDay())
+                this._offsetDate.setUTCDate(
+                    this._offsetDate.getUTCDate()
+                    - DateTime._isoDay(this._offsetDate.getUTCDay())
                     + day
                 )
             );
         },
 
         /**
-         * Set the ISO day of the week in current timezone (and optionally, week and day of the week).
+         * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
          * @param {number} year The ISO year.
          * @param {null|number} [week] The ISO week.
          * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
@@ -1110,36 +1075,34 @@
                 day = this.getISODay();
             }
 
-            const tempDate = new Date(this._getOffsetTime());
-            tempDate.setUTCFullYear(
+            this._offsetDate.setUTCFullYear(
                 year,
                 0,
                 4 + ((week - 1) * 7)
             );
 
             return this._setOffsetTime(
-                tempDate.setUTCDate(
-                    tempDate.getUTCDate()
-                    - DateTime._isoDay(tempDate.getUTCDay())
+                this._offsetDate.setUTCDate(
+                    this._offsetDate.getUTCDate()
+                    - DateTime._isoDay(this._offsetDate.getUTCDay())
                     + day
                 )
             );
         },
 
         /**
-         * Set the milliseconds in current timezone.
+         * Set the milliseconds in current timeZone.
          * @param {number} milliseconds The milliseconds.
          * @returns {DateTime} The DateTime object.
          */
         setMilliseconds(ms) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCMilliseconds(ms)
+                this._offsetDate.setUTCMilliseconds(ms)
             );
         },
 
         /**
-         * Set the minutes in current timezone (and optionally, seconds and milliseconds).
+         * Set the minutes in current timeZone (and optionally, seconds and milliseconds).
          * @param {number} minutes The minutes. (0, 59)
          * @param {number} [seconds] The seconds. (0, 59)
          * @param {number} [milliseconds] The milliseconds.
@@ -1147,13 +1110,12 @@
          */
         setMinutes(...args) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCMinutes(...args)
+                this._offsetDate.setUTCMinutes(...args)
             );
         },
 
         /**
-         * Set the month in current timezone (and optionally, date).
+         * Set the month in current timeZone (and optionally, date).
          * @param {number} month The month. (0, 11)
          * @param {null|number} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
@@ -1170,36 +1132,33 @@
             }
 
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCMonth(
-                        month,
-                        date
-                    )
+                this._offsetDate.setUTCMonth(
+                    month,
+                    date
+                )
             );
         },
 
         /**
-         * Set the quarter of the year in current timezone.
+         * Set the quarter of the year in current timeZone.
          * @param {number} quarter The quarter of the year. (1, 4)
          * @returns {DateTime} The DateTime object.
          */
         setQuarter(quarter) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCMonth(quarter * 3 - 3)
+                this._offsetDate.setUTCMonth(quarter * 3 - 3)
             );
         },
 
         /**
-         * Set the seconds in current timezone (and optionally, milliseconds).
+         * Set the seconds in current timeZone (and optionally, milliseconds).
          * @param {number} seconds The seconds. (0, 59)
          * @param {number} [milliseconds] The milliseconds.
          * @returns {DateTime} The DateTime object.
          */
         setSeconds(...args) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCSeconds(...args)
+                this._offsetDate.setUTCSeconds(...args)
             );
         },
 
@@ -1215,6 +1174,7 @@
             if (timestamp < this._transition.start || timestamp > this._transition.end) {
                 this._getTransition();
             }
+            this._offsetDate.setTime(this._getOffsetTime());
 
             return this;
         },
@@ -1229,16 +1189,16 @@
         },
 
         /**
-         * Set the current timezone.
-         * @param {string} timezone The name of the timezone.
+         * Set the current timeZone.
+         * @param {string} timeZone The name of the timeZone.
          * @returns {DateTime} The DateTime object.
          */
-        setTimezone(timezone, adjust = false) {
-            if (!DateTime._timezones[timezone]) {
-                throw new Error('Invalid timezone supplied');
+        setTimeZone(timeZone, adjust = false) {
+            if (!DateTime._timeZones[timeZone]) {
+                throw new Error('Invalid timeZone supplied');
             }
 
-            this._timezone = timezone;
+            this._timeZone = timeZone;
             this._makeFormatter();
 
             const offset = this._offset;
@@ -1256,7 +1216,7 @@
         },
 
         /**
-         * Set the year in current timezone (and optionally, month and date).
+         * Set the year in current timeZone (and optionally, month and date).
          * @param {number} year The year.
          * @param {null|number} [month] The month. (0, 11)
          * @param {null|number} [date] The date of the month.
@@ -1278,13 +1238,133 @@
             }
 
             return this._setOffsetTime(
-                new Date(this._getOffsetTime())
-                    .setUTCFullYear(
-                        year,
-                        month,
-                        date
-                    )
+                this._offsetDate.setUTCFullYear(
+                    year,
+                    month,
+                    date
+                )
             );
+        }
+
+    });
+
+    /**
+     * DateTime Helpers
+     */
+
+    Object.assign(DateTime.prototype, {
+
+        /**
+         * Update the timeZone offset for current timestamp.
+         */
+        _checkOffset() {
+            this._offset = this._timeZone === 'UTC' ?
+                0 :
+                (
+                    new Date(DateTime._utcFormatter.format(this))
+                    - new Date(this._formatter.format(this))
+                )
+                / 60000;
+        },
+
+        /**
+         * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
+         * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
+         */
+        _getOffsetTime() {
+            return this.getTime() - (this._offset * 60000);
+        },
+
+        /**
+         * Update the timeZone transition for current timestamp.
+         */
+        _getTransition() {
+            const timestamp = this.getTimestamp();
+
+            this._transition = DateTime._timeZones[this._timeZone]
+                .find(transition =>
+                    transition.start <= timestamp && transition.end >= timestamp
+                );
+        },
+
+        /**
+         * Update the formatter for current timeZone.
+         */
+        _makeFormatter() {
+            this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, {
+                ...DateTime._formatterOptions,
+                timeZone: this._timeZone
+            });
+        },
+
+        /**
+         * Modify the DateTime by a duration.
+         * @param {string} durationString The relative date string to modify the date by.
+         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+         * @return {DateTime} The DateTime object.
+         */
+        _modify(durationString, invert = false) {
+            return this._modifyInterval(
+                DateInterval.fromString(durationString),
+                invert
+            );
+        },
+
+        /**
+         * Modify the DateTime by a DateInterval.
+         * @param {DateInterval} interval The DateInterval to modify the date by.
+         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+         * @return {DateTime} The DateTime object.
+         */
+        _modifyInterval(interval, invert = false) {
+            let modify = 1;
+
+            if (interval.invert) {
+                modify *= -1;
+            }
+
+            if (invert) {
+                modify *= -1;
+            }
+
+            if (interval.y) {
+                this._offsetDate.setUTCFullYear(this._offsetDate.getUTCFullYear() + (interval.y * modify));
+            }
+
+            if (interval.m) {
+                this._offsetDate.setUTCMonth(this._offsetDate.getUTCMonth() + (interval.m * modify));
+            }
+
+            if (interval.d) {
+                this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() + (interval.d * modify));
+            }
+
+            if (interval.h) {
+                this._offsetDate.setUTCHours(this._offsetDate.getUTCHours() + (interval.h * modify));
+            }
+
+            if (interval.i) {
+                this._offsetDate.setUTCMinutes(this._offsetDate.getUTCMinutes() + (interval.i * modify));
+            }
+
+            if (interval.s) {
+                this._offsetDate.setUTCSeconds(this._offsetDate.getUTCSeconds() + (interval.s * modify));
+            }
+
+            if (interval.f) {
+                this._offsetDate.setUTCTime(this._offsetDate.getUTCTime() + (interval.f * modify));
+            }
+
+            return this._setOffsetTime(this._offsetDate.getTime());
+        },
+
+        /**
+         * Set the number of milliseconds since the UNIX epoch (offset to timeZone).
+         * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
+         * @returns {DateTime} The DateTime object.
+         */
+        _setOffsetTime(time) {
+            return this.setTime(time + (this._offset * 60000));
         }
 
     });
@@ -1314,7 +1394,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the day in current timezone.
+         * Set the date to the last millisecond of the day in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfDay() {
@@ -1323,7 +1403,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the hour in current timezone.
+         * Set the date to the last millisecond of the hour in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfHour() {
@@ -1332,7 +1412,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the minute in current timezone.
+         * Set the date to the last millisecond of the minute in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfMinute() {
@@ -1341,7 +1421,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the month in current timezone.
+         * Set the date to the last millisecond of the month in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfMonth() {
@@ -1350,7 +1430,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the second in current timezone.
+         * Set the date to the last millisecond of the second in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfSecond() {
@@ -1358,7 +1438,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the week in current timezone.
+         * Set the date to the last millisecond of the week in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfWeek() {
@@ -1367,7 +1447,7 @@
         },
 
         /**
-         * Set the date to the last millisecond of the year in current timezone.
+         * Set the date to the last millisecond of the year in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         endOfYear() {
@@ -1376,7 +1456,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the day in current timezone.
+         * Set the date to the first millisecond of the day in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfDay() {
@@ -1385,7 +1465,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the hour in current timezone.
+         * Set the date to the first millisecond of the hour in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfHour() {
@@ -1394,7 +1474,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the minute in current timezone.
+         * Set the date to the first millisecond of the minute in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfMinute() {
@@ -1403,7 +1483,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the month in current timezone.
+         * Set the date to the first millisecond of the month in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfMonth() {
@@ -1412,7 +1492,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the second in current timezone.
+         * Set the date to the first millisecond of the second in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfSecond() {
@@ -1420,7 +1500,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the week in current timezone.
+         * Set the date to the first millisecond of the week in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfWeek() {
@@ -1429,7 +1509,7 @@
         },
 
         /**
-         * Set the date to the first millisecond of the year in current timezone.
+         * Set the date to the first millisecond of the year in current timeZone.
          * @returns {DateTime} The DateTime object.
          */
         startOfYear() {
@@ -1469,25 +1549,21 @@
          * @returns {string} The formatted date string.
          */
         format(formatString) {
-            let output = '',
-                escaped = false;
-
-            for (const char of [...formatString]) {
-                if (!escaped && char === '\\') {
-                    escaped = true;
-                    continue;
-                }
-
-                if (escaped || !DateTime.formatData[char] || !DateTime.formatData[char].output) {
-                    output += char;
-                    escaped = false;
-                    continue;
-                }
-
-                output += DateTime.formatData[char].output(this);
-            }
-
-            return output;
+            let escaped = false;
+            return [...formatString].reduce(
+                (acc, char) => {
+                    if (!escaped && char === '\\') {
+                        escaped = true;
+                    } else if (escaped || !DateTime._formatData[char] || !DateTime._formatData[char].output) {
+                        acc += char;
+                        escaped = false;
+                    } else {
+                        acc += DateTime._formatData[char].output(this);
+                    }
+                    return acc;
+                },
+                ''
+            );
         },
 
         /**
@@ -1522,7 +1598,7 @@
             return this._utcDate.toLocaleDateString(
                 locales || DateTime.defaultLocale,
                 {
-                    timeZone: this._timezone,
+                    timeZone: this._timeZone,
                     ...options
                 }
             );
@@ -1552,7 +1628,7 @@
             return this._utcDate.toLocaleString(
                 locales || DateTime.defaultLocale,
                 {
-                    timeZone: this._timezone,
+                    timeZone: this._timeZone,
                     ...options
                 }
             );
@@ -1582,7 +1658,7 @@
             return this._utcDate.toLocaleTimeString(
                 locales || DateTime.defaultLocale,
                 {
-                    timeZone: this._timezone,
+                    timeZone: this._timeZone,
                     ...options
                 }
             );
@@ -1613,135 +1689,12 @@
         },
 
         /**
-         * Format the current date in UTC timezone using "D M d Y H:i:s O (e)".
+         * Format the current date in UTC timeZone using "D M d Y H:i:s O (e)".
          * @returns {string} The formatted date string.
          */
         toUTCString() {
             return new DateTime(this.getTime(), 'UTC')
                 .toString();
-        }
-
-    });
-
-    /**
-     * DateTime Internal
-     */
-
-    Object.assign(DateTime.prototype, {
-
-        /**
-         * Update the timezone offset for current timestamp.
-         */
-        _checkOffset() {
-            this._offset = this._timezone === 'UTC' ?
-                0 :
-                (
-                    new Date(DateTime._utcFormatter.format(this))
-                    - new Date(this._formatter.format(this))
-                )
-                / 60000;
-        },
-
-        /**
-         * Get the number of milliseconds since the UNIX epoch (offset to timezone).
-         * @returns {number} The number of milliseconds since the UNIX epoch (offset to timezone).
-         */
-        _getOffsetTime() {
-            return this.getTime() - (this._offset * 60000);
-        },
-
-        /**
-         * Update the timezone transition for current timestamp.
-         */
-        _getTransition() {
-            const timestamp = this.getTimestamp();
-
-            this._transition = DateTime._timezones[this._timezone]
-                .find(transition =>
-                    transition.start <= timestamp && transition.end >= timestamp
-                );
-        },
-
-        /**
-         * Update the formatter for current timezone.
-         */
-        _makeFormatter() {
-            this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, {
-                ...DateTime._formatterOptions,
-                timeZone: this._timezone
-            });
-        },
-
-        /**
-         * Modify the DateTime by a duration.
-         * @param {string} durationString The relative date string to modify the date by.
-         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
-         * @return {DateTime} The DateTime object.
-         */
-        _modify(durationString, invert = false) {
-            return this._modifyInterval(
-                DateInterval.fromString(durationString),
-                invert
-            );
-        },
-
-        /**
-         * Modify the DateTime by a DateInterval.
-         * @param {DateInterval} interval The DateInterval to modify the date by.
-         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
-         * @return {DateTime} The DateTime object.
-         */
-        _modifyInterval(interval, invert = false) {
-            let modify = 1;
-
-            if (interval.invert) {
-                modify *= -1;
-            }
-
-            if (invert) {
-                modify *= -1;
-            }
-
-            const tempDate = new Date(this._getOffsetTime());
-
-            if (interval.y) {
-                tempDate.setUTCFullYear(tempDate.getUTCFullYear() + (interval.y * modify));
-            }
-
-            if (interval.m) {
-                tempDate.setUTCMonth(tempDate.getUTCMonth() + (interval.m * modify));
-            }
-
-            if (interval.d) {
-                tempDate.setUTCDate(tempDate.getUTCDate() + (interval.d * modify));
-            }
-
-            if (interval.h) {
-                tempDate.setUTCHours(tempDate.getUTCHours() + (interval.h * modify));
-            }
-
-            if (interval.i) {
-                tempDate.setUTCMinutes(tempDate.getUTCMinutes() + (interval.i * modify));
-            }
-
-            if (interval.s) {
-                tempDate.setUTCSeconds(tempDate.getUTCSeconds() + (interval.s * modify));
-            }
-
-            if (interval.f) {
-                tempDate.setUTCTime(tempDate.getUTCTime() + (interval.f * modify));
-            }
-
-            return this._setOffsetTime(tempDate.getTime());
-        },
-
-        /**
-         * Set the number of milliseconds since the UNIX epoch (offset to timezone).
-         * @param {number} time The number of milliseconds since the UNIX epoch (offset to timezone).
-         * @returns {DateTime} The DateTime object.
-         */
-        _setOffsetTime(time) {
-            return this.setTime(time + (this._offset * 60000));
         }
 
     });
@@ -1753,7 +1706,7 @@
     Object.assign(DateTime.prototype, {
 
         /**
-         * Create a new DateTime using the current date and timezone.
+         * Create a new DateTime using the current date and timeZone.
          * @returns {DateTime} A new DateTime object.
          */
         clone() {
@@ -1766,6 +1719,15 @@
          */
         dateSuffix() {
             return DateTime.lang.ordinal(this.getDate());
+        },
+
+        /**
+         * Get the name of the day of the week in current timeZone.
+         * @param {string} [type=full] The type of day name to return.
+         * @returns {string} The name of the day of the week.
+         */
+        dayName(type = 'full') {
+            return DateTime.lang.days[type][this.getDay()];
         },
 
         /**
@@ -1791,7 +1753,7 @@
          * @returns {DateInterval} A new DateInterval object.
          */
         diff(other, absolute = false) {
-            const tempDate = new DateTime(other, this._timezone),
+            const tempDate = new DateTime(other, this._timeZone),
                 interval = new DateInterval;
 
             if (this.getTime() === tempDate.getTime()) {
@@ -1880,8 +1842,8 @@
             }
 
             const year = this.getYear(),
-                dateA = new DateTime([year, 0, 1], this._timezone),
-                dateB = new DateTime([year, 5, 1], this._timezone);
+                dateA = new DateTime([year, 0, 1], this._timeZone),
+                dateB = new DateTime([year, 5, 1], this._timeZone);
 
             if (dateA.getTimestamp() < this._transition.start) {
                 dateA.setYear(year + 1);
@@ -1908,6 +1870,15 @@
         },
 
         /**
+         * Get the name of the month in current timeZone.
+         * @param {string} [type=full] The type of month name to return.
+         * @returns {string} The name of the month.
+         */
+        monthName(type = 'full') {
+            return DateTime.lang.months[type][this.getMonth()];
+        },
+
+        /**
          * Get the number of weeks in the current ISO year.
          * @returns {number} The number of weeks in the current ISO year.
          */
@@ -1927,73 +1898,73 @@
          * Create a new DateTime from a date string and format string.
          * @param {string} formatString The PHP date format string.
          * @param {string} dateString The date string to parse.
-         * @param {string} [timezone] The timezone to use for the new DateTime.
+         * @param {string} [timeZone] The timeZone to use for the new DateTime.
          * @returns {DateTime} A new DateTime object.
          */
-        fromFormat(formatString, dateString, timezone) {
-            const data = {},
-                originalDateString = dateString;
+        fromFormat(formatString, dateString, timeZone) {
+            const originalDateString = dateString,
+                data = [...formatString].reduce(
+                    (acc, char) => {
+                        if (this._seperators.includes(char)) {
+                            dateString = dateString.substring(1);
+                            return acc;
+                        }
 
-            for (const char of [...formatString]) {
-                if (this._seperators.includes(char)) {
-                    dateString = dateString.substring(1);
-                    continue;
-                }
+                        if (!this._formatData[char] || !this._formatData[char].regex) {
+                            throw new Error(`Invalid char in DateTime format: ${char}`);
+                        }
 
-                if (!this.formatData[char] || !this.formatData[char].regex) {
-                    throw new Error(`Invalid char in DateTime format: ${char}`);
-                }
+                        const regex = this._formatData[char].regex,
+                            regExp = (typeof regex === 'function' ?
+                                regex(char) :
+                                regex
+                            ),
+                            dateMatch = dateString.match(new RegExp(`^${regExp}`));
 
-                const regex = this.formatData[char].regex,
-                    regExp = (typeof regex === 'function' ?
-                        regex(char) :
-                        regex
-                    ),
-                    dateMatch = dateString.match(new RegExp(`^${regExp}`));
+                        if (!dateMatch) {
+                            throw new Error(`Unmatched char in DateTime string: ${char}`);
+                        }
 
-                if (!dateMatch) {
-                    throw new Error(`Unmatched char in DateTime string: ${char}`);
-                }
+                        dateString = dateString.substring(dateMatch[1].length);
 
-                dateString = dateString.substring(dateMatch[1].length);
+                        if (['!', '|'].includes(char)) {
+                            const epoch = {
+                                year: 1970,
+                                month: 0,
+                                date: 1,
+                                hours: 0,
+                                pm: 0,
+                                minutes: 0,
+                                seconds: 0,
+                                milliseconds: 0
+                            };
 
-                if (['!', '|'].includes(char)) {
-                    const epoch = {
-                        year: 1970,
-                        month: 0,
-                        date: 1,
-                        hours: 0,
-                        pm: 0,
-                        minutes: 0,
-                        seconds: 0,
-                        milliseconds: 0
-                    };
+                            return Object.assign(
+                                acc,
+                                char === '!' ?
+                                    epoch :
+                                    {
+                                        ...epoch,
+                                        ...data
+                                    }
+                            );
+                        }
 
-                    Object.assign(
-                        data,
-                        char === '!' ?
-                            epoch :
-                            {
-                                ...epoch,
-                                ...data
-                            }
-                    );
-                } else {
-                    if (!this.formatData[char].input) {
-                        continue;
-                    }
+                        if (this._formatData[char].input) {
+                            const value = this._formatData[char].value;
+                            acc[value] = this._formatData[char].input(dateMatch[1]);
+                        }
 
-                    const value = this.formatData[char].value;
-                    data[value] = this.formatData[char].input(dateMatch[1]);
-                }
-            }
-
-            const date = this.fromObject(data);
+                        return acc;
+                    },
+                    {}
+                ),
+                date = this.fromObject(data);
 
             date.isValid = date.format(formatString) === originalDateString;
 
-            if (timezone && timezone !== date.getTimezone()) {
-                date.setTimezone(timezone, true);
+            if (timeZone && timeZone !== date.getTimeZone()) {
+                date.setTimeZone(timeZone, true);
             }
 
             return date;
@@ -2013,17 +1984,17 @@
          * @param {number} [dateObject.milliseconds] The milliseconds.
          * @param {Boolean} [dateObject.pm] Whether the hours are in PM.
          * @param {number} [dateObject.timestamp] The number of seconds since the UNIX epoch.
-         * @param {string} [dateObject.timezone] The timezone.
-         * @param {string} [dateObject.timezoneAbbr] The timezone abbreviation.
-         * @param {number} [dateObject.offset] The timezone offset.
-         * @param {string} [timezone] The timezone to use for the new DateTime.
+         * @param {string} [dateObject.timeZone] The timeZone.
+         * @param {string} [dateObject.timeZoneAbbr] The timeZone abbreviation.
+         * @param {number} [dateObject.offset] The timeZone offset.
+         * @param {string} [timeZone] The timeZone to use for the new DateTime.
          * @returns {DateTime} A new DateTime object.
          */
-        fromObject(dateObject, timezone) {
+        fromObject(dateObject, timeZone) {
 
             let currentDate,
                 currentDay,
-                currentTimezone,
+                currentTimeZone,
                 currentOffset;
 
             if (dateObject.timestamp) {
@@ -2074,14 +2045,14 @@
                 ];
             }
 
-            if ('timezone' in dateObject) {
-                currentTimezone = dateObject.timezone;
+            if ('timeZone' in dateObject) {
+                currentTimeZone = dateObject.timeZone;
                 currentOffset = dateObject.offset;
-            } else if ('offset' in dateObject || 'timezoneAbbr' in dateObject) {
-                [currentTimezone, currentOffset] = this._timezoneFromAbbrOffset(
+            } else if ('offset' in dateObject || 'timeZoneAbbr' in dateObject) {
+                [currentTimeZone, currentOffset] = this._timeZoneFromAbbrOffset(
                     currentDate,
-                    'timezoneAbbr' in dateObject ?
-                        dateObject.timezoneAbbr :
+                    'timeZoneAbbr' in dateObject ?
+                        dateObject.timeZoneAbbr :
                         null,
                     'offset' in dateObject ?
                         dateObject.offset :
@@ -2090,7 +2061,7 @@
                 dateObject.offset = currentOffset;
             }
 
-            let date = new this(currentDate, currentTimezone || timezone);
+            let date = new this(currentDate, currentTimeZone || timeZone);
 
             if (currentDay) {
                 date = date.setDay(currentDay);
@@ -2098,14 +2069,14 @@
 
             // compensate for DST transitions
             if (currentOffset) {
-                const offset = date.getTimezoneOffset();
+                const offset = date.getTimeZoneOffset();
                 if (offset !== currentOffset) {
                     date.setTime(date.getTime() - (offset - currentOffset) * 60000);
                 }
             }
 
-            if (timezone && currentTimezone) {
-                date = date.setTimezone(timezone);
+            if (timeZone && currentTimeZone) {
+                date = date.setTimeZone(timeZone);
             }
 
             return date;
@@ -2114,7 +2085,7 @@
     });
 
     /**
-     * DateTime (Static) Internal
+     * DateTime (Static) Helpers
      */
 
     Object.assign(DateTime, {
@@ -2174,13 +2145,13 @@
         },
 
         /**
-         * Return a timezone for a date using an abbreviated name or offset.
+         * Return a timeZone and offset for a date using an abbreviated name or offset.
          * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
-         * @param {null|string} [abbr] The timezone abbreviation.
-         * @param {null|number} [offset] The timezone offset.
-         * @returns {string} The timezone name.
+         * @param {null|string} [abbr] The timeZone abbreviation.
+         * @param {null|number} [offset] The timeZone offset.
+         * @returns {array} An array containing the timeZone name and offset.
          */
-        _timezoneFromAbbrOffset(date = null, abbr = null, offset = null) {
+        _timeZoneFromAbbrOffset(date = null, abbr = null, offset = null) {
             if (
                 (abbr === null || abbr === 'UTC') &&
                 (offset === null || offset === 0)
@@ -2192,25 +2163,25 @@
             const tempDateDst = new DateTime(date, 'UTC');
             tempDateDst.setTime(tempDateDst.getTime() - 3600000);
 
-            for (const timezone in this._timezones) {
+            for (const timeZone in this._timeZones) {
                 try {
-                    tempDate.setTimezone(timezone, true);
+                    tempDate.setTimeZone(timeZone, true);
 
                     if (
-                        (abbr === null || abbr === tempDate.getTimezoneAbbr()) &&
-                        (offset === null || offset === tempDate.getTimezoneOffset())
+                        (abbr === null || abbr === tempDate.getTimeZoneAbbr()) &&
+                        (offset === null || offset === tempDate.getTimeZoneOffset())
                     ) {
-                        return [timezone, tempDate.getTimezoneOffset()];
+                        return [timeZone, tempDate.getTimeZoneOffset()];
                     }
 
-                    tempDateDst.setTimezone(timezone, true);
+                    tempDateDst.setTimeZone(timeZone, true);
 
                     if (
                         tempDateDst.isDST() &&
-                        (abbr === null || abbr === tempDateDst.getTimezoneAbbr()) &&
-                        (offset === null || offset === tempDateDst.getTimezoneOffset())
+                        (abbr === null || abbr === tempDateDst.getTimeZoneAbbr()) &&
+                        (offset === null || offset === tempDateDst.getTimeZoneOffset())
                     ) {
-                        return [timezone, tempDateDst.getTimezoneOffset()];
+                        return [timeZone, tempDateDst.getTimeZoneOffset()];
                     }
                 } catch (error) { }
             }
@@ -2305,8 +2276,8 @@
         // Default locale
         defaultLocale: resolvedOptions.locale,
 
-        // Default timezone
-        defaultTimezone: resolvedOptions.timeZone,
+        // Default timeZone
+        defaultTimeZone: resolvedOptions.timeZone,
 
         // Formats
         formats: {
@@ -2384,8 +2355,8 @@
         // Seperators
         _seperators: [';', ':', '/', '.', ',', '-', '(', ')'],
 
-        // timezones
-        _timezones: {}
+        // timeZones
+        _timeZones: {}
 
     });
 
@@ -2397,11 +2368,11 @@
     DateTime.prototype.setFullYear = DateTime.prototype.setYear;
 
     /**
-     * Populate Timezones
+     * Populate TimeZones
      */
 
-    for (const timezone in zones) {
-        const parts = values[zones[timezone]].split('|'),
+    for (const timeZone in zones) {
+        const parts = values[zones[timeZone]].split('|'),
             abbr = parts.shift().split(';')
                 .map(a => a || 'LMT'),
             transitions = parts.shift().split(';')
@@ -2413,7 +2384,7 @@
                     return data;
                 });
 
-        DateTime._timezones[timezone] = transitions.map((transition, i) => ({
+        DateTime._timeZones[timeZone] = transitions.map((transition, i) => ({
             start: transition[0],
             end: i == transitions.length - 1 ?
                 Number.MAX_VALUE :

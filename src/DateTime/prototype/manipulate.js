@@ -23,7 +23,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the day in current timezone.
+     * Set the date to the last millisecond of the day in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfDay() {
@@ -32,7 +32,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the hour in current timezone.
+     * Set the date to the last millisecond of the hour in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfHour() {
@@ -41,7 +41,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the minute in current timezone.
+     * Set the date to the last millisecond of the minute in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfMinute() {
@@ -50,7 +50,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the month in current timezone.
+     * Set the date to the last millisecond of the month in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfMonth() {
@@ -59,7 +59,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the second in current timezone.
+     * Set the date to the last millisecond of the second in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfSecond() {
@@ -67,7 +67,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the week in current timezone.
+     * Set the date to the last millisecond of the week in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfWeek() {
@@ -76,7 +76,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the last millisecond of the year in current timezone.
+     * Set the date to the last millisecond of the year in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     endOfYear() {
@@ -85,7 +85,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the day in current timezone.
+     * Set the date to the first millisecond of the day in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfDay() {
@@ -94,7 +94,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the hour in current timezone.
+     * Set the date to the first millisecond of the hour in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfHour() {
@@ -103,7 +103,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the minute in current timezone.
+     * Set the date to the first millisecond of the minute in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfMinute() {
@@ -112,7 +112,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the month in current timezone.
+     * Set the date to the first millisecond of the month in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfMonth() {
@@ -121,7 +121,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the second in current timezone.
+     * Set the date to the first millisecond of the second in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfSecond() {
@@ -129,7 +129,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the week in current timezone.
+     * Set the date to the first millisecond of the week in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfWeek() {
@@ -138,7 +138,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the date to the first millisecond of the year in current timezone.
+     * Set the date to the first millisecond of the year in current timeZone.
      * @returns {DateTime} The DateTime object.
      */
     startOfYear() {

@@ -10,25 +10,21 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     format(formatString) {
-        let output = '',
-            escaped = false;
-
-        for (const char of [...formatString]) {
-            if (!escaped && char === '\\') {
-                escaped = true;
-                continue;
-            }
-
-            if (escaped || !DateTime.formatData[char] || !DateTime.formatData[char].output) {
-                output += char;
-                escaped = false;
-                continue;
-            }
-
-            output += DateTime.formatData[char].output(this);
-        }
-
-        return output;
+        let escaped = false;
+        return [...formatString].reduce(
+            (acc, char) => {
+                if (!escaped && char === '\\') {
+                    escaped = true;
+                } else if (escaped || !DateTime._formatData[char] || !DateTime._formatData[char].output) {
+                    acc += char;
+                    escaped = false;
+                } else {
+                    acc += DateTime._formatData[char].output(this);
+                }
+                return acc;
+            },
+            ''
+        );
     },
 
     /**
@@ -63,7 +59,7 @@ Object.assign(DateTime.prototype, {
         return this._utcDate.toLocaleDateString(
             locales || DateTime.defaultLocale,
             {
-                timeZone: this._timezone,
+                timeZone: this._timeZone,
                 ...options
             }
         );
@@ -93,7 +89,7 @@ Object.assign(DateTime.prototype, {
         return this._utcDate.toLocaleString(
             locales || DateTime.defaultLocale,
             {
-                timeZone: this._timezone,
+                timeZone: this._timeZone,
                 ...options
             }
         );
@@ -123,7 +119,7 @@ Object.assign(DateTime.prototype, {
         return this._utcDate.toLocaleTimeString(
             locales || DateTime.defaultLocale,
             {
-                timeZone: this._timezone,
+                timeZone: this._timeZone,
                 ...options
             }
         );
@@ -154,7 +150,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Format the current date in UTC timezone using "D M d Y H:i:s O (e)".
+     * Format the current date in UTC timeZone using "D M d Y H:i:s O (e)".
      * @returns {string} The formatted date string.
      */
     toUTCString() {

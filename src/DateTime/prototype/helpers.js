@@ -1,14 +1,14 @@
 /**
- * DateTime Internal
+ * DateTime Helpers
  */
 
 Object.assign(DateTime.prototype, {
 
     /**
-     * Update the timezone offset for current timestamp.
+     * Update the timeZone offset for current timestamp.
      */
     _checkOffset() {
-        this._offset = this._timezone === 'UTC' ?
+        this._offset = this._timeZone === 'UTC' ?
             0 :
             (
                 new Date(DateTime._utcFormatter.format(this))
@@ -18,32 +18,32 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the number of milliseconds since the UNIX epoch (offset to timezone).
-     * @returns {number} The number of milliseconds since the UNIX epoch (offset to timezone).
+     * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
      */
     _getOffsetTime() {
         return this.getTime() - (this._offset * 60000);
     },
 
     /**
-     * Update the timezone transition for current timestamp.
+     * Update the timeZone transition for current timestamp.
      */
     _getTransition() {
         const timestamp = this.getTimestamp();
 
-        this._transition = DateTime._timezones[this._timezone]
+        this._transition = DateTime._timeZones[this._timeZone]
             .find(transition =>
                 transition.start <= timestamp && transition.end >= timestamp
             );
     },
 
     /**
-     * Update the formatter for current timezone.
+     * Update the formatter for current timeZone.
      */
     _makeFormatter() {
         this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, {
             ...DateTime._formatterOptions,
-            timeZone: this._timezone
+            timeZone: this._timeZone
         });
     },
 
@@ -77,42 +77,40 @@ Object.assign(DateTime.prototype, {
             modify *= -1;
         }
 
-        const tempDate = new Date(this._getOffsetTime());
-
         if (interval.y) {
-            tempDate.setUTCFullYear(tempDate.getUTCFullYear() + (interval.y * modify));
+            this._offsetDate.setUTCFullYear(this._offsetDate.getUTCFullYear() + (interval.y * modify));
         }
 
         if (interval.m) {
-            tempDate.setUTCMonth(tempDate.getUTCMonth() + (interval.m * modify));
+            this._offsetDate.setUTCMonth(this._offsetDate.getUTCMonth() + (interval.m * modify));
         }
 
         if (interval.d) {
-            tempDate.setUTCDate(tempDate.getUTCDate() + (interval.d * modify));
+            this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() + (interval.d * modify));
         }
 
         if (interval.h) {
-            tempDate.setUTCHours(tempDate.getUTCHours() + (interval.h * modify));
+            this._offsetDate.setUTCHours(this._offsetDate.getUTCHours() + (interval.h * modify));
         }
 
         if (interval.i) {
-            tempDate.setUTCMinutes(tempDate.getUTCMinutes() + (interval.i * modify));
+            this._offsetDate.setUTCMinutes(this._offsetDate.getUTCMinutes() + (interval.i * modify));
         }
 
         if (interval.s) {
-            tempDate.setUTCSeconds(tempDate.getUTCSeconds() + (interval.s * modify));
+            this._offsetDate.setUTCSeconds(this._offsetDate.getUTCSeconds() + (interval.s * modify));
         }
 
         if (interval.f) {
-            tempDate.setUTCTime(tempDate.getUTCTime() + (interval.f * modify));
+            this._offsetDate.setUTCTime(this._offsetDate.getUTCTime() + (interval.f * modify));
         }
 
-        return this._setOffsetTime(tempDate.getTime());
+        return this._setOffsetTime(this._offsetDate.getTime());
     },
 
     /**
-     * Set the number of milliseconds since the UNIX epoch (offset to timezone).
-     * @param {number} time The number of milliseconds since the UNIX epoch (offset to timezone).
+     * Set the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
      * @returns {DateTime} The DateTime object.
      */
     _setOffsetTime(time) {

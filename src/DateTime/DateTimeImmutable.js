@@ -5,7 +5,7 @@
 class DateTimeImmutable extends DateTime {
 
     /**
-     * Create a new DateTimeImmutable using the current date and timezone.
+     * Create a new DateTimeImmutable using the current date and timeZone.
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     clone() {
@@ -18,16 +18,16 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTime(time) {
-        return new DateTimeImmutable(time, this._timezone);
+        return new DateTimeImmutable(time, this._timeZone);
     }
 
     /**
-     * Set the current timezone.
-     * @param {string} timezone The name of the timezone.
+     * Set the current timeZone.
+     * @param {string} timeZone The name of the timeZone.
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
-    setTimezone(timezone) {
-        return new DateTimeImmutable(this, timezone);
+    setTimeZone(timeZone) {
+        return new DateTimeImmutable(this, timeZone);
     }
 
 }

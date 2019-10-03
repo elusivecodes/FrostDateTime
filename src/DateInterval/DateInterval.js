@@ -60,25 +60,21 @@ class DateInterval {
      * @returns {string} The formatted date interval.
      */
     format(formatString) {
-        let output = '',
-            prefixed = false;
-
-        for (const char of [...formatString]) {
-            if (!prefixed && char === '%') {
-                prefixed = true;
-                continue;
-            }
-
-            if (!prefixed || !DateInterval.formatData[char]) {
-                output += char;
-                prefixed = false;
-                continue;
-            }
-
-            output += DateInterval.formatData[char](this);
-        }
-
-        return output;
+        let escaped = false;
+        return [...formatString].reduce(
+            (acc, char) => {
+                if (!escaped && char === '%') {
+                    escaped = true;
+                } else if (escaped || !DateInterval._formatData[char]) {
+                    acc += char;
+                    escaped = false;
+                } else {
+                    acc += DateInterval._formatData[char](this);
+                }
+                return acc;
+            },
+            ''
+        );
     }
 
     /**
@@ -122,15 +118,15 @@ class DateInterval {
 
     /**
      * Create a new DateInterval from the relative parts of the string.
-     * @param {string} time The date with relative parts.
+     * @param {string} durationString The date with relative parts.
      * @returns {DateInterval} A new DateInterval object.
      */
-    static fromString(time) {
+    static fromString(durationString) {
         const interval = new this,
             regExp = new RegExp(DateInterval._stringRegExp, 'gi');
 
         let match;
-        while (match = regExp.exec(time)) {
+        while (match = regExp.exec(durationString)) {
             const value = parseInt(match[1]);
 
             if (match[2]) {

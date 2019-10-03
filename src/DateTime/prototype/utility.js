@@ -5,7 +5,7 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Create a new DateTime using the current date and timezone.
+     * Create a new DateTime using the current date and timeZone.
      * @returns {DateTime} A new DateTime object.
      */
     clone() {
@@ -18,6 +18,15 @@ Object.assign(DateTime.prototype, {
      */
     dateSuffix() {
         return DateTime.lang.ordinal(this.getDate());
+    },
+
+    /**
+     * Get the name of the day of the week in current timeZone.
+     * @param {string} [type=full] The type of day name to return.
+     * @returns {string} The name of the day of the week.
+     */
+    dayName(type = 'full') {
+        return DateTime.lang.days[type][this.getDay()];
     },
 
     /**
@@ -43,7 +52,7 @@ Object.assign(DateTime.prototype, {
      * @returns {DateInterval} A new DateInterval object.
      */
     diff(other, absolute = false) {
-        const tempDate = new DateTime(other, this._timezone),
+        const tempDate = new DateTime(other, this._timeZone),
             interval = new DateInterval;
 
         if (this.getTime() === tempDate.getTime()) {
@@ -132,8 +141,8 @@ Object.assign(DateTime.prototype, {
         }
 
         const year = this.getYear(),
-            dateA = new DateTime([year, 0, 1], this._timezone),
-            dateB = new DateTime([year, 5, 1], this._timezone);
+            dateA = new DateTime([year, 0, 1], this._timeZone),
+            dateB = new DateTime([year, 5, 1], this._timeZone);
 
         if (dateA.getTimestamp() < this._transition.start) {
             dateA.setYear(year + 1);
@@ -157,6 +166,15 @@ Object.assign(DateTime.prototype, {
      */
     isLeapYear() {
         return DateTime.isLeapYear(this.getYear());
+    },
+
+    /**
+     * Get the name of the month in current timeZone.
+     * @param {string} [type=full] The type of month name to return.
+     * @returns {string} The name of the month.
+     */
+    monthName(type = 'full') {
+        return DateTime.lang.months[type][this.getMonth()];
     },
 
     /**
