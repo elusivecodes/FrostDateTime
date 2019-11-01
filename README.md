@@ -565,116 +565,24 @@ Add a *DateInterval* to the date.
 date.addInterval(interval);
 ```
 
-**End Of Day**
+**End Of**
 
-Set the date to the last millisecond of the day in current timeZone.
+Set the date to the end of a unit of time in current timeZone.
+
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-date.endOfDay();
+date.endOf(timeUnit);
 ```
 
-**End Of Hour**
+**Start Of**
 
-Set the date to the last millisecond of the hour in current timeZone.
+Set the date to the start of a unit of time in current timeZone.
 
-```javascript
-date.endOfHour();
-```
-
-**End Of Minute**
-
-Set the date to the last millisecond of the minute in current timeZone.
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-date.endOfMinute();
-```
-
-**End Of Month**
-
-Set the date to the last millisecond of the month in current timeZone.
-
-```javascript
-date.endOfMonth();
-```
-
-**End Of Second**
-
-Set the date to the last millisecond of the second in current timeZone.
-
-```javascript
-date.endOfSecond();
-```
-
-**End Of Week**
-
-Set the date to the last millisecond of the week in current timeZone.
-
-```javascript
-date.endOfWeek();
-```
-
-**End Of Year**
-
-Set the date to the last millisecond of the year in current timeZone.
-
-```javascript
-date.endOfYear();
-```
-
-**Start Of Day**
-
-Set the date to the first millisecond of the day in current timeZone.
-
-```javascript
-date.startOfDay();
-```
-
-**Start Of Hour**
-
-Set the date to the first millisecond of the hour in current timeZone.
-
-```javascript
-date.startOfHour();
-```
-
-**Start Of Minute**
-
-Set the date to the first millisecond of the minute in current timeZone.
-
-```javascript
-date.startOfMinute();
-```
-
-**Start Of Month**
-
-Set the date to the first millisecond of the month in current timeZone.
-
-```javascript
-date.startOfMonth();
-```
-
-**Start Of Second**
-
-Set the date to the first millisecond of the second in current timeZone.
-
-```javascript
-date.startOfSecond();
-```
-
-**Start Of Week**
-
-Set the date to the first millisecond of the week in current timeZone.
-
-```javascript
-date.startOfWeek();
-```
-
-**Start Of Year**
-
-Set the date to the first millisecond of the year in current timeZone.
-
-```javascript
-date.startOfYear();
+date.startOf(timeUnit);
 ```
 
 **Subtract**

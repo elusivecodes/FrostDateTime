@@ -1403,118 +1403,79 @@
         },
 
         /**
-         * Set the date to the last millisecond of the hour in current timeZone.
+         * Modify the DateTime by setting it to the end of a unit of time.
+         * @param {string} [timeUnit] The unit of time.
          * @returns {DateTime} The DateTime object.
          */
-        endOfHour() {
-            return this.setMinutes(59)
-                .endOfMinute();
+        endOf(timeUnit) {
+            timeUnit = timeUnit.toLowerCase();
+
+            switch (timeUnit) {
+                case 'second':
+                    return this.setMilliseconds(999);
+                case 'minute':
+                    return this.setSeconds(59, 999);
+                case 'hour':
+                    return this.setMinutes(59, 59, 999);
+                case 'day':
+                case 'date':
+                    return this.setHours(23, 59, 59, 999);
+                case 'week':
+                    return this.setDay(6)
+                        .setHours(23, 59, 59, 999);
+                case 'isoWeek':
+                    return this.setISODay(7)
+                        .setHours(23, 59, 59, 999);
+                case 'month':
+                    return this.setDate(this.daysInMonth())
+                        .setHours(23, 59, 59, 999);
+                case 'quarter':
+                    const month = this.getQuarter() * 3 - 3;
+                    return this.setMonth(month, DateTime.daysInMonth(this.getYear(), month))
+                        .setHours(23, 59, 59, 999);
+                case 'year':
+                default:
+                    return this.setMonth(11, 31)
+                        .setHours(23, 59, 59, 999);
+            }
         },
 
         /**
-         * Set the date to the last millisecond of the minute in current timeZone.
+         * Modify the DateTime by setting it to the start of a unit of time.
+         * @param {string} [timeUnit] The unit of time.
          * @returns {DateTime} The DateTime object.
          */
-        endOfMinute() {
-            return this.setSeconds(59)
-                .endOfSecond();
-        },
+        startOf(timeUnit) {
+            timeUnit = timeUnit.toLowerCase();
 
-        /**
-         * Set the date to the last millisecond of the month in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        endOfMonth() {
-            return this.setDate(this.daysInMonth())
-                .endOfDay();
-        },
-
-        /**
-         * Set the date to the last millisecond of the second in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        endOfSecond() {
-            return this.setMilliseconds(999)
-        },
-
-        /**
-         * Set the date to the last millisecond of the week in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        endOfWeek() {
-            return this.setISODay(7)
-                .endOfDay();
-        },
-
-        /**
-         * Set the date to the last millisecond of the year in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        endOfYear() {
-            return this.setMonth(11)
-                .endOfMonth();
-        },
-
-        /**
-         * Set the date to the first millisecond of the day in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfDay() {
-            return this.setHours(0)
-                .startOfHour();
-        },
-
-        /**
-         * Set the date to the first millisecond of the hour in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfHour() {
-            return this.setMinutes(0)
-                .startOfMinute();
-        },
-
-        /**
-         * Set the date to the first millisecond of the minute in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfMinute() {
-            return this.setSeconds(0)
-                .startOfSecond();
-        },
-
-        /**
-         * Set the date to the first millisecond of the month in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfMonth() {
-            return this.setDate(1)
-                .startOfDay();
-        },
-
-        /**
-         * Set the date to the first millisecond of the second in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfSecond() {
-            return this.setMilliseconds(0)
-        },
-
-        /**
-         * Set the date to the first millisecond of the week in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfWeek() {
-            return this.setISODay(1)
-                .startOfDay();
-        },
-
-        /**
-         * Set the date to the first millisecond of the year in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        startOfYear() {
-            return this.setMonth(0)
-                .startOfMonth();
+            switch (timeUnit) {
+                case 'second':
+                    return this.setMilliseconds(0);
+                case 'minute':
+                    return this.setSeconds(0, 0);
+                case 'hour':
+                    return this.setMinutes(0, 0, 0);
+                case 'day':
+                case 'date':
+                    return this.setHours(0, 0, 0, 0);
+                case 'week':
+                    return this.setDay(0)
+                        .setHours(0, 0, 0, 0);
+                case 'isoWeek':
+                    return this.setISODay(0)
+                        .setHours(0, 0, 0, 0);
+                case 'month':
+                    return this.setDate(1)
+                        .setHours(0, 0, 0, 0);
+                case 'quarter':
+                    const month = this.getQuarter() * 3 - 3;
+                    return this.setMonth(month, 1)
+                        .setHours(0, 0, 0, 0);
+                case 'year':
+                default:
+                    return this.setMonth(0, 1)
+                        .setHours(0, 0, 0, 0);
+            }
         },
 
         /**
