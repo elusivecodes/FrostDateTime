@@ -144,6 +144,11 @@ Object.assign(DateTime, {
                     ...dateObject
                 };
 
+            if (!('date' in dateObject) && ('month' in dateObject || 'year' in dateObject)) {
+                const days = this.daysInMonth(newDate.year, newDate.month);
+                newDate.date = Math.min(days, newDate.date);
+            }
+
             currentDate = [
                 newDate.year,
                 newDate.month,

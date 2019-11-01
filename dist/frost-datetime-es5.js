@@ -2085,6 +2085,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           milliseconds: now.getMilliseconds()
         }, dateObject);
 
+        if (!('date' in dateObject) && ('month' in dateObject || 'year' in dateObject)) {
+          var days = this.daysInMonth(newDate.year, newDate.month);
+          newDate.date = Math.min(days, newDate.date);
+        }
+
         currentDate = [newDate.year, newDate.month, newDate.date, newDate.hours, newDate.minutes, newDate.seconds, newDate.milliseconds];
       }
 
