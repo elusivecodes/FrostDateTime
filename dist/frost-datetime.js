@@ -1268,6 +1268,43 @@
         },
 
         /**
+         * Compare this DateTime with another date.
+         * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+         * @param {string} granularity The level of granularity to use for comparison.
+         * @param {function} callback The callback to compare the difference in values.
+         * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
+         */
+        _compare(other, granularity, callback) {
+            const tempDate = new DateTime(other, this._timeZone);
+
+            if (!granularity) {
+                const timeDiff = this.getTime() - tempDate.getTime();
+                return callback(timeDiff) >= 0;
+            }
+
+            granularity = granularity.toLowerCase();
+
+            for (const lookup of DateTime._compareLookup) {
+                const preCheck = !lookup.values.includes(granularity);
+                const method = lookup.method;
+                const diff = this[method]() - tempDate[method]();
+                const result = callback(diff, preCheck);
+
+                if (result < 0) {
+                    return false;
+                } else if (result > 0) {
+                    return true;
+                }
+
+                if (!preCheck) {
+                    break;
+                }
+            }
+
+            return true;
+        },
+
+        /**
          * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
          * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
          */
@@ -1794,6 +1831,65 @@
         },
 
         /**
+         * Determine whether this DateTime is after another date (optionally to a granularity).
+         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
+         */
+        isAfter(other, granularity) {
+            return this._compare(
+                other,
+                granularity,
+                (diff, preCheck) => {
+                    if (diff > 0) {
+                        return 1;
+                    }
+
+                    if (diff < 0 || (!diff && !preCheck)) {
+                        return -1;
+                    }
+
+                    return 0;
+                }
+            );
+        },
+
+        /**
+         * Determine whether this DateTime is before another date (optionally to a granularity).
+         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
+         */
+        isBefore(other, granularity) {
+            return this._compare(
+                other,
+                granularity,
+                (diff, preCheck) => {
+                    if (diff < 0) {
+                        return 1;
+                    }
+
+                    if (diff > 0 || (!diff && !preCheck)) {
+                        return -1;
+                    }
+
+                    return 0;
+                }
+            );
+        },
+
+        /**
+         * Determine whether this DateTime is between two other dates (optionally to a granularity).
+         * @param {number|number[]|string|Date|DateTime} [other1] The first date to compare to.
+         * @param {number|number[]|string|Date|DateTime} [other2] The second date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
+         */
+        isBetween(other1, other2, granularity) {
+            return this.isAfter(other1, granularity) && this.isBefore(other2, granularity);
+        },
+
+        /**
          * Return true if the DateTime is in daylight savings.
          * @returns {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
          */
@@ -1828,6 +1924,70 @@
          */
         isLeapYear() {
             return DateTime.isLeapYear(this.getYear());
+        },
+
+        /**
+         * Determine whether this DateTime is the same as another date (optionally to a granularity).
+         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
+         */
+        isSame(other, granularity) {
+            return this._compare(
+                other,
+                granularity,
+                diff => diff ?
+                    -1 :
+                    0
+            );
+        },
+
+        /**
+         * Determine whether this DateTime is the same or after another date (optionally to a granularity).
+         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
+         */
+        isSameOrAfter(other, granularity) {
+            return this._compare(
+                other,
+                granularity,
+                diff => {
+                    if (diff > 0) {
+                        return 1;
+                    }
+
+                    if (diff < 0) {
+                        return -1;
+                    }
+
+                    return 0;
+                }
+            );
+        },
+
+        /**
+         * Determine whether this DateTime is the same or before another date.
+         * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+         * @param {string} [granularity] The level of granularity to use for comparison.
+         * @returns {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
+         */
+        isSameOrBefore(other, granularity) {
+            return this._compare(
+                other,
+                granularity,
+                diff => {
+                    if (diff < 0) {
+                        return 1;
+                    }
+
+                    if (diff > 0) {
+                        return -1;
+                    }
+
+                    return 0;
+                }
+            );
         },
 
         /**
@@ -2238,6 +2398,34 @@
 
         // Whether to clamp current date when adjusting month
         clampDates: true,
+
+        // Comparison lookup
+        _compareLookup: [
+            {
+                values: ['year'],
+                method: 'getYear'
+            },
+            {
+                values: ['month'],
+                method: 'getMonth'
+            },
+            {
+                values: ['day', 'date'],
+                method: 'getDate'
+            },
+            {
+                values: ['hour'],
+                method: 'getHours'
+            },
+            {
+                values: ['minute'],
+                method: 'getMinutes'
+            },
+            {
+                values: ['second'],
+                method: 'getSeconds'
+            }
+        ],
 
         // Default locale
         defaultLocale: resolvedOptions.locale,

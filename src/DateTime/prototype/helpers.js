@@ -18,6 +18,43 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Compare this DateTime with another date.
+     * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+     * @param {string} granularity The level of granularity to use for comparison.
+     * @param {function} callback The callback to compare the difference in values.
+     * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
+     */
+    _compare(other, granularity, callback) {
+        const tempDate = new DateTime(other, this._timeZone);
+
+        if (!granularity) {
+            const timeDiff = this.getTime() - tempDate.getTime();
+            return callback(timeDiff) >= 0;
+        }
+
+        granularity = granularity.toLowerCase();
+
+        for (const lookup of DateTime._compareLookup) {
+            const preCheck = !lookup.values.includes(granularity);
+            const method = lookup.method;
+            const diff = this[method]() - tempDate[method]();
+            const result = callback(diff, preCheck);
+
+            if (result < 0) {
+                return false;
+            } else if (result > 0) {
+                return true;
+            }
+
+            if (!preCheck) {
+                break;
+            }
+        }
+
+        return true;
+    },
+
+    /**
      * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
      * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
      */

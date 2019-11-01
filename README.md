@@ -663,6 +663,46 @@ This method returns a new *DateInterval* object.
 const diff = date.diff(otherDate, absolute);
 ```
 
+**Is After?**
+
+Return *true* if the *DateTime* is after another date.
+
+- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isAfter = date.isAfter(otherDate, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+
+**Is Before?**
+
+Return *true* if the *DateTime* is before another date.
+
+- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isBefore = date.isBefore(otherDate, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+
+**Is Between**
+
+Return *true* if the *DateTime* is between two other dates.
+
+- `otherDate1` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `otherDate2` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isBetween = date.isBetween(otherDate1, otherDate2, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+
 **Is DST?**
 
 Return *true* if the *DateTime* is in daylight savings.
@@ -678,6 +718,45 @@ Return *true* if the year is a leap year.
 ```javascript
 const isLeapYear = date.isLeapYear();
 ```
+
+**Is Same?**
+
+Return *true* if the *DateTime* is the same as another date.
+
+- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isSame = date.isSame(otherDate, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+
+**Is Same Or After?**
+
+Return *true* if the *DateTime* is the same or after another date.
+
+- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isSameOrAfter = date.isSameOrAfter(otherDate, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+
+**Is Same Or Before?**
+
+Return *true* if the *DateTime* is the same or before another date.
+
+- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+
+```javascript
+const isSameOrBefore = date.isSameOrBefore(otherDate, granularity);
+```
+
+If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
 
 **Month Name**
 

@@ -10,6 +10,34 @@ Object.assign(DateTime, {
     // Whether to clamp current date when adjusting month
     clampDates: true,
 
+    // Comparison lookup
+    _compareLookup: [
+        {
+            values: ['year'],
+            method: 'getYear'
+        },
+        {
+            values: ['month'],
+            method: 'getMonth'
+        },
+        {
+            values: ['day', 'date'],
+            method: 'getDate'
+        },
+        {
+            values: ['hour'],
+            method: 'getHours'
+        },
+        {
+            values: ['minute'],
+            method: 'getMinutes'
+        },
+        {
+            values: ['second'],
+            method: 'getSeconds'
+        }
+    ],
+
     // Default locale
     defaultLocale: resolvedOptions.locale,
 
