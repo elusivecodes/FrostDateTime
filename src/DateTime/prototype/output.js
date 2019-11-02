@@ -13,9 +13,16 @@ Object.assign(DateTime.prototype, {
         let escaped = false;
         return [...formatString].reduce(
             (acc, char) => {
-                if (!escaped && char === '\\') {
+                if (
+                    !escaped &&
+                    char === '\\'
+                ) {
                     escaped = true;
-                } else if (escaped || !DateTime._formatData[char] || !DateTime._formatData[char].output) {
+                } else if (
+                    escaped ||
+                    !DateTime._formatData[char] ||
+                    !DateTime._formatData[char].output
+                ) {
                     acc += char;
                     escaped = false;
                 } else {

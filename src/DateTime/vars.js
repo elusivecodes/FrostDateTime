@@ -97,7 +97,8 @@ Object.assign(DateTime, {
             }
 
             return 'th';
-        }
+        },
+        ordinalRegExp: '(st|[nr]d|th)'
     },
 
     // Formatter locale

@@ -17,7 +17,9 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The ordinal suffix for the date of the month.
      */
     dateSuffix() {
-        return DateTime.lang.ordinal(this.getDate());
+        return DateTime.lang.ordinal(
+            this.getDate()
+        );
     },
 
     /**
@@ -34,7 +36,10 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of days in the current month.
      */
     daysInMonth() {
-        return DateTime.daysInMonth(this.getYear(), this.getMonth());
+        return DateTime.daysInMonth(
+            this.getYear(),
+            this.getMonth()
+        );
     },
 
     /**
@@ -42,7 +47,9 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of days in the current year.
      */
     daysInYear() {
-        return DateTime.daysInYear(this.getYear());
+        return DateTime.daysInYear(
+            this.getYear()
+        );
     },
 
     /**
@@ -65,65 +72,160 @@ Object.assign(DateTime.prototype, {
             thisHour = this.getHours(),
             thisMinute = this.getMinutes(),
             thisSecond = this.getSeconds(),
-            thisMillisecond = this.getMilliseconds() * 1000,
+            thisMillisecond = this.getMilliseconds()
+                * 1000,
             otherMonth = tempDate.getMonth(),
             otherDate = tempDate.getDate(),
             otherHour = tempDate.getHours(),
             otherMinute = tempDate.getMinutes(),
             otherSecond = tempDate.getSeconds(),
-            otherMillisecond = tempDate.getMilliseconds() * 1000;
+            otherMillisecond = tempDate.getMilliseconds()
+                * 1000;
 
-        interval.y = Math.abs(this.getYear() - tempDate.getYear());
-        interval.m = Math.abs(thisMonth - otherMonth);
-        interval.d = Math.abs(thisDate - otherDate);
-        interval.h = Math.abs(thisHour - otherHour);
-        interval.i = Math.abs(thisMinute - otherMinute);
-        interval.s = Math.abs(thisSecond - otherSecond);
-        interval.f = Math.abs(thisMillisecond - otherMillisecond);
-        interval.days = (Math.abs((this - tempDate) / 86400000)) | 0;
+        interval.y = Math.abs(
+            this.getYear()
+            - tempDate.getYear()
+        );
+        interval.m = Math.abs(
+            thisMonth
+            - otherMonth
+        );
+        interval.d = Math.abs(
+            thisDate
+            - otherDate
+        );
+        interval.h = Math.abs(
+            thisHour
+            - otherHour
+        );
+        interval.i = Math.abs(
+            thisMinute
+            - otherMinute
+        );
+        interval.s = Math.abs(
+            thisSecond
+            - otherSecond
+        );
+        interval.f = Math.abs(
+            thisMillisecond
+            - otherMillisecond
+        );
+        interval.days = (
+            Math.abs(
+                (this - tempDate)
+                / 86400000
+            )
+        ) | 0;
         interval.invert = !absolute && lessThan;
 
-        if (interval.y && interval.m &&
-            ((!lessThan && thisMonth < otherMonth) ||
-                (lessThan && thisMonth > otherMonth))) {
+        if (
+            interval.y &&
+            interval.m &&
+            (
+                (
+                    !lessThan &&
+                    thisMonth < otherMonth
+                ) ||
+                (
+                    lessThan &&
+                    thisMonth > otherMonth
+                )
+            )
+        ) {
             interval.y--;
             interval.m = 12 - interval.m;
         }
 
-        if (interval.m && interval.d &&
-            ((!lessThan && thisDate < otherDate) ||
-                (lessThan && thisDate > otherDate))) {
+        if (
+            interval.m &&
+            interval.d &&
+            (
+                (!
+                    lessThan &&
+                    thisDate < otherDate
+                ) ||
+                (
+                    lessThan &&
+                    thisDate > otherDate
+                )
+            )
+        ) {
             interval.m--;
-            interval.d = (lessThan ?
-                this.daysInMonth() :
-                tempDate.daysInMonth()
+            interval.d = (
+                lessThan ?
+                    this.daysInMonth() :
+                    tempDate.daysInMonth()
             ) - interval.d;
         }
 
-        if (interval.d && interval.h &&
-            ((!lessThan && thisHour < otherHour) ||
-                (lessThan && thisHour > otherHour))) {
+        if (
+            interval.d &&
+            interval.h &&
+            (
+                (
+                    !lessThan &&
+                    thisHour < otherHour
+                ) ||
+                (
+                    lessThan &&
+                    thisHour > otherHour
+                )
+            )
+        ) {
             interval.d--;
             interval.h = 24 - interval.h;
         }
 
-        if (interval.h && interval.i &&
-            ((!lessThan && thisMinute < otherMinute) ||
-                (lessThan && thisMinute > otherMinute))) {
+        if (
+            interval.h &&
+            interval.i &&
+            (
+                (
+                    !lessThan &&
+                    thisMinute < otherMinute
+                ) ||
+                (
+                    lessThan &&
+                    thisMinute > otherMinute
+                )
+            )
+        ) {
             interval.h--;
             interval.i = 60 - interval.i;
         }
 
-        if (interval.i && interval.s &&
-            ((!lessThan && thisSecond < otherSecond) ||
-                (lessThan && thisSecond > otherSecond))) {
+        if (
+            interval.i &&
+            interval.s &&
+            (
+                (
+                    !lessThan &&
+                    thisSecond < otherSecond
+                ) ||
+                (
+                    lessThan &&
+                    thisSecond > otherSecond
+                )
+            )
+        ) {
             interval.i--;
             interval.s = 60 - interval.s;
         }
 
-        if (interval.s && interval.f &&
-            ((!lessThan && thisMillisecond < otherMillisecond) ||
-                (lessThan && thisMillisecond > otherMillisecond))) {
+        if (
+            interval.s &&
+            interval.f &&
+            (
+                (
+                    !lessThan &&
+                    thisMillisecond < otherMillisecond
+                ) ||
+                (
+                    lessThan &&
+                    thisMillisecond > otherMillisecond
+                )
+            )
+        ) {
             interval.s--;
             interval.f = 1000000 - interval.f;
         }
@@ -187,7 +289,8 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
      */
     isBetween(other1, other2, granularity) {
-        return this.isAfter(other1, granularity) && this.isBefore(other2, granularity);
+        return this.isAfter(other1, granularity) &&
+            this.isBefore(other2, granularity);
     },
 
     /**
@@ -211,7 +314,10 @@ Object.assign(DateTime.prototype, {
             dateB.setYear(year - 1);
         }
 
-        if (dateA.getTimestamp() > this._transition.end || dateB.getTimestamp() < this._transition.start) {
+        if (
+            dateA.getTimestamp() > this._transition.end ||
+            dateB.getTimestamp() < this._transition.start
+        ) {
             dateA.setTimestamp(this._transition.start);
             dateB.setTimestamp(this._transition.end);
         }
@@ -224,7 +330,9 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if the current year is a leap year, otherwise FALSE.
      */
     isLeapYear() {
-        return DateTime.isLeapYear(this.getYear());
+        return DateTime.isLeapYear(
+            this.getYear()
+        );
     },
 
     /**

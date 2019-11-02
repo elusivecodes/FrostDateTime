@@ -20,13 +20,23 @@ class DateTime {
         } else if (Array.isArray(date)) {
             timestamp = Date.UTC(...date);
             adjustOffset = true;
-        } else if (!isNaN(parseFloat(date)) && isFinite(date)) {
+        } else if (
+            !isNaN(
+                parseFloat(date)
+            ) &&
+            isFinite(date)
+        ) {
             timestamp = date;
         } else if (date === `${date}`) {
             timestamp = Date.parse(date);
-            timestamp -= new Date().getTimeZoneOffset() * 60000;
+            timestamp -= new Date()
+                .getTimeZoneOffset()
+                * 60000;
             adjustOffset = true;
-        } else if (date instanceof Date || date instanceof DateTime) {
+        } else if (
+            date instanceof Date ||
+            date instanceof DateTime
+        ) {
             timestamp = date.getTime();
         } else {
             throw new Error('Invalid date supplied');
@@ -51,12 +61,17 @@ class DateTime {
 
         if (this._offset && adjustOffset) {
             const offset = this._offset;
-            this._utcDate.setTime(this.getTime() + this._offset * 60000);
+            this._utcDate.setTime(
+                this.getTime()
+                + this._offset * 60000
+            );
             this._checkOffset();
 
             // compensate for DST transitions
             if (offset !== this._offset) {
-                this._utcDate.setTime(this._utcDate.getTime() - (offset - this._offset) * 60000);
+                this._utcDate.setTime(
+                    this._utcDate.getTime()
+                    - (offset - this._offset) * 60000);
             }
         }
 

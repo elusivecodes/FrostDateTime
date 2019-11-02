@@ -11,13 +11,15 @@ Object.assign(DateTime.prototype, {
      */
     setBeat(beat) {
         return this.setTime(
-            new Date(this.getTime() + 3600000)
-                .setUTCHours(
-                    0,
-                    0,
-                    0,
-                    beat * 86400
-                )
+            new Date(
+                this.getTime()
+                + 3600000
+            ).setUTCHours(
+                0,
+                0,
+                0,
+                beat * 86400
+            )
             - 3600000
         );
     },
@@ -40,7 +42,11 @@ Object.assign(DateTime.prototype, {
      */
     setDay(day) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(this.getDate() - this.getDay() + day)
+            this._offsetDate.setUTCDate(
+                this.getDate()
+                - this.getDay()
+                + day
+            )
         );
     },
 
@@ -79,7 +85,11 @@ Object.assign(DateTime.prototype, {
      */
     setISODay(day) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(this.getDate() - this.getISODay() + day)
+            this._offsetDate.setUTCDate(
+                this.getDate()
+                - this.getISODay()
+                + day
+            )
         );
     },
 
@@ -96,13 +106,19 @@ Object.assign(DateTime.prototype, {
 
         this._offsetDate.setUTCMonth(
             0,
-            4 + ((week - 1) * 7)
+            4
+            + (
+                (week - 1)
+                * 7
+            )
         );
 
         return this._setOffsetTime(
             this._offsetDate.setUTCDate(
                 this._offsetDate.getUTCDate()
-                - DateTime._isoDay(this._offsetDate.getUTCDay())
+                - DateTime._isoDay(
+                    this._offsetDate.getUTCDay()
+                )
                 + day
             )
         );
@@ -127,13 +143,19 @@ Object.assign(DateTime.prototype, {
         this._offsetDate.setUTCFullYear(
             year,
             0,
-            4 + ((week - 1) * 7)
+            4
+            + (
+                (week - 1)
+                * 7
+            )
         );
 
         return this._setOffsetTime(
             this._offsetDate.setUTCDate(
                 this._offsetDate.getUTCDate()
-                - DateTime._isoDay(this._offsetDate.getUTCDay())
+                - DateTime._isoDay(
+                    this._offsetDate.getUTCDay()
+                )
                 + day
             )
         );
@@ -195,7 +217,10 @@ Object.assign(DateTime.prototype, {
      */
     setQuarter(quarter) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCMonth(quarter * 3 - 3)
+            this._offsetDate.setUTCMonth(
+                quarter * 3
+                - 3
+            )
         );
     },
 
@@ -220,7 +245,10 @@ Object.assign(DateTime.prototype, {
         this._utcDate.setTime(time);
         this._checkOffset();
         const timestamp = time / 1000;
-        if (timestamp < this._transition.start || timestamp > this._transition.end) {
+        if (
+            timestamp < this._transition.start ||
+            timestamp > this._transition.end
+        ) {
             this._getTransition();
         }
         this._offsetDate.setTime(this._getOffsetTime());
@@ -256,7 +284,10 @@ Object.assign(DateTime.prototype, {
 
         // compensate for DST transitions
         if (adjust && offset !== this._offset) {
-            this._utcDate.setTime(this._utcDate.getTime() - (offset - this._offset) * 60000);
+            this._utcDate.setTime(
+                this._utcDate.getTime()
+                - (offset - this._offset) * 60000
+            );
         }
 
         this._getTransition();

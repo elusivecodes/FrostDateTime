@@ -6,56 +6,73 @@ DateInterval._formatData = {
 
     /* YEAR */
 
-    Y: interval => DateInterval._formatNumber(interval.y, 2),
+    Y: interval =>
+        DateInterval._formatNumber(interval.y, 2),
 
-    y: interval => DateInterval._formatNumber(interval.y),
+    y: interval =>
+        DateInterval._formatNumber(interval.y),
 
     /* MONTH */
 
-    M: interval => DateInterval._formatNumber(interval.m, 2),
+    M: interval =>
+        DateInterval._formatNumber(interval.m, 2),
 
-    m: interval => DateInterval._formatNumber(interval.m),
+    m: interval =>
+        DateInterval._formatNumber(interval.m),
 
     /* DAYS */
 
-    D: interval => DateInterval._formatNumber(interval.d, 2),
+    D: interval =>
+        DateInterval._formatNumber(interval.d, 2),
 
-    d: interval => DateInterval._formatNumber(interval.d),
+    d: interval =>
+        DateInterval._formatNumber(interval.d),
 
-    a: interval => DateInterval._formatNumber(interval.days),
+    a: interval =>
+        DateInterval._formatNumber(interval.days),
 
     /* HOURS */
 
-    H: interval => DateInterval._formatNumber(interval.h, 2),
+    H: interval =>
+        DateInterval._formatNumber(interval.h, 2),
 
-    h: interval => DateInterval._formatNumber(interval.h),
+    h: interval =>
+        DateInterval._formatNumber(interval.h),
 
     /* MINUTES */
 
-    I: interval => DateInterval._formatNumber(interval.i, 2),
+    I: interval =>
+        DateInterval._formatNumber(interval.i, 2),
 
-    i: interval => DateInterval._formatNumber(interval.i),
+    i: interval =>
+        DateInterval._formatNumber(interval.i),
 
     /* SECONDS */
 
-    S: interval => DateInterval._formatNumber(interval.s, 2),
+    S: interval =>
+        DateInterval._formatNumber(interval.s, 2),
 
-    s: interval => DateInterval._formatNumber(interval.s),
+    s: interval =>
+        DateInterval._formatNumber(interval.s),
 
     /* MICROSECONDS */
 
-    F: interval => DateInterval._formatNumber(interval.f, 6),
+    F: interval =>
+        DateInterval._formatNumber(interval.f, 6),
 
-    f: interval => DateInterval._formatNumber(interval.f),
+    f: interval =>
+        DateInterval._formatNumber(interval.f),
 
     /* SIGN */
 
-    R: interval => interval.invert ?
-        '-' :
-        '+',
+    R: interval =>
+        interval.invert ?
+            '-' :
+            '+',
 
-    r: interval => interval.invert ?
-        '-' :
-        ''
+    r: interval =>
+        interval.invert ?
+            '-' :
+            ''
 
 };

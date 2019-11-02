@@ -30,7 +30,7 @@ It is a lightweight (~17kb gzipped) and modern library, and features full suppor
 ## Date Creation
 
 - `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native [*Date.UTC*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) method, and will default to the current timestamp.
-- `timeZone` is a string representing the timeZone name of the date, and will default to the system timeZone.
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
 
 ```javascript
 const date = new DateTime(date, timeZone);
@@ -54,9 +54,9 @@ This method is fully compatible with the PHP [DateTime::createFromFormat](http:/
 
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
-- `timeZone` is a string representing the timeZone name of the date, and will default to the system timeZone (unless a timeZone is specified in the `dateString`).
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
 
-If the `dateString` contains timeZone or offset information, and the `timeZone` argument is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
+If the `dateString` contains time zone or offset information, and the `timeZone` argument is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
 
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
@@ -113,7 +113,7 @@ const timeString = date.toTimeString();
 
 **To UTC String**
 
-Format the current date in UTC timeZone using "*D M d Y H:i:s O (e)*".
+Format the current date in UTC time zone using "*D M d Y H:i:s O (e)*".
 
 ```javascript
 const utcString = date.toUTCString();
@@ -128,7 +128,7 @@ Format the current date using *Date*'s native `toLocaleString()` method.
 
 For a full list of supported options, see the [Date.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
 
-If a timeZone is not specified in the options, the timeZone of the *DateTime* will be used.
+If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
 
 ```javascript
 const localeString = date.toLocaleString(locale, options);
@@ -143,7 +143,7 @@ Format the current date using *Date*'s native `toLocaleDateString()` method.
 
 For a full list of supported options, see the [Date.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
 
-If a timeZone is not specified in the options, the timeZone of the *DateTime* will be used.
+If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
 
 ```javascript
 const localeDateString = date.toLocaleDateString(locale, options);
@@ -158,7 +158,7 @@ Format the current date using *Date*'s native `toLocaleTimeString()` method.
 
 For a full list of supported options, see the [Date.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
 
-If a timeZone is not specified in the options, the timeZone of the *DateTime* will be used.
+If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
 
 ```javascript
 const localeTimeString = date.toLocaleTimeString(locale, options);
@@ -169,7 +169,7 @@ const localeTimeString = date.toLocaleTimeString(locale, options);
 
 **Get Date**
 
-Get the date in current timeZone.
+Get the date in current time zone.
 
 ```javascript
 const date = date.getDate();
@@ -177,7 +177,7 @@ const date = date.getDate();
 
 **Get Day**
 
-Get the day of the week in current timeZone.
+Get the day of the week in current time zone.
 
 The `day` returned will be between *0* (Sunday) and *6* (Saturday).
 
@@ -187,7 +187,7 @@ const day = date.getDay();
 
 **Get Day Of Year**
 
-Get the day of the year in current timeZone.
+Get the day of the year in current time zone.
 
 The `dayOfYear` returned will be between *0* and *365*.
 
@@ -197,7 +197,7 @@ const dayOfYear = date.getDayOfYear();
 
 **Get Month**
 
-Get the month in current timeZone.
+Get the month in current time zone.
 
 The `month` returned will be between *0* (January) and *11* (December).
 
@@ -207,7 +207,7 @@ const month = date.getMonth();
 
 **Get Quarter**
 
-Get the quarter of the year in current timeZone.
+Get the quarter of the year in current time zone.
 
 The `quarter` returned will be between *1* and *4*.
 
@@ -217,7 +217,7 @@ const quarter = date.getQuarter();
 
 **Get Year**
 
-Get the year in current timeZone.
+Get the year in current time zone.
 
 ```javascript
 const year = date.getYear();
@@ -225,7 +225,7 @@ const year = date.getYear();
 
 **Set Date**
 
-Set the date in current timeZone.
+Set the date in current time zone.
 
 - `date` is a number representing the date.
 
@@ -235,7 +235,7 @@ date.setDate(date);
 
 **Set Day**
 
-Set the day of the week in current timeZone.
+Set the day of the week in current time zone.
 
 - `day` is a number representing the day of the week (between *0* and *6*).
 
@@ -245,7 +245,7 @@ date.setDay(day);
 
 **Set Day Of Year**
 
-Set the day of the year in current timeZone.
+Set the day of the year in current time zone.
 
 - `dayOfYear` is a number representing the day of the year (between *0* and *365*).
 
@@ -255,7 +255,7 @@ date.setDayOfYear(dayOfYear);
 
 **Set Month**
 
-Set the month in current timeZone.
+Set the month in current time zone.
 
 - `month` is a number representing the month (between *0* and *11*).
 - `date` is a number representing the date, and will default to the current value.
@@ -270,7 +270,7 @@ date.setMonth(month, date);
 
 **Set Quarter**
 
-Set the quarter of the year in current timeZone.
+Set the quarter of the year in current time zone.
 
 - `quarter` is a number representing the quarter between *1* and *4*.
 
@@ -280,7 +280,7 @@ date.setQuarter(quarter);
 
 **Set Year**
 
-Set the year in current timeZone.
+Set the year in current time zone.
 
 - `year` is a number representing the year.
 - `month` is a number representing the month (between *0* and *11*), and will default to the current value.
@@ -299,7 +299,7 @@ date.setYear(year, month, date);
 
 **Get ISO Day**
 
-Get the ISO day of the week in current timeZone.
+Get the ISO day of the week in current time zone.
 
 The `isoDay` returned will be between *1* (Monday) and *7* (Sunday).
 
@@ -309,7 +309,7 @@ const isoDay = date.getISODay();
 
 **Get ISO Week**
 
-Get the ISO week in current timeZone.
+Get the ISO week in current time zone.
 
 The `isoWeek` returned will be between *1*  and *53* (week starting on Monday).
 
@@ -319,7 +319,7 @@ const isoWeek = date.getISOWeek();
 
 **Get ISO Year**
 
-Get the ISO year in current timeZone.
+Get the ISO year in current time zone.
 
 This method is identical to `getYear()` except in cases where the ISO week belongs to the previous or next year, then that value will be used instead.
 
@@ -329,7 +329,7 @@ const isoYear = date.getISOYear();
 
 **Set ISO Day**
 
-Set the ISO day of the week in current timeZone.
+Set the ISO day of the week in current time zone.
 
 - `isoDay` is a number representing the ISO day (between *1* and *7*).
 
@@ -339,7 +339,7 @@ date.setISODay(isoDay);
 
 **Set ISO Week**
 
-Set the ISO week in current timeZone.
+Set the ISO week in current time zone.
 
 - `isoWeek` is a number representing the ISO week.
 - `isoDay` is a number representing the ISO day (between *1* and *7*), and will default to the current value.
@@ -350,7 +350,7 @@ date.setISOWeek(isoWeek, isoDay);
 
 **Get ISO Year**
 
-Set the ISO year in current timeZone.
+Set the ISO year in current time zone.
 
 - `isoYear` is a number representing the ISO year.
 - `isoWeek` is a number representing the ISO week, and will default to the current value.
@@ -365,7 +365,7 @@ date.setISOYear(isoYear, isoWeek, isoDay);
 
 **Get Beat (Internet Swatch Time)**
 
-Get the internet swatch time beat in current timeZone.
+Get the internet swatch time beat in current time zone.
 
 The `beat` returned will be between *0* and *999*.
 
@@ -375,7 +375,7 @@ const beat = date.getBeat();
 
 **Get Hours**
 
-Get the hours of the day in current timeZone.
+Get the hours of the day in current time zone.
 
 The `hours` returned will be between *0* and *23*.
 
@@ -385,7 +385,7 @@ const hours = date.getHours();
 
 **Get Milliseconds**
 
-Get the milliseconds of the second in current timeZone.
+Get the milliseconds of the second in current time zone.
 
 The `millis` returned will be between *0* and *999*.
 
@@ -395,7 +395,7 @@ const millis = date.getMilliseconds();
 
 **Get Minutes**
 
-Get the minutes of the hour in current timeZone.
+Get the minutes of the hour in current time zone.
 
 The `minutes` returned will be between *0* and *59*.
 
@@ -405,7 +405,7 @@ const minutes = date.getMinutes();
 
 **Get Seconds**
 
-Get the seconds of the minute in current timeZone.
+Get the seconds of the minute in current time zone.
 
 The `seconds` returned will be between *0* and *59*.
 
@@ -415,7 +415,7 @@ const seconds = date.getSeconds();
 
 **Set Beat (Internet Swatch Time)**
 
-Set the internet swatch time beat in current timeZone.
+Set the internet swatch time beat in current time zone.
 
 - `beat` is a number representing the beat of the day (between *0* and *999*).
 
@@ -425,7 +425,7 @@ date.setBeat(beat);
 
 **Set Hours**
 
-Set the hours of the day in current timeZone.
+Set the hours of the day in current time zone.
 
 - `hours` is a number representing the hours of the day (between *0* and *23*).
 - `minutes` is a number representing the minutes of the hour (between *0* and *59*), and will default to the current value.
@@ -438,7 +438,7 @@ date.setHours(hours, minutes, seconds, millis);
 
 **Set Milliseconds**
 
-Set the milliseconds of the second in current timeZone.
+Set the milliseconds of the second in current time zone.
 
 - `millis` is a number representing the milliseconds of the second (between *0* and *999*).
 
@@ -448,7 +448,7 @@ date.setMilliseconds(millis);
 
 **Set Minutes**
 
-Set the minutes of the hour in current timeZone.
+Set the minutes of the hour in current time zone.
 
 - `minutes` is a number representing the minutes of the hour (between *0* and *59*).
 - `seconds` is a number representing the seconds of the minute (between *0* and *59*), and will default to the current value.
@@ -460,7 +460,7 @@ date.setMinutes(minutes, seconds, millis);
 
 **Set Seconds**
 
-Set the seconds of the minute in current timeZone.
+Set the seconds of the minute in current time zone.
 
 - `seconds` is a number representing the seconds of the minute (between *0* and *59*).
 - `millis` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
@@ -474,7 +474,7 @@ date.setSeconds(seconds, millis);
 
 **Get Time Zone**
 
-Get the name of the current timeZone.
+Get the name of the current time zone.
 
 ```javascript
 const timeZone = date.getTimeZone();
@@ -490,7 +490,7 @@ const abbreviation = date.getTimeZoneAbbr();
 
 **Get Time Zone Offset**
 
-Get the UTC offset (in minutes) of the current timeZone.
+Get the UTC offset (in minutes) of the current time zone.
 
 ```javascript
 const offset = date.getTimeZoneOffset();
@@ -498,9 +498,9 @@ const offset = date.getTimeZoneOffset();
 
 **Set Time Zone**
 
-Set the current timeZone.
+Set the current time zone.
 
-- `timeZone` is the name of the new timeZone, which can be either "*UTC*" or a supported value from the [IANA timeZone database](https://www.iana.org/time-zones).
+- `timeZone` is the name of the new time zone, which can be either "*UTC*" or a supported value from the [IANA timeZone database](https://www.iana.org/time-zones).
 - `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
 
 ```javascript
@@ -567,7 +567,7 @@ date.addInterval(interval);
 
 **End Of**
 
-Set the date to the end of a unit of time in current timeZone.
+Set the date to the end of a unit of time in current time zone.
 
 - `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
@@ -577,7 +577,7 @@ date.endOf(timeUnit);
 
 **Start Of**
 
-Set the date to the start of a unit of time in current timeZone.
+Set the date to the start of a unit of time in current time zone.
 
 - `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
@@ -610,7 +610,7 @@ date.subInterval(interval);
 
 **Clone**
 
-Create a new *DateTime* using the current date and timeZone.
+Create a new *DateTime* using the current date and time zone.
 
 ```javascript
 const clone = date.clone();
@@ -626,7 +626,7 @@ const dateSuffix = date.dateSuffix();
 
 **Day Name**
 
-Get the name of the day of the week in current timeZone.
+Get the name of the day of the week in current time zone.
 
 - `type` can be either "*full*", "*short*" or "*min*", and will default to "*full*" if it is not set.
 
@@ -760,7 +760,7 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 **Month Name**
 
-Get the name of the month in current timeZone.
+Get the name of the month in current time zone.
 
 - `type` can be either "*full*" or "*short*", and will default to "*full*" if it is not set.
 

@@ -20,7 +20,10 @@ Object.assign(DateTime, {
                         return acc;
                     }
 
-                    if (!this._formatData[char] || !this._formatData[char].regex) {
+                    if (
+                        !this._formatData[char] ||
+                        !this._formatData[char].regex
+                    ) {
                         throw new Error(`Invalid char in DateTime format: ${char}`);
                     }
 
@@ -101,7 +104,6 @@ Object.assign(DateTime, {
      * @returns {DateTime} A new DateTime object.
      */
     fromObject(dateObject, timeZone) {
-
         let currentDate,
             currentDay,
             currentTimeZone,
@@ -111,7 +113,11 @@ Object.assign(DateTime, {
             currentDate = dateObject.timestamp * 1000;
         } else {
             if ('dayOfYear' in dateObject &&
-                !('month' in dateObject || 'date' in dateObject)) {
+                !(
+                    'month' in dateObject ||
+                    'date' in dateObject
+                )
+            ) {
                 dateObject.month = 0;
                 dateObject.date = dateObject.dayOfYear;
             }
@@ -128,7 +134,10 @@ Object.assign(DateTime, {
                 }
             }
 
-            if ('day' in dateObject && !('date' in dateObject)) {
+            if (
+                'day' in dateObject &&
+                !('date' in dateObject)
+            ) {
                 currentDay = dateObject.day;
             }
 
@@ -144,7 +153,13 @@ Object.assign(DateTime, {
                     ...dateObject
                 };
 
-            if (!('date' in dateObject) && ('month' in dateObject || 'year' in dateObject)) {
+            if (
+                !('date' in dateObject) &&
+                (
+                    'month' in dateObject ||
+                    'year' in dateObject
+                )
+            ) {
                 const days = this.daysInMonth(newDate.year, newDate.month);
                 newDate.date = Math.min(days, newDate.date);
             }
@@ -163,7 +178,10 @@ Object.assign(DateTime, {
         if ('timeZone' in dateObject) {
             currentTimeZone = dateObject.timeZone;
             currentOffset = dateObject.offset;
-        } else if ('offset' in dateObject || 'timeZoneAbbr' in dateObject) {
+        } else if (
+            'offset' in dateObject ||
+            'timeZoneAbbr' in dateObject
+        ) {
             [currentTimeZone, currentOffset] = this._timeZoneFromAbbrOffset(
                 currentDate,
                 'timeZoneAbbr' in dateObject ?
@@ -176,7 +194,10 @@ Object.assign(DateTime, {
             dateObject.offset = currentOffset;
         }
 
-        let date = new this(currentDate, currentTimeZone || timeZone);
+        let date = new this(
+            currentDate,
+            currentTimeZone || timeZone
+        );
 
         if (currentDay) {
             date = date.setDay(currentDay);
@@ -186,7 +207,10 @@ Object.assign(DateTime, {
         if (currentOffset) {
             const offset = date.getTimeZoneOffset();
             if (offset !== currentOffset) {
-                date.setTime(date.getTime() - (offset - currentOffset) * 60000);
+                date.setTime(
+                    date.getTime()
+                    - (offset - currentOffset) * 60000
+                );
             }
         }
 

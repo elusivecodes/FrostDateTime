@@ -9,7 +9,10 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The internet swatch time beat.
      */
     getBeat() {
-        const tempDate = new Date(this.getTime() + 3600000);
+        const tempDate = new Date(
+            this.getTime()
+            + 3600000
+        );
         return (
             (
                 tempDate.getUTCHours() * 3600000
@@ -62,7 +65,9 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
      */
     getISODay() {
-        return DateTime._isoDay(this.getDay());
+        return DateTime._isoDay(
+            this.getDay()
+        );
     },
 
     /**
@@ -70,14 +75,25 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO week. (1, 53)
      */
     getISOWeek() {
-        const week = DateTime._isoDate(
-            this.getYear(),
-            this.getMonth(),
-            this.getDate()
-        ),
-            firstWeek = DateTime._isoDate(week.getUTCFullYear(), 0, 4);
+        const
+            week = DateTime._isoDate(
+                this.getYear(),
+                this.getMonth(),
+                this.getDate()
+            ),
+            firstWeek = DateTime._isoDate(
+                week.getUTCFullYear(),
+                0,
+                4
+            );
 
-        return 1 + (((week - firstWeek) / 604800000) | 0);
+        return 1
+            + (
+                (
+                    (week - firstWeek)
+                    / 604800000
+                ) | 0
+            );
     },
 
     /**
@@ -89,8 +105,7 @@ Object.assign(DateTime.prototype, {
             this.getYear(),
             this.getMonth(),
             this.getDate()
-        )
-            .getUTCFullYear();
+        ).getUTCFullYear();
     },
 
     /**
@@ -122,7 +137,10 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The quarter of the year. (1, 4)
      */
     getQuarter() {
-        return Math.ceil((this.getMonth() + 1) / 3);
+        return Math.ceil(
+            (this.getMonth() + 1)
+            / 3
+        );
     },
 
     /**
@@ -146,7 +164,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of seconds since the UNIX epoch.
      */
     getTimestamp() {
-        return this.getTime() / 1000;
+        return this.getTime()
+            / 1000;
     },
 
     /**

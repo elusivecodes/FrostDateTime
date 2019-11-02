@@ -4,6 +4,9 @@
 
 Object.assign(DateInterval, {
 
+    // Format keys
+    _formatKeys: ['y', 'm', 'd', 'h', 'i', 's'],
+
     // Language
     lang: {
         intervals: {

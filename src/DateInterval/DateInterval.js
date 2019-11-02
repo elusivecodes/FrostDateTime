@@ -23,34 +23,36 @@ class DateInterval {
 
         const match = interval.match(DateInterval._isoRegExp);
 
-        if (match) {
-            if (match[1]) {
-                this.y += parseInt(match[1]);
-            }
+        if (!match) {
+            return;
+        }
 
-            if (match[2]) {
-                this.m += parseInt(match[2]);
-            }
+        if (match[1]) {
+            this.y += parseInt(match[1]);
+        }
 
-            if (match[3]) {
-                this.d += parseInt(match[3]);
-            }
+        if (match[2]) {
+            this.m += parseInt(match[2]);
+        }
 
-            if (match[4]) {
-                this.d += parseInt(match[4]) * 7;
-            }
+        if (match[3]) {
+            this.d += parseInt(match[3]);
+        }
 
-            if (match[5]) {
-                this.h += parseInt(match[5]);
-            }
+        if (match[4]) {
+            this.d += parseInt(match[4]) * 7;
+        }
 
-            if (match[6]) {
-                this.i += parseInt(match[6]);
-            }
+        if (match[5]) {
+            this.h += parseInt(match[5]);
+        }
 
-            if (match[7]) {
-                this.s += parseInt(match[7]);
-            }
+        if (match[6]) {
+            this.i += parseInt(match[6]);
+        }
+
+        if (match[7]) {
+            this.s += parseInt(match[7]);
         }
     }
 
@@ -84,7 +86,7 @@ class DateInterval {
      */
     toString(maxValues = 1) {
         const formats = [],
-            keys = ['y', 'm', 'd', 'h', 'i', 's'];
+            keys = DateInterval._formatKey.slice();
 
         while (maxValues > 0 && keys.length) {
             const key = keys.shift();
@@ -109,7 +111,8 @@ class DateInterval {
             ].replace(
                 '%n',
                 this.format(
-                    formats.map(f => DateInterval.lang.intervals[f])
+                    formats
+                        .map(f => DateInterval.lang.intervals[f])
                         .join(DateInterval.lang.seperator)
                 )
             ) :

@@ -11,8 +11,12 @@ Object.assign(DateTime.prototype, {
         this._offset = this._timeZone === 'UTC' ?
             0 :
             (
-                new Date(DateTime._utcFormatter.format(this))
-                - new Date(this._formatter.format(this))
+                new Date(
+                    DateTime._utcFormatter.format(this)
+                )
+                - new Date(
+                    this._formatter.format(this)
+                )
             )
             / 60000;
     },
@@ -28,7 +32,8 @@ Object.assign(DateTime.prototype, {
         const tempDate = new DateTime(other, this._timeZone);
 
         if (!granularity) {
-            const timeDiff = this.getTime() - tempDate.getTime();
+            const timeDiff = this.getTime()
+                - tempDate.getTime();
             return callback(timeDiff) >= 0;
         }
 
@@ -59,7 +64,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
      */
     _getOffsetTime() {
-        return this.getTime() - (this._offset * 60000);
+        return this.getTime()
+            - this._offset * 60000;
     },
 
     /**
@@ -70,7 +76,8 @@ Object.assign(DateTime.prototype, {
 
         this._transition = DateTime._timeZones[this._timeZone]
             .find(transition =>
-                transition.start <= timestamp && transition.end >= timestamp
+                transition.start <= timestamp &&
+                transition.end >= timestamp
             );
     },
 
@@ -115,34 +122,57 @@ Object.assign(DateTime.prototype, {
         }
 
         if (interval.y) {
-            this._offsetDate.setUTCFullYear(this._offsetDate.getUTCFullYear() + (interval.y * modify));
+            this._offsetDate.setUTCFullYear(
+                this._offsetDate.getUTCFullYear()
+                + interval.y * modify
+            );
         }
 
         if (interval.m) {
-            this._offsetDate.setUTCMonth(this._offsetDate.getUTCMonth() + (interval.m * modify));
+            this._offsetDate.setUTCMonth(
+                this._offsetDate.getUTCMonth()
+                + interval.m * modify
+            );
         }
 
         if (interval.d) {
-            this._offsetDate.setUTCDate(this._offsetDate.getUTCDate() + (interval.d * modify));
+            this._offsetDate.setUTCDate(
+                this._offsetDate.getUTCDate()
+                + interval.d * modify
+            );
         }
 
         if (interval.h) {
-            this._offsetDate.setUTCHours(this._offsetDate.getUTCHours() + (interval.h * modify));
+            this._offsetDate.setUTCHours(
+                this._offsetDate.getUTCHours()
+                + interval.h * modify
+            );
         }
 
         if (interval.i) {
-            this._offsetDate.setUTCMinutes(this._offsetDate.getUTCMinutes() + (interval.i * modify));
+            this._offsetDate.setUTCMinutes(
+                this._offsetDate.getUTCMinutes()
+                + interval.i * modify
+            );
         }
 
         if (interval.s) {
-            this._offsetDate.setUTCSeconds(this._offsetDate.getUTCSeconds() + (interval.s * modify));
+            this._offsetDate.setUTCSeconds(
+                this._offsetDate.getUTCSeconds()
+                + interval.s * modify
+            );
         }
 
         if (interval.f) {
-            this._offsetDate.setUTCTime(this._offsetDate.getUTCTime() + (interval.f * modify));
+            this._offsetDate.setUTCTime(
+                this._offsetDate.getUTCTime()
+                + interval.f * modify
+            );
         }
 
-        return this._setOffsetTime(this._offsetDate.getTime());
+        return this._setOffsetTime(
+            this._offsetDate.getTime()
+        );
     },
 
     /**
@@ -151,7 +181,10 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} The DateTime object.
      */
     _setOffsetTime(time) {
-        return this.setTime(time + (this._offset * 60000));
+        return this.setTime(
+            time +
+            this._offset * 60000
+        );
     }
 
 });

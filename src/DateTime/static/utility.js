@@ -15,7 +15,8 @@ Object.assign(DateTime, {
         return new Array(month)
             .fill()
             .reduce(
-                (d, _, i) => d + this.daysInMonth(year, i),
+                (d, _, i) =>
+                    d + this.daysInMonth(year, i),
                 date
             );
     },
@@ -31,9 +32,12 @@ Object.assign(DateTime, {
         month = date.getUTCMonth();
 
         return this._monthDays[month]
-            + (month == 1 && this.isLeapYear(date.getUTCFullYear()) ?
-                1 :
-                0
+            + (
+                month == 1 && this.isLeapYear(
+                    date.getUTCFullYear()
+                ) ?
+                    1 :
+                    0
             );
     },
 
@@ -54,7 +58,8 @@ Object.assign(DateTime, {
      * @returns {Boolean} TRUE if the year is a leap year, otherwise FALSE.
      */
     isLeapYear(year) {
-        return new Date(year, 1, 29).getDate() === 29;
+        return new Date(year, 1, 29)
+            .getDate() === 29;
     },
 
     /**
@@ -63,7 +68,8 @@ Object.assign(DateTime, {
      * @returns {number} The number of ISO weeks in the year.
      */
     weeksInISOYear(year) {
-        return new DateTime([year, 11, 28]).getISOWeek();
+        return new DateTime([year, 11, 28])
+            .getISOWeek();
     }
 
 });

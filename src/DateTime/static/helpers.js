@@ -18,7 +18,10 @@ Object.assign(DateTime, {
         }
 
         return this.lang.numbers ?
-            value.replace(/./g, match => this.lang.numbers[match]) :
+            value.replace(
+                /./g,
+                match => this.lang.numbers[match]
+            ) :
             value;
     },
 
@@ -30,9 +33,15 @@ Object.assign(DateTime, {
      * @returns {Date} A new Date object.
      */
     _isoDate(...args) {
-        const date = new Date(Date.UTC(...args)),
+        const date = new Date(
+            Date.UTC(...args)
+        ),
             day = this._isoDay(date.getUTCDay());
-        date.setUTCDate(date.getUTCDate() - day + 4);
+        date.setUTCDate(
+            date.getUTCDate()
+            - day
+            + 4
+        );
         return date;
     },
 
@@ -42,7 +51,9 @@ Object.assign(DateTime, {
      * @returns {number} The day of the week in ISO format. (1 - Monday, 7 - Sunday)
      */
     _isoDay(day) {
-        return ((day + 6) % 7) + 1;
+        return (
+            (day + 6) % 7
+        ) + 1;
     },
 
     /**
@@ -52,7 +63,10 @@ Object.assign(DateTime, {
      */
     _parseNumber(value) {
         if (this.lang.numbers) {
-            value = value.replace(/./g, match => this.lang.numbers.findIndex(match));
+            value = value.replace(
+                /./g,
+                match => this.lang.numbers.findIndex(match)
+            );
         }
 
         return parseInt(value);
@@ -67,23 +81,38 @@ Object.assign(DateTime, {
      */
     _timeZoneFromAbbrOffset(date = null, abbr = null, offset = null) {
         if (
-            (abbr === null || abbr === 'UTC') &&
-            (offset === null || offset === 0)
+            (
+                abbr === null ||
+                abbr === 'UTC'
+            ) &&
+            (
+                offset === null ||
+                offset === 0
+            )
         ) {
             return ['UTC', 0];
         }
 
         const tempDate = new DateTime(date, 'UTC');
         const tempDateDst = new DateTime(date, 'UTC');
-        tempDateDst.setTime(tempDateDst.getTime() - 3600000);
+        tempDateDst.setTime(
+            tempDateDst.getTime()
+            - 3600000
+        );
 
         for (const timeZone in this._timeZones) {
             try {
                 tempDate.setTimeZone(timeZone, true);
 
                 if (
-                    (abbr === null || abbr === tempDate.getTimeZoneAbbr()) &&
-                    (offset === null || offset === tempDate.getTimeZoneOffset())
+                    (
+                        abbr === null ||
+                        abbr === tempDate.getTimeZoneAbbr()
+                    ) &&
+                    (
+                        offset === null ||
+                        offset === tempDate.getTimeZoneOffset()
+                    )
                 ) {
                     return [timeZone, tempDate.getTimeZoneOffset()];
                 }
@@ -92,8 +121,14 @@ Object.assign(DateTime, {
 
                 if (
                     tempDateDst.isDST() &&
-                    (abbr === null || abbr === tempDateDst.getTimeZoneAbbr()) &&
-                    (offset === null || offset === tempDateDst.getTimeZoneOffset())
+                    (
+                        abbr === null ||
+                        abbr === tempDateDst.getTimeZoneAbbr()
+                    ) &&
+                    (
+                        offset === null ||
+                        offset === tempDateDst.getTimeZoneOffset()
+                    )
                 ) {
                     return [timeZone, tempDateDst.getTimeZoneOffset()];
                 }
