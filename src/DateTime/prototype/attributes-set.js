@@ -31,7 +31,7 @@ Object.assign(DateTime.prototype, {
      */
     setDate(date) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(date)
+            new Date(this._getOffsetTime()).setUTCDate(date)
         );
     },
 
@@ -42,7 +42,7 @@ Object.assign(DateTime.prototype, {
      */
     setDay(day) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(
+            new Date(this._getOffsetTime()).setUTCDate(
                 this.getDate()
                 - this.getDay()
                 + day
@@ -57,7 +57,7 @@ Object.assign(DateTime.prototype, {
      */
     setDayOfYear(day) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCMonth(
+            new Date(this._getOffsetTime()).setUTCMonth(
                 0,
                 day
             )
@@ -74,7 +74,7 @@ Object.assign(DateTime.prototype, {
      */
     setHours(...args) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCHours(...args)
+            new Date(this._getOffsetTime()).setUTCHours(...args)
         );
     },
 
@@ -85,7 +85,7 @@ Object.assign(DateTime.prototype, {
      */
     setISODay(day) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(
+            new Date(this._getOffsetTime()).setUTCDate(
                 this.getDate()
                 - this.getISODay()
                 + day
@@ -104,7 +104,10 @@ Object.assign(DateTime.prototype, {
             day = this.getISODay();
         }
 
-        this._offsetDate.setUTCMonth(
+        const tempDate = new Date(this._getOffsetTime());
+
+        tempDate.setUTCFullYear(
+            this.getISOYear(),
             0,
             4
             + (
@@ -114,10 +117,10 @@ Object.assign(DateTime.prototype, {
         );
 
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(
-                this._offsetDate.getUTCDate()
-                - DateTime._isoDay(
-                    this._offsetDate.getUTCDay()
+            tempDate.setUTCDate(
+                tempDate.getUTCDate()
+                - this.constructor._isoDay(
+                    tempDate.getUTCDay()
                 )
                 + day
             )
@@ -133,14 +136,16 @@ Object.assign(DateTime.prototype, {
      */
     setISOYear(year, week = null, day = null) {
         if (week === null) {
-            week = this.getISODay();
+            week = this.getISOWeek();
         }
 
         if (day === null) {
             day = this.getISODay();
         }
 
-        this._offsetDate.setUTCFullYear(
+        const tempDate = new Date(this._getOffsetTime());
+
+        tempDate.setUTCFullYear(
             year,
             0,
             4
@@ -151,10 +156,10 @@ Object.assign(DateTime.prototype, {
         );
 
         return this._setOffsetTime(
-            this._offsetDate.setUTCDate(
-                this._offsetDate.getUTCDate()
-                - DateTime._isoDay(
-                    this._offsetDate.getUTCDay()
+            tempDate.setUTCDate(
+                tempDate.getUTCDate()
+                - this.constructor._isoDay(
+                    tempDate.getUTCDay()
                 )
                 + day
             )
@@ -168,7 +173,7 @@ Object.assign(DateTime.prototype, {
      */
     setMilliseconds(ms) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCMilliseconds(ms)
+            new Date(this._getOffsetTime()).setUTCMilliseconds(ms)
         );
     },
 
@@ -181,7 +186,7 @@ Object.assign(DateTime.prototype, {
      */
     setMinutes(...args) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCMinutes(...args)
+            new Date(this._getOffsetTime()).setUTCMinutes(...args)
         );
     },
 
@@ -192,18 +197,22 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} The DateTime object.
      */
     setMonth(month, date = null) {
-        if (DateTime.clampDates && date === null) {
-            date = Math.min(
-                this.getDate(),
-                DateTime.daysInMonth(
-                    this.getYear(),
-                    month
-                )
-            );
+        if (date === null) {
+            date = this.getDate();
+
+            if (this.constructor.clampDates) {
+                date = Math.min(
+                    date,
+                    this.constructor.daysInMonth(
+                        this.getYear(),
+                        month
+                    )
+                );
+            }
         }
 
         return this._setOffsetTime(
-            this._offsetDate.setUTCMonth(
+            new Date(this._getOffsetTime()).setUTCMonth(
                 month,
                 date
             )
@@ -217,7 +226,7 @@ Object.assign(DateTime.prototype, {
      */
     setQuarter(quarter) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCMonth(
+            new Date(this._getOffsetTime()).setUTCMonth(
                 quarter * 3
                 - 3
             )
@@ -232,7 +241,7 @@ Object.assign(DateTime.prototype, {
      */
     setSeconds(...args) {
         return this._setOffsetTime(
-            this._offsetDate.setUTCSeconds(...args)
+            new Date(this._getOffsetTime()).setUTCSeconds(...args)
         );
     },
 
@@ -243,7 +252,13 @@ Object.assign(DateTime.prototype, {
      */
     setTime(time) {
         this._utcDate.setTime(time);
+
+        if (!this._dynamicTz) {
+            return this;
+        }
+
         this._checkOffset();
+
         const timestamp = time / 1000;
         if (
             timestamp < this._transition.start ||
@@ -251,7 +266,6 @@ Object.assign(DateTime.prototype, {
         ) {
             this._getTransition();
         }
-        this._offsetDate.setTime(this._getOffsetTime());
 
         return this;
     },
@@ -268,19 +282,33 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the current timeZone.
      * @param {string} timeZone The name of the timeZone.
+     * @param {Boolean} [adjust=false] Whether to adjsut the timestamp.
      * @returns {DateTime} The DateTime object.
      */
     setTimeZone(timeZone, adjust = false) {
-        if (!DateTime._timeZones[timeZone]) {
-            throw new Error('Invalid timeZone supplied');
-        }
-
-        this._timeZone = timeZone;
-        this._makeFormatter();
+        this._dynamicTz = false;
 
         const offset = this._offset;
 
-        this._checkOffset();
+        const match = timeZone.match(this.constructor._offsetRegExp);
+        if (match) {
+            this._offset = match[2] * 60 + parseInt(match[4]);
+            if (this._offset && match[1] === '+') {
+                this._offset *= -1;
+            }
+            this._timeZone = this.constructor._formatOffset(this._offset);
+        } else if (timeZone in this.constructor._abbreviations) {
+            this._offset = this.constructor._abbreviations[timeZone];
+            this._timeZone = timeZone;
+        } else if (timeZone in this.constructor._timeZones) {
+            this._dynamicTz = true;
+            this._timeZone = timeZone;
+
+            this._makeFormatter();
+            this._checkOffset();
+        } else {
+            throw new Error('Invalid timeZone supplied');
+        }
 
         // compensate for DST transitions
         if (adjust && offset !== this._offset) {
@@ -290,7 +318,24 @@ Object.assign(DateTime.prototype, {
             );
         }
 
-        this._getTransition();
+        if (this._dynamicTz) {
+            this._getTransition();
+        }
+
+        return this;
+    },
+
+    /**
+     * Set the current UTC offset.
+     * @param {number} offset The UTC offset (in minutes).
+     * @returns {DateTime} The DateTime object.
+     */
+    setTimeZoneOffset(offset) {
+        this._dynamicTz = false;
+        this._offset = offset || 0;
+        this._timeZone = this.constructor._formatOffset(this._offset);
+        this._transition = null;
+        this._formatter = null;
 
         return this;
     },
@@ -307,10 +352,10 @@ Object.assign(DateTime.prototype, {
             month = this.getMonth();
         }
 
-        if (DateTime.clampDates && date === null) {
+        if (this.constructor.clampDates && date === null) {
             date = Math.min(
                 this.getDate(),
-                DateTime.daysInMonth(
+                this.constructor.daysInMonth(
                     year,
                     month
                 )
@@ -318,7 +363,7 @@ Object.assign(DateTime.prototype, {
         }
 
         return this._setOffsetTime(
-            this._offsetDate.setUTCFullYear(
+            new Date(this._getOffsetTime()).setUTCFullYear(
                 year,
                 month,
                 date

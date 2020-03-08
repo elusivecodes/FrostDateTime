@@ -17,7 +17,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The ordinal suffix for the date of the month.
      */
     dateSuffix() {
-        return DateTime.lang.ordinal(
+        return this.constructor.lang.ordinal(
             this.getDate()
         );
     },
@@ -28,7 +28,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The name of the day of the week.
      */
     dayName(type = 'full') {
-        return DateTime.lang.days[type][this.getDay()];
+        return this.constructor.lang.days[type][this.getDay()];
     },
 
     /**
@@ -36,7 +36,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of days in the current month.
      */
     daysInMonth() {
-        return DateTime.daysInMonth(
+        return this.constructor.daysInMonth(
             this.getYear(),
             this.getMonth()
         );
@@ -47,7 +47,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of days in the current year.
      */
     daysInYear() {
-        return DateTime.daysInYear(
+        return this.constructor.daysInYear(
             this.getYear()
         );
     },
@@ -58,12 +58,13 @@ Object.assign(DateTime.prototype, {
      * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
      * @returns {DateInterval} A new DateInterval object.
      */
-    diff(other, absolute = false) {
+    diff(other = null, absolute = false) {
         const tempDate = new DateTime(other, this._timeZone),
             interval = new DateInterval;
 
         if (this.getTime() === tempDate.getTime()) {
-            return inverval;
+            interval.days = 0;
+            return interval;
         }
 
         const lessThan = this < tempDate,
@@ -298,7 +299,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
      */
     isDST() {
-        if (!this._transition.dst) {
+        if (!this._dynamicTz || !this._transition.dst) {
             return false;
         }
 
@@ -330,7 +331,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if the current year is a leap year, otherwise FALSE.
      */
     isLeapYear() {
-        return DateTime.isLeapYear(
+        return this.constructor.isLeapYear(
             this.getYear()
         );
     },
@@ -405,7 +406,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The name of the month.
      */
     monthName(type = 'full') {
-        return DateTime.lang.months[type][this.getMonth()];
+        return this.constructor.lang.months[type][this.getMonth()];
     },
 
     /**
@@ -413,7 +414,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of weeks in the current ISO year.
      */
     weeksInISOYear() {
-        return DateTime.weeksInISOYear(this.getISOYear());
+        return this.constructor.weeksInISOYear(this.getISOYear());
     }
 
 });

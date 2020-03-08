@@ -62,10 +62,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.months.full.join('|')})`,
         input: value =>
-            DateTime.lang.months['full'].findIndex(
-                month =>
-                    month === value
-            ),
+            DateTime.lang.months['full'].indexOf(value),
         output: datetime =>
             datetime.monthName()
     },
@@ -76,10 +73,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.months.short.join('|')})`,
         input: value =>
-            DateTime.lang.months['short'].findIndex(
-                month =>
-                    month === value
-            ),
+            DateTime.lang.months['short'].indexOf(value),
         output: datetime =>
             datetime.monthName('short')
     },
@@ -204,10 +198,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.days.full.join('|')})`,
         input: value =>
-            DateTime.lang.days.full.findIndex(
-                day =>
-                    day === value
-            ),
+            DateTime.lang.days.full.indexOf(value),
         output: datetime =>
             datetime.dayName()
     },
@@ -218,10 +209,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.days.short.join('|')})`,
         input: value =>
-            DateTime.lang.days.short.findIndex(
-                day =>
-                    day === value
-            ),
+            DateTime.lang.days.short.indexOf(value),
         output: datetime =>
             datetime.dayName('short')
     },
@@ -234,14 +222,14 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.dayPeriods.lower.join('|')})`,
         input: value =>
-            DateTime.lang.dayPeriods.lower.findIndex(
-                period =>
-                    period === value
-            ) ?
+            DateTime.lang.dayPeriods.lower.indexOf(value) ?
                 'pm' :
                 'am',
         output: datetime =>
-            DateTime.lang.dayPeriods.lower[datetime.getHours() < 12 ? 0 : 1]
+            DateTime.lang.dayPeriods.lower[datetime.getHours() < 12 ?
+                0 :
+                1
+            ]
     },
 
     // day period upper
@@ -250,14 +238,14 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.dayPeriods.upper.join('|')})`,
         input: value =>
-            DateTime.lang.dayPeriods.upper.findIndex(
-                period =>
-                    period === value
-            ) ?
+            DateTime.lang.dayPeriods.upper.indexOf(value) ?
                 'pm' :
                 'am',
         output: datetime =>
-            DateTime.lang.dayPeriods.upper[datetime.getHours() < 12 ? 0 : 1]
+            DateTime.lang.dayPeriods.upper[datetime.getHours() < 12 ?
+                0 :
+                1
+            ]
     },
 
     // swatch time
@@ -354,6 +342,20 @@ DateTime._formatData = {
             )
     },
 
+    // milliseconds
+    v: {
+        value: 'milliseconds',
+        regex: _ =>
+            `([${DateTime.lang.numberRegExp}]{1,3})`,
+        input: value =>
+            DateTime._parseNumber(value),
+        output: datetime => {
+            return DateTime._formatNumber(
+                datetime.getMilliseconds()
+            );
+        }
+    },
+
     // microseconds
     u: {
         value: 'milliseconds',
@@ -362,19 +364,17 @@ DateTime._formatData = {
         input: value =>
             DateTime._parseNumber(value)
             / 1000,
-        output: datetime =>
-            DateTime._formatNumber(
-                datetime.getMilliseconds()
-                * 1000
-            )
-    },
-
-    // milliseconds
-    v: {
-        output: datetime =>
-            DateTime._formatNumber(
-                datetime.getMilliseconds()
-            )
+        output: datetime => {
+            return DateTime._formatNumber(
+                Math.floor(
+                    (
+                        datetime.getMilliseconds()
+                        + datetime._fraction
+                    )
+                    * 1000
+                )
+            );
+        }
     },
 
     /* TIMEZONE */
@@ -399,84 +399,27 @@ DateTime._formatData = {
 
     // offset
     O: {
-        value: 'offset',
+        value: 'timeZone',
         regex: _ =>
             `([\\+\\-][${DateTime.lang.numberRegExp}]{4})`,
-        input: value =>
-            (
-                DateTime._parseNumber(
-                    value.slice(1, 3)
-                )
-                * 60
-                + DateTime._parseNumber(
-                    value.slice(3, 5)
-                )
-            )
-            * (
-                value[0] === '-' ?
-                    1 :
-                    -1
-            ),
+        input: value => value,
         output: datetime =>
-            (
-                datetime._offset > 0 ?
-                    '-' :
-                    '+'
-            ) +
-            DateTime._formatNumber(
-                Math.abs(
-                    (datetime._offset / 60) | 0
-                ),
-                2
-            ) +
-            DateTime._formatNumber(
-                datetime._offset % 60,
-                2
-            )
+            DateTime._formatOffset(datetime._offset, false)
     },
 
     // offset colon
     P: {
-        value: 'offset',
+        value: 'timeZone',
         regex: _ =>
             `([\\+\\-][${DateTime.lang.numberRegExp}]{2}\\:[${DateTime.lang.numberRegExp}]{2})`,
-        input: value =>
-            (
-                DateTime._parseNumber(
-                    value.slice(1, 3)
-                )
-                * 60
-                + DateTime._parseNumber(
-                    value.slice(4, 6)
-                )
-            )
-            * (
-                value[0] === '-' ?
-                    1 :
-                    -1
-            ),
+        input: value => value,
         output: datetime =>
-            (
-                datetime._offset > 0 ?
-                    '-' :
-                    '+'
-            ) +
-            DateTime._formatNumber(
-                Math.abs(
-                    (datetime._offset / 60) | 0
-                ),
-                2
-            ) +
-            ':' +
-            DateTime._formatNumber(
-                datetime._offset % 60,
-                2
-            )
+            DateTime._formatOffset(datetime._offset)
     },
 
     // timeZone abbreviated
     T: {
-        value: 'timeZoneAbbr',
+        value: 'timeZone',
         regex: '([A-Z]{1,5})',
         input: value => value,
         output: datetime =>
@@ -551,16 +494,6 @@ DateTime._formatData = {
             `([^${DateTime._seperators.map(
                 seperator => '\\' + seperator
             )}${DateTime.lang.numberRegExp}]*)`
-    },
-
-    // reset
-    '!': {
-        regex: '\\!'
-    },
-
-    // reset soft
-    '|': {
-        regex: '\\|'
     }
 
 };

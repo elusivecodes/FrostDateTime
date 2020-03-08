@@ -12,7 +12,7 @@ Object.assign(DateTime.prototype, {
             0 :
             (
                 new Date(
-                    DateTime._utcFormatter.format(this)
+                    this.constructor._utcFormatter.format(this)
                 )
                 - new Date(
                     this._formatter.format(this)
@@ -39,7 +39,7 @@ Object.assign(DateTime.prototype, {
 
         granularity = granularity.toLowerCase();
 
-        for (const lookup of DateTime._compareLookup) {
+        for (const lookup of this.constructor._compareLookup) {
             const preCheck = !lookup.values.includes(granularity);
             const method = lookup.method;
             const diff = this[method]() - tempDate[method]();
@@ -74,7 +74,7 @@ Object.assign(DateTime.prototype, {
     _getTransition() {
         const timestamp = this.getTimestamp();
 
-        this._transition = DateTime._timeZones[this._timeZone]
+        this._transition = this.constructor._timeZones[this._timeZone]
             .find(transition =>
                 transition.start <= timestamp &&
                 transition.end >= timestamp
@@ -85,8 +85,8 @@ Object.assign(DateTime.prototype, {
      * Update the formatter for current timeZone.
      */
     _makeFormatter() {
-        this._formatter = new Intl.DateTimeFormat(DateTime._formatterLocale, {
-            ...DateTime._formatterOptions,
+        this._formatter = new Intl.DateTimeFormat(this.constructor._formatterLocale, {
+            ...this.constructor._formatterOptions,
             timeZone: this._timeZone
         });
     },
@@ -121,57 +121,59 @@ Object.assign(DateTime.prototype, {
             modify *= -1;
         }
 
+        const tempDate = new Date(this._getOffsetTime());
+
         if (interval.y) {
-            this._offsetDate.setUTCFullYear(
-                this._offsetDate.getUTCFullYear()
+            tempDate.setUTCFullYear(
+                tempDate.getUTCFullYear()
                 + interval.y * modify
             );
         }
 
         if (interval.m) {
-            this._offsetDate.setUTCMonth(
-                this._offsetDate.getUTCMonth()
+            tempDate.setUTCMonth(
+                tempDate.getUTCMonth()
                 + interval.m * modify
             );
         }
 
         if (interval.d) {
-            this._offsetDate.setUTCDate(
-                this._offsetDate.getUTCDate()
+            tempDate.setUTCDate(
+                tempDate.getUTCDate()
                 + interval.d * modify
             );
         }
 
         if (interval.h) {
-            this._offsetDate.setUTCHours(
-                this._offsetDate.getUTCHours()
+            tempDate.setUTCHours(
+                tempDate.getUTCHours()
                 + interval.h * modify
             );
         }
 
         if (interval.i) {
-            this._offsetDate.setUTCMinutes(
-                this._offsetDate.getUTCMinutes()
+            tempDate.setUTCMinutes(
+                tempDate.getUTCMinutes()
                 + interval.i * modify
             );
         }
 
         if (interval.s) {
-            this._offsetDate.setUTCSeconds(
-                this._offsetDate.getUTCSeconds()
+            tempDate.setUTCSeconds(
+                tempDate.getUTCSeconds()
                 + interval.s * modify
             );
         }
 
         if (interval.f) {
-            this._offsetDate.setUTCTime(
-                this._offsetDate.getUTCTime()
+            tempDate.setUTCTime(
+                tempDate.getUTCTime()
                 + interval.f * modify
             );
         }
 
         return this._setOffsetTime(
-            this._offsetDate.getTime()
+            tempDate.getTime()
         );
     },
 

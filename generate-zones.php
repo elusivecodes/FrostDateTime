@@ -1,7 +1,11 @@
 <?php
 
-$values = [];
-$zones = [];
+$allZones = [];
+
+function convert($timestamp) {
+    return ($timestamp < 0 ? '-' : ''). // Prepend minus to negative timestamp
+        base_convert($timestamp, 10, 36);
+}
 
 // Loop through timezones
 foreach (DateTimeZone::listIdentifiers() AS $identifier) {
@@ -60,6 +64,8 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
 			}
 		}
 
+        $offset = $transition['offset'];
+
         // Set standard index and DST index
 		if ($dst) {
 			$standardIndex = ! $nextIndex ? $prevStandard : $nextIndex;
@@ -69,7 +75,7 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
 			$dstIndex = $nextIndex;
 		}
 
-        // Skip transitions where standard abd DST indexes have not changed
+        // Skip transitions where standard and DST indexes have not changed
         if (($standardIndex === $prevStandard && ($dstIndex === '' || $dstIndex === $prevDst)) ||
             ($dstIndex === $prevDst && $standardIndex === $prevStandard)) {
 			continue;
@@ -88,16 +94,37 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
         // Set previous standard and DST indexes
 		$prevStandard = $standardIndex;
 		$prevDst = $dstIndex;
-	}
+    }
+
+    $allZones[$identifier] = [
+        'abbreviations' => $abbreviations,
+        'data' => $tzData
+    ];
+}
+
+$abbrList = [];
+
+foreach ($allZones AS $identifier => $data) {
+    foreach ($data['abbreviations'] AS $abbreviation) {
+        if (!in_array($abbreviation, $abbrList)) {
+            $abbrList[] = $abbreviation;
+        }
+    }
+}
+
+sort($abbrList);
+
+$values = [];
+$zones = [];
+
+foreach ($allZones AS $identifier => $data) {
 
     // Create abbreviation string
     $tzString = implode(';', array_map(
-        function($value) {
-            return $value === 'LMT' ?
-                '' :
-                $value;
+        function($value) use ($abbrList) {
+            return array_search($value, $abbrList);
         },
-        $abbreviations
+        $data['abbreviations']
     ));
 
     // Add transitions to end of string
@@ -105,15 +132,14 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
 		function($value, $index) {
             return
                 ($index ? // Ignore first transition timestamp
-					($value['ts'] < 0 ? '-' : ''). // Prepend minus to negative timestamp
-					base_convert($value['ts'], 10, 36) : // Convert timestamp to base 36
+					convert($value['ts']) :
 					''
                 ).
                 ','.$value['index']. // Add standard index
-				($value['dst'] ? ','.$value['dst'] : ''); // If we have a DST index, also add it
+                ($value['dst'] ? ','.$value['dst'] : ''); // If we have a DST index, also add it
 		},
-		$tzData,
-		array_keys($tzData)
+		$data['data'],
+		array_keys($data['data'])
 	));
 
     // Get value index (or add it, if it doesn't exist)
@@ -127,7 +153,28 @@ foreach (DateTimeZone::listIdentifiers() AS $identifier) {
 	$zones[$identifier] = $valueIndex;
 }
 
+$abbrOffsets = [];
+
+foreach ($abbrList AS $abbr) {
+    if (!preg_match('/[A-Z]{3,4}/', $abbr)) {
+        continue;
+    }
+
+    $date = DateTime::createFromFormat('e', $abbr);
+
+    if (!$date) {
+        continue;
+    }
+
+    $offset = $date->getOffset();
+    $convertedOffset = convert($offset);
+
+    $abbrOffsets[$abbr] = $convertedOffset;
+}
+
 // Output zones and values
+echo 'const abbrs = '.json_encode($abbrList, JSON_UNESCAPED_SLASHES).';';
 echo 'const zones = '.json_encode($zones, JSON_UNESCAPED_SLASHES).';';
 echo 'const values = '.json_encode($values, JSON_UNESCAPED_SLASHES).';';
+echo 'const abbrOffsets = '.json_encode($abbrOffsets, JSON_UNESCAPED_SLASHES).';';
 echo "\r\n";

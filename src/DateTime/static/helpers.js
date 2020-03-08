@@ -26,6 +26,32 @@ Object.assign(DateTime, {
     },
 
     /**
+     * Format a number to an offset string.
+     * @param {number} offset The offset to format.
+     * @param {Boolean} [useColon=true] Whether to use a colon seperator.
+     * @returns {string} The formatted offset string.
+     */
+    _formatOffset(offset, useColon = true) {
+        const sign = offset > 0 ?
+            '-' :
+            '+';
+        const hours = this._formatNumber(
+            Math.abs(
+                (offset / 60) | 0
+            ),
+            2
+        );
+        const minutes = this._formatNumber(
+            Math.abs(offset % 60),
+            2
+        );
+        const colon = useColon ?
+            ':' :
+            '';
+        return `${sign}${hours}${colon}${minutes}`;
+    },
+
+    /**
      * Create a Date object set to Thursday of the ISO week.
      * @param {number} year The year.
      * @param {number} month The month.
@@ -70,70 +96,6 @@ Object.assign(DateTime, {
         }
 
         return parseInt(value);
-    },
-
-    /**
-     * Return a timeZone and offset for a date using an abbreviated name or offset.
-     * @param {null|number|number[]|string|Date|DateTime} [date] The date to use when testing.
-     * @param {null|string} [abbr] The timeZone abbreviation.
-     * @param {null|number} [offset] The timeZone offset.
-     * @returns {array} An array containing the timeZone name and offset.
-     */
-    _timeZoneFromAbbrOffset(date = null, abbr = null, offset = null) {
-        if (
-            (
-                abbr === null ||
-                abbr === 'UTC'
-            ) &&
-            (
-                offset === null ||
-                offset === 0
-            )
-        ) {
-            return ['UTC', 0];
-        }
-
-        const tempDate = new DateTime(date, 'UTC');
-        const tempDateDst = new DateTime(date, 'UTC');
-        tempDateDst.setTime(
-            tempDateDst.getTime()
-            - 3600000
-        );
-
-        for (const timeZone in this._timeZones) {
-            try {
-                tempDate.setTimeZone(timeZone, true);
-
-                if (
-                    (
-                        abbr === null ||
-                        abbr === tempDate.getTimeZoneAbbr()
-                    ) &&
-                    (
-                        offset === null ||
-                        offset === tempDate.getTimeZoneOffset()
-                    )
-                ) {
-                    return [timeZone, tempDate.getTimeZoneOffset()];
-                }
-
-                tempDateDst.setTimeZone(timeZone, true);
-
-                if (
-                    tempDateDst.isDST() &&
-                    (
-                        abbr === null ||
-                        abbr === tempDateDst.getTimeZoneAbbr()
-                    ) &&
-                    (
-                        offset === null ||
-                        offset === tempDateDst.getTimeZoneOffset()
-                    )
-                ) {
-                    return [timeZone, tempDateDst.getTimeZoneOffset()];
-                }
-            } catch (error) { }
-        }
     }
 
 });

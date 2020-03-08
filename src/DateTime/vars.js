@@ -10,34 +10,6 @@ Object.assign(DateTime, {
     // Whether to clamp current date when adjusting month
     clampDates: true,
 
-    // Comparison lookup
-    _compareLookup: [
-        {
-            values: ['year'],
-            method: 'getYear'
-        },
-        {
-            values: ['month'],
-            method: 'getMonth'
-        },
-        {
-            values: ['day', 'date'],
-            method: 'getDate'
-        },
-        {
-            values: ['hour'],
-            method: 'getHours'
-        },
-        {
-            values: ['minute'],
-            method: 'getMinutes'
-        },
-        {
-            values: ['second'],
-            method: 'getSeconds'
-        }
-    ],
-
     // Default locale
     defaultLocale: resolvedOptions.locale,
 
@@ -101,6 +73,34 @@ Object.assign(DateTime, {
         ordinalRegExp: '(st|[nr]d|th)'
     },
 
+    // Comparison lookup
+    _compareLookup: [
+        {
+            values: ['year'],
+            method: 'getYear'
+        },
+        {
+            values: ['month'],
+            method: 'getMonth'
+        },
+        {
+            values: ['day', 'date'],
+            method: 'getDate'
+        },
+        {
+            values: ['hour'],
+            method: 'getHours'
+        },
+        {
+            values: ['minute'],
+            method: 'getMinutes'
+        },
+        {
+            values: ['second'],
+            method: 'getSeconds'
+        }
+    ],
+
     // Formatter locale
     _formatterLocale: 'en-US',
 
@@ -121,6 +121,15 @@ Object.assign(DateTime, {
     // Seperators
     _seperators: [';', ':', '/', '.', ',', '-', '(', ')'],
 
+    // Date string timezone RegExp
+    _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
+
+    // Offset RegExp
+    _offsetRegExp: /([\+\-])(\d{2})(\:?)(\d{2})/,
+
+    // abbeviations
+    _abbreviations: {},
+
     // timeZones
     _timeZones: {}
 
@@ -139,8 +148,8 @@ DateTime.prototype.setFullYear = DateTime.prototype.setYear;
 
 for (const timeZone in zones) {
     const parts = values[zones[timeZone]].split('|'),
-        abbr = parts.shift().split(';')
-            .map(a => a || 'LMT'),
+        zoneAbbrs = parts.shift().split(';')
+            .map(a => abbrs[a]),
         transitions = parts.shift().split(';')
             .map(t => {
                 const data = t.split(',');
@@ -150,12 +159,26 @@ for (const timeZone in zones) {
                 return data;
             });
 
-    DateTime._timeZones[timeZone] = transitions.map((transition, i) => ({
-        start: transition[0],
-        end: i == transitions.length - 1 ?
+    DateTime._timeZones[timeZone] = transitions.map((transition, i) => {
+        const start = transition[0];
+        const end = i == transitions.length - 1 ?
             Number.MAX_VALUE :
-            transitions[i + 1][0] - 1,
-        abbr: transition[1] && abbr[transition[1]],
-        dst: transition[2] && abbr[transition[2]]
-    }));
+            transitions[i + 1][0] - 1;
+        const abbr = transition[1] && zoneAbbrs[transition[1]];
+        const dst = transition[2] && zoneAbbrs[transition[2]];
+
+        return {
+            start,
+            end,
+            abbr,
+            dst
+        };
+    });
+}
+
+for (const abbr in abbrOffsets) {
+    const offset = parseInt(abbrOffsets[abbr], 36) / 60;
+    DateTime._abbreviations[abbr] = offset ?
+        offset * -1 :
+        0;
 }

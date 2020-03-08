@@ -21,39 +21,19 @@ class DateInterval {
         this.days = null;
         this.invert = false;
 
-        const match = interval.match(DateInterval._isoRegExp);
-
-        if (!match) {
+        if (!interval) {
             return;
         }
 
-        if (match[1]) {
-            this.y += parseInt(match[1]);
+        if (this._parseISO(interval)) {
+            return;
         }
 
-        if (match[2]) {
-            this.m += parseInt(match[2]);
+        if (this._parseDateTime(interval)) {
+            return;
         }
 
-        if (match[3]) {
-            this.d += parseInt(match[3]);
-        }
-
-        if (match[4]) {
-            this.d += parseInt(match[4]) * 7;
-        }
-
-        if (match[5]) {
-            this.h += parseInt(match[5]);
-        }
-
-        if (match[6]) {
-            this.i += parseInt(match[6]);
-        }
-
-        if (match[7]) {
-            this.s += parseInt(match[7]);
-        }
+        throw new Error('Invalid interval supplied');
     }
 
     /**
@@ -67,11 +47,11 @@ class DateInterval {
             (acc, char) => {
                 if (!escaped && char === '%') {
                     escaped = true;
-                } else if (escaped || !DateInterval._formatData[char]) {
+                } else if (!escaped || !this.constructor._formatData[char]) {
                     acc += char;
-                    escaped = false;
                 } else {
-                    acc += DateInterval._formatData[char](this);
+                    acc += this.constructor._formatData[char](this);
+                    escaped = false;
                 }
                 return acc;
             },
@@ -86,90 +66,40 @@ class DateInterval {
      */
     toString(maxValues = 1) {
         const formats = [],
-            keys = DateInterval._formatKey.slice();
+            keys = this.constructor._formatKeys.slice();
 
-        while (maxValues > 0 && keys.length) {
-            const key = keys.shift();
+        let key;
+        while (key = keys.shift()) {
+            if (maxValues <= 0) {
+                break;
+            }
 
             if (!this[key]) {
                 continue;
             }
 
+            const index = Math.abs(this[key]) === 1 ?
+                0 :
+                1;
             formats.push(
-                DateInterval.langs[key][Math.abs(this[key] === 1 ?
-                    0 :
-                    1
-                )]
+                this.constructor.langs[key][index]
             );
             maxValues--;
         }
 
         return formats.length ?
-            DateInterval.lang.relative[this.invert ?
+            this.constructor.lang.relative[this.invert ?
                 'ago' :
                 'in'
             ].replace(
                 '%n',
                 this.format(
                     formats
-                        .map(f => DateInterval.lang.intervals[f])
-                        .join(DateInterval.lang.seperator)
+                        .map(f => this.constructor.lang.intervals[f])
+                        .join(this.constructor.lang.seperator)
                 )
             ) :
-            DateInterval.lang.relative.now;
-    }
-
-    /**
-     * Create a new DateInterval from the relative parts of the string.
-     * @param {string} durationString The date with relative parts.
-     * @returns {DateInterval} A new DateInterval object.
-     */
-    static fromString(durationString) {
-        const interval = new this,
-            regExp = new RegExp(DateInterval._stringRegExp, 'gi');
-
-        let match;
-        while (match = regExp.exec(durationString)) {
-            const value = parseInt(match[1]);
-
-            if (match[2]) {
-                // years
-                interval.y += value;
-            } else if (match[3]) {
-                // months
-                interval.m += value;
-            } else if (match[4]) {
-                // fortnights
-                interval.d += value * 14;
-            } else if (match[5]) {
-                // weeks
-                interval.d += value * 7;
-            } else if (match[6]) {
-                // days
-                interval.d += value;
-            } else if (match[7]) {
-                // hours
-                interval.h += value;
-            } else if (match[8]) {
-                // minutes
-                interval.i += value;
-            } else if (match[9]) {
-                // seconds
-                interval.s += value;
-            }
-        }
-
-        return interval;
-    }
-
-    /**
-     * Format a number to string (optionally zero-padded).
-     * @param {number} value The number to format.
-     * @param {number} [padding] The number of digits to zero-pad to.
-     * @returns {string} The formatted number string.
-     */
-    static _formatNumber(number, padding = 0) {
-        return `${number}`.padStart(padding, 0);
+            this.constructor.lang.relative.now;
     }
 
 }

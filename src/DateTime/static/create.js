@@ -8,16 +8,61 @@ Object.assign(DateTime, {
      * Create a new DateTime from a date string and format string.
      * @param {string} formatString The PHP date format string.
      * @param {string} dateString The date string to parse.
-     * @param {string} [timeZone] The timeZone to use for the new DateTime.
+     * @param {string} [timeZone=null] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromFormat(formatString, dateString, timeZone) {
+    fromFormat(formatString, dateString, timeZone = null) {
+        let escaped = false;
         const originalDateString = dateString,
             data = [...formatString].reduce(
                 (acc, char) => {
-                    if (this._seperators.includes(char)) {
+                    if (
+                        !escaped &&
+                        char === '\\'
+                    ) {
+                        escaped = true;
+                        return acc;
+                    }
+
+                    if (
+                        escaped &&
+                        char === dateString.substring(0, 1)
+                    ) {
+                        dateString = dateString.substring(1);
+                        escaped = false;
+                        return acc;
+                    }
+
+                    if (
+                        this._seperators.includes(char) &&
+                        char === dateString.substring(0, 1)
+                    ) {
                         dateString = dateString.substring(1);
                         return acc;
+                    }
+
+                    if (['!', '|'].includes(char)) {
+                        const epoch = {
+                            year: 1970,
+                            month: 0,
+                            date: 1,
+                            hours: 0,
+                            pm: 0,
+                            minutes: 0,
+                            seconds: 0,
+                            milliseconds: 0,
+                            timeZone: 'UTC'
+                        };
+
+                        return Object.assign(
+                            acc,
+                            char === '!' ?
+                                epoch :
+                                {
+                                    ...epoch,
+                                    ...acc
+                                }
+                        );
                     }
 
                     if (
@@ -40,29 +85,6 @@ Object.assign(DateTime, {
 
                     dateString = dateString.substring(dateMatch[1].length);
 
-                    if (['!', '|'].includes(char)) {
-                        const epoch = {
-                            year: 1970,
-                            month: 0,
-                            date: 1,
-                            hours: 0,
-                            pm: 0,
-                            minutes: 0,
-                            seconds: 0,
-                            milliseconds: 0
-                        };
-
-                        return Object.assign(
-                            acc,
-                            char === '!' ?
-                                epoch :
-                                {
-                                    ...epoch,
-                                    ...data
-                                }
-                        );
-                    }
-
                     if (this._formatData[char].input) {
                         const value = this._formatData[char].value;
                         acc[value] = this._formatData[char].input(dateMatch[1]);
@@ -71,13 +93,14 @@ Object.assign(DateTime, {
                     return acc;
                 },
                 {}
-            ),
-            date = this.fromObject(data);
+            );
+
+        let date = this.fromObject(data);
 
         date.isValid = date.format(formatString) === originalDateString;
 
-        if (timeZone && timeZone !== date.getTimeZone()) {
-            date.setTimeZone(timeZone, true);
+        if (timeZone !== null && timeZone !== date.getTimeZone() && !('timeZone' in data)) {
+            date = date.setTimeZone(timeZone, true);
         }
 
         return date;
@@ -97,17 +120,13 @@ Object.assign(DateTime, {
      * @param {number} [dateObject.milliseconds] The milliseconds.
      * @param {Boolean} [dateObject.pm] Whether the hours are in PM.
      * @param {number} [dateObject.timestamp] The number of seconds since the UNIX epoch.
-     * @param {string} [dateObject.timeZone] The timeZone.
-     * @param {string} [dateObject.timeZoneAbbr] The timeZone abbreviation.
-     * @param {number} [dateObject.offset] The timeZone offset.
-     * @param {string} [timeZone] The timeZone to use for the new DateTime.
+     * @param {string} [dateObject.timeZone] The timeZone, abbreviation or offset.
+     * @param {string} [timeZone=null] The timeZone to use for the new DateTime.
      * @returns {DateTime} A new DateTime object.
      */
-    fromObject(dateObject, timeZone) {
+    fromObject(dateObject, timeZone = null) {
         let currentDate,
-            currentDay,
-            currentTimeZone,
-            currentOffset;
+            currentDay = null;
 
         if (dateObject.timestamp) {
             currentDate = dateObject.timestamp * 1000;
@@ -175,47 +194,26 @@ Object.assign(DateTime, {
             ];
         }
 
-        if ('timeZone' in dateObject) {
-            currentTimeZone = dateObject.timeZone;
-            currentOffset = dateObject.offset;
-        } else if (
-            'offset' in dateObject ||
-            'timeZoneAbbr' in dateObject
-        ) {
-            [currentTimeZone, currentOffset] = this._timeZoneFromAbbrOffset(
-                currentDate,
-                'timeZoneAbbr' in dateObject ?
-                    dateObject.timeZoneAbbr :
-                    null,
-                'offset' in dateObject ?
-                    dateObject.offset :
-                    null
-            );
-            dateObject.offset = currentOffset;
-        }
-
         let date = new this(
             currentDate,
-            currentTimeZone || timeZone
+            'timeZone' in dateObject ?
+                dateObject.timeZone :
+                timeZone
         );
 
-        if (currentDay) {
+        // set fraction
+        if (dateObject.milliseconds) {
+            date._fraction = dateObject.milliseconds - Math.floor(dateObject.milliseconds);
+        }
+
+        // set day
+        if (currentDay !== null) {
             date = date.setDay(currentDay);
         }
 
-        // compensate for DST transitions
-        if (currentOffset) {
-            const offset = date.getTimeZoneOffset();
-            if (offset !== currentOffset) {
-                date.setTime(
-                    date.getTime()
-                    - (offset - currentOffset) * 60000
-                );
-            }
-        }
-
-        if (timeZone && currentTimeZone) {
-            date = date.setTimeZone(timeZone);
+        // set time zone
+        if (timeZone !== null && timeZone !== date.getTimeZone() && !('timeZone' in dateObject)) {
+            date = date.setTimeZone(timeZone, true);
         }
 
         return date;

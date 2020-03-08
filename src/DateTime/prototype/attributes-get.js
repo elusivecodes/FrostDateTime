@@ -29,7 +29,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The date of the month.
      */
     getDate() {
-        return this._offsetDate.getUTCDate();
+        return new Date(this._getOffsetTime()).getUTCDate();
     },
 
     /**
@@ -37,7 +37,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The day of the week. (0 - Sunday, 6 - Saturday)
      */
     getDay() {
-        return this._offsetDate.getUTCDay();
+        return new Date(this._getOffsetTime()).getUTCDay();
     },
 
     /**
@@ -45,7 +45,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The day of the year. (1, 366)
      */
     getDayOfYear() {
-        return DateTime.dayOfYear(
+        return this.constructor.dayOfYear(
             this.getYear(),
             this.getMonth(),
             this.getDate()
@@ -57,7 +57,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The hours of the day. (0, 23)
      */
     getHours() {
-        return this._offsetDate.getUTCHours();
+        return new Date(this._getOffsetTime()).getUTCHours();
     },
 
     /**
@@ -65,7 +65,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
      */
     getISODay() {
-        return DateTime._isoDay(
+        return this.constructor._isoDay(
             this.getDay()
         );
     },
@@ -76,12 +76,12 @@ Object.assign(DateTime.prototype, {
      */
     getISOWeek() {
         const
-            week = DateTime._isoDate(
+            week = this.constructor._isoDate(
                 this.getYear(),
                 this.getMonth(),
                 this.getDate()
             ),
-            firstWeek = DateTime._isoDate(
+            firstWeek = this.constructor._isoDate(
                 week.getUTCFullYear(),
                 0,
                 4
@@ -101,7 +101,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getISOYear() {
-        return DateTime._isoDate(
+        return this.constructor._isoDate(
             this.getYear(),
             this.getMonth(),
             this.getDate()
@@ -113,7 +113,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The milliseconds.
      */
     getMilliseconds() {
-        return this._offsetDate.getUTCMilliseconds();
+        return new Date(this._getOffsetTime()).getUTCMilliseconds();
     },
 
     /**
@@ -121,7 +121,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The minutes. (0, 59)
      */
     getMinutes() {
-        return this._offsetDate.getUTCMinutes();
+        return new Date(this._getOffsetTime()).getUTCMinutes();
     },
 
     /**
@@ -129,7 +129,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The month. (0, 11)
      */
     getMonth() {
-        return this._offsetDate.getUTCMonth();
+        return new Date(this._getOffsetTime()).getUTCMonth();
     },
 
     /**
@@ -148,7 +148,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The seconds. (0, 59)
      */
     getSeconds() {
-        return this._offsetDate.getUTCSeconds();
+        return new Date(this._getOffsetTime()).getUTCSeconds();
     },
 
     /**
@@ -181,6 +181,10 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The abbreviated name of the current timeZone.
      */
     getTimeZoneAbbr() {
+        if (!this._dynamicTz) {
+            return this._timeZone;
+        }
+
         return this.isDST() ?
             this._transition.dst :
             this._transition.abbr;
@@ -199,7 +203,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The year.
      */
     getYear() {
-        return this._offsetDate.getUTCFullYear();
+        return new Date(this._getOffsetTime()).getUTCFullYear();
     }
 
 });

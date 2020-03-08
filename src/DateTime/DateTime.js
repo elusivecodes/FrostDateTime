@@ -29,9 +29,17 @@ class DateTime {
             timestamp = date;
         } else if (date === `${date}`) {
             timestamp = Date.parse(date);
-            timestamp -= new Date()
-                .getTimeZoneOffset()
-                * 60000;
+
+            if (isNaN(timestamp)) {
+                throw new Error('Invalid date string supplied');
+            }
+
+            if (!date.match(this.constructor._dateStringTimeZoneRegExp)) {
+                timestamp -= new Date()
+                    .getTimezoneOffset()
+                    * 60000;
+            }
+
             adjustOffset = true;
         } else if (
             date instanceof Date ||
@@ -42,41 +50,62 @@ class DateTime {
             throw new Error('Invalid date supplied');
         }
 
+        this._utcDate = new Date(timestamp);
+        this._fraction = 0;
+        this._dynamicTz = false;
+        this.isValid = true;
+
         if (!timeZone) {
             if (date instanceof DateTime) {
                 timeZone = date.getTimeZone();
             } else {
-                timeZone = DateTime.defaultTimeZone;
+                timeZone = this.constructor.defaultTimeZone;
             }
-        } else if (!(timeZone in DateTime._timeZones)) {
+        }
+
+        const match = timeZone.match(this.constructor._offsetRegExp);
+        if (match) {
+            this._offset = match[2] * 60 + parseInt(match[4]);
+            if (this._offset && match[1] === '+') {
+                this._offset *= -1;
+            }
+            this._timeZone = this.constructor._formatOffset(this._offset);
+        } else if (timeZone in this.constructor._abbreviations) {
+            this._offset = this.constructor._abbreviations[timeZone];
+            this._timeZone = timeZone;
+        } else if (timeZone in this.constructor._timeZones) {
+            this._dynamicTz = true;
+            this._timeZone = timeZone;
+
+            this._makeFormatter();
+            this._checkOffset();
+        } else {
             throw new Error('Invalid timeZone supplied');
         }
 
-        this._utcDate = new Date(timestamp);
-        this._timeZone = timeZone;
-        this.isValid = true;
-
-        this._makeFormatter();
-        this._checkOffset();
-
         if (this._offset && adjustOffset) {
-            const offset = this._offset;
+            const oldOffset = this._offset;
             this._utcDate.setTime(
                 this.getTime()
                 + this._offset * 60000
             );
-            this._checkOffset();
 
-            // compensate for DST transitions
-            if (offset !== this._offset) {
-                this._utcDate.setTime(
-                    this._utcDate.getTime()
-                    - (offset - this._offset) * 60000);
+            if (this._dynamicTz) {
+                this._checkOffset();
+
+                // compensate for DST transitions
+                if (oldOffset !== this._offset) {
+                    this._utcDate.setTime(
+                        this._utcDate.getTime()
+                        - (oldOffset - this._offset) * 60000
+                    );
+                }
             }
         }
 
-        this._getTransition();
-        this._offsetDate = new Date(this._getOffsetTime());
+        if (this._dynamicTz) {
+            this._getTransition();
+        }
     }
 
     /**

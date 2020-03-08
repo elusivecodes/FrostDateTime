@@ -20,13 +20,13 @@ Object.assign(DateTime.prototype, {
                     escaped = true;
                 } else if (
                     escaped ||
-                    !DateTime._formatData[char] ||
-                    !DateTime._formatData[char].output
+                    !this.constructor._formatData[char] ||
+                    !this.constructor._formatData[char].output
                 ) {
                     acc += char;
                     escaped = false;
                 } else {
-                    acc += DateTime._formatData[char].output(this);
+                    acc += this.constructor._formatData[char].output(this);
                 }
                 return acc;
             },
@@ -39,7 +39,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     toDateString() {
-        return this.format(DateTime.formats.date)
+        return this.format(this.constructor.formats.date)
     },
 
     /**
@@ -64,7 +64,7 @@ Object.assign(DateTime.prototype, {
      */
     toLocaleDateString(locales, options) {
         return this._utcDate.toLocaleDateString(
-            locales || DateTime.defaultLocale,
+            locales || this.constructor.defaultLocale,
             {
                 timeZone: this._timeZone,
                 ...options
@@ -94,7 +94,7 @@ Object.assign(DateTime.prototype, {
      */
     toLocaleString(locales, options) {
         return this._utcDate.toLocaleString(
-            locales || DateTime.defaultLocale,
+            locales || this.constructor.defaultLocale,
             {
                 timeZone: this._timeZone,
                 ...options
@@ -124,7 +124,7 @@ Object.assign(DateTime.prototype, {
      */
     toLocaleTimeString(locales, options) {
         return this._utcDate.toLocaleTimeString(
-            locales || DateTime.defaultLocale,
+            locales || this.constructor.defaultLocale,
             {
                 timeZone: this._timeZone,
                 ...options
@@ -137,7 +137,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     toISOString() {
-        return this.format(DateTime.formats.rfc3339_extended)
+        return this.format(this.constructor.formats.rfc3339_extended)
     },
 
     /**
@@ -145,7 +145,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     toString() {
-        return this.format(DateTime.formats.string);
+        return this.format(this.constructor.formats.string);
     },
 
     /**
@@ -153,7 +153,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     toTimeString() {
-        return this.format(DateTime.formats.time);
+        return this.format(this.constructor.formats.time);
     },
 
     /**

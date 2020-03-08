@@ -60,7 +60,7 @@ Object.assign(DateTime.prototype, {
                     .setHours(23, 59, 59, 999);
             case 'quarter':
                 const month = this.getQuarter() * 3 - 3;
-                return this.setMonth(month, DateTime.daysInMonth(this.getYear(), month))
+                return this.setMonth(month, this.constructor.daysInMonth(this.getYear(), month))
                     .setHours(23, 59, 59, 999);
             case 'year':
             default:
