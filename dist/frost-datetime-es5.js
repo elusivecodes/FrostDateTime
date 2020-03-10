@@ -523,12 +523,31 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
     }
     /**
-     * Get the number of milliseconds since the UNIX epoch.
-     * @returns {number} The number of milliseconds since the UNIX epoch.
+     * Get an object representation of the date/time.
+     * @returns {object} An object representation of the date/time.
      */
 
 
     _createClass(DateTime, [{
+      key: "toObject",
+      value: function toObject() {
+        return {
+          year: this.getYear(),
+          month: this.getMonth(),
+          date: this.getDate(),
+          hours: this.getHours(),
+          minutes: this.getMinutes(),
+          seconds: this.getSeconds(),
+          milliseconds: this.getMilliseconds(),
+          timeZone: this.getTimeZone()
+        };
+      }
+      /**
+       * Get the number of milliseconds since the UNIX epoch.
+       * @returns {number} The number of milliseconds since the UNIX epoch.
+       */
+
+    }, {
       key: "valueOf",
       value: function valueOf() {
         return this.getTime();

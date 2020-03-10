@@ -977,4 +977,18 @@ describe('DateTimeImmutable #fromFormat Tests', function() {
         });
     });
 
+    describe('Invalid', function() {
+        it('throws an error from invalid character in format', function() {
+            assert.throws(_ => {
+                DateTimeImmutable.fromFormat('_', '2019');
+            });
+        });
+
+        it('throws an error from unmatched character in string', function() {
+            assert.throws(_ => {
+                DateTimeImmutable.fromFormat('Y', 'INVALID');
+            });
+        });
+    });
+
 });
