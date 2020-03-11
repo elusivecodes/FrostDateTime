@@ -2304,18 +2304,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         }
 
         if (['!', '|'].includes(_char3)) {
-          var epoch = {
-            year: 1970,
-            month: 0,
-            date: 1,
-            hours: 0,
-            pm: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-            timeZone: 'UTC'
-          };
-          return Object.assign(acc, _char3 === '!' ? epoch : _objectSpread({}, epoch, {}, acc));
+          return Object.assign(acc, _char3 === '!' ? _this4._epoch : _objectSpread({}, _this4._epoch, {}, acc));
         }
 
         if (!_this4._formatData[_char3] || !_this4._formatData[_char3].regex) {
@@ -3213,6 +3202,18 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       values: ['second'],
       method: 'getSeconds'
     }],
+    // Unix epoch
+    _epoch: {
+      year: 1970,
+      month: 0,
+      date: 1,
+      hours: 0,
+      pm: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+      timeZone: 'UTC'
+    },
     // Formatter locale
     _formatterLocale: 'en-US',
     // Formatter options

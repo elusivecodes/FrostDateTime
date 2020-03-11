@@ -2642,24 +2642,12 @@
                         }
 
                         if (['!', '|'].includes(char)) {
-                            const epoch = {
-                                year: 1970,
-                                month: 0,
-                                date: 1,
-                                hours: 0,
-                                pm: 0,
-                                minutes: 0,
-                                seconds: 0,
-                                milliseconds: 0,
-                                timeZone: 'UTC'
-                            };
-
                             return Object.assign(
                                 acc,
                                 char === '!' ?
-                                    epoch :
+                                    this._epoch :
                                     {
-                                        ...epoch,
+                                        ...this._epoch,
                                         ...acc
                                     }
                             );
@@ -3103,6 +3091,19 @@
                 method: 'getSeconds'
             }
         ],
+
+        // Unix epoch
+        _epoch: {
+            year: 1970,
+            month: 0,
+            date: 1,
+            hours: 0,
+            pm: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+            timeZone: 'UTC'
+        },
 
         // Formatter locale
         _formatterLocale: 'en-US',
