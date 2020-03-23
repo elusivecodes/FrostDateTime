@@ -78,7 +78,7 @@ Object.assign(DateTime, {
      */
     _isoDay(day) {
         return (
-            (day + 6) % 7
+            (parseInt(day) + 6) % 7
         ) + 1;
     },
 

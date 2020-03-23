@@ -164,45 +164,52 @@ describe('DateTime Utility Tests', function() {
 
     describe('#dayName', function() {
         it('returns the day name', function() {
-            assert.equal(
-                new DateTime([2019, 0, 1], 'UTC')
-                    .dayName(),
-                'Tuesday'
-            );
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            for (const i in dayNames) {
+                assert.equal(
+                    new DateTime([2019, 0, 1], 'UTC')
+                        .setDay(i)
+                        .dayName(),
+                    dayNames[i]
+                );
+            }
         });
 
         it('works with short names', function() {
-            assert.equal(
-                new DateTime([2019, 0, 1], 'UTC')
-                    .dayName('short'),
-                'Tue'
-            );
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+            for (const i in dayNames) {
+                assert.equal(
+                    new DateTime([2019, 0, 1], 'UTC')
+                        .setDay(i)
+                        .dayName('short'),
+                    dayNames[i]
+                );
+            }
         });
 
         it('works with minimal names', function() {
-            assert.equal(
-                new DateTime([2019, 0, 1], 'UTC')
-                    .dayName('min'),
-                'Tu'
-            );
+            const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            for (const i in dayNames) {
+                assert.equal(
+                    new DateTime([2019, 0, 1], 'UTC')
+                        .setDay(i)
+                        .dayName('min'),
+                    dayNames[i]
+                );
+            }
         });
     });
 
     describe('#daysInMonth', function() {
         it('returns the days in the month', function() {
-            assert.equal(
-                new DateTime([2018, 0, 1], 'UTC')
-                    .daysInMonth(),
-                31
-            );
-        });
-
-        it('works with non-leap years', function() {
-            assert.equal(
-                new DateTime([2019, 1, 1], 'UTC')
-                    .daysInMonth(),
-                28
-            );
+            const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            for (const i in monthDays) {
+                assert.equal(
+                    new DateTime([2018, i, 1], 'UTC')
+                        .daysInMonth(),
+                    monthDays[i]
+                );
+            }
         });
 
         it('works with leap years', function() {
@@ -252,19 +259,25 @@ describe('DateTime Utility Tests', function() {
 
     describe('#monthName', function() {
         it('returns the month name', function() {
-            assert.equal(
-                new DateTime([2019, 5, 1], 'UTC')
-                    .monthName(),
-                'June'
-            );
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            for (const i in monthNames) {
+                assert.equal(
+                    new DateTime([2019, i, 1], 'UTC')
+                        .monthName(),
+                    monthNames[i]
+                );
+            }
         });
 
         it('works with short names', function() {
-            assert.equal(
-                new DateTime([2019, 5, 1], 'UTC')
-                    .monthName('short'),
-                'Jun'
-            );
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            for (const i in monthNames) {
+                assert.equal(
+                    new DateTime([2019, i, 1], 'UTC')
+                        .monthName('short'),
+                    monthNames[i]
+                );
+            }
         });
     });
 

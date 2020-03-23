@@ -116,8 +116,15 @@ sort($abbrList);
 
 $values = [];
 $zones = [];
+$unsupportedZones = [
+    'Antarctica/McMurdo'
+];
 
 foreach ($allZones AS $identifier => $data) {
+
+    if (in_array($identifier, $unsupportedZones)) {
+        continue;
+    }
 
     // Create abbreviation string
     $tzString = implode(';', array_map(

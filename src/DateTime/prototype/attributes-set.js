@@ -45,7 +45,7 @@ Object.assign(DateTime.prototype, {
             new Date(this._getOffsetTime()).setUTCDate(
                 this.getDate()
                 - this.getDay()
-                + day
+                + parseInt(day)
             )
         );
     },
@@ -88,7 +88,7 @@ Object.assign(DateTime.prototype, {
             new Date(this._getOffsetTime()).setUTCDate(
                 this.getDate()
                 - this.getISODay()
-                + day
+                + parseInt(day)
             )
         );
     },
@@ -122,7 +122,7 @@ Object.assign(DateTime.prototype, {
                 - this.constructor._isoDay(
                     tempDate.getUTCDay()
                 )
-                + day
+                + parseInt(day)
             )
         );
     },
@@ -161,7 +161,7 @@ Object.assign(DateTime.prototype, {
                 - this.constructor._isoDay(
                     tempDate.getUTCDay()
                 )
-                + day
+                + parseInt(day)
             )
         );
     },
