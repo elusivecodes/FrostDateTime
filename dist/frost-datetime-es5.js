@@ -6,23 +6,33 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -51,9 +61,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
    * @class
    */
 
-  var DateInterval =
-  /*#__PURE__*/
-  function () {
+  var DateInterval = /*#__PURE__*/function () {
     /**
      * New DateInterval constructor.
      * @param {string} [interval] The ISO duration string.
@@ -423,9 +431,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
    * @class
    */
 
-  var DateTime =
-  /*#__PURE__*/
-  function () {
+  var DateTime = /*#__PURE__*/function () {
     /**
      * New DateTime constructor.
      * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
@@ -572,15 +578,15 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
    */
 
 
-  var DateTimeImmutable =
-  /*#__PURE__*/
-  function (_DateTime) {
+  var DateTimeImmutable = /*#__PURE__*/function (_DateTime) {
     _inherits(DateTimeImmutable, _DateTime);
+
+    var _super = _createSuper(DateTimeImmutable);
 
     function DateTimeImmutable() {
       _classCallCheck(this, DateTimeImmutable);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(DateTimeImmutable).apply(this, arguments));
+      return _super.apply(this, arguments);
     }
 
     _createClass(DateTimeImmutable, [{
@@ -1313,9 +1319,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
      * @returns {DateTime} The DateTime object.
      */
     setHours: function setHours() {
-      var _ref;
+      var _Date;
 
-      return this._setOffsetTime((_ref = new Date(this._getOffsetTime())).setUTCHours.apply(_ref, arguments));
+      return this._setOffsetTime((_Date = new Date(this._getOffsetTime())).setUTCHours.apply(_Date, arguments));
     },
 
     /**
@@ -1386,9 +1392,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
      * @returns {DateTime} The DateTime object.
      */
     setMinutes: function setMinutes() {
-      var _ref2;
+      var _Date2;
 
-      return this._setOffsetTime((_ref2 = new Date(this._getOffsetTime())).setUTCMinutes.apply(_ref2, arguments));
+      return this._setOffsetTime((_Date2 = new Date(this._getOffsetTime())).setUTCMinutes.apply(_Date2, arguments));
     },
 
     /**
@@ -1427,9 +1433,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
      * @returns {DateTime} The DateTime object.
      */
     setSeconds: function setSeconds() {
-      var _ref3;
+      var _Date3;
 
-      return this._setOffsetTime((_ref3 = new Date(this._getOffsetTime())).setUTCSeconds.apply(_ref3, arguments));
+      return this._setOffsetTime((_Date3 = new Date(this._getOffsetTime())).setUTCSeconds.apply(_Date3, arguments));
     },
 
     /**
@@ -1574,12 +1580,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
 
       granularity = granularity.toLowerCase();
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+
+      var _iterator = _createForOfIteratorHelper(this.constructor._compareLookup),
+          _step;
 
       try {
-        for (var _iterator = this.constructor._compareLookup[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var lookup = _step.value;
           var preCheck = !lookup.values.includes(granularity);
           var method = lookup.method;
@@ -1597,18 +1603,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           }
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _iterator.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+        _iterator.f();
       }
 
       return true;
@@ -1636,7 +1633,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
      * Update the formatter for current timeZone.
      */
     _makeFormatter: function _makeFormatter() {
-      this._formatter = new Intl.DateTimeFormat(this.constructor._formatterLocale, _objectSpread({}, this.constructor._formatterOptions, {
+      this._formatter = new Intl.DateTimeFormat(this.constructor._formatterLocale, _objectSpread(_objectSpread({}, this.constructor._formatterOptions), {}, {
         timeZone: this._timeZone
       }));
     },
@@ -2304,7 +2301,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         }
 
         if (['!', '|'].includes(_char3)) {
-          return Object.assign(acc, _char3 === '!' ? _this4._epoch : _objectSpread({}, _this4._epoch, {}, acc));
+          return Object.assign(acc, _char3 === '!' ? _this4._epoch : _objectSpread(_objectSpread({}, _this4._epoch), acc));
         }
 
         if (!_this4._formatData[_char3] || !_this4._formatData[_char3].regex) {
