@@ -2,14 +2,38 @@
     "name": "frostdatetime",
     "version": "1.0.0",
     "description": "FrostDateTime is a free, open-source date manipulation library for JavaScript.",
-    "main": "build.js",
+    "keywords": [
+        "date",
+        "time",
+        "datetime",
+        "interval",
+        "parse",
+        "format"
+    ],
+    "homepage": "https://github.com/elusivecodes/FrostDateTime",
+    "bugs": {
+        "url": "https://github.com/elusivecodes/FrostDateTime/issues",
+        "email": "elusivecodes@gmail.com"
+    },
+    "main": "./dist/frost-datetime.js",
+    "files": [
+        "/dist/frost-core.js",
+        "/LICENSE",
+        "/TODO.md",
+        "/README.md"
+    ],
     "scripts": {
         "build": "node build.js",
         "test": "./node_modules/mocha/bin/mocha --recursive",
         "zones": "php generate-zones.php > src/DateTime/timezones.js"
     },
-    "author": "Elusive",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/elusivecodes/FrostDateTime.git"
+    },
+    "author": "Elusive <elusivecodes@gmail.com>",
     "license": "MIT",
+    "private": false,
     "devDependencies": {
         "@babel/core": "^7.9.6",
         "@babel/preset-env": "^7.9.6",

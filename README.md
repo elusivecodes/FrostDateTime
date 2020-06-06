@@ -22,8 +22,22 @@ It is a lightweight (~22kb gzipped) and modern library, and features full suppor
 
 ## Installation
 
+**In Browser**
+
 ```html
 <script type="text/javascript" src="/path/to/frost-datetime.min.js"></script>
+```
+
+**Using NPM**
+
+```
+npm install frostdatetime
+```
+
+In Node.js:
+
+```javascript
+const { DateInterval, DateTime, DateTimeImmutable } = require('frostdatetime');
 ```
 
 
