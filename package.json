@@ -17,7 +17,7 @@
     },
     "main": "./dist/frost-datetime.js",
     "files": [
-        "/dist/frost-core.js",
+        "/dist/frost-datetime.js",
         "/LICENSE",
         "/TODO.md",
         "/README.md"
