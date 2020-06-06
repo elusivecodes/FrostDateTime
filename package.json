@@ -6,6 +6,8 @@
         "date",
         "time",
         "datetime",
+        "timezone",
+        "iso",
         "interval",
         "parse",
         "format"
