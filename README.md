@@ -31,7 +31,7 @@ It is a lightweight (~20kb gzipped) and modern library, and features full suppor
 **Using NPM**
 
 ```
-npm install frostdatetime
+npm i frostdatetime
 ```
 
 In Node.js:
