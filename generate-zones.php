@@ -117,6 +117,7 @@ sort($abbrList);
 $values = [];
 $zones = [];
 $unsupportedZones = [
+    'America/Nuuk',
     'Antarctica/McMurdo'
 ];
 
