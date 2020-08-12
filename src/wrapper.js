@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v1.0.0
+ * FrostDateTime v1.0.2
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {

@@ -43,7 +43,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
- * FrostDateTime v1.0.0
+ * FrostDateTime v1.0.2
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function (global, factory) {
