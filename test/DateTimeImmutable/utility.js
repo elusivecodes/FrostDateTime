@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTimeImmutable Utility Tests', function() {
+describe('DateTimeImmutable Utility', function() {
 
     describe('#clone', function() {
         it('creates a clone object', function() {

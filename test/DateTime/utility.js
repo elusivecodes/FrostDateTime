@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime Utility Tests', function() {
+describe('DateTime Utility', function() {
 
     describe('#clone', function() {
         it('creates a clone object', function() {

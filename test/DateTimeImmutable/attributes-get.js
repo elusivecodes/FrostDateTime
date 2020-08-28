@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTimeImmutable Attributes Get Tests', function() {
+describe('DateTimeImmutable Attributes Get', function() {
 
     describe('#getBeat', function() {
         it('returns the beat', function() {

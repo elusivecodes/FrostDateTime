@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime Variable Tests', function() {
+describe('DateTime Variables', function() {
 
     describe('formats', function() {
         it('contains valid atom property', function() {

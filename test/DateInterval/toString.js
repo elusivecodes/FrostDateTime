@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateInterval, DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateInterval #toString Tests', function() {
+describe('DateInterval #toString', function() {
 
     describe('Arguments', function() {
         it('works with no argument', function() {

@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime Output Tests', function() {
+describe('DateTime Output', function() {
 
     describe('#toDateString', function() {
         it('returns the date string', function() {

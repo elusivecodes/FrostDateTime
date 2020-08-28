@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime, DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTimeImmutable Comparison Argument Tests', function() {
+describe('DateTimeImmutable Comparison Arguments', function() {
 
     describe('#isAfter', function() {
         it('works with no argument', function() {

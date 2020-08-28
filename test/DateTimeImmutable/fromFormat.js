@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTimeImmutable #fromFormat Tests', function() {
+describe('DateTimeImmutable #fromFormat', function() {
 
     describe('Y - Full Year', function() {
         it('parses the full year', function() {

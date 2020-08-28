@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime #constructor Tests', function() {
+describe('DateTime #constructor', function() {
 
     describe('No Argument', function() {
         it('uses the current timestamp', function() {

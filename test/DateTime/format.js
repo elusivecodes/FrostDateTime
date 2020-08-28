@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime #format Tests', function() {
+describe('DateTime #format', function() {
 
     describe('L - Leap Year', function() {
         it('outputs 1 for leap years', function() {

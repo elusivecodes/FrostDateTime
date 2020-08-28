@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateInterval, DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateInterval #format Tests', function() {
+describe('DateInterval #format', function() {
 
     describe('Y - 2-Digit Year', function() {
         it('outputs the 2-digit year', function() {

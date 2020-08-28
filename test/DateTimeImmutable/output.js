@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTimeImmutable Output Tests', function() {
+describe('DateTimeImmutable Output', function() {
 
     describe('#toDateString', function() {
         it('returns the date string', function() {

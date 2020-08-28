@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime } = require('../dist/frost-datetime.min');
 
-describe('DateTime DST Transition Tests', function() {
+describe('DateTime DST Transitions', function() {
 
     describe('Non-DST Offset (Post-Transition)', function() {
         it('creates correct date from format', function() {

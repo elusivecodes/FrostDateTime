@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const { DateTime, DateInterval } = require('../../dist/frost-datetime.min');
 
-describe('DateTime Manipulation Tests', function() {
+describe('DateTime Manipulation', function() {
 
     describe('#add', function() {
         it('works with year', function() {
