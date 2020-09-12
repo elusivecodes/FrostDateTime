@@ -25,7 +25,7 @@ DateTime._formatData = {
             DateTime._parseNumber(value),
         output: datetime =>
             DateTime._formatNumber(
-                datetime.getFullYear()
+                datetime.getYear()
             )
     },
 
@@ -38,7 +38,7 @@ DateTime._formatData = {
             (value < 70 ? 2000 : 1900)
             + DateTime._parseNumber(value),
         output: datetime => {
-            const year = datetime.getFullYear()
+            const year = datetime.getYear()
                 .toString();
             return DateTime._formatNumber(
                 year.substring(year.length - 2)

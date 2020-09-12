@@ -51,10 +51,12 @@ class DateTime {
                 this._offset *= -1;
             }
             this._timeZone = this.constructor._formatOffset(this._offset);
-        } else if (timeZone in this.constructor._abbreviations) {
+        } else if (timeZone in this.constructor._abbrOffsets) {
+            this.constructor._loadTimeZoneAbbreviation(timeZone);
             this._offset = this.constructor._abbreviations[timeZone];
             this._timeZone = timeZone;
-        } else if (timeZone in this.constructor._timeZones) {
+        } else if (timeZone in this.constructor._zones) {
+            this.constructor._loadTimeZone(timeZone);
             this._dynamicTz = true;
             this._timeZone = timeZone;
 

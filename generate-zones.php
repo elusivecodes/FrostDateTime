@@ -181,8 +181,8 @@ foreach ($abbrList AS $abbr) {
 }
 
 // Output zones and values
-echo 'const abbrs = '.json_encode($abbrList, JSON_UNESCAPED_SLASHES).';';
-echo 'const zones = '.json_encode($zones, JSON_UNESCAPED_SLASHES).';';
-echo 'const values = '.json_encode($values, JSON_UNESCAPED_SLASHES).';';
-echo 'const abbrOffsets = '.json_encode($abbrOffsets, JSON_UNESCAPED_SLASHES).';';
+echo 'DateTime._abbrs = '.json_encode($abbrList, JSON_UNESCAPED_SLASHES).';';
+echo 'DateTime._zones = '.json_encode($zones, JSON_UNESCAPED_SLASHES).';';
+echo 'DateTime._values = '.json_encode($values, JSON_UNESCAPED_SLASHES).';';
+echo 'DateTime._abbrOffsets = '.json_encode($abbrOffsets, JSON_UNESCAPED_SLASHES).';';
 echo "\r\n";

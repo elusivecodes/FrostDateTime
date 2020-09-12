@@ -113,12 +113,12 @@ describe('DateTimeImmutable Variables', function() {
     describe('timezones', function() {
         it('contains more than 400 timezones', function() {
             assert.ok(
-                Object.keys(DateTimeImmutable._timeZones).length > 400
+                Object.keys(DateTimeImmutable._zones).length > 400
             );
         });
 
         it('contains valid timezones', function() {
-            for (const timezone in DateTimeImmutable._timeZones) {
+            for (const timezone in DateTimeImmutable._zones) {
                 new DateTimeImmutable(null, timezone);
             }
         });
@@ -127,12 +127,12 @@ describe('DateTimeImmutable Variables', function() {
     describe('timezone abbreviations', function() {
         it('contains more than 100 abbreviations', function() {
             assert.ok(
-                Object.keys(DateTimeImmutable._abbreviations).length > 100
+                Object.keys(DateTimeImmutable._abbrOffsets).length > 100
             );
         });
 
         it('contains valid abbreviations', function() {
-            for (const abbreviation in DateTimeImmutable._abbreviations) {
+            for (const abbreviation in DateTimeImmutable._abbrOffsets) {
                 new DateTimeImmutable(null, abbreviation);
             }
         });

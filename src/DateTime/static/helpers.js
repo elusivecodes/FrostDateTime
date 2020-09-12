@@ -87,6 +87,60 @@ Object.assign(DateTime, {
     },
 
     /**
+     * Load transitions for a timeZone.
+     * @param {string} timeZone The timeZone to load.
+     */
+    _loadTimeZone(timeZone) {
+        if (timeZone in this._timeZones) {
+            return;
+        }
+
+        const zoneIndex = this._zones[timeZone];
+        const parts = this._values[zoneIndex].split('|');
+        const zoneAbbrs = parts.shift().split(';')
+            .map(a => this._abbrs[a]);
+        const transitions = parts.shift().split(';')
+            .map(t => {
+                const data = t.split(',');
+                data[0] = data[0] ?
+                    parseInt(data[0], 36) :
+                    Number.NEGATIVE_INFINITY;
+                return data;
+            });
+
+        this._timeZones[timeZone] = transitions.map((transition, i) => {
+            const start = transition[0];
+            const end = i == transitions.length - 1 ?
+                Number.POSITIVE_INFINITY :
+                transitions[i + 1][0] - 1;
+            const abbr = transition[1] && zoneAbbrs[transition[1]];
+            const dst = transition[2] && zoneAbbrs[transition[2]];
+
+            return {
+                start,
+                end,
+                abbr,
+                dst
+            };
+        });
+    },
+
+    /**
+     * Load offset for a timeZone abbreviation.
+     * @param {string} abbr The timeZone abbreviation to load.
+     */
+    _loadTimeZoneAbbreviation(abbr) {
+        if (abbr in this._abbreviations) {
+            return;
+        }
+
+        const offset = parseInt(this._abbrOffsets[abbr], 36) / 60;
+        this._abbreviations[abbr] = offset ?
+            offset * -1 :
+            0;
+    },
+
+    /**
      * Parse a number from a string using localized digits.
      * @param {string} value The formatted number string.
      * @returns {number} The parsed number.

@@ -69,7 +69,7 @@ const date = new DateTimeImmutable(date, timeZone);
 const date = DateTime.fromArray(dateArray, timeZone);
 ```
 
-Any values not set in the `dateArray` will default to 0.
+The month and date in the `dateArray` will default to 1 if not set. The hours, minutes, seconds and milliseconds will default to 0.
 
 **From Format**
 

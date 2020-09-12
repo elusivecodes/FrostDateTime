@@ -144,6 +144,17 @@ describe('DateTime Creation', function() {
         });
     });
 
+    describe('#fromDate', function() {
+        it('works with date', function() {
+            const date = new Date(1546300800000);
+            assert.equal(
+                DateTime.fromDate(date, 'UTC')
+                    .toISOString(),
+                '2019-01-01T00:00:00.0+00:00'
+            );
+        });
+    });
+
     describe('#fromObject', function() {
         it('uses the year', function() {
             const date = DateTime.fromObject({
@@ -305,7 +316,7 @@ describe('DateTime Creation', function() {
     });
 
     describe('#fromTimestamp', function() {
-        it('uses the provided timestamp', function() {
+        it('works with timestamp', function() {
             assert.equal(
                 DateTime.fromTimestamp(1546300800, 'UTC')
                     .toISOString(),

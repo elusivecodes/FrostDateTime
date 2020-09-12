@@ -28,6 +28,17 @@ Object.assign(DateTime, {
     },
 
     /**
+     * Create a new DateTime from a Date.
+     * @param {Date} date The date.
+     * @param {null|string} [timeZone] The timeZone.
+     * @returns {DateTime} A new DateTime object.
+     */
+    fromDate(date, timeZone = null) {
+        return new this(null, timeZone)
+            .setTime(date.getTime());
+    },
+
+    /**
      * Create a new DateTime from a date string and format string.
      * @param {string} formatString The PHP date format string.
      * @param {string} dateString The date string to parse.
@@ -235,8 +246,8 @@ Object.assign(DateTime, {
      * @returns {DateTime} A new DateTime object.
      */
     fromTimestamp(timestamp, timeZone = null) {
-        const date = new this(null, timeZone);
-        return date.setTimestamp(timestamp);
+        return new this(null, timeZone)
+            .setTimestamp(timestamp);
     },
 
     /**

@@ -144,6 +144,17 @@ describe('DateTimeImmutable Creation', function() {
         });
     });
 
+    describe('#fromDate', function() {
+        it('works with date', function() {
+            const date = new Date(1546300800000);
+            assert.equal(
+                DateTimeImmutable.fromDate(date, 'UTC')
+                    .toISOString(),
+                '2019-01-01T00:00:00.0+00:00'
+            );
+        });
+    });
+
     describe('#fromObject', function() {
         it('uses the year', function() {
             const date = DateTimeImmutable.fromObject({

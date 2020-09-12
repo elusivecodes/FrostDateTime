@@ -113,12 +113,12 @@ describe('DateTime Variables', function() {
     describe('timezones', function() {
         it('contains more than 400 timezones', function() {
             assert.ok(
-                Object.keys(DateTime._timeZones).length > 400
+                Object.keys(DateTime._zones).length > 400
             );
         });
 
         it('contains valid timezones', function() {
-            for (const timezone in DateTime._timeZones) {
+            for (const timezone in DateTime._zones) {
                 new DateTime(null, timezone);
             }
         });
@@ -127,12 +127,12 @@ describe('DateTime Variables', function() {
     describe('timezone abbreviations', function() {
         it('contains more than 100 abbreviations', function() {
             assert.ok(
-                Object.keys(DateTime._abbreviations).length > 100
+                Object.keys(DateTime._abbrOffsets).length > 100
             );
         });
 
         it('contains valid abbreviations', function() {
-            for (const abbreviation in DateTime._abbreviations) {
+            for (const abbreviation in DateTime._abbrOffsets) {
                 new DateTime(null, abbreviation);
             }
         });
