@@ -57,7 +57,7 @@ By default, *DateTime* objects are mutable, but if you wish to create an immutab
 Immutable *DateTime* objects return a new *DateTimeImmutable* whenever they are modified.
 
 ```javascript
-const date = new DateTimeImmutable(date, timeZone);
+const date = new DateTimeImmutable(dateString, timeZone);
 ```
 
 **From Array**
@@ -70,6 +70,15 @@ const date = DateTime.fromArray(dateArray, timeZone);
 ```
 
 The month and date in the `dateArray` will default to 1 if not set. The hours, minutes, seconds and milliseconds will default to 0.
+
+**From Date**
+
+- `dateObj` is a native JS *Date* object.
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+
+```javascript
+const date = DateTime.fromDate(dateObj, timeZone);
+```
 
 **From Format**
 
