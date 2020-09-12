@@ -740,7 +740,7 @@ const isBefore = date.isBefore(other, granularity);
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
 
-**Is Between**
+**Is Between?**
 
 Return *true* if the *DateTime* is between two other dates.
 
