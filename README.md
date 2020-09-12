@@ -100,7 +100,7 @@ const date = DateTime.fromFormat(formatString, dateString, timeZone);
 
 **From Timestamp**
 
-- `timestamp` is a number representing the number of seconds since the UNIX epoch.
+- `timestamp` is the number of seconds since the UNIX epoch.
 - `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
 
 ```javascript
