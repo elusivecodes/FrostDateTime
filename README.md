@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It is a lightweight (~20kb gzipped) and modern library, and features full support for PHP DateTime formats, as well as time zones.
+It is a lightweight (~23kb gzipped) and modern library, and features full support for PHP DateTime formats, as well as time zones.
 
 
 ## Table Of Contents
