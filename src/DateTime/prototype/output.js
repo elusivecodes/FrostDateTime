@@ -161,7 +161,8 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The formatted date string.
      */
     toUTCString() {
-        return new DateTime(this.getTime(), 'UTC')
+        return new DateTime(null, 'UTC')
+            .setTime(this.getTime())
             .toString();
     }
 

@@ -6,46 +6,31 @@ class DateTime {
 
     /**
      * New DateTime constructor.
-     * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
+     * @param {null|string} [dateString] The date to parse.
      * @param {null|string} [timeZone] The timeZone.
      * @returns {DateTime} A new DateTime object.
      */
-    constructor(date = null, timeZone = null) {
+    constructor(dateString = null, timeZone = null) {
 
         let timestamp,
             adjustOffset = false;
 
-        if (date === null) {
+        if (dateString === null) {
             timestamp = Date.now();
-        } else if (Array.isArray(date)) {
-            timestamp = Date.UTC(...date);
-            adjustOffset = true;
-        } else if (
-            !isNaN(
-                parseFloat(date)
-            ) &&
-            isFinite(date)
-        ) {
-            timestamp = date;
-        } else if (date === `${date}`) {
-            timestamp = Date.parse(date);
+        } else if (dateString === `${dateString}`) {
+            timestamp = Date.parse(dateString);
 
             if (isNaN(timestamp)) {
                 throw new Error('Invalid date string supplied');
             }
 
-            if (!date.match(this.constructor._dateStringTimeZoneRegExp)) {
+            if (!dateString.match(this.constructor._dateStringTimeZoneRegExp)) {
                 timestamp -= new Date()
                     .getTimezoneOffset()
                     * 60000;
             }
 
             adjustOffset = true;
-        } else if (
-            date instanceof Date ||
-            date instanceof DateTime
-        ) {
-            timestamp = date.getTime();
         } else {
             throw new Error('Invalid date supplied');
         }
@@ -56,11 +41,7 @@ class DateTime {
         this.isValid = true;
 
         if (!timeZone) {
-            if (date instanceof DateTime) {
-                timeZone = date.getTimeZone();
-            } else {
-                timeZone = this.constructor.defaultTimeZone;
-            }
+            timeZone = this.constructor.defaultTimeZone;
         }
 
         const match = timeZone.match(this.constructor._offsetRegExp);
@@ -83,24 +64,8 @@ class DateTime {
             throw new Error('Invalid timeZone supplied');
         }
 
-        if (this._offset && adjustOffset) {
-            const oldOffset = this._offset;
-            this._utcDate.setTime(
-                this.getTime()
-                + this._offset * 60000
-            );
-
-            if (this._dynamicTz) {
-                this._checkOffset();
-
-                // compensate for DST transitions
-                if (oldOffset !== this._offset) {
-                    this._utcDate.setTime(
-                        this._utcDate.getTime()
-                        - (oldOffset - this._offset) * 60000
-                    );
-                }
-            }
+        if (adjustOffset) {
+            this._adjustOffset();
         }
 
         if (this._dynamicTz) {

@@ -4,6 +4,30 @@
 
 Object.assign(DateTime.prototype, {
 
+    _adjustOffset() {
+        if (!this._offset) {
+            return;
+        }
+
+        const oldOffset = this._offset;
+        this._utcDate.setTime(
+            this.getTime()
+            + this._offset * 60000
+        );
+
+        if (this._dynamicTz) {
+            this._checkOffset();
+
+            // compensate for DST transitions
+            if (oldOffset !== this._offset) {
+                this._utcDate.setTime(
+                    this._utcDate.getTime()
+                    - (oldOffset - this._offset) * 60000
+                );
+            }
+        }
+    },
+
     /**
      * Update the timeZone offset for current timestamp.
      */
@@ -23,17 +47,15 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Compare this DateTime with another date.
-     * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+     * @param {DateTime} other The date to compare to.
      * @param {string} granularity The level of granularity to use for comparison.
      * @param {function} callback The callback to compare the difference in values.
      * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
      */
     _compare(other, granularity, callback) {
-        const tempDate = new DateTime(other, this._timeZone);
-
         if (!granularity) {
             const timeDiff = this.getTime()
-                - tempDate.getTime();
+                - other.getTime();
             return callback(timeDiff) >= 0;
         }
 
@@ -42,7 +64,7 @@ Object.assign(DateTime.prototype, {
         for (const lookup of this.constructor._compareLookup) {
             const preCheck = !lookup.values.includes(granularity);
             const method = lookup.method;
-            const diff = this[method]() - tempDate[method]();
+            const diff = this[method]() - other[method]();
             const result = callback(diff, preCheck);
 
             if (result < 0) {
@@ -93,15 +115,52 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Modify the DateTime by a duration.
-     * @param {string} durationString The relative date string to modify the date by.
-     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+     * @param {number} amount The amount to modify the date by.
+     * @param {string} [timeUnit] The unit of time.
      * @return {DateTime} The DateTime object.
      */
-    _modify(durationString, invert = false) {
-        return this._modifyInterval(
-            DateInterval.fromString(durationString),
-            invert
-        );
+    _modify(amount, timeUnit) {
+        timeUnit = timeUnit.toLowerCase();
+
+        switch (timeUnit) {
+            case 'second':
+            case 'seconds':
+                return this.setSeconds(
+                    this.getSeconds() + amount
+                );
+            case 'minute':
+            case 'minutes':
+                return this.setMinutes(
+                    this.getMinutes() + amount
+                );
+            case 'hour':
+            case 'hours':
+                return this.setHours(
+                    this.getHours() + amount
+                );
+            case 'week':
+            case 'weeks':
+                return this.setDate(
+                    this.getDate() + (amount * 7)
+                );
+            case 'day':
+            case 'days':
+                return this.setDate(
+                    this.getDate() + amount
+                );
+            case 'month':
+            case 'months':
+                return this.setMonth(
+                    this.getMonth() + amount
+                );
+            case 'year':
+            case 'years':
+                return this.setYear(
+                    this.getYear() + amount
+                );
+            default:
+                throw new Error('Invalid time unit supplied');
+        }
     },
 
     /**

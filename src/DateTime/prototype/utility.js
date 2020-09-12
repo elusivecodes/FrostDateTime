@@ -9,7 +9,7 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} A new DateTime object.
      */
     clone() {
-        return new DateTime(this);
+        return this.constructor.fromTimestamp(this.getTimestamp(), this.getTimeZone());
     },
 
     /**
@@ -54,20 +54,19 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Get the difference between two Dates.
-     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {DateTime} [other] The date to compare to.
      * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
      * @returns {DateInterval} A new DateInterval object.
      */
     diff(other = null, absolute = false) {
-        const tempDate = new DateTime(other, this._timeZone),
-            interval = new DateInterval;
+        const interval = new DateInterval;
 
-        if (this.getTime() === tempDate.getTime()) {
+        if (this.getTime() === other.getTime()) {
             interval.days = 0;
             return interval;
         }
 
-        const lessThan = this < tempDate,
+        const lessThan = this < other,
             thisMonth = this.getMonth(),
             thisDate = this.getDate(),
             thisHour = this.getHours(),
@@ -75,17 +74,17 @@ Object.assign(DateTime.prototype, {
             thisSecond = this.getSeconds(),
             thisMillisecond = this.getMilliseconds()
                 * 1000,
-            otherMonth = tempDate.getMonth(),
-            otherDate = tempDate.getDate(),
-            otherHour = tempDate.getHours(),
-            otherMinute = tempDate.getMinutes(),
-            otherSecond = tempDate.getSeconds(),
-            otherMillisecond = tempDate.getMilliseconds()
+            otherMonth = other.getMonth(),
+            otherDate = other.getDate(),
+            otherHour = other.getHours(),
+            otherMinute = other.getMinutes(),
+            otherSecond = other.getSeconds(),
+            otherMillisecond = other.getMilliseconds()
                 * 1000;
 
         interval.y = Math.abs(
             this.getYear()
-            - tempDate.getYear()
+            - other.getYear()
         );
         interval.m = Math.abs(
             thisMonth
@@ -113,7 +112,7 @@ Object.assign(DateTime.prototype, {
         );
         interval.days = (
             Math.abs(
-                (this - tempDate)
+                (this - other)
                 / 86400000
             )
         ) | 0;
@@ -155,7 +154,7 @@ Object.assign(DateTime.prototype, {
             interval.d = (
                 lessThan ?
                     this.daysInMonth() :
-                    tempDate.daysInMonth()
+                    other.daysInMonth()
             ) - interval.d;
         }
 
@@ -236,7 +235,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is after another date (optionally to a granularity).
-     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {DateTime} [other] The date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
      */
@@ -260,7 +259,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is before another date (optionally to a granularity).
-     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {DateTime} [other] The date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
      */
@@ -284,14 +283,14 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is between two other dates (optionally to a granularity).
-     * @param {number|number[]|string|Date|DateTime} [other1] The first date to compare to.
-     * @param {number|number[]|string|Date|DateTime} [other2] The second date to compare to.
+     * @param {DateTime} [start] The first date to compare to.
+     * @param {DateTime} [end] The second date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
      */
-    isBetween(other1, other2, granularity) {
-        return this.isAfter(other1, granularity) &&
-            this.isBefore(other2, granularity);
+    isBetween(start, end, granularity) {
+        return this.isAfter(start, granularity) &&
+            this.isBefore(end, granularity);
     },
 
     /**
@@ -304,8 +303,8 @@ Object.assign(DateTime.prototype, {
         }
 
         const year = this.getYear(),
-            dateA = new DateTime([year, 0, 1], this._timeZone),
-            dateB = new DateTime([year, 5, 1], this._timeZone);
+            dateA = DateTime.fromArray([year, 1, 1], this._timeZone),
+            dateB = DateTime.fromArray([year, 6, 1], this._timeZone);
 
         if (dateA.getTimestamp() < this._transition.start) {
             dateA.setYear(year + 1);
@@ -338,7 +337,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is the same as another date (optionally to a granularity).
-     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {DateTime} [other] The date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
      */
@@ -354,7 +353,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is the same or after another date (optionally to a granularity).
-     * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+     * @param {DateTime} [other] The date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
      */
@@ -378,7 +377,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Determine whether this DateTime is the same or before another date.
-     * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+     * @param {DateTime} other The date to compare to.
      * @param {string} [granularity] The level of granularity to use for comparison.
      * @returns {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
      */
@@ -406,7 +405,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The name of the month.
      */
     monthName(type = 'full') {
-        return this.constructor.lang.months[type][this.getMonth()];
+        return this.constructor.lang.months[type][this.getMonth() - 1];
     },
 
     /**

@@ -36,7 +36,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             const date = DateTimeImmutable.fromFormat('m', '06');
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -46,7 +46,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             const date = DateTimeImmutable.fromFormat('n', '6');
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -56,7 +56,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             const date = DateTimeImmutable.fromFormat('F', 'June');
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -66,7 +66,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             const date = DateTimeImmutable.fromFormat('M', 'Jun');
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -386,7 +386,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -400,7 +400,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -424,7 +424,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -436,7 +436,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -448,7 +448,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -460,7 +460,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -472,7 +472,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -486,7 +486,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -510,7 +510,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -522,7 +522,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -534,7 +534,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -546,7 +546,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -558,7 +558,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -572,7 +572,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });
@@ -586,7 +586,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
 
@@ -598,7 +598,7 @@ describe('DateTimeImmutable #fromFormat', function() {
             );
             assert.equal(
                 date.getMonth(),
-                5
+                6
             );
         });
     });

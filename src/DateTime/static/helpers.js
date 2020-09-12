@@ -59,6 +59,10 @@ Object.assign(DateTime, {
      * @returns {Date} A new Date object.
      */
     _isoDate(...args) {
+        if (args.length > 1) {
+            args[1]--;
+        }
+
         const date = new Date(
             Date.UTC(...args)
         ),

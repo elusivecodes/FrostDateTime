@@ -43,11 +43,11 @@ const { DateInterval, DateTime, DateTimeImmutable } = require('frostdatetime');
 
 ## Date Creation
 
-- `date` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native [*Date.UTC*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) method, and will default to the current timestamp.
+- `dateString` is a string representing the date, and will default to the current timestamp.
 - `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
 
 ```javascript
-const date = new DateTime(date, timeZone);
+const date = new DateTime(dateString, timeZone);
 ```
 
 **Immutable DateTime**
@@ -59,6 +59,17 @@ Immutable *DateTime* objects return a new *DateTimeImmutable* whenever they are 
 ```javascript
 const date = new DateTimeImmutable(date, timeZone);
 ```
+
+**From Array**
+
+- `dateArray` is an array containing the year, month, date, hours, minutes, seconds and milliseconds.
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+
+```javascript
+const date = DateTime.fromArray(dateArray, timeZone);
+```
+
+Any values not set in the `dateArray` will default to 0.
 
 **From Format**
 
@@ -76,6 +87,23 @@ The `isValid` property on the created *DateTime* object can be used to determine
 
 ```javascript
 const date = DateTime.fromFormat(formatString, dateString, timeZone);
+```
+
+**From Timestamp**
+
+- `timestamp` is a number representing the number of seconds since the UNIX epoch.
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+
+```javascript
+const date = DateTime.fromArray(timestamp, timeZone);
+```
+
+**Now**
+
+- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+
+```javascript
+const date = DateTime.now(timeZone);
 ```
 
 
@@ -213,7 +241,7 @@ const dayOfYear = date.getDayOfYear();
 
 Get the month in current time zone.
 
-The `month` returned will be between *0* (January) and *11* (December).
+The `month` returned will be between *1* (January) and *12* (December).
 
 ```javascript
 const month = date.getMonth();
@@ -271,7 +299,7 @@ date.setDayOfYear(dayOfYear);
 
 Set the month in current time zone.
 
-- `month` is a number representing the month (between *0* and *11*).
+- `month` is a number representing the month (between *1* and *12*).
 - `date` is a number representing the date, and will default to the current value.
 
 If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
@@ -297,7 +325,7 @@ date.setQuarter(quarter);
 Set the year in current time zone.
 
 - `year` is a number representing the year.
-- `month` is a number representing the month (between *0* and *11*), and will default to the current value.
+- `month` is a number representing the month (between *1* and *12*), and will default to the current value.
 - `date` is a number representing the date, and will default to the current value.
 
 If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
@@ -563,10 +591,11 @@ date.setTimestamp(timestamp);
 
 Add a duration to the date.
 
-- `durationString` is a date string with relative parts, compatible with the PHP [DateInterval::createFromDateString](https://www.php.net/manual/en/dateinterval.createfromdatestring.php) method.
+- `amount` is a number representing the amount of the `timeUnit` to add.
+- `timeUnit` is a string representing the unit of time to add, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
 ```javascript
-date.add(durationString);
+date.add(amount, timeUnit);
 ```
 
 **Add Interval**
@@ -601,12 +630,11 @@ date.startOf(timeUnit);
 
 **Subtract**
 
-Subtract a duration from the date.
-
-- `durationString` is a date string with relative parts, compatible with the PHP [DateInterval::createFromDateString](https://www.php.net/manual/en/dateinterval.createfromdatestring.php) method.
+- `amount` is a number representing the amount of the `timeUnit` to subtract.
+- `timeUnit` is a string representing the unit of time to subtract, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
 ```javascript
-date.sub(durationString);
+date.sub(amount, timeUnit);
 ```
 
 **Subtract Interval**
@@ -668,24 +696,24 @@ const daysInYear = date.daysInYear();
 
 Get the difference between two Dates.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `absolute` is a boolean indicating whether the interval will be forced to be positive, and will default to *false*.
 
 This method returns a new *DateInterval* object.
 
 ```javascript
-const diff = date.diff(otherDate, absolute);
+const diff = date.diff(other, absolute);
 ```
 
 **Is After?**
 
 Return *true* if the *DateTime* is after another date.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isAfter = date.isAfter(otherDate, granularity);
+const isAfter = date.isAfter(other, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -694,11 +722,11 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 Return *true* if the *DateTime* is before another date.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBefore = date.isBefore(otherDate, granularity);
+const isBefore = date.isBefore(other, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -707,12 +735,12 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 Return *true* if the *DateTime* is between two other dates.
 
-- `otherDate1` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
-- `otherDate2` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBetween = date.isBetween(otherDate1, otherDate2, granularity);
+const isBetween = date.isBetween(start, end, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -737,11 +765,11 @@ const isLeapYear = date.isLeapYear();
 
 Return *true* if the *DateTime* is the same as another date.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSame = date.isSame(otherDate, granularity);
+const isSame = date.isSame(other, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -750,11 +778,11 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 Return *true* if the *DateTime* is the same or after another date.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrAfter = date.isSameOrAfter(otherDate, granularity);
+const isSameOrAfter = date.isSameOrAfter(other, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -763,11 +791,11 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 Return *true* if the *DateTime* is the same or before another date.
 
-- `otherDate` can be either a *Date* object, *DateTime* object, a timestamp, date string, or an array of values matching the native *Date.UTC* method, and will default to the current timestamp.
+- `other` is the *DateTime* object to compare to.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrBefore = date.isSameOrBefore(otherDate, granularity);
+const isSameOrBefore = date.isSameOrBefore(other, granularity);
 ```
 
 If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
@@ -798,7 +826,7 @@ const weeksInISOYear = date.weeksInISOYear();
 Get the day of the year for a year, month and date.
 
 - `year` is a number representing the year.
-- `month` is a number representing the month (between *0* and *11*).
+- `month` is a number representing the month (between *1* and *12*).
 - `date` is a number representing the date.
 
 ```javascript
@@ -810,7 +838,7 @@ const dayOfYear = DateTime.dayOfYear(year, month, date);
 Get the number of days in a month, from a year and month.
 
 - `year` is a number representing the year.
-- `month` is a number representing the month (between *0* and *11*).
+- `month` is a number representing the month (between *1* and *12*).
 
 ```javascript
 const daysInMonth = DateTime.daysInMonth(year, month);

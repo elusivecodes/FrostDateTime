@@ -5,7 +5,7 @@ describe('DateTime Primitive', function() {
 
     describe('#toString', function() {
         it('returns the date/time string', function() {
-            const date = new DateTime([2018, 0, 1, 0, 0, 0, 0], 'Australia/Brisbane');
+            const date = DateTime.fromArray([2018, 1, 1, 0, 0, 0, 0], 'Australia/Brisbane');
             assert.equal(
                 date.toString(),
                 'Mon Jan 01 2018 00:00:00 +1000 (Australia/Brisbane)'
@@ -15,12 +15,12 @@ describe('DateTime Primitive', function() {
 
     describe('#toObject', function() {
         it('returns an object representation of the date/time', function() {
-            const date = new DateTime([2018, 5, 15, 12, 30, 30, 500], 'Australia/Brisbane');
+            const date = DateTime.fromArray([2018, 6, 15, 12, 30, 30, 500], 'Australia/Brisbane');
             assert.deepEqual(
                 date.toObject(),
                 {
                     year: 2018,
-                    month: 5,
+                    month: 6,
                     date: 15,
                     hours: 12,
                     minutes: 30,
@@ -34,7 +34,7 @@ describe('DateTime Primitive', function() {
 
     describe('#valueOf', function() {
         it('returns the timestamp', function() {
-            const date = new DateTime([2018, 0, 1, 0, 0, 0, 0], 'Australia/Brisbane');
+            const date = DateTime.fromArray([2018, 1, 1, 0, 0, 0, 0], 'Australia/Brisbane');
             assert.equal(
                 date.valueOf(),
                 1514728800000
@@ -44,7 +44,7 @@ describe('DateTime Primitive', function() {
 
     describe('#[Symbol.toPrimitive]', function() {
         it('returns the date/time string', function() {
-            const date = new DateTime([2018, 0, 1, 0, 0, 0, 0], 'Australia/Brisbane');
+            const date = DateTime.fromArray([2018, 1, 1, 0, 0, 0, 0], 'Australia/Brisbane');
             assert.equal(
                 date[Symbol.toPrimitive]('string'),
                 'Mon Jan 01 2018 00:00:00 +1000 (Australia/Brisbane)'
@@ -52,7 +52,7 @@ describe('DateTime Primitive', function() {
         });
 
         it('returns the timestamp', function() {
-            const date = new DateTime([2018, 0, 1, 0, 0, 0, 0], 'Australia/Brisbane');
+            const date = DateTime.fromArray([2018, 1, 1, 0, 0, 0, 0], 'Australia/Brisbane');
             assert.equal(
                 date[Symbol.toPrimitive]('number'),
                 1514728800000

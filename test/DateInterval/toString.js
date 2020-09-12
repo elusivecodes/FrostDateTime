@@ -13,8 +13,8 @@ describe('DateInterval #toString', function() {
 
         it('uses default maxValues of 1', function() {
             it('works with positive year', function() {
-                const date1 = new DateTime([2019, 1, 2, 1, 1, 1], 'UTC');
-                const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+                const date1 = DateTime.fromArray([2019, 2, 2, 1, 1, 1], 'UTC');
+                const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
                 const interval = date1.diff(date2);
                 const intervalString = interval.toString();
                 assert.equal(
@@ -25,8 +25,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with maxValues', function() {
-            const date1 = new DateTime([2019, 1, 2, 1, 1, 1], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2019, 2, 2, 1, 1, 1], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString(6);
             assert.equal(
@@ -49,8 +49,8 @@ describe('DateInterval #toString', function() {
 
     describe('Years', function() {
         it('works with positive year', function() {
-            const date1 = new DateTime([2019, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -60,8 +60,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative year', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2019, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -71,8 +71,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive years', function() {
-            const date1 = new DateTime([2020, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2020, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -82,8 +82,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative years', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2020, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2020, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -95,8 +95,8 @@ describe('DateInterval #toString', function() {
 
     describe('Months', function() {
         it('works with positive month', function() {
-            const date1 = new DateTime([2018, 1, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -106,8 +106,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative month', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -117,8 +117,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive months', function() {
-            const date1 = new DateTime([2018, 2, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 3, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -128,8 +128,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative months', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 2, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 3, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -141,8 +141,8 @@ describe('DateInterval #toString', function() {
 
     describe('Days', function() {
         it('works with positive day', function() {
-            const date1 = new DateTime([2018, 0, 2, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -152,8 +152,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative day', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 2, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -163,8 +163,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive days', function() {
-            const date1 = new DateTime([2018, 0, 3, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 3, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -174,8 +174,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative days', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 3, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 3, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -187,8 +187,8 @@ describe('DateInterval #toString', function() {
 
     describe('Hours', function() {
         it('works with positive hour', function() {
-            const date1 = new DateTime([2018, 0, 1, 1, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 1, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -198,8 +198,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative hour', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 1, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 1, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -209,8 +209,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive hours', function() {
-            const date1 = new DateTime([2018, 0, 1, 2, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 2, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -220,8 +220,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative hours', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 2, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 2, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -233,8 +233,8 @@ describe('DateInterval #toString', function() {
 
     describe('Minutes', function() {
         it('works with positive minute', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 1, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 1, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -244,8 +244,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative minute', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 1, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -255,8 +255,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive minutes', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 2, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 2, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -266,8 +266,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative minutes', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 2, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 2, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -279,8 +279,8 @@ describe('DateInterval #toString', function() {
 
     describe('Seconds', function() {
         it('works with positive second', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 1], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -290,8 +290,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative second', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -301,8 +301,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with positive seconds', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 2], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 2], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(
@@ -312,8 +312,8 @@ describe('DateInterval #toString', function() {
         });
 
         it('works with negative seconds', function() {
-            const date1 = new DateTime([2018, 0, 1, 0, 0, 0], 'UTC');
-            const date2 = new DateTime([2018, 0, 1, 0, 0, 2], 'UTC');
+            const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
+            const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 2], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
             assert.equal(

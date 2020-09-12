@@ -5,20 +5,29 @@
 class DateTimeImmutable extends DateTime {
 
     /**
-     * Create a new DateTimeImmutable using the current date and timeZone.
-     * @returns {DateTimeImmutable} A new DateTimeImmutable object.
-     */
-    clone() {
-        return new DateTimeImmutable(this);
-    }
-
-    /**
      * Set the number of milliseconds since the UNIX epoch.
      * @param {number} time The number of milliseconds since the UNIX epoch.
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTime(time) {
-        return new DateTimeImmutable(time, this._timeZone);
+        const tempDate = new DateTimeImmutable(null, this.getTimeZone());
+        tempDate._utcDate = new Date(time);
+
+        if (!tempDate._dynamicTz) {
+            return tempDate;
+        }
+
+        tempDate._checkOffset();
+
+        const timestamp = time / 1000;
+        if (
+            timestamp < tempDate._transition.start ||
+            timestamp > tempDate._transition.end
+        ) {
+            tempDate._getTransition();
+        }
+
+        return tempDate;
     }
 
     /**
@@ -27,7 +36,8 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTimeZone(timeZone) {
-        return new DateTimeImmutable(this, timeZone);
+        const tempDate = new DateTimeImmutable(null, timeZone);
+        return tempDate.setTime(this.getTime());
     }
 
     /**

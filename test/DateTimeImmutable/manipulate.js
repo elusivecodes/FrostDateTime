@@ -5,8 +5,8 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#add', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 year');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'year');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -18,8 +18,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 years');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'years');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -31,8 +31,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 month');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'month');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -44,8 +44,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 months');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'months');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -57,8 +57,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 week');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'week');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -70,8 +70,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 weeks');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'weeks');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -83,8 +83,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 day');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'day');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -96,8 +96,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 days');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'days');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -109,8 +109,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 hour');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'hour');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -122,8 +122,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 hours');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'hours');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -135,8 +135,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 minute');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'minute');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -148,8 +148,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minutes', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 minutes');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'minutes');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -161,8 +161,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('1 second');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(1, 'second');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -174,8 +174,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.add('2 seconds');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.add(2, 'seconds');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -189,7 +189,7 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#addInterval', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1Y');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -203,7 +203,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2Y');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -217,7 +217,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1M');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -231,7 +231,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2M');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -245,7 +245,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1W');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -259,7 +259,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2W');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -273,7 +273,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1D');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -287,7 +287,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2D');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -301,7 +301,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1H');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -315,7 +315,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2H');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -329,7 +329,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1M');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -343,7 +343,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minutes', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2M');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -357,7 +357,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1S');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -371,7 +371,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2S');
             const date2 = date1.addInterval(interval);
             assert.equal(
@@ -387,8 +387,8 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#sub', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 year');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'year');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -400,8 +400,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 years');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'years');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -413,8 +413,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 month');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'month');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -426,8 +426,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 months');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'months');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -439,8 +439,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 week');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'week');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -452,8 +452,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 weeks');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'weeks');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -465,8 +465,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 day');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'day');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -478,8 +478,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 days');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'days');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -491,8 +491,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 hour');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'hour');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -504,8 +504,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 hours');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'hours');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -517,8 +517,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 minute');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'minute');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -530,8 +530,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 minutes');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'minutes');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -543,8 +543,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('1 second');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(1, 'second');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -556,8 +556,8 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
-            const date2 = date1.sub('2 seconds');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
+            const date2 = date1.sub(2, 'seconds');
             assert.equal(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.0+00:00'
@@ -571,7 +571,7 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#subInterval', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1Y');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -585,7 +585,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2Y');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -599,7 +599,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1M');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -613,7 +613,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2M');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -627,7 +627,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1W');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -641,7 +641,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2W');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -655,7 +655,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P1D');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -669,7 +669,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('P2D');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -683,7 +683,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1H');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -697,7 +697,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2H');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -711,7 +711,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1M');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -725,7 +725,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2M');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -739,7 +739,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT1S');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -753,7 +753,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = new DateTimeImmutable([2018, 0, 1], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const interval = new DateInterval('PT2S');
             const date2 = date1.subInterval(interval);
             assert.equal(
@@ -769,7 +769,7 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#startOf', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('year');
             assert.equal(
                 date1.toISOString(),
@@ -781,10 +781,21 @@ describe('DateTimeImmutable Manipulation', function() {
             );
         });
 
-        // quarter
+        it('works with quarter', function() {
+            const date1 = DateTimeImmutable.fromArray([2018, 8, 15, 11, 30, 30, 500], 'UTC');
+            const date2 = date1.startOf('quarter');
+            assert.equal(
+                date1.toISOString(),
+                '2018-08-15T11:30:30.500+00:00'
+            );
+            assert.equal(
+                date2.toISOString(),
+                '2018-07-01T00:00:00.0+00:00'
+            );
+        });
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('month');
             assert.equal(
                 date1.toISOString(),
@@ -796,8 +807,21 @@ describe('DateTimeImmutable Manipulation', function() {
             );
         });
 
+        it('works with ISO week', function() {
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date2 = date1.startOf('isoWeek');
+            assert.equal(
+                date1.toISOString(),
+                '2018-06-15T11:30:30.500+00:00'
+            );
+            assert.equal(
+                date2.toISOString(),
+                '2018-06-11T00:00:00.0+00:00'
+            );
+        });
+
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('week');
             assert.equal(
                 date1.toISOString(),
@@ -810,7 +834,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('day');
             assert.equal(
                 date1.toISOString(),
@@ -823,7 +847,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('hour');
             assert.equal(
                 date1.toISOString(),
@@ -836,7 +860,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('minute');
             assert.equal(
                 date1.toISOString(),
@@ -849,7 +873,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.startOf('second');
             assert.equal(
                 date1.toISOString(),
@@ -864,7 +888,7 @@ describe('DateTimeImmutable Manipulation', function() {
 
     describe('#endOf', function() {
         it('works with year', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('year');
             assert.equal(
                 date1.toISOString(),
@@ -876,10 +900,22 @@ describe('DateTimeImmutable Manipulation', function() {
             );
         });
 
-        // quarter
+        it('works with quarter', function() {
+            const date1 = DateTimeImmutable.fromArray([2018, 8, 15, 11, 30, 30, 500], 'UTC');
+            const date2 = date1.endOf('quarter');
+            assert.equal(
+                date1.toISOString(),
+                '2018-08-15T11:30:30.500+00:00'
+            );
+            assert.equal(
+                date2.toISOString(),
+                '2018-09-30T23:59:59.999+00:00'
+            );
+        });
+
 
         it('works with month', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('month');
             assert.equal(
                 date1.toISOString(),
@@ -891,8 +927,21 @@ describe('DateTimeImmutable Manipulation', function() {
             );
         });
 
+        it('works with ISO week', function() {
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date2 = date1.endOf('isoWeek');
+            assert.equal(
+                date1.toISOString(),
+                '2018-06-15T11:30:30.500+00:00'
+            );
+            assert.equal(
+                date2.toISOString(),
+                '2018-06-17T23:59:59.999+00:00'
+            );
+        });
+
         it('works with week', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('week');
             assert.equal(
                 date1.toISOString(),
@@ -905,7 +954,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('day');
             assert.equal(
                 date1.toISOString(),
@@ -918,7 +967,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('hour');
             assert.equal(
                 date1.toISOString(),
@@ -931,7 +980,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('minute');
             assert.equal(
                 date1.toISOString(),
@@ -944,7 +993,7 @@ describe('DateTimeImmutable Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = new DateTimeImmutable([2018, 5, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTimeImmutable.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
             const date2 = date1.endOf('second');
             assert.equal(
                 date1.toISOString(),

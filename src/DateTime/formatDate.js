@@ -62,7 +62,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.months.full.join('|')})`,
         input: value =>
-            DateTime.lang.months['full'].indexOf(value),
+            DateTime.lang.months['full'].indexOf(value) + 1,
         output: datetime =>
             datetime.monthName()
     },
@@ -73,7 +73,7 @@ DateTime._formatData = {
         regex: _ =>
             `(${DateTime.lang.months.short.join('|')})`,
         input: value =>
-            DateTime.lang.months['short'].indexOf(value),
+            DateTime.lang.months['short'].indexOf(value) + 1,
         output: datetime =>
             datetime.monthName('short')
     },
@@ -84,12 +84,10 @@ DateTime._formatData = {
         regex: _ =>
             `([${DateTime.lang.numberRegExp}]{2})`,
         input: value =>
-            DateTime._parseNumber(value)
-            - 1,
+            DateTime._parseNumber(value),
         output: datetime =>
             DateTime._formatNumber(
-                datetime.getMonth()
-                + 1,
+                datetime.getMonth(),
                 2
             )
     },
@@ -100,12 +98,10 @@ DateTime._formatData = {
         regex: _ =>
             `([${DateTime.lang.numberRegExp}]{1,2})`,
         input: value =>
-            DateTime._parseNumber(value)
-            - 1,
+            DateTime._parseNumber(value),
         output: datetime =>
             DateTime._formatNumber(
                 datetime.getMonth()
-                + 1
             )
     },
 

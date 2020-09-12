@@ -192,7 +192,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Set the month in current timeZone (and optionally, date).
-     * @param {number} month The month. (0, 11)
+     * @param {number} month The month. (1, 12)
      * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
@@ -213,7 +213,7 @@ Object.assign(DateTime.prototype, {
 
         return this._setOffsetTime(
             new Date(this._getOffsetTime()).setUTCMonth(
-                month,
+                month - 1,
                 date
             )
         );
@@ -343,7 +343,7 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the year in current timeZone (and optionally, month and date).
      * @param {number} year The year.
-     * @param {null|number} [month] The month. (0, 11)
+     * @param {null|number} [month] The month. (1, 12)
      * @param {null|number} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
@@ -365,7 +365,7 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             new Date(this._getOffsetTime()).setUTCFullYear(
                 year,
-                month,
+                month - 1,
                 date
             )
         );

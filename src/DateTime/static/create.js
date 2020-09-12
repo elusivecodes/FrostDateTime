@@ -5,6 +5,29 @@
 Object.assign(DateTime, {
 
     /**
+     * Create a new DateTime from an array.
+     * @param {number[]} date The date to parse.
+     * @param {null|string} [timeZone] The timeZone.
+     * @returns {DateTime} A new DateTime object.
+     */
+    fromArray(dateArray, timeZone) {
+        const dateValues = dateArray.slice(0, 3);
+        const timeValues = dateArray.slice(3);
+
+        if (dateValues.length < 3) {
+            dateValues.push(...new Array(3 - dateValues.length).fill(1));
+        }
+
+        if (timeValues.length < 4) {
+            timeValues.push(...new Array(4 - timeValues.length).fill(0));
+        }
+
+        return new this(null, timeZone)
+            .setYear(...dateValues)
+            .setHours(...timeValues);
+    },
+
+    /**
      * Create a new DateTime from a date string and format string.
      * @param {string} formatString The PHP date format string.
      * @param {string} dateString The date string to parse.
@@ -113,11 +136,14 @@ Object.assign(DateTime, {
      * @returns {DateTime} A new DateTime object.
      */
     fromObject(dateObject, timeZone = null) {
-        let currentDate,
-            currentDay = null;
+        let date,
+            currentDay = null,
+            initialTimeZone = 'timeZone' in dateObject ?
+                dateObject.timeZone :
+                timeZone;
 
         if (dateObject.timestamp) {
-            currentDate = dateObject.timestamp * 1000;
+            date = this.fromTimestamp(dateObject.timestamp, initialTimeZone);
         } else {
             if ('dayOfYear' in dateObject &&
                 !(
@@ -171,7 +197,7 @@ Object.assign(DateTime, {
                 newDate.date = Math.min(days, newDate.date);
             }
 
-            currentDate = [
+            const currentDate = [
                 newDate.year,
                 newDate.month,
                 newDate.date,
@@ -180,14 +206,9 @@ Object.assign(DateTime, {
                 newDate.seconds,
                 newDate.milliseconds
             ];
-        }
 
-        let date = new this(
-            currentDate,
-            'timeZone' in dateObject ?
-                dateObject.timeZone :
-                timeZone
-        );
+            date = this.fromArray(currentDate, initialTimeZone);
+        }
 
         // set fraction
         if (dateObject.milliseconds) {
@@ -205,6 +226,25 @@ Object.assign(DateTime, {
         }
 
         return date;
+    },
+
+    /**
+     * Create a new DateTime from a timestamp.
+     * @param {number} timestamp The timestamp.
+     * @param {null|string} [timeZone] The timeZone.
+     * @returns {DateTime} A new DateTime object.
+     */
+    fromTimestamp(timestamp, timeZone = null) {
+        const date = new this(null, timeZone);
+        return date.setTimestamp(timestamp);
+    },
+
+    /**
+     * Create a new DateTime for the current time.
+     * @param {null|string} [timeZone] The timezone.
+     */
+    now(timeZone) {
+        return new this(null, timeZone);
     }
 
 });

@@ -7,16 +7,16 @@ Object.assign(DateTime, {
     /**
      * Get the day of the year for a year, month and date.
      * @param {number} year The year.
-     * @param {number} month The month. (0, 11)
+     * @param {number} month The month. (1, 12)
      * @param {number} date The date.
      * @returns {number} The day of the year. (1, 366)
      */
     dayOfYear(year, month, date) {
-        return new Array(month)
+        return new Array(month - 1)
             .fill()
             .reduce(
                 (d, _, i) =>
-                    d + this.daysInMonth(year, i),
+                    d + this.daysInMonth(year, i + 1),
                 date
             );
     },
@@ -24,11 +24,11 @@ Object.assign(DateTime, {
     /**
      * Get the number of days in a month, from a year and month.
      * @param {number} year The year.
-     * @param {number} month The month. (0, 11)
+     * @param {number} month The month. (1, 12)
      * @returns {number} The number of days in the month.
      */
     daysInMonth(year, month) {
-        const date = new Date(Date.UTC(year, month));
+        const date = new Date(Date.UTC(year, month - 1));
         month = date.getUTCMonth();
 
         return this._monthDays[month]

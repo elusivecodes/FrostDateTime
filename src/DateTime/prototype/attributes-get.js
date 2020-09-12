@@ -83,7 +83,7 @@ Object.assign(DateTime.prototype, {
             ),
             firstWeek = this.constructor._isoDate(
                 week.getUTCFullYear(),
-                0,
+                1,
                 4
             );
 
@@ -126,10 +126,10 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Get the month in current timeZone.
-     * @returns {number} The month. (0, 11)
+     * @returns {number} The month. (1, 12)
      */
     getMonth() {
-        return new Date(this._getOffsetTime()).getUTCMonth();
+        return new Date(this._getOffsetTime()).getUTCMonth() + 1;
     },
 
     /**

@@ -117,7 +117,7 @@ describe('DateTime Variables', function() {
             );
         });
 
-        it('contains only valid timezones', function() {
+        it('contains valid timezones', function() {
             for (const timezone in DateTime._timeZones) {
                 new DateTime(null, timezone);
             }
@@ -131,7 +131,7 @@ describe('DateTime Variables', function() {
             );
         });
 
-        it('contains only valid abbreviations', function() {
+        it('contains valid abbreviations', function() {
             for (const abbreviation in DateTime._abbreviations) {
                 new DateTime(null, abbreviation);
             }

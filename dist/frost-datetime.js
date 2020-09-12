@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v1.0.4
+ * FrostDateTime v2.0.0
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -411,46 +411,31 @@
 
         /**
          * New DateTime constructor.
-         * @param {null|number|number[]|string|Date|DateTime} [date] The date to parse.
+         * @param {null|string} [dateString] The date to parse.
          * @param {null|string} [timeZone] The timeZone.
          * @returns {DateTime} A new DateTime object.
          */
-        constructor(date = null, timeZone = null) {
+        constructor(dateString = null, timeZone = null) {
 
             let timestamp,
                 adjustOffset = false;
 
-            if (date === null) {
+            if (dateString === null) {
                 timestamp = Date.now();
-            } else if (Array.isArray(date)) {
-                timestamp = Date.UTC(...date);
-                adjustOffset = true;
-            } else if (
-                !isNaN(
-                    parseFloat(date)
-                ) &&
-                isFinite(date)
-            ) {
-                timestamp = date;
-            } else if (date === `${date}`) {
-                timestamp = Date.parse(date);
+            } else if (dateString === `${dateString}`) {
+                timestamp = Date.parse(dateString);
 
                 if (isNaN(timestamp)) {
                     throw new Error('Invalid date string supplied');
                 }
 
-                if (!date.match(this.constructor._dateStringTimeZoneRegExp)) {
+                if (!dateString.match(this.constructor._dateStringTimeZoneRegExp)) {
                     timestamp -= new Date()
                         .getTimezoneOffset()
                         * 60000;
                 }
 
                 adjustOffset = true;
-            } else if (
-                date instanceof Date ||
-                date instanceof DateTime
-            ) {
-                timestamp = date.getTime();
             } else {
                 throw new Error('Invalid date supplied');
             }
@@ -461,11 +446,7 @@
             this.isValid = true;
 
             if (!timeZone) {
-                if (date instanceof DateTime) {
-                    timeZone = date.getTimeZone();
-                } else {
-                    timeZone = this.constructor.defaultTimeZone;
-                }
+                timeZone = this.constructor.defaultTimeZone;
             }
 
             const match = timeZone.match(this.constructor._offsetRegExp);
@@ -488,24 +469,8 @@
                 throw new Error('Invalid timeZone supplied');
             }
 
-            if (this._offset && adjustOffset) {
-                const oldOffset = this._offset;
-                this._utcDate.setTime(
-                    this.getTime()
-                    + this._offset * 60000
-                );
-
-                if (this._dynamicTz) {
-                    this._checkOffset();
-
-                    // compensate for DST transitions
-                    if (oldOffset !== this._offset) {
-                        this._utcDate.setTime(
-                            this._utcDate.getTime()
-                            - (oldOffset - this._offset) * 60000
-                        );
-                    }
-                }
+            if (adjustOffset) {
+                this._adjustOffset();
             }
 
             if (this._dynamicTz) {
@@ -557,20 +522,29 @@
     class DateTimeImmutable extends DateTime {
 
         /**
-         * Create a new DateTimeImmutable using the current date and timeZone.
-         * @returns {DateTimeImmutable} A new DateTimeImmutable object.
-         */
-        clone() {
-            return new DateTimeImmutable(this);
-        }
-
-        /**
          * Set the number of milliseconds since the UNIX epoch.
          * @param {number} time The number of milliseconds since the UNIX epoch.
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTime(time) {
-            return new DateTimeImmutable(time, this._timeZone);
+            const tempDate = new DateTimeImmutable(null, this.getTimeZone());
+            tempDate._utcDate = new Date(time);
+
+            if (!tempDate._dynamicTz) {
+                return tempDate;
+            }
+
+            tempDate._checkOffset();
+
+            const timestamp = time / 1000;
+            if (
+                timestamp < tempDate._transition.start ||
+                timestamp > tempDate._transition.end
+            ) {
+                tempDate._getTransition();
+            }
+
+            return tempDate;
         }
 
         /**
@@ -579,7 +553,8 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTimeZone(timeZone) {
-            return new DateTimeImmutable(this, timeZone);
+            const tempDate = new DateTimeImmutable(null, timeZone);
+            return tempDate.setTime(this.getTime());
         }
 
         /**
@@ -665,7 +640,7 @@
             regex: _ =>
                 `(${DateTime.lang.months.full.join('|')})`,
             input: value =>
-                DateTime.lang.months['full'].indexOf(value),
+                DateTime.lang.months['full'].indexOf(value) + 1,
             output: datetime =>
                 datetime.monthName()
         },
@@ -676,7 +651,7 @@
             regex: _ =>
                 `(${DateTime.lang.months.short.join('|')})`,
             input: value =>
-                DateTime.lang.months['short'].indexOf(value),
+                DateTime.lang.months['short'].indexOf(value) + 1,
             output: datetime =>
                 datetime.monthName('short')
         },
@@ -687,12 +662,10 @@
             regex: _ =>
                 `([${DateTime.lang.numberRegExp}]{2})`,
             input: value =>
-                DateTime._parseNumber(value)
-                - 1,
+                DateTime._parseNumber(value),
             output: datetime =>
                 DateTime._formatNumber(
-                    datetime.getMonth()
-                    + 1,
+                    datetime.getMonth(),
                     2
                 )
         },
@@ -703,12 +676,10 @@
             regex: _ =>
                 `([${DateTime.lang.numberRegExp}]{1,2})`,
             input: value =>
-                DateTime._parseNumber(value)
-                - 1,
+                DateTime._parseNumber(value),
             output: datetime =>
                 DateTime._formatNumber(
                     datetime.getMonth()
-                    + 1
                 )
         },
 
@@ -1186,7 +1157,7 @@
                 ),
                 firstWeek = this.constructor._isoDate(
                     week.getUTCFullYear(),
-                    0,
+                    1,
                     4
                 );
 
@@ -1229,10 +1200,10 @@
 
         /**
          * Get the month in current timeZone.
-         * @returns {number} The month. (0, 11)
+         * @returns {number} The month. (1, 12)
          */
         getMonth() {
-            return new Date(this._getOffsetTime()).getUTCMonth();
+            return new Date(this._getOffsetTime()).getUTCMonth() + 1;
         },
 
         /**
@@ -1505,7 +1476,7 @@
 
         /**
          * Set the month in current timeZone (and optionally, date).
-         * @param {number} month The month. (0, 11)
+         * @param {number} month The month. (1, 12)
          * @param {null|number} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
@@ -1526,7 +1497,7 @@
 
             return this._setOffsetTime(
                 new Date(this._getOffsetTime()).setUTCMonth(
-                    month,
+                    month - 1,
                     date
                 )
             );
@@ -1656,7 +1627,7 @@
         /**
          * Set the year in current timeZone (and optionally, month and date).
          * @param {number} year The year.
-         * @param {null|number} [month] The month. (0, 11)
+         * @param {null|number} [month] The month. (1, 12)
          * @param {null|number} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
@@ -1678,7 +1649,7 @@
             return this._setOffsetTime(
                 new Date(this._getOffsetTime()).setUTCFullYear(
                     year,
-                    month,
+                    month - 1,
                     date
                 )
             );
@@ -1691,6 +1662,30 @@
      */
 
     Object.assign(DateTime.prototype, {
+
+        _adjustOffset() {
+            if (!this._offset) {
+                return;
+            }
+
+            const oldOffset = this._offset;
+            this._utcDate.setTime(
+                this.getTime()
+                + this._offset * 60000
+            );
+
+            if (this._dynamicTz) {
+                this._checkOffset();
+
+                // compensate for DST transitions
+                if (oldOffset !== this._offset) {
+                    this._utcDate.setTime(
+                        this._utcDate.getTime()
+                        - (oldOffset - this._offset) * 60000
+                    );
+                }
+            }
+        },
 
         /**
          * Update the timeZone offset for current timestamp.
@@ -1711,17 +1706,15 @@
 
         /**
          * Compare this DateTime with another date.
-         * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+         * @param {DateTime} other The date to compare to.
          * @param {string} granularity The level of granularity to use for comparison.
          * @param {function} callback The callback to compare the difference in values.
          * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
          */
         _compare(other, granularity, callback) {
-            const tempDate = new DateTime(other, this._timeZone);
-
             if (!granularity) {
                 const timeDiff = this.getTime()
-                    - tempDate.getTime();
+                    - other.getTime();
                 return callback(timeDiff) >= 0;
             }
 
@@ -1730,7 +1723,7 @@
             for (const lookup of this.constructor._compareLookup) {
                 const preCheck = !lookup.values.includes(granularity);
                 const method = lookup.method;
-                const diff = this[method]() - tempDate[method]();
+                const diff = this[method]() - other[method]();
                 const result = callback(diff, preCheck);
 
                 if (result < 0) {
@@ -1781,15 +1774,52 @@
 
         /**
          * Modify the DateTime by a duration.
-         * @param {string} durationString The relative date string to modify the date by.
-         * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
+         * @param {number} amount The amount to modify the date by.
+         * @param {string} [timeUnit] The unit of time.
          * @return {DateTime} The DateTime object.
          */
-        _modify(durationString, invert = false) {
-            return this._modifyInterval(
-                DateInterval.fromString(durationString),
-                invert
-            );
+        _modify(amount, timeUnit) {
+            timeUnit = timeUnit.toLowerCase();
+
+            switch (timeUnit) {
+                case 'second':
+                case 'seconds':
+                    return this.setSeconds(
+                        this.getSeconds() + amount
+                    );
+                case 'minute':
+                case 'minutes':
+                    return this.setMinutes(
+                        this.getMinutes() + amount
+                    );
+                case 'hour':
+                case 'hours':
+                    return this.setHours(
+                        this.getHours() + amount
+                    );
+                case 'week':
+                case 'weeks':
+                    return this.setDate(
+                        this.getDate() + (amount * 7)
+                    );
+                case 'day':
+                case 'days':
+                    return this.setDate(
+                        this.getDate() + amount
+                    );
+                case 'month':
+                case 'months':
+                    return this.setMonth(
+                        this.getMonth() + amount
+                    );
+                case 'year':
+                case 'years':
+                    return this.setYear(
+                        this.getYear() + amount
+                    );
+                default:
+                    throw new Error('Invalid time unit supplied');
+            }
         },
 
         /**
@@ -1887,11 +1917,12 @@
 
         /**
          * Add a duration to the date.
-         * @param {string} [durationString] The relative date string to add to the current date.
+         * @param {number} amount The amount to modify the date by.
+         * @param {string} timeUnit The unit of time.
          * @returns {DateTime} The DateTime object.
          */
-        add(durationString) {
-            return this._modify(durationString);
+        add(amount, timeUnit) {
+            return this._modify(amount, timeUnit);
         },
 
         /**
@@ -1901,15 +1932,6 @@
          */
         addInterval(interval) {
             return this._modifyInterval(interval);
-        },
-
-        /**
-         * Set the date to the last millisecond of the day in current timeZone.
-         * @returns {DateTime} The DateTime object.
-         */
-        endOfDay() {
-            return this.setHours(23)
-                .endOfHour();
         },
 
         /**
@@ -1933,20 +1955,21 @@
                 case 'week':
                     return this.setDay(6)
                         .setHours(23, 59, 59, 999);
-                case 'isoWeek':
+                case 'isoweek':
                     return this.setISODay(7)
                         .setHours(23, 59, 59, 999);
                 case 'month':
                     return this.setDate(this.daysInMonth())
                         .setHours(23, 59, 59, 999);
                 case 'quarter':
-                    const month = this.getQuarter() * 3 - 3;
+                    const month = this.getQuarter() * 3;
                     return this.setMonth(month, this.constructor.daysInMonth(this.getYear(), month))
                         .setHours(23, 59, 59, 999);
                 case 'year':
-                default:
-                    return this.setMonth(11, 31)
+                    return this.setMonth(12, 31)
                         .setHours(23, 59, 59, 999);
+                default:
+                    throw new Error('Invalid time unit supplied');
             }
         },
 
@@ -1971,30 +1994,32 @@
                 case 'week':
                     return this.setDay(0)
                         .setHours(0, 0, 0, 0);
-                case 'isoWeek':
-                    return this.setISODay(0)
+                case 'isoweek':
+                    return this.setISODay(1)
                         .setHours(0, 0, 0, 0);
                 case 'month':
                     return this.setDate(1)
                         .setHours(0, 0, 0, 0);
                 case 'quarter':
-                    const month = this.getQuarter() * 3 - 3;
+                    const month = this.getQuarter() * 3 - 2;
                     return this.setMonth(month, 1)
                         .setHours(0, 0, 0, 0);
                 case 'year':
-                default:
-                    return this.setMonth(0, 1)
+                    return this.setMonth(1, 1)
                         .setHours(0, 0, 0, 0);
+                default:
+                    throw new Error('Invalid time unit supplied');
             }
         },
 
         /**
          * Subtract a duration from the date.
-         * @param {string} [durationString] The relative date string to subtract from the current date.
+         * @param {number} amount The amount to modify the date by.
+         * @param {string} timeUnit The unit of time.
          * @returns {DateTime} The DateTime object.
          */
-        sub(durationString) {
-            return this._modify(durationString, true);
+        sub(amount, timeUnit) {
+            return this._modify(-amount, timeUnit);
         },
 
         /**
@@ -2171,7 +2196,8 @@
          * @returns {string} The formatted date string.
          */
         toUTCString() {
-            return new DateTime(this.getTime(), 'UTC')
+            return new DateTime(null, 'UTC')
+                .setTime(this.getTime())
                 .toString();
         }
 
@@ -2188,7 +2214,7 @@
          * @returns {DateTime} A new DateTime object.
          */
         clone() {
-            return new DateTime(this);
+            return this.constructor.fromTimestamp(this.getTimestamp(), this.getTimeZone());
         },
 
         /**
@@ -2233,20 +2259,19 @@
 
         /**
          * Get the difference between two Dates.
-         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {DateTime} [other] The date to compare to.
          * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
          * @returns {DateInterval} A new DateInterval object.
          */
         diff(other = null, absolute = false) {
-            const tempDate = new DateTime(other, this._timeZone),
-                interval = new DateInterval;
+            const interval = new DateInterval;
 
-            if (this.getTime() === tempDate.getTime()) {
+            if (this.getTime() === other.getTime()) {
                 interval.days = 0;
                 return interval;
             }
 
-            const lessThan = this < tempDate,
+            const lessThan = this < other,
                 thisMonth = this.getMonth(),
                 thisDate = this.getDate(),
                 thisHour = this.getHours(),
@@ -2254,17 +2279,17 @@
                 thisSecond = this.getSeconds(),
                 thisMillisecond = this.getMilliseconds()
                     * 1000,
-                otherMonth = tempDate.getMonth(),
-                otherDate = tempDate.getDate(),
-                otherHour = tempDate.getHours(),
-                otherMinute = tempDate.getMinutes(),
-                otherSecond = tempDate.getSeconds(),
-                otherMillisecond = tempDate.getMilliseconds()
+                otherMonth = other.getMonth(),
+                otherDate = other.getDate(),
+                otherHour = other.getHours(),
+                otherMinute = other.getMinutes(),
+                otherSecond = other.getSeconds(),
+                otherMillisecond = other.getMilliseconds()
                     * 1000;
 
             interval.y = Math.abs(
                 this.getYear()
-                - tempDate.getYear()
+                - other.getYear()
             );
             interval.m = Math.abs(
                 thisMonth
@@ -2292,7 +2317,7 @@
             );
             interval.days = (
                 Math.abs(
-                    (this - tempDate)
+                    (this - other)
                     / 86400000
                 )
             ) | 0;
@@ -2334,7 +2359,7 @@
                 interval.d = (
                     lessThan ?
                         this.daysInMonth() :
-                        tempDate.daysInMonth()
+                        other.daysInMonth()
                 ) - interval.d;
             }
 
@@ -2415,7 +2440,7 @@
 
         /**
          * Determine whether this DateTime is after another date (optionally to a granularity).
-         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {DateTime} [other] The date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
          */
@@ -2439,7 +2464,7 @@
 
         /**
          * Determine whether this DateTime is before another date (optionally to a granularity).
-         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {DateTime} [other] The date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
          */
@@ -2463,14 +2488,14 @@
 
         /**
          * Determine whether this DateTime is between two other dates (optionally to a granularity).
-         * @param {number|number[]|string|Date|DateTime} [other1] The first date to compare to.
-         * @param {number|number[]|string|Date|DateTime} [other2] The second date to compare to.
+         * @param {DateTime} [start] The first date to compare to.
+         * @param {DateTime} [end] The second date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
          */
-        isBetween(other1, other2, granularity) {
-            return this.isAfter(other1, granularity) &&
-                this.isBefore(other2, granularity);
+        isBetween(start, end, granularity) {
+            return this.isAfter(start, granularity) &&
+                this.isBefore(end, granularity);
         },
 
         /**
@@ -2483,8 +2508,8 @@
             }
 
             const year = this.getYear(),
-                dateA = new DateTime([year, 0, 1], this._timeZone),
-                dateB = new DateTime([year, 5, 1], this._timeZone);
+                dateA = DateTime.fromArray([year, 1, 1], this._timeZone),
+                dateB = DateTime.fromArray([year, 6, 1], this._timeZone);
 
             if (dateA.getTimestamp() < this._transition.start) {
                 dateA.setYear(year + 1);
@@ -2517,7 +2542,7 @@
 
         /**
          * Determine whether this DateTime is the same as another date (optionally to a granularity).
-         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {DateTime} [other] The date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
          */
@@ -2533,7 +2558,7 @@
 
         /**
          * Determine whether this DateTime is the same or after another date (optionally to a granularity).
-         * @param {number|number[]|string|Date|DateTime} [other] The date to compare to.
+         * @param {DateTime} [other] The date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
          */
@@ -2557,7 +2582,7 @@
 
         /**
          * Determine whether this DateTime is the same or before another date.
-         * @param {number|number[]|string|Date|DateTime} other The date to compare to.
+         * @param {DateTime} other The date to compare to.
          * @param {string} [granularity] The level of granularity to use for comparison.
          * @returns {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
          */
@@ -2585,7 +2610,7 @@
          * @returns {string} The name of the month.
          */
         monthName(type = 'full') {
-            return this.constructor.lang.months[type][this.getMonth()];
+            return this.constructor.lang.months[type][this.getMonth() - 1];
         },
 
         /**
@@ -2603,6 +2628,29 @@
      */
 
     Object.assign(DateTime, {
+
+        /**
+         * Create a new DateTime from an array.
+         * @param {number[]} date The date to parse.
+         * @param {null|string} [timeZone] The timeZone.
+         * @returns {DateTime} A new DateTime object.
+         */
+        fromArray(dateArray, timeZone) {
+            const dateValues = dateArray.slice(0, 3);
+            const timeValues = dateArray.slice(3);
+
+            if (dateValues.length < 3) {
+                dateValues.push(...new Array(3 - dateValues.length).fill(1));
+            }
+
+            if (timeValues.length < 4) {
+                timeValues.push(...new Array(4 - timeValues.length).fill(0));
+            }
+
+            return new this(null, timeZone)
+                .setYear(...dateValues)
+                .setHours(...timeValues);
+        },
 
         /**
          * Create a new DateTime from a date string and format string.
@@ -2713,11 +2761,14 @@
          * @returns {DateTime} A new DateTime object.
          */
         fromObject(dateObject, timeZone = null) {
-            let currentDate,
-                currentDay = null;
+            let date,
+                currentDay = null,
+                initialTimeZone = 'timeZone' in dateObject ?
+                    dateObject.timeZone :
+                    timeZone;
 
             if (dateObject.timestamp) {
-                currentDate = dateObject.timestamp * 1000;
+                date = this.fromTimestamp(dateObject.timestamp, initialTimeZone);
             } else {
                 if ('dayOfYear' in dateObject &&
                     !(
@@ -2771,7 +2822,7 @@
                     newDate.date = Math.min(days, newDate.date);
                 }
 
-                currentDate = [
+                const currentDate = [
                     newDate.year,
                     newDate.month,
                     newDate.date,
@@ -2780,14 +2831,9 @@
                     newDate.seconds,
                     newDate.milliseconds
                 ];
-            }
 
-            let date = new this(
-                currentDate,
-                'timeZone' in dateObject ?
-                    dateObject.timeZone :
-                    timeZone
-            );
+                date = this.fromArray(currentDate, initialTimeZone);
+            }
 
             // set fraction
             if (dateObject.milliseconds) {
@@ -2805,6 +2851,25 @@
             }
 
             return date;
+        },
+
+        /**
+         * Create a new DateTime from a timestamp.
+         * @param {number} timestamp The timestamp.
+         * @param {null|string} [timeZone] The timeZone.
+         * @returns {DateTime} A new DateTime object.
+         */
+        fromTimestamp(timestamp, timeZone = null) {
+            const date = new this(null, timeZone);
+            return date.setTimestamp(timestamp);
+        },
+
+        /**
+         * Create a new DateTime for the current time.
+         * @param {null|string} [timeZone] The timezone.
+         */
+        now(timeZone) {
+            return new this(null, timeZone);
         }
 
     });
@@ -2870,6 +2935,10 @@
          * @returns {Date} A new Date object.
          */
         _isoDate(...args) {
+            if (args.length > 1) {
+                args[1]--;
+            }
+
             const date = new Date(
                 Date.UTC(...args)
             ),
@@ -2920,16 +2989,16 @@
         /**
          * Get the day of the year for a year, month and date.
          * @param {number} year The year.
-         * @param {number} month The month. (0, 11)
+         * @param {number} month The month. (1, 12)
          * @param {number} date The date.
          * @returns {number} The day of the year. (1, 366)
          */
         dayOfYear(year, month, date) {
-            return new Array(month)
+            return new Array(month - 1)
                 .fill()
                 .reduce(
                     (d, _, i) =>
-                        d + this.daysInMonth(year, i),
+                        d + this.daysInMonth(year, i + 1),
                     date
                 );
         },
@@ -2937,11 +3006,11 @@
         /**
          * Get the number of days in a month, from a year and month.
          * @param {number} year The year.
-         * @param {number} month The month. (0, 11)
+         * @param {number} month The month. (1, 12)
          * @returns {number} The number of days in the month.
          */
         daysInMonth(year, month) {
-            const date = new Date(Date.UTC(year, month));
+            const date = new Date(Date.UTC(year, month - 1));
             month = date.getUTCMonth();
 
             return this._monthDays[month]
@@ -3095,7 +3164,7 @@
         // Unix epoch
         _epoch: {
             year: 1970,
-            month: 0,
+            month: 1,
             date: 1,
             hours: 0,
             pm: 0,

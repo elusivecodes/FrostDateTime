@@ -117,7 +117,7 @@ describe('DateTimeImmutable Variables', function() {
             );
         });
 
-        it('contains only valid timezones', function() {
+        it('contains valid timezones', function() {
             for (const timezone in DateTimeImmutable._timeZones) {
                 new DateTimeImmutable(null, timezone);
             }
@@ -131,7 +131,7 @@ describe('DateTimeImmutable Variables', function() {
             );
         });
 
-        it('contains only valid abbreviations', function() {
+        it('contains valid abbreviations', function() {
             for (const abbreviation in DateTimeImmutable._abbreviations) {
                 new DateTimeImmutable(null, abbreviation);
             }

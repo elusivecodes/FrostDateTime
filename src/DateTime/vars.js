@@ -104,7 +104,7 @@ Object.assign(DateTime, {
     // Unix epoch
     _epoch: {
         year: 1970,
-        month: 0,
+        month: 1,
         date: 1,
         hours: 0,
         pm: 0,
