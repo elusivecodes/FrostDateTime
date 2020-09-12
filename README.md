@@ -399,7 +399,7 @@ Set the ISO week in current time zone.
 date.setISOWeek(isoWeek, isoDay);
 ```
 
-**Get ISO Year**
+**Set ISO Year**
 
 Set the ISO year in current time zone.
 
