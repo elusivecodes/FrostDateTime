@@ -104,7 +104,7 @@ const date = DateTime.fromFormat(formatString, dateString, timeZone);
 - `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
 
 ```javascript
-const date = DateTime.fromArray(timestamp, timeZone);
+const date = DateTime.fromTimestamp(timestamp, timeZone);
 ```
 
 **Now**
