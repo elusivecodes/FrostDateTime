@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateInterval, DateTime } = require('../../dist/frost-datetime.min');
 
 describe('DateInterval #toString', function() {
@@ -17,7 +17,7 @@ describe('DateInterval #toString', function() {
                 const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
                 const interval = date1.diff(date2);
                 const intervalString = interval.toString();
-                assert.equal(
+                assert.strictEqual(
                     intervalString,
                     'In 1 year'
                 );
@@ -29,7 +29,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString(6);
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 year, 1 month, 1 day, 1 hour, 1 minute, 1 second'
             );
@@ -40,7 +40,7 @@ describe('DateInterval #toString', function() {
         it('works with now', function() {
             const interval = new DateInterval;
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'Now'
             );
@@ -53,7 +53,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 year'
             );
@@ -64,7 +64,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 year ago'
             );
@@ -75,7 +75,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 years'
             );
@@ -86,7 +86,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2020, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 years ago'
             );
@@ -99,7 +99,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 month'
             );
@@ -110,7 +110,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 month ago'
             );
@@ -121,7 +121,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 months'
             );
@@ -132,7 +132,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 3, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 months ago'
             );
@@ -145,7 +145,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 day'
             );
@@ -156,7 +156,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 day ago'
             );
@@ -167,7 +167,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 days'
             );
@@ -178,7 +178,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 3, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 days ago'
             );
@@ -191,7 +191,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 hour'
             );
@@ -202,7 +202,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 hour ago'
             );
@@ -213,7 +213,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 hours'
             );
@@ -224,7 +224,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 hours ago'
             );
@@ -237,7 +237,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 minute'
             );
@@ -248,7 +248,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 minute ago'
             );
@@ -259,7 +259,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 minutes'
             );
@@ -270,7 +270,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 2, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 minutes ago'
             );
@@ -283,7 +283,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 1 second'
             );
@@ -294,7 +294,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1 second ago'
             );
@@ -305,7 +305,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 'In 2 seconds'
             );
@@ -316,7 +316,7 @@ describe('DateInterval #toString', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 2], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.toString();
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '2 seconds ago'
             );

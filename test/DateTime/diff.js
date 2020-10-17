@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateTime } = require('../../dist/frost-datetime.min');
 
 describe('DateTime #diff', function() {
@@ -8,7 +8,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 2, 2, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -30,7 +30,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 2, 2, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -52,7 +52,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 2, 2, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -74,7 +74,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2019, 2, 2, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -96,7 +96,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2017, 1, 2, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -118,7 +118,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2017, 2, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -142,7 +142,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 1, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -164,7 +164,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 2, 1, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -186,7 +186,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 1, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -208,7 +208,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 2, 2, 1, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -230,7 +230,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 2, 2, 1, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -252,7 +252,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 2, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 2, 1, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -276,7 +276,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -298,7 +298,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -320,7 +320,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -342,7 +342,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 2, 1, 1, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -364,7 +364,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 1, 1, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -386,7 +386,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -410,7 +410,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -432,7 +432,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -454,7 +454,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -476,7 +476,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -498,7 +498,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -520,7 +520,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -544,7 +544,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -566,7 +566,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -588,7 +588,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -610,7 +610,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -632,7 +632,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 1, 1], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },
@@ -654,7 +654,7 @@ describe('DateTime #diff', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 0, 1, 0], 'UTC');
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 1], 'UTC');
             const diff = date1.diff(date2);
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...diff
                 },

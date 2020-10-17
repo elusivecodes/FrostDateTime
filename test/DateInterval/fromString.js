@@ -1,11 +1,11 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateInterval } = require('../../dist/frost-datetime.min');
 
 describe('DateInterval #fromString', function() {
 
     describe('#fromString', function() {
         it('works with years', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 year')
                 },
@@ -24,7 +24,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with months', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 month')
                 },
@@ -43,7 +43,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with days', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 day')
                 },
@@ -62,7 +62,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with hours', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 hour')
                 },
@@ -81,7 +81,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with minutes', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 minute')
                 },
@@ -100,7 +100,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with seconds', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 second')
                 },
@@ -119,7 +119,7 @@ describe('DateInterval #fromString', function() {
         });
 
         it('works with multiple arguments', function() {
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...DateInterval.fromString('1 year, 2 months, 3 days, 4 hours, 5 minutes and 6 seconds')
                 },

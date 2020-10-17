@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateInterval } = require('../../dist/frost-datetime.min');
 
 describe('DateInterval #constructor', function() {
@@ -6,7 +6,7 @@ describe('DateInterval #constructor', function() {
     describe('Interval String', function() {
         it('works with years', function() {
             const interval = new DateInterval('P1Y');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -26,7 +26,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with months', function() {
             const interval = new DateInterval('P1M');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -46,7 +46,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with days', function() {
             const interval = new DateInterval('P1D');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -66,7 +66,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with hours', function() {
             const interval = new DateInterval('PT1H');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -86,7 +86,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with minutes', function() {
             const interval = new DateInterval('PT1M');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -106,7 +106,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with seconds', function() {
             const interval = new DateInterval('PT1S');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },
@@ -126,7 +126,7 @@ describe('DateInterval #constructor', function() {
 
         it('works with multiple arguments', function() {
             const interval = new DateInterval('P1Y2M3DT4H5M6S');
-            assert.deepEqual(
+            assert.deepStrictEqual(
                 {
                     ...interval
                 },

@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateInterval, DateTime } = require('../../dist/frost-datetime.min');
 
 describe('DateInterval #format', function() {
@@ -7,7 +7,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit year', function() {
             const interval = new DateInterval('P1Y');
             const intervalString = interval.format('%Y');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -18,7 +18,7 @@ describe('DateInterval #format', function() {
         it('outputs the year', function() {
             const interval = new DateInterval('P1Y');
             const intervalString = interval.format('%y');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -29,7 +29,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit month', function() {
             const interval = new DateInterval('P1M');
             const intervalString = interval.format('%M');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -40,7 +40,7 @@ describe('DateInterval #format', function() {
         it('outputs the month', function() {
             const interval = new DateInterval('P1M');
             const intervalString = interval.format('%m');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -51,7 +51,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit day', function() {
             const interval = new DateInterval('P1D');
             const intervalString = interval.format('%D');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -62,7 +62,7 @@ describe('DateInterval #format', function() {
         it('outputs the day', function() {
             const interval = new DateInterval('P1D');
             const intervalString = interval.format('%d');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -75,7 +75,7 @@ describe('DateInterval #format', function() {
             const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.format('%a');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '365'
             );
@@ -86,7 +86,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit hour', function() {
             const interval = new DateInterval('PT1H');
             const intervalString = interval.format('%H');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -97,7 +97,7 @@ describe('DateInterval #format', function() {
         it('outputs the hour', function() {
             const interval = new DateInterval('PT1H');
             const intervalString = interval.format('%h');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -108,7 +108,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit minute', function() {
             const interval = new DateInterval('PT1M');
             const intervalString = interval.format('%I');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -119,7 +119,7 @@ describe('DateInterval #format', function() {
         it('outputs the minute', function() {
             const interval = new DateInterval('PT1M');
             const intervalString = interval.format('%i');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -130,7 +130,7 @@ describe('DateInterval #format', function() {
         it('outputs the 2-digit second', function() {
             const interval = new DateInterval('PT1S');
             const intervalString = interval.format('%S');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '01'
             );
@@ -141,7 +141,7 @@ describe('DateInterval #format', function() {
         it('outputs the second', function() {
             const interval = new DateInterval('PT1S');
             const intervalString = interval.format('%s');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '1'
             );
@@ -154,7 +154,7 @@ describe('DateInterval #format', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.format('%R');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '+'
             );
@@ -165,7 +165,7 @@ describe('DateInterval #format', function() {
             const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.format('%R');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '-'
             );
@@ -178,7 +178,7 @@ describe('DateInterval #format', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.format('%r');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 ''
             );
@@ -189,7 +189,7 @@ describe('DateInterval #format', function() {
             const date2 = DateTime.fromArray([2019, 1, 1, 0, 0, 0], 'UTC');
             const interval = date1.diff(date2);
             const intervalString = interval.format('%r');
-            assert.equal(
+            assert.strictEqual(
                 intervalString,
                 '-'
             );

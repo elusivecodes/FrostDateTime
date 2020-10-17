@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
 describe('DateTimeImmutable #format', function() {
@@ -6,7 +6,7 @@ describe('DateTimeImmutable #format', function() {
     describe('L - Leap Year', function() {
         it('outputs 1 for leap years', function() {
             const date = DateTimeImmutable.fromArray([2016, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('L'),
                 '1'
             );
@@ -14,7 +14,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 0 for non-leap years', function() {
             const date = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('L'),
                 '0'
             );
@@ -24,7 +24,7 @@ describe('DateTimeImmutable #format', function() {
     describe('Y - Full Year', function() {
         it('outputs the full year', function() {
             const date = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('Y'),
                 '2018'
             );
@@ -34,7 +34,7 @@ describe('DateTimeImmutable #format', function() {
     describe('y - Short Year', function() {
         it('outputs the short year', function() {
             const date = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('y'),
                 '18'
             );
@@ -44,7 +44,7 @@ describe('DateTimeImmutable #format', function() {
     describe('o - ISO Year', function() {
         it('outputs the ISO year', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('o'),
                 '2019'
             );
@@ -52,7 +52,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('uses the year of Thursday of the current week', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 30], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('o'),
                 '2020'
             );
@@ -62,7 +62,7 @@ describe('DateTimeImmutable #format', function() {
     describe('m - 2-Digit Month', function() {
         it('outputs the 2-digit month', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('m'),
                 '06'
             );
@@ -72,7 +72,7 @@ describe('DateTimeImmutable #format', function() {
     describe('m - Month', function() {
         it('outputs the month', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('n'),
                 '6'
             );
@@ -82,7 +82,7 @@ describe('DateTimeImmutable #format', function() {
     describe('F - Month Name', function() {
         it('outputs the month name', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('F'),
                 'June'
             );
@@ -92,7 +92,7 @@ describe('DateTimeImmutable #format', function() {
     describe('M - Short Month Name', function() {
         it('outputs the short month name', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('M'),
                 'Jun'
             );
@@ -102,7 +102,7 @@ describe('DateTimeImmutable #format', function() {
     describe('t - Days In Month', function() {
         it('outputs the days in the month', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('t'),
                 '31'
             );
@@ -110,7 +110,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with non-leap years', function() {
             const date = DateTimeImmutable.fromArray([2018, 2, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('t'),
                 '28'
             );
@@ -118,7 +118,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with leap years', function() {
             const date = DateTimeImmutable.fromArray([2020, 2, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('t'),
                 '29'
             );
@@ -128,7 +128,7 @@ describe('DateTimeImmutable #format', function() {
     describe('W - ISO Week', function() {
         it('outputs the ISO week of the year', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('W'),
                 '22'
             );
@@ -136,7 +136,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('uses the ISO year', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 30], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('W'),
                 '1'
             );
@@ -146,7 +146,7 @@ describe('DateTimeImmutable #format', function() {
     describe('z - Day Of The Year', function() {
         it('outputs the day of the year', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('z'),
                 '152'
             );
@@ -156,7 +156,7 @@ describe('DateTimeImmutable #format', function() {
     describe('d - 2-Digit Date', function() {
         it('outputs the 2-digit date', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('d'),
                 '01'
             );
@@ -166,7 +166,7 @@ describe('DateTimeImmutable #format', function() {
     describe('j - Date', function() {
         it('outputs the date', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('j'),
                 '1'
             );
@@ -176,7 +176,7 @@ describe('DateTimeImmutable #format', function() {
     describe('S - Ordinal Suffix', function() {
         it('outputs the ordinal suffix', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('S'),
                 'st'
             );
@@ -186,7 +186,7 @@ describe('DateTimeImmutable #format', function() {
     describe('N - ISO Day', function() {
         it('outputs the ISO day of the week', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('N'),
                 '2'
             );
@@ -194,7 +194,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 1 for Monday', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 30], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('N'),
                 '1'
             );
@@ -202,7 +202,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 7 for Sunday', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 29], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('N'),
                 '7'
             );
@@ -212,7 +212,7 @@ describe('DateTimeImmutable #format', function() {
     describe('w - Day', function() {
         it('outputs the day of the week', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('w'),
                 '2'
             );
@@ -220,7 +220,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 1 for Monday', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 30], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('w'),
                 '1'
             );
@@ -228,7 +228,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 0 for Sunday', function() {
             const date = DateTimeImmutable.fromArray([2019, 12, 29], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('w'),
                 '0'
             );
@@ -238,7 +238,7 @@ describe('DateTimeImmutable #format', function() {
     describe('l - Day Name', function() {
         it('outputs the day name', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('l'),
                 'Tuesday'
             );
@@ -248,7 +248,7 @@ describe('DateTimeImmutable #format', function() {
     describe('D - Short Day Name', function() {
         it('outputs the short day name', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('D'),
                 'Tue'
             );
@@ -260,7 +260,7 @@ describe('DateTimeImmutable #format', function() {
     describe('a - Lower-Case Day Period', function() {
         it('outputs the short day name', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('a'),
                 'am'
             );
@@ -268,7 +268,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with PM', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 12], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('a'),
                 'pm'
             );
@@ -278,7 +278,7 @@ describe('DateTimeImmutable #format', function() {
     describe('A - Upper-Case Day Period', function() {
         it('outputs the short day name', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('A'),
                 'AM'
             );
@@ -286,7 +286,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with PM', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 12], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('A'),
                 'PM'
             );
@@ -296,7 +296,7 @@ describe('DateTimeImmutable #format', function() {
     describe('H - 2-digit 24-hour', function() {
         it('outputs the 2-digit 24-hour', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('H'),
                 '00'
             );
@@ -304,7 +304,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works after 12 hours', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('H'),
                 '13'
             );
@@ -314,7 +314,7 @@ describe('DateTimeImmutable #format', function() {
     describe('G - 24-hour', function() {
         it('outputs the 24-hour', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('G'),
                 '0'
             );
@@ -322,7 +322,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works after 12 hours', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('G'),
                 '13'
             );
@@ -332,7 +332,7 @@ describe('DateTimeImmutable #format', function() {
     describe('h - 2-digit 12-hour', function() {
         it('outputs the 2-digit 12-hour', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('h'),
                 '12'
             );
@@ -340,7 +340,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works after 12 hours', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('h'),
                 '01'
             );
@@ -350,7 +350,7 @@ describe('DateTimeImmutable #format', function() {
     describe('g - 12-hour', function() {
         it('outputs the 12-hour', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('g'),
                 '12'
             );
@@ -358,7 +358,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works after 12 hours', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('g'),
                 '1'
             );
@@ -368,7 +368,7 @@ describe('DateTimeImmutable #format', function() {
     describe('i - Minute', function() {
         it('outputs the minute', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 0, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('i'),
                 '01'
             );
@@ -378,7 +378,7 @@ describe('DateTimeImmutable #format', function() {
     describe('s - Second', function() {
         it('outputs the second', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 0, 0, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('s'),
                 '01'
             );
@@ -388,7 +388,7 @@ describe('DateTimeImmutable #format', function() {
     describe('u - Microsecond', function() {
         it('outputs the microsecond', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 0, 0, 0, 550], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('u'),
                 '550000'
             );
@@ -398,7 +398,7 @@ describe('DateTimeImmutable #format', function() {
     describe('e - Timezone Name', function() {
         it('outputs the timezone name', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('e'),
                 'Australia/Brisbane'
             );
@@ -406,7 +406,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with UTC', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('e'),
                 'UTC'
             );
@@ -416,7 +416,7 @@ describe('DateTimeImmutable #format', function() {
     describe('T - Timezone Abbreviation', function() {
         it('outputs the timezone abbreviation', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('T'),
                 'AEST'
             );
@@ -424,7 +424,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with UTC', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('T'),
                 'UTC'
             );
@@ -432,7 +432,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with DST', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 30], 'America/New_York');
-            assert.equal(
+            assert.strictEqual(
                 date.format('T'),
                 'EDT'
             );
@@ -442,7 +442,7 @@ describe('DateTimeImmutable #format', function() {
     describe('I - Daylight Savings', function() {
         it('outputs 1 for DST', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 30], 'America/New_York');
-            assert.equal(
+            assert.strictEqual(
                 date.format('I'),
                 '1'
             );
@@ -450,7 +450,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('outputs 0 for non-DST', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('I'),
                 '0'
             );
@@ -460,7 +460,7 @@ describe('DateTimeImmutable #format', function() {
     describe('O - Offset', function() {
         it('outputs offset without colon', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('O'),
                 '+1000'
             );
@@ -468,7 +468,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with UTC', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('O'),
                 '+0000'
             );
@@ -476,7 +476,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with negative offsets', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'America/New_York');
-            assert.equal(
+            assert.strictEqual(
                 date.format('O'),
                 '-0500'
             );
@@ -486,7 +486,7 @@ describe('DateTimeImmutable #format', function() {
     describe('P - Offset With Colon', function() {
         it('outputs offset with colon', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('P'),
                 '+10:00'
             );
@@ -494,7 +494,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with UTC', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('P'),
                 '+00:00'
             );
@@ -502,7 +502,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with negative offsets', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'America/New_York');
-            assert.equal(
+            assert.strictEqual(
                 date.format('P'),
                 '-05:00'
             );
@@ -512,7 +512,7 @@ describe('DateTimeImmutable #format', function() {
     describe('Z - Offset Seconds', function() {
         it('outputs offset in seconds', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('Z'),
                 '36000'
             );
@@ -520,7 +520,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with UTC', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.equal(
+            assert.strictEqual(
                 date.format('Z'),
                 '0'
             );
@@ -528,7 +528,7 @@ describe('DateTimeImmutable #format', function() {
 
         it('works with negative offsets', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1], 'America/New_York');
-            assert.equal(
+            assert.strictEqual(
                 date.format('Z'),
                 '-18000'
             );
@@ -538,7 +538,7 @@ describe('DateTimeImmutable #format', function() {
     describe('c - ISO-8601 Date', function() {
         it('outputs ISO-8601 date', function() {
             const date = DateTimeImmutable.fromArray([2019, 1, 1, 12, 30, 59, 500], 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.format('c'),
                 '2019-01-01T12:30:59.500+10:00'
             );
@@ -548,7 +548,7 @@ describe('DateTimeImmutable #format', function() {
     describe('\\ - Escape Character', function() {
         it('outputs the following literal character', function() {
             const date = new DateTimeImmutable();
-            assert.equal(
+            assert.strictEqual(
                 date.format('\\Y'),
                 'Y'
             )

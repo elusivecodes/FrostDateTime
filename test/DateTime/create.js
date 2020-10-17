@@ -1,4 +1,4 @@
-const assert = require('assert').strict;
+const assert = require('assert');
 const { DateTime } = require('../../dist/frost-datetime.min');
 
 describe('DateTime Creation', function() {
@@ -12,7 +12,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with date string', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -20,7 +20,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with ISO string', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00', 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -28,7 +28,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with partial string', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019', 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -36,7 +36,7 @@ describe('DateTime Creation', function() {
         });
 
         it('uses the provided time zone', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', 'Australia/Brisbane')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+10:00'
@@ -44,7 +44,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with abbreviation', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', 'AEST')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+10:00'
@@ -52,7 +52,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with offsets with colon', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', '+10:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+10:00'
@@ -60,7 +60,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with offsets without colon', function() {
-            assert.equal(
+            assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', '+1000')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+10:00'
@@ -88,7 +88,7 @@ describe('DateTime Creation', function() {
 
     describe('#fromArray', function() {
         it('works with year', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019], 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -96,7 +96,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with month', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 2], 'UTC')
                     .toISOString(),
                 '2019-02-01T00:00:00.0+00:00'
@@ -104,7 +104,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with date', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 1, 2], 'UTC')
                     .toISOString(),
                 '2019-01-02T00:00:00.0+00:00'
@@ -112,7 +112,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with hour', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 1], 'UTC')
                     .toISOString(),
                 '2019-01-01T01:00:00.0+00:00'
@@ -120,7 +120,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with minute', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 1], 'UTC')
                     .toISOString(),
                 '2019-01-01T00:01:00.0+00:00'
@@ -128,7 +128,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with second', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 1], 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:01.0+00:00'
@@ -136,7 +136,7 @@ describe('DateTime Creation', function() {
         });
 
         it('works with millisecond', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1], 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.1+00:00'
@@ -147,7 +147,7 @@ describe('DateTime Creation', function() {
     describe('#fromDate', function() {
         it('works with date', function() {
             const date = new Date(1546300800000);
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromDate(date, 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -160,7 +160,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 year: 2018
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getYear(),
                 2018
             );
@@ -170,7 +170,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 month: 1
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getMonth(),
                 1
             );
@@ -180,7 +180,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 date: 1
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getDate(),
                 1
             );
@@ -190,7 +190,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 hours: 0
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getHours(),
                 0
             );
@@ -200,7 +200,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 minutes: 0
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getMinutes(),
                 0
             );
@@ -210,7 +210,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 seconds: 0
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getSeconds(),
                 0
             );
@@ -220,7 +220,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 milliseconds: 0
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getMilliseconds(),
                 0
             );
@@ -230,7 +230,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 timeZone: 'Australia/Brisbane'
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZone(),
                 'Australia/Brisbane'
             );
@@ -240,7 +240,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 timeZone: 'AEST'
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZone(),
                 'AEST'
             );
@@ -250,7 +250,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 timeZone: '+10:00'
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZoneOffset(),
                 -600
             );
@@ -260,7 +260,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 timeZone: '+1000'
             });
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZoneOffset(),
                 -600
             );
@@ -268,7 +268,7 @@ describe('DateTime Creation', function() {
 
         it('works with timezone argument', function() {
             const date = DateTime.fromObject({}, 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZone(),
                 'Australia/Brisbane'
             );
@@ -276,7 +276,7 @@ describe('DateTime Creation', function() {
 
         it('works with offset with colon', function() {
             const date = DateTime.fromObject({}, '+10:00');
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZoneOffset(),
                 -600
             );
@@ -284,7 +284,7 @@ describe('DateTime Creation', function() {
 
         it('works with offset without colon', function() {
             const date = DateTime.fromObject({}, '+1000');
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZoneOffset(),
                 -600
             );
@@ -294,7 +294,7 @@ describe('DateTime Creation', function() {
             const date = DateTime.fromObject({
                 timeZone: 'UTC'
             }, 'Australia/Brisbane');
-            assert.equal(
+            assert.strictEqual(
                 date.getTimeZone(),
                 'UTC'
             );
@@ -317,7 +317,7 @@ describe('DateTime Creation', function() {
 
     describe('#fromTimestamp', function() {
         it('works with timestamp', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.fromTimestamp(1546300800, 'UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.0+00:00'
@@ -334,7 +334,7 @@ describe('DateTime Creation', function() {
         });
 
         it('uses the provided time zone', function() {
-            assert.equal(
+            assert.strictEqual(
                 DateTime.now('Australia/Brisbane')
                     .getTimeZone(),
                 'Australia/Brisbane'

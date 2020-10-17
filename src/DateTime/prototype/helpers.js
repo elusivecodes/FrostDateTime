@@ -4,6 +4,9 @@
 
 Object.assign(DateTime.prototype, {
 
+    /**
+     * Adjust the timestamp by the current offset.
+     */
     _adjustOffset() {
         if (!this._offset) {
             return;

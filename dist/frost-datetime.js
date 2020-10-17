@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v2.0.1
+ * FrostDateTime v2.0.2
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -1667,6 +1667,9 @@
 
     Object.assign(DateTime.prototype, {
 
+        /**
+         * Adjust the timestamp by the current offset.
+         */
         _adjustOffset() {
             if (!this._offset) {
                 return;
