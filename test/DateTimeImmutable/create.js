@@ -43,14 +43,6 @@ describe('DateTimeImmutable Creation', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            assert.strictEqual(
-                new DateTimeImmutable('January 1, 2019 00:00:00', 'AEST')
-                    .toISOString(),
-                '2019-01-01T00:00:00.0+10:00'
-            );
-        });
-
         it('works with offsets with colon', function() {
             assert.strictEqual(
                 new DateTimeImmutable('January 1, 2019 00:00:00', '+10:00')
@@ -233,16 +225,6 @@ describe('DateTimeImmutable Creation', function() {
             assert.strictEqual(
                 date.getTimeZone(),
                 'Australia/Brisbane'
-            );
-        });
-
-        it('works with abbreviation', function() {
-            const date = DateTimeImmutable.fromObject({
-                timeZone: 'AEST'
-            });
-            assert.strictEqual(
-                date.getTimeZone(),
-                'AEST'
             );
         });
 

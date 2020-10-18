@@ -67,9 +67,9 @@ Object.assign(DateTime, {
      * @param {number} year  The year.
      * @returns {number} The number of ISO weeks in the year.
      */
-    weeksInISOYear(year) {
+    weeksInYear(year) {
         return new DateTime([year, 11, 28])
-            .getISOWeek();
+            .getWeek();
     }
 
 });

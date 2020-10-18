@@ -218,12 +218,6 @@ describe('DateTime Attributes Get', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            DateTime.now('AEST')
-                .getTimeZone(),
-                'AEST'
-        });
-
         it('works with offsets with colon', function() {
             DateTime.now('+10:00')
                 .getTimeZone(),

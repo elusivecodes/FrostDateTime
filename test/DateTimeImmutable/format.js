@@ -413,32 +413,6 @@ describe('DateTimeImmutable #format', function() {
         });
     });
 
-    describe('T - Timezone Abbreviation', function() {
-        it('outputs the timezone abbreviation', function() {
-            const date = DateTimeImmutable.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('T'),
-                'AEST'
-            );
-        });
-
-        it('works with UTC', function() {
-            const date = DateTimeImmutable.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('T'),
-                'UTC'
-            );
-        });
-
-        it('works with DST', function() {
-            const date = DateTimeImmutable.fromArray([2019, 6, 30], 'America/New_York');
-            assert.strictEqual(
-                date.format('T'),
-                'EDT'
-            );
-        });
-    });
-
     describe('I - Daylight Savings', function() {
         it('outputs 1 for DST', function() {
             const date = DateTimeImmutable.fromArray([2019, 6, 30], 'America/New_York');

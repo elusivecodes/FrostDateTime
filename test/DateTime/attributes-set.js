@@ -647,19 +647,6 @@ describe('DateTime Attributes Set', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
-            const date2 = date1.setTimeZone('AEST');
-            assert.strictEqual(
-                date1.getTimeZoneOffset(),
-                -600
-            );
-            assert.strictEqual(
-                date1,
-                date2
-            );
-        });
-
         it('works with offsets with colon', function() {
             const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
             const date2 = date1.setTimeZone('+10:00');

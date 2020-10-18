@@ -51,6 +51,31 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Set the ISO day of the week in current timeZone.
+     * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @returns {DateTime} The DateTime object.
+     */
+    setDayOfWeek(day) {
+        return this._setOffsetTime(
+            new Date(this._getOffsetTime()).setUTCDate(
+                this.getDate()
+                - this.getDayOfWeek()
+                + parseInt(day)
+            )
+        );
+    },
+
+    setDayOfWeekInMonth(week) {
+        return this.setDate(
+            this.getDate()
+            + (
+                week -
+                this.getDayOfWeekInMonth()
+            ) * 7
+        )
+    },
+
+    /**
      * Set the day of the year in current timeZone.
      * @param {number} day The day of the year. (1, 366)
      * @returns {DateTime} The DateTime object.
@@ -75,94 +100,6 @@ Object.assign(DateTime.prototype, {
     setHours(...args) {
         return this._setOffsetTime(
             new Date(this._getOffsetTime()).setUTCHours(...args)
-        );
-    },
-
-    /**
-     * Set the ISO day of the week in current timeZone.
-     * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
-     * @returns {DateTime} The DateTime object.
-     */
-    setISODay(day) {
-        return this._setOffsetTime(
-            new Date(this._getOffsetTime()).setUTCDate(
-                this.getDate()
-                - this.getISODay()
-                + parseInt(day)
-            )
-        );
-    },
-
-    /**
-     * Set the ISO day of the week in current timeZone (and optionally, day of the week).
-     * @param {number} week The ISO week.
-     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
-     * @returns {DateTime} The DateTime object.
-     */
-    setISOWeek(week, day = null) {
-        if (day === null) {
-            day = this.getISODay();
-        }
-
-        const tempDate = new Date(this._getOffsetTime());
-
-        tempDate.setUTCFullYear(
-            this.getISOYear(),
-            0,
-            4
-            + (
-                (week - 1)
-                * 7
-            )
-        );
-
-        return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - this.constructor._isoDay(
-                    tempDate.getUTCDay()
-                )
-                + parseInt(day)
-            )
-        );
-    },
-
-    /**
-     * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
-     * @param {number} year The ISO year.
-     * @param {null|number} [week] The ISO week.
-     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
-     * @returns {DateTime} The DateTime object.
-     */
-    setISOYear(year, week = null, day = null) {
-        if (week === null) {
-            week = this.getISOWeek();
-        }
-
-        if (day === null) {
-            day = this.getISODay();
-        }
-
-        const tempDate = new Date(this._getOffsetTime());
-
-        tempDate.setUTCFullYear(
-            year,
-            0,
-            4
-            + (
-                (week - 1)
-                * 7
-            )
-        );
-
-        return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - this.constructor._isoDay(
-                    tempDate.getUTCDay()
-                )
-                + parseInt(day)
-            )
         );
     },
 
@@ -253,18 +190,8 @@ Object.assign(DateTime.prototype, {
     setTime(time) {
         this._utcDate.setTime(time);
 
-        if (!this._dynamicTz) {
-            return this;
-        }
-
-        this._checkOffset();
-
-        const timestamp = time / 1000;
-        if (
-            timestamp < this._transition.start ||
-            timestamp > this._transition.end
-        ) {
-            this._getTransition();
+        if (this._dynamicTz) {
+            this._checkOffset();
         }
 
         return this;
@@ -297,19 +224,16 @@ Object.assign(DateTime.prototype, {
                 this._offset *= -1;
             }
             this._timeZone = this.constructor._formatOffset(this._offset);
-        } else if (timeZone in this.constructor._abbrOffsets) {
-            this.constructor._loadTimeZoneAbbreviation(timeZone);
-            this._offset = this.constructor._abbreviations[timeZone];
-            this._timeZone = timeZone;
-        } else if (timeZone in this.constructor._zones) {
-            this.constructor._loadTimeZone(timeZone);
+        } else {
+            if (['Z', 'GMT'].includes(timeZone)) {
+                timeZone = 'UTC';
+            }
+
             this._dynamicTz = true;
             this._timeZone = timeZone;
 
             this._makeFormatter();
             this._checkOffset();
-        } else {
-            throw new Error('Invalid timeZone supplied');
         }
 
         // compensate for DST transitions
@@ -318,10 +242,6 @@ Object.assign(DateTime.prototype, {
                 this._utcDate.getTime()
                 - (offset - this._offset) * 60000
             );
-        }
-
-        if (this._dynamicTz) {
-            this._getTransition();
         }
 
         return this;
@@ -336,10 +256,92 @@ Object.assign(DateTime.prototype, {
         this._dynamicTz = false;
         this._offset = offset || 0;
         this._timeZone = this.constructor._formatOffset(this._offset);
-        this._transition = null;
         this._formatter = null;
 
         return this;
+    },
+
+    /**
+     * Set the ISO day of the week in current timeZone (and optionally, day of the week).
+     * @param {number} week The ISO week.
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @returns {DateTime} The DateTime object.
+     */
+    setWeek(week, day = null) {
+        if (day === null) {
+            day = this.getDayOfWeek();
+        }
+
+        const tempDate = new Date(this._getOffsetTime());
+
+        tempDate.setUTCFullYear(
+            this.getWeekYear(),
+            0,
+            4
+            + (
+                (week - 1)
+                * 7
+            )
+        );
+
+        return this._setOffsetTime(
+            tempDate.setUTCDate(
+                tempDate.getUTCDate()
+                - this.constructor._isoDay(
+                    tempDate.getUTCDay()
+                )
+                + parseInt(day)
+            )
+        );
+    },
+
+    setWeekOfMonth(week) {
+        return this.setDate(
+            this.getDate()
+            + (
+                week -
+                this.getWeekOfMonth()
+            ) * 7
+        )
+    },
+
+    /**
+     * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
+     * @param {number} year The ISO year.
+     * @param {null|number} [week] The ISO week.
+     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * @returns {DateTime} The DateTime object.
+     */
+    setWeekYear(year, week = null, day = null) {
+        if (week === null) {
+            week = this.getWeek();
+        }
+
+        if (day === null) {
+            day = this.getDayOfWeek();
+        }
+
+        const tempDate = new Date(this._getOffsetTime());
+
+        tempDate.setUTCFullYear(
+            year,
+            0,
+            4
+            + (
+                (week - 1)
+                * 7
+            )
+        );
+
+        return this._setOffsetTime(
+            tempDate.setUTCDate(
+                tempDate.getUTCDate()
+                - this.constructor._isoDay(
+                    tempDate.getUTCDay()
+                )
+                + parseInt(day)
+            )
+        );
     },
 
     /**

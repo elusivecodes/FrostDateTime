@@ -2,75 +2,51 @@
  * DateTime (Static) Properties
  */
 
-// get resolved options
-const resolvedOptions = Intl.DateTimeFormat().resolvedOptions();
-
 Object.assign(DateTime, {
 
     // Whether to clamp current date when adjusting month
     clampDates: true,
 
-    // Default locale
-    defaultLocale: resolvedOptions.locale,
-
     // Default timeZone
-    defaultTimeZone: resolvedOptions.timeZone,
+    defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
     // Formats
     formats: {
-        atom: 'Y-m-d\\TH:i:sP',
-        cookie: 'l, d-M-Y H:i:s T',
-        date: 'D M d Y',
-        iso8601: 'Y-m-d\\TH:i:sO',
-        rfc822: 'D, d M y H:i:s O',
-        rfc850: 'l, d-M-y H:i:s T',
-        rfc1036: 'D, d M y H:i:s O',
-        rfc1123: 'D, d M Y H:i:s O',
-        rfc2822: 'D, d M Y H:i:s O',
-        rfc3339: 'Y-m-d\\TH:i:sP',
-        rfc3339_extended: 'Y-m-d\\TH:i:s.vP',
-        rss: 'D, d M Y H:i:s O',
-        string: 'D M d Y H:i:s O (e)',
-        time: 'H:i:s O (e)',
-        w3c: 'Y-m-d\\TH:i:sP'
+        atom: `yyyy-MM-dd'THH:mm:ssxxx`,
+        cookie: `eeee, dd-MMM-yyyy HH:mm:ss ZZZZ`,
+        date: `eee MMM dd yyyy`,
+        iso8601: `yyyy-MM-dd'THH:mm:ssxx`,
+        rfc822: `eee, dd MMM yy HH:mm:ss xx`,
+        rfc850: `eeee dd-MMM-yy HH:mm:ss ZZZZ`,
+        rfc1036: `eee, dd MMM yy HH:mm:ss xx`,
+        rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
+        rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
+        rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
+        rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.000xxx`,
+        rss: `eee, dd MMM yyyy HH:mm:ss xx`,
+        string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
+        time: `HH:mm:ss xx (VV)`,
+        w3c: `yyyy-MM-dd'THH:mm:ssxxx`
     },
 
     // Language
-    lang: {
-        dayPeriods: {
-            lower: ['am', 'pm'],
-            upper: ['AM', 'PM']
-        },
-        days: {
-            min: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
-            full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        },
-        months: {
-            short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        },
-        numberRegExp: '\\d',
-        numbers: false,
-        ordinal: value => {
-            const j = value % 10;
-            const k = value % 100;
+    ordinal: value => {
+        const j = value % 10;
+        const k = value % 100;
 
-            if (j === 1 && k !== 11) {
-                return 'st';
-            }
+        if (j === 1 && k !== 11) {
+            return 'st';
+        }
 
-            if (j === 2 && k !== 12) {
-                return 'nd';
-            }
+        if (j === 2 && k !== 12) {
+            return 'nd';
+        }
 
-            if (j === 3 && k !== 13) {
-                return 'rd';
-            }
+        if (j === 3 && k !== 13) {
+            return 'rd';
+        }
 
-            return 'th';
-        },
-        ordinalRegExp: '(st|[nr]d|th)'
+        return 'th';
     },
 
     // Comparison lookup
@@ -101,26 +77,13 @@ Object.assign(DateTime, {
         }
     ],
 
-    // Unix epoch
-    _epoch: {
-        year: 1970,
-        month: 1,
-        date: 1,
-        hours: 0,
-        pm: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0,
-        timeZone: 'UTC'
-    },
-
     // Formatter locale
     _formatterLocale: 'en-US',
 
     // Formatter options
     _formatterOptions: {
         timeZone: 'UTC',
-        hour12: false,
+        hourCycle: 'h23',
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
@@ -135,16 +98,10 @@ Object.assign(DateTime, {
     _seperators: [';', ':', '/', '.', ',', '-', '(', ')'],
 
     // Date string timezone RegExp
-    _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
+    _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
 
     // Offset RegExp
-    _offsetRegExp: /([\+\-])(\d{2})(\:?)(\d{2})/,
-
-    // abbeviations
-    _abbreviations: {},
-
-    // timeZones
-    _timeZones: {}
+    _offsetRegExp: /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/,
 
 });
 

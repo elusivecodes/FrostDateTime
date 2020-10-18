@@ -17,7 +17,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The ordinal suffix for the date of the month.
      */
     dateSuffix() {
-        return this.constructor.lang.ordinal(
+        return this.constructor.ordinal(
             this.getDate()
         );
     },
@@ -56,10 +56,10 @@ Object.assign(DateTime.prototype, {
      * Get the difference between two Dates.
      * @param {DateTime} [other] The date to compare to.
      * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
-     * @returns {DateInterval} A new DateInterval object.
+     * @returns {object} A new object.
      */
     diff(other = null, absolute = false) {
-        const interval = new DateInterval;
+        const interval = {};
 
         if (this.getTime() === other.getTime()) {
             interval.days = 0;
@@ -298,29 +298,13 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
      */
     isDST() {
-        if (!this._dynamicTz || !this._transition.dst) {
+        if (!this._dynamicTz) {
             return false;
         }
 
         const year = this.getYear(),
             dateA = DateTime.fromArray([year, 1, 1], this._timeZone),
             dateB = DateTime.fromArray([year, 6, 1], this._timeZone);
-
-        if (dateA.getTimestamp() < this._transition.start) {
-            dateA.setYear(year + 1);
-        }
-
-        if (dateB.getTimestamp() > this._transition.end) {
-            dateB.setYear(year - 1);
-        }
-
-        if (
-            dateA.getTimestamp() > this._transition.end ||
-            dateB.getTimestamp() < this._transition.start
-        ) {
-            dateA.setTimestamp(this._transition.start);
-            dateB.setTimestamp(this._transition.end);
-        }
 
         return this._offset < Math.max(dateA._offset, dateB._offset);
     },
@@ -412,8 +396,8 @@ Object.assign(DateTime.prototype, {
      * Get the number of weeks in the current ISO year.
      * @returns {number} The number of weeks in the current ISO year.
      */
-    weeksInISOYear() {
-        return this.constructor.weeksInISOYear(this.getISOYear());
+    weeksInYear() {
+        return this.constructor.weeksInYear(this.getWeekYear());
     }
 
 });

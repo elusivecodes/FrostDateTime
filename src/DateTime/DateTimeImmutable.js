@@ -13,18 +13,8 @@ class DateTimeImmutable extends DateTime {
         const tempDate = new DateTimeImmutable(null, this.getTimeZone());
         tempDate._utcDate = new Date(time);
 
-        if (!tempDate._dynamicTz) {
-            return tempDate;
-        }
-
-        tempDate._checkOffset();
-
-        const timestamp = time / 1000;
-        if (
-            timestamp < tempDate._transition.start ||
-            timestamp > tempDate._transition.end
-        ) {
-            tempDate._getTransition();
+        if (tempDate._dynamicTz) {
+            tempDate._checkOffset();
         }
 
         return tempDate;
@@ -51,7 +41,6 @@ class DateTimeImmutable extends DateTime {
         tempDate._dynamicTz = false;
         tempDate._offset = offset || 0;
         tempDate._timeZone = this.constructor._formatOffset(tempDate._offset);
-        tempDate._transition = null;
         tempDate._formatter = null;
 
         return tempDate;

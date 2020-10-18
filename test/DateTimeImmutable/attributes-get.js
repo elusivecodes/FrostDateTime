@@ -218,12 +218,6 @@ describe('DateTimeImmutable Attributes Get', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            DateTimeImmutable.now('AEST')
-                .getTimeZone(),
-                'AEST'
-        });
-
         it('works with offsets with colon', function() {
             DateTimeImmutable.now('+10:00')
                 .getTimeZone(),

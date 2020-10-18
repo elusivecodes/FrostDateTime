@@ -10,7 +10,7 @@ class DateTime {
      * @param {null|string} [timeZone] The timeZone.
      * @returns {DateTime} A new DateTime object.
      */
-    constructor(dateString = null, timeZone = null) {
+    constructor(dateString = null, options = {}) {
 
         let timestamp,
             adjustOffset = false;
@@ -40,6 +40,8 @@ class DateTime {
         this._dynamicTz = false;
         this.isValid = true;
 
+        let timeZone = options.timeZone;
+
         if (!timeZone) {
             timeZone = this.constructor.defaultTimeZone;
         }
@@ -51,28 +53,23 @@ class DateTime {
                 this._offset *= -1;
             }
             this._timeZone = this.constructor._formatOffset(this._offset);
-        } else if (timeZone in this.constructor._abbrOffsets) {
-            this.constructor._loadTimeZoneAbbreviation(timeZone);
-            this._offset = this.constructor._abbreviations[timeZone];
-            this._timeZone = timeZone;
-        } else if (timeZone in this.constructor._zones) {
-            this.constructor._loadTimeZone(timeZone);
+        } else {
+            if (['Z', 'GMT'].includes(timeZone)) {
+                timeZone = 'UTC';
+            }
+
             this._dynamicTz = true;
             this._timeZone = timeZone;
 
             this._makeFormatter();
             this._checkOffset();
-        } else {
-            throw new Error('Invalid timeZone supplied');
         }
 
         if (adjustOffset) {
             this._adjustOffset();
         }
 
-        if (this._dynamicTz) {
-            this._getTransition();
-        }
+        this.formatter = DateFormatter.load(options.locale);
     }
 
     /**

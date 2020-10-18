@@ -41,6 +41,24 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Get the ISO day of the week in current timeZone.
+     * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
+     */
+    getDayOfWeek() {
+        return this.constructor._isoDay(
+            this.getDay()
+        );
+    },
+
+    getDayOfWeekInMonth() {
+        const firstWeek = this.clone().setDate(1);
+        const weeks = this.getWeek() - firstWeek.getWeek();
+        return firstWeek.getDayOfWeek() > this.getDayOfWeek() ?
+            weeks :
+            weeks + 1;
+    },
+
+    /**
      * Get the day of the year in current timeZone.
      * @returns {number} The day of the year. (1, 366)
      */
@@ -58,54 +76,6 @@ Object.assign(DateTime.prototype, {
      */
     getHours() {
         return new Date(this._getOffsetTime()).getUTCHours();
-    },
-
-    /**
-     * Get the ISO day of the week in current timeZone.
-     * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
-     */
-    getISODay() {
-        return this.constructor._isoDay(
-            this.getDay()
-        );
-    },
-
-    /**
-     * Get the ISO week in current timeZone.
-     * @returns {number} The ISO week. (1, 53)
-     */
-    getISOWeek() {
-        const
-            week = this.constructor._isoDate(
-                this.getYear(),
-                this.getMonth(),
-                this.getDate()
-            ),
-            firstWeek = this.constructor._isoDate(
-                week.getUTCFullYear(),
-                1,
-                4
-            );
-
-        return 1
-            + (
-                (
-                    (week - firstWeek)
-                    / 604800000
-                ) | 0
-            );
-    },
-
-    /**
-     * Get the ISO year in current timeZone.
-     * @returns {number} The ISO year.
-     */
-    getISOYear() {
-        return this.constructor._isoDate(
-            this.getYear(),
-            this.getMonth(),
-            this.getDate()
-        ).getUTCFullYear();
     },
 
     /**
@@ -177,20 +147,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the abbreviated name of the current timeZone.
-     * @returns {string} The abbreviated name of the current timeZone.
-     */
-    getTimeZoneAbbr() {
-        if (!this._dynamicTz) {
-            return this._timeZone;
-        }
-
-        return this.isDST() ?
-            this._transition.dst :
-            this._transition.abbr;
-    },
-
-    /**
      * Get the UTC offset (in minutes) of the current timeZone.
      * @returns {number} The UTC offset (in minutes) of the current timeZone.
      */
@@ -204,6 +160,48 @@ Object.assign(DateTime.prototype, {
      */
     getYear() {
         return new Date(this._getOffsetTime()).getUTCFullYear();
+    },
+
+    /**
+     * Get the ISO week in current timeZone.
+     * @returns {number} The ISO week. (1, 53)
+     */
+    getWeek() {
+        const
+            week = this.constructor._isoDate(
+                this.getYear(),
+                this.getMonth(),
+                this.getDate()
+            ),
+            firstWeek = this.constructor._isoDate(
+                week.getUTCFullYear(),
+                1,
+                4
+            );
+
+        return 1
+            + (
+                (
+                    (week - firstWeek)
+                    / 604800000
+                ) | 0
+            );
+    },
+
+    getWeekOfMonth() {
+        return this.getWeek() - this.clone().setDate(1).getWeek() + 1;
+    },
+
+    /**
+     * Get the ISO year in current timeZone.
+     * @returns {number} The ISO year.
+     */
+    getWeekYear() {
+        return this.constructor._isoDate(
+            this.getYear(),
+            this.getMonth(),
+            this.getDate()
+        ).getUTCFullYear();
     }
 
 });

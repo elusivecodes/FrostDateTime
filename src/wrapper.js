@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v2.0.2
+ * FrostDateTime v3.0.0
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -16,7 +16,7 @@
 
     // {{code}}
     return {
-        DateInterval,
+        DateFormatter,
         DateTime,
         DateTimeImmutable
     };

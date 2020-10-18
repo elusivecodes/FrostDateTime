@@ -643,19 +643,6 @@ describe('DateTimeImmutable Attributes Set', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
-            const date2 = date1.setTimeZone('AEST');
-            assert.strictEqual(
-                date1.getTimeZone(),
-                'UTC'
-            );
-            assert.strictEqual(
-                date2.getTimeZoneOffset(),
-                -600
-            );
-        });
-
         it('works with offsets with colon', function() {
             const date1 = DateTimeImmutable.fromArray([2018, 1, 1], 'UTC');
             const date2 = date1.setTimeZone('+10:00');

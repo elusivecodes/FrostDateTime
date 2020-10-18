@@ -110,33 +110,5 @@ describe('DateTime Variables', function() {
         });
     });
 
-    describe('timezones', function() {
-        it('contains more than 400 timezones', function() {
-            assert.ok(
-                Object.keys(DateTime._zones).length > 400
-            );
-        });
-
-        it('contains valid timezones', function() {
-            for (const timezone in DateTime._zones) {
-                new DateTime(null, timezone);
-            }
-        });
-    });
-
-    describe('timezone abbreviations', function() {
-        it('contains more than 100 abbreviations', function() {
-            assert.ok(
-                Object.keys(DateTime._abbrOffsets).length > 100
-            );
-        });
-
-        it('contains valid abbreviations', function() {
-            for (const abbreviation in DateTime._abbrOffsets) {
-                new DateTime(null, abbreviation);
-            }
-        });
-    });
-
 });
 

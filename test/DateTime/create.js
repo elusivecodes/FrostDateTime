@@ -43,14 +43,6 @@ describe('DateTime Creation', function() {
             );
         });
 
-        it('works with abbreviation', function() {
-            assert.strictEqual(
-                new DateTime('January 1, 2019 00:00:00', 'AEST')
-                    .toISOString(),
-                '2019-01-01T00:00:00.0+10:00'
-            );
-        });
-
         it('works with offsets with colon', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', '+10:00')
@@ -233,16 +225,6 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 date.getTimeZone(),
                 'Australia/Brisbane'
-            );
-        });
-
-        it('works with abbreviation', function() {
-            const date = DateTime.fromObject({
-                timeZone: 'AEST'
-            });
-            assert.strictEqual(
-                date.getTimeZone(),
-                'AEST'
             );
         });
 

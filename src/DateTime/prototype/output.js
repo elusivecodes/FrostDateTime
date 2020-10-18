@@ -4,34 +4,45 @@
 
 Object.assign(DateTime.prototype, {
 
-    /**
-     * Format the current date with a PHP DateTime format string.
-     * @param {string} formatString The string to use for formatting.
-     * @returns {string} The formatted date string.
-     */
     format(formatString) {
-        let escaped = false;
-        return [...formatString].reduce(
-            (acc, char) => {
-                if (
-                    !escaped &&
-                    char === '\\'
-                ) {
+        let match;
+        let output = '';
+
+        const unescapeOutput = a => {
+            let output = '';
+            let escaped = false;
+            for (const char of a) {
+                if (char === "'" && !escaped) {
                     escaped = true;
-                } else if (
-                    escaped ||
-                    !this.constructor._formatData[char] ||
-                    !this.constructor._formatData[char].output
-                ) {
-                    acc += char;
-                    escaped = false;
-                } else {
-                    acc += this.constructor._formatData[char].output(this);
+                    continue;
                 }
-                return acc;
-            },
-            ''
-        );
+
+                escaped = false;
+                output += char;
+            }
+            return output;
+        };
+
+        while (formatString && (match = formatString.match(/(?<!\')([a-z])\1*/i))) {
+            const token = match[1];
+            if (!(token in DateFormatter._formatDate)) {
+                throw new Error(`Invalid token in DateTime format: ${token}`);
+            }
+
+            const position = match.index;
+            if (position) {
+                const formatTemp = formatString.substring(0, position);
+                output += unescapeOutput(formatTemp);
+            }
+            const length = match[0].length;
+            output += DateFormatter._formatDate[token].output(this, length);
+
+            formatString = formatString.substring(position + length);
+        }
+
+        output += unescapeOutput(formatString);
+
+        return output;
     },
 
     /**
@@ -40,96 +51,6 @@ Object.assign(DateTime.prototype, {
      */
     toDateString() {
         return this.format(this.constructor.formats.date)
-    },
-
-    /**
-     * Format the current date using Date's native "toLocaleDateString" method.
-     * @param {string|string[]} [locales] The locale(s) to use for formatting.
-     * @param {object} [options] The options to use for formatting.
-     * @param {string} [options.localeMatcher] The locale matching algorithm to use.
-     * @param {string} [options.timeZone] The time zone to use.ANGLE_instanced_arrays
-     * @param {Boolean} [options.hour12] Whether to use 12-hour time.
-     * @param {string} [options.hourCycle] The hour cycle to use.
-     * @param {string} [options.formatMatcher] The format matching algorithm to use.
-     * @param {string} [options.weekday] The method to represent the weekday.
-     * @param {string} [options.era] The method to represent the era.
-     * @param {string} [options.year] The method to represent the year.
-     * @param {string} [options.month] The method to represent the month.
-     * @param {string} [options.day] The method to represent the day.
-     * @param {string} [options.hour] The method to represent the hour.
-     * @param {string} [options.minute] The method to represent the minute.
-     * @param {string} [options.second] The method to represent the second.
-     * @param {string} [options.timeZoneName] The method to represent the time zone name.
-     * @returns {string} The formatted date string.
-     */
-    toLocaleDateString(locales, options) {
-        return this._utcDate.toLocaleDateString(
-            locales || this.constructor.defaultLocale,
-            {
-                timeZone: this._timeZone,
-                ...options
-            }
-        );
-    },
-
-    /**
-     * Format the current date using Date's native "toLocaleString" method.
-     * @param {string|string[]} [locales] The locale(s) to use for formatting.
-     * @param {object} [options] The options to use for formatting.
-     * @param {string} [options.localeMatcher] The locale matching algorithm to use.
-     * @param {string} [options.timeZone] The time zone to use.ANGLE_instanced_arrays
-     * @param {Boolean} [options.hour12] Whether to use 12-hour time.
-     * @param {string} [options.hourCycle] The hour cycle to use.
-     * @param {string} [options.formatMatcher] The format matching algorithm to use.
-     * @param {string} [options.weekday] The method to represent the weekday.
-     * @param {string} [options.era] The method to represent the era.
-     * @param {string} [options.year] The method to represent the year.
-     * @param {string} [options.month] The method to represent the month.
-     * @param {string} [options.day] The method to represent the day.
-     * @param {string} [options.hour] The method to represent the hour.
-     * @param {string} [options.minute] The method to represent the minute.
-     * @param {string} [options.second] The method to represent the second.
-     * @param {string} [options.timeZoneName] The method to represent the time zone name.
-     * @returns {string} The formatted date string.
-     */
-    toLocaleString(locales, options) {
-        return this._utcDate.toLocaleString(
-            locales || this.constructor.defaultLocale,
-            {
-                timeZone: this._timeZone,
-                ...options
-            }
-        );
-    },
-
-    /**
-     * Format the current date using Date's native "toLocaleTimeString" method.
-     * @param {string|string[]} [locales] The locale(s) to use for formatting.
-     * @param {object} [options] The options to use for formatting.
-     * @param {string} [options.localeMatcher] The locale matching algorithm to use.
-     * @param {string} [options.timeZone] The time zone to use.ANGLE_instanced_arrays
-     * @param {Boolean} [options.hour12] Whether to use 12-hour time.
-     * @param {string} [options.hourCycle] The hour cycle to use.
-     * @param {string} [options.formatMatcher] The format matching algorithm to use.
-     * @param {string} [options.weekday] The method to represent the weekday.
-     * @param {string} [options.era] The method to represent the era.
-     * @param {string} [options.year] The method to represent the year.
-     * @param {string} [options.month] The method to represent the month.
-     * @param {string} [options.day] The method to represent the day.
-     * @param {string} [options.hour] The method to represent the hour.
-     * @param {string} [options.minute] The method to represent the minute.
-     * @param {string} [options.second] The method to represent the second.
-     * @param {string} [options.timeZoneName] The method to represent the time zone name.
-     * @returns {string} The formatted date string.
-     */
-    toLocaleTimeString(locales, options) {
-        return this._utcDate.toLocaleTimeString(
-            locales || this.constructor.defaultLocale,
-            {
-                timeZone: this._timeZone,
-                ...options
-            }
-        );
     },
 
     /**

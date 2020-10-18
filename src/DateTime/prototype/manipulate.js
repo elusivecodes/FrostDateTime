@@ -15,15 +15,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Add a DateInterval to the date.
-     * @param {DateInterval} [interval] The DateInterval to add to the current date.
-     * @returns {DateTime} The DateTime object.
-     */
-    addInterval(interval) {
-        return this._modifyInterval(interval);
-    },
-
-    /**
      * Modify the DateTime by setting it to the end of a unit of time.
      * @param {string} [timeUnit] The unit of time.
      * @returns {DateTime} The DateTime object.
@@ -45,7 +36,7 @@ Object.assign(DateTime.prototype, {
                 return this.setDay(6)
                     .setHours(23, 59, 59, 999);
             case 'isoweek':
-                return this.setISODay(7)
+                return this.setDayOfWeek(7)
                     .setHours(23, 59, 59, 999);
             case 'month':
                 return this.setDate(this.daysInMonth())
@@ -84,7 +75,7 @@ Object.assign(DateTime.prototype, {
                 return this.setDay(0)
                     .setHours(0, 0, 0, 0);
             case 'isoweek':
-                return this.setISODay(1)
+                return this.setDayOfWeek(1)
                     .setHours(0, 0, 0, 0);
             case 'month':
                 return this.setDate(1)
@@ -109,15 +100,6 @@ Object.assign(DateTime.prototype, {
      */
     sub(amount, timeUnit) {
         return this._modify(-amount, timeUnit);
-    },
-
-    /**
-     * Subtract a DateInterval to the date.
-     * @param {DateInterval} [interval] The DateInterval to subtract from the current date.
-     * @returns {DateTime} The DateTime object.
-     */
-    subInterval(interval) {
-        return this._modifyInterval(interval, true);
     }
 
 });

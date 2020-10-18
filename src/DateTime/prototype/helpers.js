@@ -94,19 +94,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Update the timeZone transition for current timestamp.
-     */
-    _getTransition() {
-        const timestamp = this.getTimestamp();
-
-        this._transition = this.constructor._timeZones[this._timeZone]
-            .find(transition =>
-                transition.start <= timestamp &&
-                transition.end >= timestamp
-            );
-    },
-
-    /**
      * Update the formatter for current timeZone.
      */
     _makeFormatter() {
@@ -164,79 +151,6 @@ Object.assign(DateTime.prototype, {
             default:
                 throw new Error('Invalid time unit supplied');
         }
-    },
-
-    /**
-     * Modify the DateTime by a DateInterval.
-     * @param {DateInterval} interval The DateInterval to modify the date by.
-     * @param {Boolean} [invert=false] Whether to invert (subtract) the interval.
-     * @return {DateTime} The DateTime object.
-     */
-    _modifyInterval(interval, invert = false) {
-        let modify = 1;
-
-        if (interval.invert) {
-            modify *= -1;
-        }
-
-        if (invert) {
-            modify *= -1;
-        }
-
-        const tempDate = new Date(this._getOffsetTime());
-
-        if (interval.y) {
-            tempDate.setUTCFullYear(
-                tempDate.getUTCFullYear()
-                + interval.y * modify
-            );
-        }
-
-        if (interval.m) {
-            tempDate.setUTCMonth(
-                tempDate.getUTCMonth()
-                + interval.m * modify
-            );
-        }
-
-        if (interval.d) {
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                + interval.d * modify
-            );
-        }
-
-        if (interval.h) {
-            tempDate.setUTCHours(
-                tempDate.getUTCHours()
-                + interval.h * modify
-            );
-        }
-
-        if (interval.i) {
-            tempDate.setUTCMinutes(
-                tempDate.getUTCMinutes()
-                + interval.i * modify
-            );
-        }
-
-        if (interval.s) {
-            tempDate.setUTCSeconds(
-                tempDate.getUTCSeconds()
-                + interval.s * modify
-            );
-        }
-
-        if (interval.f) {
-            tempDate.setUTCTime(
-                tempDate.getUTCTime()
-                + interval.f * modify
-            );
-        }
-
-        return this._setOffsetTime(
-            tempDate.getTime()
-        );
     },
 
     /**

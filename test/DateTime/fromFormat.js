@@ -287,24 +287,6 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    describe('T - Timezone Abbreviation', function() {
-        it('parses the timezone abbreviation', function() {
-            const date = DateTime.fromFormat('T', 'AEST');
-            assert.strictEqual(
-                date.getTimeZone(),
-                'AEST'
-            );
-        });
-
-        it('works with UTC', function() {
-            const date = DateTime.fromFormat('T', 'UTC');
-            assert.strictEqual(
-                date.getTimeZone(),
-                'UTC'
-            );
-        });
-    });
-
     describe('O - Offset', function() {
         it('parses offset without colon', function() {
             assert.strictEqual(
@@ -684,14 +666,6 @@ describe('DateTime #fromFormat', function() {
             );
         });
 
-        it('works with timezone abbreviation (after)', function() {
-            const date = DateTime.fromFormat('T!', 'AEST')
-            assert.strictEqual(
-                date.toISOString(),
-                '1970-01-01T00:00:00.0+00:00'
-            );
-        });
-
         it('works with year (after)', function() {
             const date = DateTime.fromFormat('!Y', '2018')
             assert.strictEqual(
@@ -758,14 +732,6 @@ describe('DateTime #fromFormat', function() {
 
         it('works with timezone name (after)', function() {
             const date = DateTime.fromFormat('!e', 'Australia/Brisbane')
-            assert.strictEqual(
-                date.toISOString(),
-                '1970-01-01T00:00:00.0+10:00'
-            );
-        });
-
-        it('works with timezone abbreviation (after)', function() {
-            const date = DateTime.fromFormat('!T', 'AEST')
             assert.strictEqual(
                 date.toISOString(),
                 '1970-01-01T00:00:00.0+10:00'
@@ -854,14 +820,6 @@ describe('DateTime #fromFormat', function() {
             );
         });
 
-        it('works with timezone abbreviation (after)', function() {
-            const date = DateTime.fromFormat('T|', 'AEST')
-            assert.strictEqual(
-                date.toISOString(),
-                '1970-01-01T00:00:00.0+10:00'
-            );
-        });
-
         it('works with year (after)', function() {
             const date = DateTime.fromFormat('|Y', '2018')
             assert.strictEqual(
@@ -928,14 +886,6 @@ describe('DateTime #fromFormat', function() {
 
         it('works with timezone name (after)', function() {
             const date = DateTime.fromFormat('|e', 'Australia/Brisbane')
-            assert.strictEqual(
-                date.toISOString(),
-                '1970-01-01T00:00:00.0+10:00'
-            );
-        });
-
-        it('works with timezone abbreviation (after)', function() {
-            const date = DateTime.fromFormat('|T', 'AEST')
             assert.strictEqual(
                 date.toISOString(),
                 '1970-01-01T00:00:00.0+10:00'
