@@ -14,24 +14,129 @@
 })(this, function() {
     'use strict';
 
+    /**
+     * DateFormatter class
+     * @class
+     */
     class DateFormatter {
 
+        /**
+         * New DateFormatter constructor.
+         * @param {string} [locale] The locale to load.
+         * @returns {DateFormatter} A new DateFormatter object.
+         */
         constructor(locale) {
             this.locale = locale;
 
-            this.formatters = {};
+            this._data = {};
         }
 
-        static load(locale) {
-            if (!locale) {
-                locale = Intl.DateTimeFormat().resolvedOptions().locale;
-            }
+        /**
+         * Format a day as a locale string.
+         * @param {number} number The day to format (0-6).
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the value is standalone.
+         * @returns {string} The formatted string.
+         */
+        formatDay(day, type = 'long', standalone = true) {
+            return this.getDays(type, standalone)[day];
+        }
 
-            if (!(locale in this.formatters)) {
-                this.formatters[locale] = new this(locale);
-            }
+        /**
+         * Format a day period as a locale string.
+         * @param {number} number The period to format (0-1).
+         * @param {string} [type=long] The formatting type.
+         * @returns {string} The formatted string.
+         */
+        formatDayPeriod(period, type = 'long') {
+            return this.getDayPeriods(type)[period];
+        }
 
-            return this.formatters[locale];
+        /**
+         * Format an era as a locale string.
+         * @param {number} number The period to format (0-1).
+         * @param {string} [type=long] The formatting type.
+         * @returns {string} The formatted string.
+         */
+        formatEra(era, type = 'long') {
+            return this.getEras(type)[era];
+        }
+
+        /**
+         * Format a month as a locale string.
+         * @param {number} number The month to format (1-12).
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the value is standalone.
+         * @returns {string} The formatted string.
+         */
+        formatMonth(month, type = 'long', standalone = true) {
+            return this.getMonths(type, standalone)[month - 1];
+        }
+
+        /**
+         * Format a number as a locale number string.
+         * @param {number} number The number to format.
+         * @returns {string} The formatted string.
+         */
+        formatNumber(number, padding = 0) {
+            const numbers = this.getNumbers();
+            return `${number}`
+                .padStart(padding, 0)
+                .replace(/\d/g, match => numbers[match])
+        }
+
+        /**
+         * Parse a day from a locale string.
+         * @param {string} value The value to parse.
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the value is standalone.
+         * @returns {number} The month number (0-6).
+         */
+        parseDay(value, type = 'long', standalone = true) {
+            return this.getDays(type, standalone).indexOf(value) || 7;
+        }
+
+        /**
+         * Parse a day period from a locale string.
+         * @param {string} value The value to parse.
+         * @param {string} [type=long] The formatting type.
+         * @returns {number} The day period (0-1).
+         */
+        parseDayPeriod(value, type = 'long') {
+            return this.getDayPeriods(type).indexOf(value);
+        }
+
+        /**
+         * Parse an era from a locale string.
+         * @param {string} value The value to parse.
+         * @param {string} [type=long] The formatting type.
+         * @returns {number} The era (0-1).
+         */
+        parseEra(value, type = 'long') {
+            return this.getEras(type).indexOf(value);
+        }
+
+        /**
+         * Parse a month from a locale string.
+         * @param {string} value The value to parse.
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the value is standalone.
+         * @returns {number} The month number (1-12).
+         */
+        parseMonth(value, type = 'long', standalone = true) {
+            return this.getMonths(type, standalone).indexOf(value) + 1;
+        }
+
+        /**
+         * Parse a number from a locale number string.
+         * @param {string} value The value to parse.
+         * @returns {number} The parsed number.
+         */
+        parseNumber(value) {
+            const numbers = this.getNumbers();
+            return parseInt(
+                `${value}`.replace(/./g, match => numbers.indexOf(match))
+            );
         }
 
         /**
@@ -61,25 +166,47 @@
             return `${sign}${hourString}${colon}${minuteString}`;
         }
 
+        /**
+         * Get the formatting type from the component token length.
+         * @param {number} length The component token length.
+         * @returns {string} The formatting type.
+         */
+        static getType(length) {
+            switch (length) {
+                case 5:
+                    return 'narrow';
+                case 4:
+                    return 'long';
+                default:
+                    return 'short';
+            }
+        }
+
+        /**
+         * Load a (cached) DateFormatter for a locale.
+         * @param {string} [locale] The locale to load.
+         * @returns {DateFormatter} The cached DateFormatter object.
+         */
+        static load(locale) {
+            if (!locale) {
+                locale = Intl.DateTimeFormat().resolvedOptions().locale;
+            }
+
+            if (!(locale in this._formatters)) {
+                this._formatters[locale] = new this(locale);
+            }
+
+            return this._formatters[locale];
+        }
+
     }
 
-    DateFormatter.formatters = {};
+    // Cached formatters
+    DateFormatter._formatters = {};
 
     /**
      * DateFormatter Format Data
      */
-
-    DateFormatter._getType = length => {
-        if (length === 5) {
-            return 'narrow';
-        }
-
-        if (length === 4) {
-            return 'long';
-        }
-
-        return 'short';
-    };
 
     DateFormatter._formatDate = {
 
@@ -89,16 +216,16 @@
             key: 'era',
             maxLength: 5,
             regex: (formatter, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.getEras(type).join('|');
             },
             input: (formatter, value, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.parseEra(value, type);
             },
             output: (datetime, length) => {
-                const type = DateFormatter._getType(length);
-                const index = datetime.getYear() >= 0;
+                const type = DateFormatter.getType(length);
+                const index = datetime.getYear() < 0 ? 0 : 1;
                 return datetime.formatter.formatEra(index, type);
             }
         },
@@ -165,7 +292,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.getMonths(type, false).join('|');
                     default:
                         return formatter.numberRegExp();
@@ -176,7 +303,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.parseMonth(value, type, false);
                     default:
                         return formatter.parseNumber(value);
@@ -188,7 +315,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return datetime.formatter.formatMonth(month, type, false);
                     default:
                         return datetime.formatter.formatNumber(month, length);
@@ -204,7 +331,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.getMonths(type).join('|');
                     default:
                         return formatter.numberRegExp();
@@ -215,7 +342,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.parseMonth(value, type);
                     default:
                         return formatter.parseNumber(value);
@@ -227,7 +354,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return datetime.formatter.formatMonth(month, type);
                     default:
                         return datetime.formatter.formatNumber(month, length);
@@ -301,16 +428,16 @@
         E: {
             key: 'dayOfWeek',
             regex: (formatter, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.getDays(type, false).join('|');
             },
             input: (formatter, value, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.parseDay(value, type, false);
             },
             output: (datetime, length) => {
-                const type = DateFormatter._getType(length);
-                const day = datetime.getDayOfWeek();
+                const type = DateFormatter.getType(length);
+                const day = datetime.getDay();
                 return datetime.formatter.formatDay(day, type, false);
             }
         },
@@ -324,7 +451,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.getDays(type, false).join('|');
                     default:
                         return formatter.numberRegExp()
@@ -334,19 +461,19 @@
                 switch (length) {
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.parseDay(value, type, false);
                     default:
                         return formatter.parseNumber(value);
                 }
             },
             output: (datetime, length) => {
-                const day = datetime.getDayOfWeek();
+                const day = datetime.getDay();
                 switch (length) {
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return datetime.formatter.formatDay(day, type, false);
                     default:
                         return datetime.formatter.formatNumber(day, length);
@@ -363,7 +490,7 @@
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.getDays(type).join('|');
                     default:
                         return formatter.numberRegExp()
@@ -373,19 +500,19 @@
                 switch (length) {
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return formatter.parseDay(value, type);
                     default:
                         return formatter.parseNumber(value);
                 }
             },
             output: (datetime, length) => {
-                const day = datetime.getDayOfWeek();
+                const day = datetime.getDay();
                 switch (length) {
                     case 5:
                     case 4:
                     case 3:
-                        const type = DateFormatter._getType(length);
+                        const type = DateFormatter.getType(length);
                         return datetime.formatter.formatDay(day, type);
                     default:
                         return datetime.formatter.formatNumber(day, length);
@@ -398,17 +525,17 @@
         a: {
             key: 'dayPeriod',
             regex: (formatter, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.getDayPeriods(type).join('|');
             },
             input: (formatter, value, length) => {
-                const type = DateFormatter._getType(length);
+                const type = DateFormatter.getType(length);
                 return formatter.parseDayPeriod(value, type);
             },
             output: (datetime, length) => {
-                const type = DateFormatter._getType(length);
-                const index = datetime.getHours() < 12;
-                return datetime.formatter.formatPeriod(index, type);
+                const type = DateFormatter.getType(length);
+                const index = datetime.getHours() < 12 ? 0 : 1;
+                return datetime.formatter.formatDayPeriod(index, type);
             }
         },
 
@@ -518,15 +645,14 @@
 
         Z: {
             key: 'timeZone',
-            regex: (formatter, length) => {
-                const numbers = formatter.numberRegExp('2');
+            regex: (_, length) => {
                 switch (length) {
                     case 5:
-                        return `[\\+\\-]${numbers}\\:${numbers}`;
+                        return `[\\+\\-]\d{2}\\:\d{2}`;
                     case 4:
-                        return `GMT[\\+\\-]${numbers}\\:${numbers}`;
+                        return `GMT[\\+\\-]\d{2}\\:\d{2}`;
                     default:
-                        return `[\\+\\-]${numbers}${numbers}`;
+                        return `[\\+\\-]\d{4}`;
                 }
             },
             input: (_, value) => value,
@@ -550,13 +676,12 @@
 
         O: {
             key: 'timeZone',
-            regex: (formatter, length) => {
-                const numbers = formatter.numberRegExp('2');
+            regex: (_, length) => {
                 switch (length) {
                     case 4:
-                        return `GMT[\\+\\-]${numbers}\\:${numbers}`;
+                        return `GMT[\\+\\-]\d{2}\\:\d{2}`;
                     default:
-                        return `GMT[\\+\\-]${numbers}`;
+                        return `GMT[\\+\\-]\d{2}`;
                 }
             },
             input: (_, value) => value,
@@ -582,17 +707,16 @@
 
         X: {
             key: 'timeZone',
-            regex: (formatter, length) => {
-                const numbers = formatter.numberRegExp('2');
+            regex: (_, length) => {
                 switch (length) {
                     case 5:
                     case 3:
-                        return `[\\+\\-]${numbers}\\:${numbers}|Z`;
+                        return `[\\+\\-]\d{2}\\:\d{2}|Z`;
                     case 4:
                     case 2:
-                        return `[\\+\\-]${numbers}${numbers}|Z`;
+                        return `[\\+\\-]\d{4}|Z`;
                     default:
-                        return `[\\+\\-]${numbers}${numbers}?|Z`;
+                        return `[\\+\\-]\d{2}(?:\d{2})?|Z`;
                 }
             },
             input: (_, value) => value,
@@ -618,17 +742,16 @@
 
         x: {
             key: 'timeZone',
-            regex: (formatter, length) => {
-                const numbers = formatter.numberRegExp('2');
+            regex: (_, length) => {
                 switch (length) {
                     case 5:
                     case 3:
-                        return `[\\+\\-]${numbers}\\:${numbers}`;
+                        return `[\\+\\-]\d{2}\\:\d{2}`;
                     case 4:
                     case 2:
-                        return `[\\+\\-]${numbers}${numbers}`;
+                        return `[\\+\\-]\d{4}`;
                     default:
-                        return `[\\+\\-]${numbers}${numbers}?`;
+                        return `[\\+\\-]\d{2}(?:\d{2})?`;
                 }
             },
             input: (_, value) => value,
@@ -650,178 +773,175 @@
 
     };
 
-    Object.assign(DateFormatter.prototype, {
-
-        formatDay(day, type = 'long', standalone = true) {
-            const date = Date.UTC(2018, 0, day);
-
-            if (standalone) {
-                return this._makeFormatter({weekday: type})
-                    .format(date);
-            }
-
-            return this._makeFormatter({year: 'numeric', month: 'numeric', day: 'numeric', weekday: type})
-                .formatToParts(date)
-                .find(part => part.type === 'weekday')
-                .value;
-        },
-
-        formatDayPeriod(period, type = 'long') {
-            return this._makeFormatter({hour: 'numeric', hour12: true, dayPeriod: type})
-                .formatToParts(
-                   Date.UTC(2018, 0, 1, (1 + period) * 12)
-                ).find(part => part.type === 'dayperiod').value;
-        },
-
-        formatEra(era, type = 'long') {
-            return this._makeFormatter({year: 'numeric', era: type})
-                .formatToParts(
-                    Date.UTC(era - 1, 0, 1)
-                ).find(part => part.type === 'era').value;
-        },
-
-        formatMonth(month, type = 'long', standalone = true) {
-            const date = Date.UTC(2018, month - 1);
-
-            if (standalone) {
-                return this._makeFormatter({month: type})
-                    .format(date);
-            }
-
-            return this._makeFormatter({year: 'numeric', month: type, day: 'numeric'})
-                .formatToParts(date)
-                .find(part => part.type === 'month')
-                .value;
-        },
-
-        formatNumber(number, padding = 0) {
-            const numbers = this.getNumbers();
-            debugger;
-            return `${number}`.padStart(padding, 0).replace(/\d/g, match => numbers[match])
-        }
-
-    });
+    /**
+     * DateFormatter Helpers
+     */
 
     Object.assign(DateFormatter.prototype, {
 
-        getDayPeriods(type = 'long') {
-            const dayPeriodFormatter = this._makeFormatter({hour: 'numeric', hour12: true, dayPeriod: type});
-            return new Array(2)
-                .fill()
-                .map((_, index) =>
-                    dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, (1 + index) * 12))
-                        .find(part => part.type === 'dayperiod')
-                        .value
-                );
-        },
-
-        getDays(type = 'long', standalone = true) {
-            if (standalone) {
-                const dayFormatter = this._makeFormatter({weekday: type});
-                return new Array(7)
-                    .fill()
-                    .map((_, index) =>
-                        dayFormatter.format(Date.UTC(2018, 0, index))
-                    );
+        /**
+         * Get values from cache (or generate if they don't exist).
+         * @param {string} key The key for the values.
+         * @param {function} callback The callback to generate the values.
+         * @returns {array} The cached values.
+         */
+        _getData(key, callback) {
+            if (!(key in this._data)) {
+                this._data[key] = callback();
             }
 
-            const dayFormatter = this._makeFormatter({year: 'numeric', month: 'numeric', day: 'numeric', weekday: type});
-            return new Array(7)
-                .fill()
-                .map((_, index) =>
-                    dayFormatter.formatToParts(Date.UTC(2018, 0, index))
-                        .find(part => part.type === 'weekday')
-                        .value
-                );
+            return this._data[key];
         },
 
-        getEras(type = 'short') {
-            const eraFormatter = this._makeFormatter({era: type});
-            return new Array(2)
-                .fill()
-                .map((_, index) =>
-                    eraFormatter.formatToParts(Date.UTC(index - 1, 0, 1))
-                        .find(part => part.type === 'era')
-                        .value
-                );
-        },
-
-        getMonths(type = 'long', standalone = true) {
-            if (standalone) {
-                const monthFormatter = this._makeFormatter({month: type});
-                return new Array(12)
-                    .fill()
-                    .map((_, index) =>
-                        monthFormatter.format(Date.UTC(2018, index, 1))
-                    );
-            }
-
-            const monthFormatter = this._makeFormatter({year: 'numeric', month: type, day: 'numeric'});
-            return new Array(12)
-                .fill()
-                .map((_, index) =>
-                    monthFormatter.formatToParts(Date.UTC(2018, index, 1))
-                        .find(part => part.type === 'month')
-                        .value
-                );
-        },
-
-        getNumbers() {
-            const numberFormatter = this._makeFormatter({minute: 'numeric'});
-            return new Array(10)
-                .fill()
-                .map((_, index) =>
-                    numberFormatter.format(Date.UTC(2018, 0, 1, 0, index))
-                );
-        },
-
-        numberRegExp(length) {
-            const numbers = this.getNumbers().join('|');
-            const suffix = length ? `{${length}}` : '+';
-            return `(?:${numbers})${suffix}`;
-        },
-
+        /**
+         * Create a new UTC formatter for the current locale.
+         * @param {object} options The options for the formatter.
+         * @returns {Intl.DateTimeFormat} A new DateTimeFormat object.
+         */
         _makeFormatter(options) {
-            const key = JSON.stringify(options);
-            if (!(key in this.formatters)) {
-                this.formatters[key] = new Intl.DateTimeFormat(this.locale, {
-                    timeZone: 'UTC',
-                    ...options
-                });
-            }
-
-            return this.formatters[key];
+            return new Intl.DateTimeFormat(this.locale, {
+                timeZone: 'UTC',
+                ...options
+            });
         }
 
     });
 
+    /**
+     * DateFormatter Values
+     */
+
     Object.assign(DateFormatter.prototype, {
 
-        parseDay(value, type = 'long', standalone = true) {
-            const days = this.getDays(type, standalone);
-            return days.indexOf(value) || 7;
-        },
-
-        parseDayPeriod(value, type = 'long') {
-            const dayPeriods = this.getDayPeriods(type);
-            return dayPeriods.indexOf(value);
-        },
-
-        parseEra(value, type = 'long') {
-            const eras = this.getEras(type);
-            return eras.indexOf(value);
-        },
-
-        parseMonth(value, type = 'long', standalone = true) {
-            const months = this.getMonths(type, standalone);
-            return months.indexOf(value) + 1;
-        },
-
-        parseNumber(value) {
-            const numbers = this.getNumbers();
-            return parseInt(
-                `${value}`.replace(/./g, match => numbers.indexOf(match))
+        /**
+         * Get cached day period values.
+         * @param {string} [type=long] The formatting type.
+         * @returns {array} The cached values.
+         */
+        getDayPeriods(type = 'long') {
+            return this._getData(
+                key = `periods[${type}]`,
+                _ => {
+                    const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hour12: true, dayPeriod: type })
+                    return new Array(2)
+                        .fill()
+                        .map((_, index) =>
+                            dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, (1 + index) * 12))
+                                .find(part => part.type === 'dayperiod')
+                                .value
+                        );
+                }
             );
+        },
+
+        /**
+         * Get cached day values.
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the values are standalone.
+         * @returns {array} The cached values.
+         */
+        getDays(type = 'long', standalone = true) {
+            return this._getData(
+                `days[${standalone}][${type}]`,
+                _ => {
+                    if (standalone) {
+                        const dayFormatter = this._makeFormatter({ weekday: type });
+                        return new Array(7)
+                            .fill()
+                            .map((_, index) =>
+                                dayFormatter.format(Date.UTC(2018, 0, index))
+                            );
+                    }
+
+                    const dayFormatter = this._makeFormatter({ year: 'numeric', month: 'numeric', day: 'numeric', weekday: type });
+                    return new Array(7)
+                        .fill()
+                        .map((_, index) =>
+                            dayFormatter.formatToParts(Date.UTC(2018, 0, index))
+                                .find(part => part.type === 'weekday')
+                                .value
+                        );
+                }
+            );
+        },
+
+        /**
+         * Get cached era values.
+         * @param {string} [type=long] The formatting type.
+         * @returns {array} The cached values.
+         */
+        getEras(type = 'long') {
+            return this._getData(
+                `eras[${type}]`,
+                _ => {
+                    const eraFormatter = this._makeFormatter({ era: type });
+                    return new Array(2)
+                        .fill()
+                        .map((_, index) =>
+                            eraFormatter.formatToParts(Date.UTC(index - 1, 0, 1))
+                                .find(part => part.type === 'era')
+                                .value
+                        );
+                }
+            );
+        },
+
+        /**
+         * Get cached month values.
+         * @param {string} [type=long] The formatting type.
+         * @param {Boolean} [standalone=true] Whether the values are standalone.
+         * @returns {array} The cached values.
+         */
+        getMonths(type = 'long', standalone = true) {
+            return this._getData(
+                `months[${standalone}][${type}]`,
+                _ => {
+                    if (standalone) {
+                        const monthFormatter = this._makeFormatter({ month: type });
+                        return new Array(12)
+                            .fill()
+                            .map((_, index) =>
+                                monthFormatter.format(Date.UTC(2018, index, 1))
+                            );
+                    }
+
+                    const monthFormatter = this._makeFormatter({ year: 'numeric', month: type, day: 'numeric' });
+                    return new Array(12)
+                        .fill()
+                        .map((_, index) =>
+                            monthFormatter.formatToParts(Date.UTC(2018, index, 1))
+                                .find(part => part.type === 'month')
+                                .value
+                        );
+                }
+            );
+        },
+
+        /**
+         * Get cached number values.
+         * @returns {array} The cached values.
+         */
+        getNumbers() {
+            return this._getData(
+                'numbers',
+                _ => {
+                    const numberFormatter = this._makeFormatter({ minute: 'numeric' });
+                    return new Array(10)
+                        .fill()
+                        .map((_, index) =>
+                            numberFormatter.format(Date.UTC(2018, 0, 1, 0, index))
+                        );
+                }
+            );
+        },
+
+        /**
+         * Get the RegExp for the number values.
+         * @returns {string} The number values RegExp.
+         */
+        numberRegExp() {
+            const numbers = this.getNumbers().join('|');
+            return `(?:${numbers})+`;
         }
 
     });
@@ -835,7 +955,9 @@
         /**
          * New DateTime constructor.
          * @param {null|string} [dateString] The date to parse.
-         * @param {null|string} [timeZone] The timeZone.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
          * @returns {DateTime} A new DateTime object.
          */
         constructor(dateString = null, options = {}) {
@@ -901,23 +1023,6 @@
         }
 
         /**
-         * Get an object representation of the date/time.
-         * @returns {object} An object representation of the date/time.
-         */
-        toObject() {
-            return {
-                year: this.getYear(),
-                month: this.getMonth(),
-                date: this.getDate(),
-                hours: this.getHours(),
-                minutes: this.getMinutes(),
-                seconds: this.getSeconds(),
-                milliseconds: this.getMilliseconds(),
-                timeZone: this.getTimeZone()
-            };
-        }
-
-        /**
          * Get the number of milliseconds since the UNIX epoch.
          * @returns {number} The number of milliseconds since the UNIX epoch.
          */
@@ -949,7 +1054,10 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTime(time) {
-            const tempDate = new DateTimeImmutable(null, this.getTimeZone());
+            const tempDate = new DateTimeImmutable(null, {
+                locale: this._formatter.locale,
+                timeZone: this.getTimeZone()
+            });
             tempDate._utcDate = new Date(time);
 
             if (tempDate._dynamicTz) {
@@ -965,7 +1073,10 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTimeZone(timeZone) {
-            const tempDate = new DateTimeImmutable(null, timeZone);
+            const tempDate = new DateTimeImmutable(null, {
+                locale: this._formatter.locale,
+                timeZone
+            });
             return tempDate.setTime(this.getTime());
         }
 
@@ -1039,10 +1150,13 @@
             );
         },
 
+        /**
+         * Get the day of the week in month in current timeZone.
+         * @returns {number} The day of the week in month.
+         */
         getDayOfWeekInMonth() {
-            const firstWeek = this.clone().setDate(1);
             const weeks = this.getWeek() - firstWeek.getWeek();
-            return firstWeek.getDayOfWeek() > this.getDayOfWeek() ?
+            return this.clone().setDate(1).getDayOfWeek() > this.getDayOfWeek() ?
                 weeks :
                 weeks + 1;
         },
@@ -1177,8 +1291,13 @@
                 );
         },
 
+        /**
+         * Get the week of month in current timeZone.
+         * @returns {number} The week of month.
+         */
         getWeekOfMonth() {
-            return this.getWeek() - this.clone().setDate(1).getWeek() + 1;
+            return this.getWeek()
+                - this.clone().setDate(1).getWeek() + 1;
         },
 
         /**
@@ -1262,6 +1381,11 @@
             );
         },
 
+        /**
+         * Set the day of the week in month in current timeZone.
+         * @param {number} week The day of the week in month.
+         * @returns {DateTime} The DateTime object.
+         */
         setDayOfWeekInMonth(week) {
             return this.setDate(
                 this.getDate()
@@ -1492,6 +1616,11 @@
             );
         },
 
+        /**
+         * Set the week of month in current timeZone.
+         * @param {number} week The week of month.
+         * @returns {DateTime} The DateTime object.
+         */
         setWeekOfMonth(week) {
             return this.setDate(
                 this.getDate()
@@ -1855,49 +1984,40 @@
 
     Object.assign(DateTime.prototype, {
 
+        /**
+         * Format the current date using a format string.
+         * @param {string} formatString The format string.
+         * @returns {string} The formatted date string.
+         */
         format(formatString) {
-            let match;
-            let output = '';
+            let match,
+                output = '';
 
-            const unescapeOutput = a => {
-                let output = '';
-                let escaped = false;
-                for (const char of a) {
-                    if (char === "'" && !escaped) {
-                        escaped = true;
-                        continue;
-                    }
+            while (formatString && (match = formatString.match(this.constructor._formatTokenRegExp))) {
+                const token = match[1],
+                    position = match.index,
+                    length = match[0].length;
 
-                    escaped = false;
-                    output += char;
-                }
-                return output;
-            };
-
-            while (formatString && (match = formatString.match(/(?<!\')([a-z])\1*/i))) {
-                const token = match[1];
                 if (!(token in DateFormatter._formatDate)) {
                     throw new Error(`Invalid token in DateTime format: ${token}`);
                 }
 
-                const position = match.index;
                 if (position) {
                     const formatTemp = formatString.substring(0, position);
-                    output += unescapeOutput(formatTemp);
+                    output += this.constructor._unescapeOutput(formatTemp);
                 }
-                const length = match[0].length;
-                output += DateFormatter._formatDate[token].output(this, length);
 
+                output += DateFormatter._formatDate[token].output(this, length);
                 formatString = formatString.substring(position + length);
             }
 
-            output += unescapeOutput(formatString);
+            output += this.constructor._unescapeOutput(formatString);
 
             return output;
         },
 
         /**
-         * Format the current date using "D M d Y".
+         * Format the current date using "eee MMM dd yyyy".
          * @returns {string} The formatted date string.
          */
         toDateString() {
@@ -1905,15 +2025,18 @@
         },
 
         /**
-         * Format the current date using "Y-m-d\TH:i:s.vP".
+         * Format the current date using "yyyy-MM-dd'THH:mm:ss.0xxx".
          * @returns {string} The formatted date string.
          */
         toISOString() {
-            return this.format(this.constructor.formats.rfc3339_extended)
+            return this.constructor.fromDate(this._utcDate, {
+                locale: 'en-US',
+                timeZone: 'UTC'
+            }).toString();
         },
 
         /**
-         * Format the current date using "D M d Y H:i:s O (e)".
+         * Format the current date using "eee MMM dd yyyy HH:mm:ss xx (VV)".
          * @returns {string} The formatted date string.
          */
         toString() {
@@ -1921,7 +2044,7 @@
         },
 
         /**
-         * Format the current date using "H:i:s O (e)".
+         * Format the current date using "HH:mm:ss xx (VV)".
          * @returns {string} The formatted date string.
          */
         toTimeString() {
@@ -1929,13 +2052,14 @@
         },
 
         /**
-         * Format the current date in UTC timeZone using "D M d Y H:i:s O (e)".
+         * Format the current date in UTC timeZone using "eee MMM dd yyyy HH:mm:ss xx (VV)".
          * @returns {string} The formatted date string.
          */
         toUTCString() {
-            return new DateTime(null, 'UTC')
-                .setTime(this.getTime())
-                .toString();
+            return this.constructor.fromDate(this._utcDate, {
+                locale: this._formatter.locale,
+                timeZone: 'UTC'
+            }).toString();
         }
 
     });
@@ -1951,26 +2075,19 @@
          * @returns {DateTime} A new DateTime object.
          */
         clone() {
-            return this.constructor.fromTimestamp(this.getTimestamp(), this.getTimeZone());
-        },
-
-        /**
-         * Get the ordinal suffix for the date of the month.
-         * @returns {string} The ordinal suffix for the date of the month.
-         */
-        dateSuffix() {
-            return this.constructor.ordinal(
-                this.getDate()
-            );
+            return this.constructor.fromTimestamp(this.getTimestamp(), {
+                locale: this._formatter.locale,
+                timeZone: this.getTimeZone()
+            });
         },
 
         /**
          * Get the name of the day of the week in current timeZone.
-         * @param {string} [type=full] The type of day name to return.
+         * @param {string} [type=long] The type of day name to return.
          * @returns {string} The name of the day of the week.
          */
-        dayName(type = 'full') {
-            return this.constructor.lang.days[type][this.getDay()];
+        dayName(type = 'long') {
+            return this.formatter.formatDay(this.getDay(), type);
         },
 
         /**
@@ -2002,11 +2119,6 @@
          */
         diff(other = null, absolute = false) {
             const interval = {};
-
-            if (this.getTime() === other.getTime()) {
-                interval.days = 0;
-                return interval;
-            }
 
             const lessThan = this < other,
                 thisMonth = this.getMonth(),
@@ -2327,11 +2439,11 @@
 
         /**
          * Get the name of the month in current timeZone.
-         * @param {string} [type=full] The type of month name to return.
+         * @param {string} [type=long] The type of month name to return.
          * @returns {string} The name of the month.
          */
-        monthName(type = 'full') {
-            return this.constructor.lang.months[type][this.getMonth() - 1];
+        monthName(type = 'long') {
+            return this.formatter.formatMonth(this.getMonth(), type);
         },
 
         /**
@@ -2353,7 +2465,9 @@
         /**
          * Create a new DateTime from an array.
          * @param {number[]} date The date to parse.
-         * @param {null|string} [timeZone] The timeZone.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromArray(dateArray, options = {}) {
@@ -2376,7 +2490,9 @@
         /**
          * Create a new DateTime from a Date.
          * @param {Date} date The date.
-         * @param {null|string} [timeZone] The timeZone.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromDate(date, options = {}) {
@@ -2384,56 +2500,48 @@
                 .setTime(date.getTime());
         },
 
+        /**
+         * Create a new DateTime from a format string.
+         * @param {string} formatString The format string.
+         * @param {string} dateString The date string.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
+         * @returns {DateTime} A new DateTime object.
+         */
         fromFormat(formatString, dateString, options = {}) {
-
-            const compareStrings = (a, b) => {
-                let i = 0;
-                let escaped = false;
-                for (const char of a) {
-                    if (char === "'" && !escaped) {
-                        escaped = true;
-                        continue;
-                    }
-
-                    if (char !== b[i]) {
-                        throw new Error(`Unmatched character in DateTime string: ${char}`);
-                    }
-
-                    escaped = false;
-                    i++;
-                }
-            };
-
-            const formatter = DateFormatter.load(options.locale);
-            const originalFormat = formatString;
-            const originalString = dateString;
-            const values = [];
+            const formatter = DateFormatter.load(options.locale),
+                originalFormat = formatString,
+                originalString = dateString,
+                values = [];
 
             let match;
-            while (formatString && (match = formatString.match(/(?<!\')([a-z])\1*/i))) {
-                const token = match[1];
+            while (formatString && (match = formatString.match(this._formatTokenRegExp))) {
+                const token = match[1],
+                    position = match.index,
+                    length = match[0].length;
+
                 if (!(token in DateFormatter._formatDate)) {
                     throw new Error(`Invalid token in DateTime format: ${token}`);
                 }
 
-                const position = match.index;
                 if (position) {
                     const formatTest = formatString.substring(0, position);
-                    compareStrings(formatTest, dateString);
+                    this._parseCompare(formatTest, dateString);
                 }
 
                 formatString = formatString.substring(position);
                 dateString = dateString.substring(position);
 
-                const length = match[0].length;
-                const regExp = DateFormatter._formatDate[token].regex(formatter, length);
-                const matchedValue = dateString.match(new RegExp(`^${regExp}`));
+                const regExp = DateFormatter._formatDate[token].regex(formatter, length),
+                    matchedValue = dateString.match(new RegExp(`^${regExp}`));
+
                 if (!matchedValue) {
                     throw new Error(`Unmatched token in DateTime string: ${token}`);
                 }
 
-                const key = DateFormatter._formatDate[token].key;
-                const value = DateFormatter._formatDate[token].input(formatter, matchedValue[0], length);
+                const key = DateFormatter._formatDate[token].key,
+                    value = DateFormatter._formatDate[token].input(formatter, matchedValue[0], length);
 
                 values.push({ key, value });
 
@@ -2442,7 +2550,7 @@
             }
 
             if (formatString) {
-                compareStrings(formatString, dateString);
+                this._parseCompare(formatString, dateString);
             }
 
             let timeZone = options.timeZone;
@@ -2459,74 +2567,22 @@
                 timeZone
             });
 
-            let isPM = false;
-            let lastAM = true;
-            const methods = {
-                date: value => datetime.setDate(value),
-                dayPeriod: value => {
-                    isPM = value;
-                    let hours = value ? 12 : 0;
-                    if (lastAM) {
-                        hours += datetime.getHours();
-                    }
-                    return datetime.setHours(hours);
-                },
-                dayOfWeek: value => datetime.setDayOfWeek(value),
-                dayOfWeekInMonth: value => datetime.setDayOfWeekInMonth(value),
-                dayOfYear: value => datetime.setDayOfYear(value),
-                era: value => {
-                    const offset = value ? 1 : -1;
-                    return datetime.setYear(
-                        datetime.getYear() * offset
-                    );
-                },
-                hours12: value => {
-                    if (isPM) {
-                        value += 12;
-                    }
-                    lastAM = true;
-                    return datetime.setHours(value);
-                },
-                hours24: value => {
-                    lastAM = false;
-                    return datetime.setHours(value);
-                },
-                milliseconds: value => datetime.setMilliseconds(value),
-                minutes: value => datetime.setMinutes(value),
-                month: value => datetime.setMonth(value),
-                quarter: value => datetime.setQuarter(value),
-                seconds: value => datetime.setSeconds(value),
-                week: value => datetime.setWeek(value),
-                weekOfMonth: value => datetime.setWeekOfMonth(value),
-                weekYear: value => datetime.setWeekYear(value),
-                year: value => datetime.setYear(value)
-            };
+            const methods = this._parseFactory();
 
-            const parseKeys = [
-                ['year', 'weekYear'],
-                ['era'],
-                ['quarter', 'month', 'week', 'dayOfYear'],
-                ['weekOfMonth'],
-                ['date', 'dayOfWeek'],
-                ['dayOfWeekInMonth'],
-                ['hours24', 'hours12', 'dayPeriod'],
-                ['minutes', 'seconds', 'milliseconds']
-            ];
-
-            for (const subKeys of parseKeys) {
+            for (const subKeys of this._parseOrderKeys) {
                 for (const subKey of subKeys) {
                     for (const {key, value} of values) {
                         if (key !== subKey) {
                             continue;
                         }
 
-                        datetime = methods[key](value);
+                        datetime = methods[key](datetime, value);
                     }
                 }
             }
 
             if ('timeZone' in options && options.timeZone !== timeZone) {
-                datetime.setTimeZone(options.timeZone);
+                datetime = datetime.setTimeZone(options.timeZone);
             }
 
             datetime.isValid = datetime.format(originalFormat) === originalString;
@@ -2537,7 +2593,9 @@
         /**
          * Create a new DateTime from a timestamp.
          * @param {number} timestamp The timestamp.
-         * @param {null|string} [timeZone] The timeZone.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromTimestamp(timestamp, options = {}) {
@@ -2547,7 +2605,10 @@
 
         /**
          * Create a new DateTime for the current time.
-         * @param {null|string} [timeZone] The timezone.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
+         * @returns {DateTime} A new DateTime object.
          */
         now(options = {}) {
             return new this(null, options);
@@ -2594,6 +2655,98 @@
             return (
                 (parseInt(day) + 6) % 7
             ) + 1;
+        },
+
+        /**
+         * Compare a literal format string with a date string.
+         * @param {string} formatString The literal format string.
+         * @param {string} dateString The date string.
+         */
+        _parseCompare(formatString, dateString) {
+            let i = 0,
+                escaped = false;
+            for (const char of formatString) {
+                if (char === "'" && !escaped) {
+                    escaped = true;
+                    continue;
+                }
+
+                if (char !== dateString[i]) {
+                    throw new Error(`Unmatched character in DateTime string: ${char}`);
+                }
+
+                escaped = false;
+                i++;
+            }
+        },
+
+        /**
+         * Generate methods for parsing a date.
+         * @returns {object} An object containing date parsing methods.
+         */
+        _parseFactory() {
+            let isPM = false,
+                lastAM = true;
+            return {
+                date: (datetime, value) => datetime.setDate(value),
+                dayPeriod: (datetime, value) => {
+                    isPM = value;
+                    let hours = value ? 12 : 0;
+                    if (lastAM) {
+                        hours += datetime.getHours();
+                    }
+                    return datetime.setHours(hours);
+                },
+                dayOfWeek: (datetime, value) => datetime.setDayOfWeek(value),
+                dayOfWeekInMonth: (datetime, value) => datetime.setDayOfWeekInMonth(value),
+                dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
+                era: (datetime, value) => {
+                    const offset = value ? 1 : -1;
+                    return datetime.setYear(
+                        datetime.getYear() * offset
+                    );
+                },
+                hours12: (datetime, value) => {
+                    if (isPM) {
+                        value += 12;
+                    }
+                    lastAM = true;
+                    return datetime.setHours(value);
+                },
+                hours24: (datetime, value) => {
+                    lastAM = false;
+                    return datetime.setHours(value);
+                },
+                milliseconds: (datetime, value) => datetime.setMilliseconds(value),
+                minutes: (datetime, value) => datetime.setMinutes(value),
+                month: (datetime, value) => datetime.setMonth(value),
+                quarter: (datetime, value) => datetime.setQuarter(value),
+                seconds: (datetime, value) => datetime.setSeconds(value),
+                week: (datetime, value) => datetime.setWeek(value),
+                weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
+                weekYear: (datetime, value) => datetime.setWeekYear(value),
+                year: (datetime, value) => datetime.setYear(value)
+            };
+        },
+
+        /**
+         * Get unescaped characters from a literal format string.
+         * @param {string} formatString The literal format string.
+         * @returns {string} The unescaped characters.
+         */
+        _unescapeOutput(formatString) {
+            let output = '',
+                escaped = false;
+            for (const char of formatString) {
+                if (char === "'" && !escaped) {
+                    escaped = true;
+                    continue;
+                }
+
+                escaped = false;
+                output += char;
+            }
+            return output;
         }
 
     });
@@ -2698,31 +2851,11 @@
             rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
             rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
             rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
-            rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.000xxx`,
+            rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.0xxx`,
             rss: `eee, dd MMM yyyy HH:mm:ss xx`,
             string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
             time: `HH:mm:ss xx (VV)`,
             w3c: `yyyy-MM-dd'THH:mm:ssxxx`
-        },
-
-        // Language
-        ordinal: value => {
-            const j = value % 10;
-            const k = value % 100;
-
-            if (j === 1 && k !== 11) {
-                return 'st';
-            }
-
-            if (j === 2 && k !== 12) {
-                return 'nd';
-            }
-
-            if (j === 3 && k !== 13) {
-                return 'rd';
-            }
-
-            return 'th';
         },
 
         // Comparison lookup
@@ -2776,8 +2909,23 @@
         // Date string timezone RegExp
         _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
 
+        // Format token RegExp
+        _formatTokenRegExp: /(?<!\')([a-z])\1*/i,
+
         // Offset RegExp
         _offsetRegExp: /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/,
+
+        // Parsing key order
+        _parseOrderKeys: [
+            ['year', 'weekYear'],
+            ['era'],
+            ['quarter', 'month', 'week', 'dayOfYear'],
+            ['weekOfMonth'],
+            ['date', 'dayOfWeek'],
+            ['dayOfWeekInMonth'],
+            ['hours24', 'hours12', 'dayPeriod'],
+            ['minutes', 'seconds', 'milliseconds']
+        ]
 
     });
 

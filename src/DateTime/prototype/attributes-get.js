@@ -50,10 +50,13 @@ Object.assign(DateTime.prototype, {
         );
     },
 
+    /**
+     * Get the day of the week in month in current timeZone.
+     * @returns {number} The day of the week in month.
+     */
     getDayOfWeekInMonth() {
-        const firstWeek = this.clone().setDate(1);
         const weeks = this.getWeek() - firstWeek.getWeek();
-        return firstWeek.getDayOfWeek() > this.getDayOfWeek() ?
+        return this.clone().setDate(1).getDayOfWeek() > this.getDayOfWeek() ?
             weeks :
             weeks + 1;
     },
@@ -188,8 +191,13 @@ Object.assign(DateTime.prototype, {
             );
     },
 
+    /**
+     * Get the week of month in current timeZone.
+     * @returns {number} The week of month.
+     */
     getWeekOfMonth() {
-        return this.getWeek() - this.clone().setDate(1).getWeek() + 1;
+        return this.getWeek()
+            - this.clone().setDate(1).getWeek() + 1;
     },
 
     /**

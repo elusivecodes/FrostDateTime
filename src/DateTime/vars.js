@@ -22,31 +22,11 @@ Object.assign(DateTime, {
         rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
         rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
         rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
-        rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.000xxx`,
+        rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.0xxx`,
         rss: `eee, dd MMM yyyy HH:mm:ss xx`,
         string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
         time: `HH:mm:ss xx (VV)`,
         w3c: `yyyy-MM-dd'THH:mm:ssxxx`
-    },
-
-    // Language
-    ordinal: value => {
-        const j = value % 10;
-        const k = value % 100;
-
-        if (j === 1 && k !== 11) {
-            return 'st';
-        }
-
-        if (j === 2 && k !== 12) {
-            return 'nd';
-        }
-
-        if (j === 3 && k !== 13) {
-            return 'rd';
-        }
-
-        return 'th';
     },
 
     // Comparison lookup
@@ -100,8 +80,23 @@ Object.assign(DateTime, {
     // Date string timezone RegExp
     _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
 
+    // Format token RegExp
+    _formatTokenRegExp: /(?<!\')([a-z])\1*/i,
+
     // Offset RegExp
     _offsetRegExp: /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/,
+
+    // Parsing key order
+    _parseOrderKeys: [
+        ['year', 'weekYear'],
+        ['era'],
+        ['quarter', 'month', 'week', 'dayOfYear'],
+        ['weekOfMonth'],
+        ['date', 'dayOfWeek'],
+        ['dayOfWeekInMonth'],
+        ['hours24', 'hours12', 'dayPeriod'],
+        ['minutes', 'seconds', 'milliseconds']
+    ]
 
 });
 

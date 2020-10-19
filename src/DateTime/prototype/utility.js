@@ -9,26 +9,19 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} A new DateTime object.
      */
     clone() {
-        return this.constructor.fromTimestamp(this.getTimestamp(), this.getTimeZone());
-    },
-
-    /**
-     * Get the ordinal suffix for the date of the month.
-     * @returns {string} The ordinal suffix for the date of the month.
-     */
-    dateSuffix() {
-        return this.constructor.ordinal(
-            this.getDate()
-        );
+        return this.constructor.fromTimestamp(this.getTimestamp(), {
+            locale: this._formatter.locale,
+            timeZone: this.getTimeZone()
+        });
     },
 
     /**
      * Get the name of the day of the week in current timeZone.
-     * @param {string} [type=full] The type of day name to return.
+     * @param {string} [type=long] The type of day name to return.
      * @returns {string} The name of the day of the week.
      */
-    dayName(type = 'full') {
-        return this.constructor.lang.days[type][this.getDay()];
+    dayName(type = 'long') {
+        return this.formatter.formatDay(this.getDay(), type);
     },
 
     /**
@@ -60,11 +53,6 @@ Object.assign(DateTime.prototype, {
      */
     diff(other = null, absolute = false) {
         const interval = {};
-
-        if (this.getTime() === other.getTime()) {
-            interval.days = 0;
-            return interval;
-        }
 
         const lessThan = this < other,
             thisMonth = this.getMonth(),
@@ -385,11 +373,11 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Get the name of the month in current timeZone.
-     * @param {string} [type=full] The type of month name to return.
+     * @param {string} [type=long] The type of month name to return.
      * @returns {string} The name of the month.
      */
-    monthName(type = 'full') {
-        return this.constructor.lang.months[type][this.getMonth() - 1];
+    monthName(type = 'long') {
+        return this.formatter.formatMonth(this.getMonth(), type);
     },
 
     /**

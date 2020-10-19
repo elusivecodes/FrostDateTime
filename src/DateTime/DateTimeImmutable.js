@@ -10,7 +10,10 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTime(time) {
-        const tempDate = new DateTimeImmutable(null, this.getTimeZone());
+        const tempDate = new DateTimeImmutable(null, {
+            locale: this._formatter.locale,
+            timeZone: this.getTimeZone()
+        });
         tempDate._utcDate = new Date(time);
 
         if (tempDate._dynamicTz) {
@@ -26,7 +29,10 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTimeZone(timeZone) {
-        const tempDate = new DateTimeImmutable(null, timeZone);
+        const tempDate = new DateTimeImmutable(null, {
+            locale: this._formatter.locale,
+            timeZone
+        });
         return tempDate.setTime(this.getTime());
     }
 

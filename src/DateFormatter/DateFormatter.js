@@ -1,21 +1,126 @@
+/**
+ * DateFormatter class
+ * @class
+ */
 class DateFormatter {
 
+    /**
+     * New DateFormatter constructor.
+     * @param {string} [locale] The locale to load.
+     * @returns {DateFormatter} A new DateFormatter object.
+     */
     constructor(locale) {
         this.locale = locale;
 
-        this.formatters = {};
+        this._data = {};
     }
 
-    static load(locale) {
-        if (!locale) {
-            locale = Intl.DateTimeFormat().resolvedOptions().locale;
-        }
+    /**
+     * Format a day as a locale string.
+     * @param {number} number The day to format (0-6).
+     * @param {string} [type=long] The formatting type.
+     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @returns {string} The formatted string.
+     */
+    formatDay(day, type = 'long', standalone = true) {
+        return this.getDays(type, standalone)[day];
+    }
 
-        if (!(locale in this.formatters)) {
-            this.formatters[locale] = new this(locale);
-        }
+    /**
+     * Format a day period as a locale string.
+     * @param {number} number The period to format (0-1).
+     * @param {string} [type=long] The formatting type.
+     * @returns {string} The formatted string.
+     */
+    formatDayPeriod(period, type = 'long') {
+        return this.getDayPeriods(type)[period];
+    }
 
-        return this.formatters[locale];
+    /**
+     * Format an era as a locale string.
+     * @param {number} number The period to format (0-1).
+     * @param {string} [type=long] The formatting type.
+     * @returns {string} The formatted string.
+     */
+    formatEra(era, type = 'long') {
+        return this.getEras(type)[era];
+    }
+
+    /**
+     * Format a month as a locale string.
+     * @param {number} number The month to format (1-12).
+     * @param {string} [type=long] The formatting type.
+     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @returns {string} The formatted string.
+     */
+    formatMonth(month, type = 'long', standalone = true) {
+        return this.getMonths(type, standalone)[month - 1];
+    }
+
+    /**
+     * Format a number as a locale number string.
+     * @param {number} number The number to format.
+     * @returns {string} The formatted string.
+     */
+    formatNumber(number, padding = 0) {
+        const numbers = this.getNumbers();
+        return `${number}`
+            .padStart(padding, 0)
+            .replace(/\d/g, match => numbers[match])
+    }
+
+    /**
+     * Parse a day from a locale string.
+     * @param {string} value The value to parse.
+     * @param {string} [type=long] The formatting type.
+     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @returns {number} The month number (0-6).
+     */
+    parseDay(value, type = 'long', standalone = true) {
+        return this.getDays(type, standalone).indexOf(value) || 7;
+    }
+
+    /**
+     * Parse a day period from a locale string.
+     * @param {string} value The value to parse.
+     * @param {string} [type=long] The formatting type.
+     * @returns {number} The day period (0-1).
+     */
+    parseDayPeriod(value, type = 'long') {
+        return this.getDayPeriods(type).indexOf(value);
+    }
+
+    /**
+     * Parse an era from a locale string.
+     * @param {string} value The value to parse.
+     * @param {string} [type=long] The formatting type.
+     * @returns {number} The era (0-1).
+     */
+    parseEra(value, type = 'long') {
+        return this.getEras(type).indexOf(value);
+    }
+
+    /**
+     * Parse a month from a locale string.
+     * @param {string} value The value to parse.
+     * @param {string} [type=long] The formatting type.
+     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @returns {number} The month number (1-12).
+     */
+    parseMonth(value, type = 'long', standalone = true) {
+        return this.getMonths(type, standalone).indexOf(value) + 1;
+    }
+
+    /**
+     * Parse a number from a locale number string.
+     * @param {string} value The value to parse.
+     * @returns {number} The parsed number.
+     */
+    parseNumber(value) {
+        const numbers = this.getNumbers();
+        return parseInt(
+            `${value}`.replace(/./g, match => numbers.indexOf(match))
+        );
     }
 
     /**
@@ -45,6 +150,40 @@ class DateFormatter {
         return `${sign}${hourString}${colon}${minuteString}`;
     }
 
+    /**
+     * Get the formatting type from the component token length.
+     * @param {number} length The component token length.
+     * @returns {string} The formatting type.
+     */
+    static getType(length) {
+        switch (length) {
+            case 5:
+                return 'narrow';
+            case 4:
+                return 'long';
+            default:
+                return 'short';
+        }
+    }
+
+    /**
+     * Load a (cached) DateFormatter for a locale.
+     * @param {string} [locale] The locale to load.
+     * @returns {DateFormatter} The cached DateFormatter object.
+     */
+    static load(locale) {
+        if (!locale) {
+            locale = Intl.DateTimeFormat().resolvedOptions().locale;
+        }
+
+        if (!(locale in this._formatters)) {
+            this._formatters[locale] = new this(locale);
+        }
+
+        return this._formatters[locale];
+    }
+
 }
 
-DateFormatter.formatters = {};
+// Cached formatters
+DateFormatter._formatters = {};

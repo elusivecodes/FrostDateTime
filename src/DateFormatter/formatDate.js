@@ -2,18 +2,6 @@
  * DateFormatter Format Data
  */
 
-DateFormatter._getType = length => {
-    if (length === 5) {
-        return 'narrow';
-    }
-
-    if (length === 4) {
-        return 'long';
-    }
-
-    return 'short';
-};
-
 DateFormatter._formatDate = {
 
     /* ERA */
@@ -22,16 +10,16 @@ DateFormatter._formatDate = {
         key: 'era',
         maxLength: 5,
         regex: (formatter, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.getEras(type).join('|');
         },
         input: (formatter, value, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.parseEra(value, type);
         },
         output: (datetime, length) => {
-            const type = DateFormatter._getType(length);
-            const index = datetime.getYear() >= 0;
+            const type = DateFormatter.getType(length);
+            const index = datetime.getYear() < 0 ? 0 : 1;
             return datetime.formatter.formatEra(index, type);
         }
     },
@@ -98,7 +86,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.getMonths(type, false).join('|');
                 default:
                     return formatter.numberRegExp();
@@ -109,7 +97,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.parseMonth(value, type, false);
                 default:
                     return formatter.parseNumber(value);
@@ -121,7 +109,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return datetime.formatter.formatMonth(month, type, false);
                 default:
                     return datetime.formatter.formatNumber(month, length);
@@ -137,7 +125,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.getMonths(type).join('|');
                 default:
                     return formatter.numberRegExp();
@@ -148,7 +136,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.parseMonth(value, type);
                 default:
                     return formatter.parseNumber(value);
@@ -160,7 +148,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return datetime.formatter.formatMonth(month, type);
                 default:
                     return datetime.formatter.formatNumber(month, length);
@@ -234,16 +222,16 @@ DateFormatter._formatDate = {
     E: {
         key: 'dayOfWeek',
         regex: (formatter, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.getDays(type, false).join('|');
         },
         input: (formatter, value, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.parseDay(value, type, false);
         },
         output: (datetime, length) => {
-            const type = DateFormatter._getType(length);
-            const day = datetime.getDayOfWeek();
+            const type = DateFormatter.getType(length);
+            const day = datetime.getDay();
             return datetime.formatter.formatDay(day, type, false);
         }
     },
@@ -257,7 +245,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.getDays(type, false).join('|');
                 default:
                     return formatter.numberRegExp()
@@ -267,19 +255,19 @@ DateFormatter._formatDate = {
             switch (length) {
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.parseDay(value, type, false);
                 default:
                     return formatter.parseNumber(value);
             }
         },
         output: (datetime, length) => {
-            const day = datetime.getDayOfWeek();
+            const day = datetime.getDay();
             switch (length) {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return datetime.formatter.formatDay(day, type, false);
                 default:
                     return datetime.formatter.formatNumber(day, length);
@@ -296,7 +284,7 @@ DateFormatter._formatDate = {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.getDays(type).join('|');
                 default:
                     return formatter.numberRegExp()
@@ -306,19 +294,19 @@ DateFormatter._formatDate = {
             switch (length) {
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return formatter.parseDay(value, type);
                 default:
                     return formatter.parseNumber(value);
             }
         },
         output: (datetime, length) => {
-            const day = datetime.getDayOfWeek();
+            const day = datetime.getDay();
             switch (length) {
                 case 5:
                 case 4:
                 case 3:
-                    const type = DateFormatter._getType(length);
+                    const type = DateFormatter.getType(length);
                     return datetime.formatter.formatDay(day, type);
                 default:
                     return datetime.formatter.formatNumber(day, length);
@@ -331,17 +319,17 @@ DateFormatter._formatDate = {
     a: {
         key: 'dayPeriod',
         regex: (formatter, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.getDayPeriods(type).join('|');
         },
         input: (formatter, value, length) => {
-            const type = DateFormatter._getType(length);
+            const type = DateFormatter.getType(length);
             return formatter.parseDayPeriod(value, type);
         },
         output: (datetime, length) => {
-            const type = DateFormatter._getType(length);
-            const index = datetime.getHours() < 12;
-            return datetime.formatter.formatPeriod(index, type);
+            const type = DateFormatter.getType(length);
+            const index = datetime.getHours() < 12 ? 0 : 1;
+            return datetime.formatter.formatDayPeriod(index, type);
         }
     },
 
@@ -451,15 +439,14 @@ DateFormatter._formatDate = {
 
     Z: {
         key: 'timeZone',
-        regex: (formatter, length) => {
-            const numbers = formatter.numberRegExp('2');
+        regex: (_, length) => {
             switch (length) {
                 case 5:
-                    return `[\\+\\-]${numbers}\\:${numbers}`;
+                    return `[\\+\\-]\d{2}\\:\d{2}`;
                 case 4:
-                    return `GMT[\\+\\-]${numbers}\\:${numbers}`;
+                    return `GMT[\\+\\-]\d{2}\\:\d{2}`;
                 default:
-                    return `[\\+\\-]${numbers}${numbers}`;
+                    return `[\\+\\-]\d{4}`;
             }
         },
         input: (_, value) => value,
@@ -483,13 +470,12 @@ DateFormatter._formatDate = {
 
     O: {
         key: 'timeZone',
-        regex: (formatter, length) => {
-            const numbers = formatter.numberRegExp('2');
+        regex: (_, length) => {
             switch (length) {
                 case 4:
-                    return `GMT[\\+\\-]${numbers}\\:${numbers}`;
+                    return `GMT[\\+\\-]\d{2}\\:\d{2}`;
                 default:
-                    return `GMT[\\+\\-]${numbers}`;
+                    return `GMT[\\+\\-]\d{2}`;
             }
         },
         input: (_, value) => value,
@@ -515,17 +501,16 @@ DateFormatter._formatDate = {
 
     X: {
         key: 'timeZone',
-        regex: (formatter, length) => {
-            const numbers = formatter.numberRegExp('2');
+        regex: (_, length) => {
             switch (length) {
                 case 5:
                 case 3:
-                    return `[\\+\\-]${numbers}\\:${numbers}|Z`;
+                    return `[\\+\\-]\d{2}\\:\d{2}|Z`;
                 case 4:
                 case 2:
-                    return `[\\+\\-]${numbers}${numbers}|Z`;
+                    return `[\\+\\-]\d{4}|Z`;
                 default:
-                    return `[\\+\\-]${numbers}${numbers}?|Z`;
+                    return `[\\+\\-]\d{2}(?:\d{2})?|Z`;
             }
         },
         input: (_, value) => value,
@@ -551,17 +536,16 @@ DateFormatter._formatDate = {
 
     x: {
         key: 'timeZone',
-        regex: (formatter, length) => {
-            const numbers = formatter.numberRegExp('2');
+        regex: (_, length) => {
             switch (length) {
                 case 5:
                 case 3:
-                    return `[\\+\\-]${numbers}\\:${numbers}`;
+                    return `[\\+\\-]\d{2}\\:\d{2}`;
                 case 4:
                 case 2:
-                    return `[\\+\\-]${numbers}${numbers}`;
+                    return `[\\+\\-]\d{4}`;
                 default:
-                    return `[\\+\\-]${numbers}${numbers}?`;
+                    return `[\\+\\-]\d{2}(?:\d{2})?`;
             }
         },
         input: (_, value) => value,

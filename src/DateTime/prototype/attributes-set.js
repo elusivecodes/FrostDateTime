@@ -65,6 +65,11 @@ Object.assign(DateTime.prototype, {
         );
     },
 
+    /**
+     * Set the day of the week in month in current timeZone.
+     * @param {number} week The day of the week in month.
+     * @returns {DateTime} The DateTime object.
+     */
     setDayOfWeekInMonth(week) {
         return this.setDate(
             this.getDate()
@@ -295,6 +300,11 @@ Object.assign(DateTime.prototype, {
         );
     },
 
+    /**
+     * Set the week of month in current timeZone.
+     * @param {number} week The week of month.
+     * @returns {DateTime} The DateTime object.
+     */
     setWeekOfMonth(week) {
         return this.setDate(
             this.getDate()

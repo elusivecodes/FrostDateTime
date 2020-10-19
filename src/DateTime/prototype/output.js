@@ -4,49 +4,40 @@
 
 Object.assign(DateTime.prototype, {
 
+    /**
+     * Format the current date using a format string.
+     * @param {string} formatString The format string.
+     * @returns {string} The formatted date string.
+     */
     format(formatString) {
-        let match;
-        let output = '';
+        let match,
+            output = '';
 
-        const unescapeOutput = a => {
-            let output = '';
-            let escaped = false;
-            for (const char of a) {
-                if (char === "'" && !escaped) {
-                    escaped = true;
-                    continue;
-                }
+        while (formatString && (match = formatString.match(this.constructor._formatTokenRegExp))) {
+            const token = match[1],
+                position = match.index,
+                length = match[0].length;
 
-                escaped = false;
-                output += char;
-            }
-            return output;
-        };
-
-        while (formatString && (match = formatString.match(/(?<!\')([a-z])\1*/i))) {
-            const token = match[1];
             if (!(token in DateFormatter._formatDate)) {
                 throw new Error(`Invalid token in DateTime format: ${token}`);
             }
 
-            const position = match.index;
             if (position) {
                 const formatTemp = formatString.substring(0, position);
-                output += unescapeOutput(formatTemp);
+                output += this.constructor._unescapeOutput(formatTemp);
             }
-            const length = match[0].length;
-            output += DateFormatter._formatDate[token].output(this, length);
 
+            output += DateFormatter._formatDate[token].output(this, length);
             formatString = formatString.substring(position + length);
         }
 
-        output += unescapeOutput(formatString);
+        output += this.constructor._unescapeOutput(formatString);
 
         return output;
     },
 
     /**
-     * Format the current date using "D M d Y".
+     * Format the current date using "eee MMM dd yyyy".
      * @returns {string} The formatted date string.
      */
     toDateString() {
@@ -54,15 +45,18 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Format the current date using "Y-m-d\TH:i:s.vP".
+     * Format the current date using "yyyy-MM-dd'THH:mm:ss.0xxx".
      * @returns {string} The formatted date string.
      */
     toISOString() {
-        return this.format(this.constructor.formats.rfc3339_extended)
+        return this.constructor.fromDate(this._utcDate, {
+            locale: 'en-US',
+            timeZone: 'UTC'
+        }).toString();
     },
 
     /**
-     * Format the current date using "D M d Y H:i:s O (e)".
+     * Format the current date using "eee MMM dd yyyy HH:mm:ss xx (VV)".
      * @returns {string} The formatted date string.
      */
     toString() {
@@ -70,7 +64,7 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Format the current date using "H:i:s O (e)".
+     * Format the current date using "HH:mm:ss xx (VV)".
      * @returns {string} The formatted date string.
      */
     toTimeString() {
@@ -78,13 +72,14 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Format the current date in UTC timeZone using "D M d Y H:i:s O (e)".
+     * Format the current date in UTC timeZone using "eee MMM dd yyyy HH:mm:ss xx (VV)".
      * @returns {string} The formatted date string.
      */
     toUTCString() {
-        return new DateTime(null, 'UTC')
-            .setTime(this.getTime())
-            .toString();
+        return this.constructor.fromDate(this._utcDate, {
+            locale: this._formatter.locale,
+            timeZone: 'UTC'
+        }).toString();
     }
 
 });

@@ -23,6 +23,7 @@
 [X] Remove toLocaleDateString
 [X] Remove toLocaleString
 [X] Remove toLocaleTimeString
+[X] Remove dateSuffix
 
 [X] Rename fromISOFormat to fromFormat
 [X] Rename formatISO to format
@@ -42,13 +43,13 @@
 [X] Add setDayOfWeekInMonth
 [X] Add setWeekOfMonth
 
-[~] Add caching to DateFormatter
-[?] Move formatDate to DateTime
+[X] Add caching to DateFormatter
+[X] Clean up code (move internal functions/vars to static)
+
+[X] Update comments
+[ ] Fix `yy` to only use last 2 digits
+[ ] Update README
+[ ] Update tests
 [ ] ar-AR -> ar-EG
 
 [ ] Add DateInterval (RelativeTimeFormat)
-
-[ ] Clean up code (move internal functions/vars to static)
-[ ] Update comments
-[ ] Update README
-[ ] Update tests

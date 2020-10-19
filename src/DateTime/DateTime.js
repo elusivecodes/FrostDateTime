@@ -7,7 +7,9 @@ class DateTime {
     /**
      * New DateTime constructor.
      * @param {null|string} [dateString] The date to parse.
-     * @param {null|string} [timeZone] The timeZone.
+     * @param {object} [options] Options for the new DateTime.
+     * @param {string} [options.locale] The locale to use.
+     * @param {string} [options.timeZone] The timeZone to use.
      * @returns {DateTime} A new DateTime object.
      */
     constructor(dateString = null, options = {}) {
@@ -70,23 +72,6 @@ class DateTime {
         }
 
         this.formatter = DateFormatter.load(options.locale);
-    }
-
-    /**
-     * Get an object representation of the date/time.
-     * @returns {object} An object representation of the date/time.
-     */
-    toObject() {
-        return {
-            year: this.getYear(),
-            month: this.getMonth(),
-            date: this.getDate(),
-            hours: this.getHours(),
-            minutes: this.getMinutes(),
-            seconds: this.getSeconds(),
-            milliseconds: this.getMilliseconds(),
-            timeZone: this.getTimeZone()
-        };
     }
 
     /**
