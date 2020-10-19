@@ -8,45 +8,45 @@
     </thead>
     <tbody>
         <tr>
-            <td colspan="3">**Era**</td>
+            <td colspan="3"><strong>Era</strong></td>
         </tr>
         <tr>
-            <td>`G..GGG`</td>
-            <td>*AD*</td>
+            <td><code>G..GGG</code></td>
+            <td><em>AD</em></td>
             <td>Abbreviated</td>
         </tr>
         <tr>
-            <td>`GGGG`</td>
-            <td>*Anno Domini*</td>
+            <td><code>GGGG</code></td>
+            <td><em>Anno Domini</em></td>
             <td>Wide</td>
         </tr>
         <tr>
-            <td>`GGGGG`</td>
-            <td>*A*</td>
+            <td><code>GGGGG</code></td>
+            <td><em>A</em></td>
             <td>Narrow</td>
         </tr>
         <tr>
-            <td colspan="3">**Year**</td>
+            <td colspan="3"><strong>Year</strong></td>
         </tr>
         <tr>
-            <td>`y`</td>
-            <td>*2*,*20*,*202*,*2020*</td>
+            <td><code>y</code></td>
+            <td><em>2*,*20*,*202*,*2020</em></td>
             <td rowspan="5">Calendar year (zero padded to pattern length). The `yy` format will always use the 2 low-order digits of the year.</td>
         </tr>
         <tr>
-            <td>`yy`</td>
-            <td>*02*,*20*,*02*,*20*</td>
+            <td><code>yy</code></td>
+            <td><em>02*,*20*,*02*,*20</em></td>
         </tr>
         <tr>
-            <td>`yyy`</td>
-            <td>*002*,*020*,*0202*,*2020*</td>
+            <td><code>yyy</code></td>
+            <td><em>002*,*020*,*0202*,*2020</em></td>
         </tr>
         <tr>
-            <td>`yyyy`</td>
-            <td>*0002*,*0020*,*0202*,*2020*</td>
+            <td><code>yyyy</code></td>
+            <td><em>0002*,*0020*,*0202*,*2020</em></td>
         </tr>
         <tr>
-            <td>`yyyyy+`</td>
+            <td><code>yyyyy+</code></td>
             <td>...</td>
         </tr>
     </tbody>
