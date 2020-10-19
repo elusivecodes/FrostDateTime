@@ -53,7 +53,7 @@
         <tr>
             <td><code>Q</code></td>
             <td><em>2</em></td>
-            <td rowspan="2">Quarter (standalone).. Zero padded to pattern length.</td>
+            <td rowspan="2">Quarter (standalone). Zero padded to pattern length.</td>
         </tr>
         <tr>
             <td><code>QQ</code></td>
@@ -138,12 +138,12 @@
         <tr>
             <td><code>D..DDD</code></td>
             <td><em>345</em></td>
-            <td rowspan="2">Day of year.</td>
+            <td>Day of year.</td>
         </tr>
         <tr>
             <td><code>F</code></td>
             <td><em>2</em></td>
-            <td rowspan="2">Day of week in month.</td>
+            <td>Day of week in month.</td>
         </tr>
         <tr>
             <td colspan="3"><strong>Week Day</strong></td>
