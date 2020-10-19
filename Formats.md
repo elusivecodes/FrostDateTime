@@ -30,20 +30,20 @@
         </tr>
         <tr>
             <td><code>y</code></td>
-            <td><em>2*,*20*,*202*,*2020</em></td>
+            <td><em>2,20,202,2020</em></td>
             <td rowspan="5">Calendar year (zero padded to pattern length). The `yy` format will always use the 2 low-order digits of the year.</td>
         </tr>
         <tr>
             <td><code>yy</code></td>
-            <td><em>02*,*20*,*02*,*20</em></td>
+            <td><em>02,20,02,20</em></td>
         </tr>
         <tr>
             <td><code>yyy</code></td>
-            <td><em>002*,*020*,*0202*,*2020</em></td>
+            <td><em>002,020,0202,2020</em></td>
         </tr>
         <tr>
             <td><code>yyyy</code></td>
-            <td><em>0002*,*0020*,*0202*,*2020</em></td>
+            <td><em>0002,0020,0202,2020</em></td>
         </tr>
         <tr>
             <td><code>yyyyy+</code></td>
