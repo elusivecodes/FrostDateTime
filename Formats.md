@@ -121,7 +121,7 @@
         <tr>
             <td><code>W</code></td>
             <td><em>3</em></td>
-            <td rowspan="2">Week of month.</td>
+            <td>Week of month.</td>
         </tr>
         <tr>
             <td colspan="3"><strong>Day</strong></td>
