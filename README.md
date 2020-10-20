@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It is a lightweight (~23kb gzipped) and modern library, and features full support for PHP DateTime formats, as well as time zones.
+It is a lightweight (~7kb gzipped) and modern library, and features support for ISO DateTime formats, time zones and locales.
 
 
 ## Table Of Contents
@@ -44,10 +44,12 @@ const { DateInterval, DateTime, DateTimeImmutable } = require('frostdatetime');
 ## Date Creation
 
 - `dateString` is a string representing the date, and will default to the current timestamp.
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
-const date = new DateTime(dateString, timeZone);
+const date = new DateTime(dateString, options);
 ```
 
 **Immutable DateTime**
@@ -57,16 +59,18 @@ By default, *DateTime* objects are mutable, but if you wish to create an immutab
 Immutable *DateTime* objects return a new *DateTimeImmutable* whenever they are modified.
 
 ```javascript
-const date = new DateTimeImmutable(dateString, timeZone);
+const date = new DateTimeImmutable(dateString, options);
 ```
 
 **From Array**
 
 - `dateArray` is an array containing the year, month, date, hours, minutes, seconds and milliseconds.
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
-const date = DateTime.fromArray(dateArray, timeZone);
+const date = DateTime.fromArray(dateArray, options);
 ```
 
 The month and date in the `dateArray` will default to 1 if not set. The hours, minutes, seconds and milliseconds will default to 0.
@@ -74,45 +78,53 @@ The month and date in the `dateArray` will default to 1 if not set. The hours, m
 **From Date**
 
 - `dateObj` is a native JS *Date* object.
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
-const date = DateTime.fromDate(dateObj, timeZone);
+const date = DateTime.fromDate(dateObj, options);
 ```
 
 **From Format**
 
 If you wish to parse a date string and you know the exact format, you can use the `fromFormat` static method.
 
-This method is fully compatible with the PHP [DateTime::createFromFormat](http://php.net/manual/en/datetime.createfromformat.php) method.
-
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
 
-If the `dateString` contains time zone or offset information, and the `timeZone` argument is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
+The `formatString` supports a subset of the ICU specification described in [Formats](Formats.md).
+
+If the `dateString` contains time zone or offset information, and the `timeZone` option is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
 
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
 ```javascript
-const date = DateTime.fromFormat(formatString, dateString, timeZone);
+const date = DateTime.fromFormat(formatString, dateString, options);
 ```
 
 **From Timestamp**
 
 - `timestamp` is the number of seconds since the UNIX epoch.
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
-const date = DateTime.fromTimestamp(timestamp, timeZone);
+const date = DateTime.fromTimestamp(timestamp, options);
 ```
 
 **Now**
 
-- `timeZone` is a string representing the time zone name of the date, and will default to the system time zone.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
-const date = DateTime.now(timeZone);
+const date = DateTime.now(options);
 ```
 
 
@@ -124,7 +136,7 @@ Once you have created a *DateTime* object, you can get a string representation u
 
 - `formatString` is a string containing the format you wish to output using.
 
-This method is fully compatible with the PHP [date](http://php.net/manual/en/function.date.php) function.
+The `formatString` supports a subset of the ICU specification described in [Formats](Formats.md).
 
 ```javascript
 const dateString = date.format(formatString);
@@ -132,7 +144,7 @@ const dateString = date.format(formatString);
 
 **To String**
 
-Format the current date using "*D M d Y H:i:s O (e)*".
+Format the current date using "*eee MMM dd yyyy HH:mm:ss xx (VV)*".
 
 ```javascript
 const string = date.toString();
@@ -140,7 +152,7 @@ const string = date.toString();
 
 **To Date String**
 
-Format the current date using "*D M d Y*".
+Format the current date using "*eee MMM dd yyyy*".
 
 ```javascript
 const dateString = date.toDateString();
@@ -148,7 +160,7 @@ const dateString = date.toDateString();
 
 **To ISO String**
 
-Format the current date using "*Y-m-d\TH:i:s.vP*".
+Format the current date using "*yyyy-MM-dd'THH:mm:ss.0xxx*" (in English and UTC time zone).
 
 ```javascript
 const isoString = date.toISOString();
@@ -156,7 +168,7 @@ const isoString = date.toISOString();
 
 **To Time String**
 
-Format the current date using "*H:i:s O (e)*".
+Format the current date using "*HH:mm:ss xx (VV)*".
 
 ```javascript
 const timeString = date.toTimeString();
@@ -164,55 +176,10 @@ const timeString = date.toTimeString();
 
 **To UTC String**
 
-Format the current date in UTC time zone using "*D M d Y H:i:s O (e)*".
+Format the current date using "*eee MMM dd yyyy HH:mm:ss xx (VV)*" (in UTC time zone).
 
 ```javascript
 const utcString = date.toUTCString();
-```
-
-**To Locale String**
-
-Format the current date using *Date*'s native `toLocaleString()` method.
-
-- `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
-- `options` is an object containing options for formatting.
-
-For a full list of supported options, see the [Date.prototype.toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) documentation.
-
-If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
-
-```javascript
-const localeString = date.toLocaleString(locale, options);
-```
-
-**To Locale Date String**
-
-Format the current date using *Date*'s native `toLocaleDateString()` method.
-
-- `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
-- `options` is an object containing options for formatting.
-
-For a full list of supported options, see the [Date.prototype.toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) documentation.
-
-If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
-
-```javascript
-const localeDateString = date.toLocaleDateString(locale, options);
-```
-
-**To Locale Time String**
-
-Format the current date using *Date*'s native `toLocaleTimeString()` method.
-
-- `locale` is a string with a BCP 47 language tag, or an array of such strings, and will default to the system locale.
-- `options` is an object containing options for formatting.
-
-For a full list of supported options, see the [Date.prototype.toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) documentation.
-
-If a `timeZone` is not specified in the options, the `timeZone` of the *DateTime* will be used.
-
-```javascript
-const localeTimeString = date.toLocaleTimeString(locale, options);
 ```
 
 
@@ -346,69 +313,109 @@ date.setYear(year, month, date);
 ```
 
 
-## ISO Attributes
+## Week Attributes
 
-**Get ISO Day**
+**Get Day Of Week**
 
-Get the ISO day of the week in current time zone.
+Get the local day of the week in current time zone.
 
-The `isoDay` returned will be between *1* (Monday) and *7* (Sunday).
-
-```javascript
-const isoDay = date.getISODay();
-```
-
-**Get ISO Week**
-
-Get the ISO week in current time zone.
-
-The `isoWeek` returned will be between *1*  and *53* (week starting on Monday).
+The `dayOfWeek` returned will be between *1* (Monday) and *7* (Sunday).
 
 ```javascript
-const isoWeek = date.getISOWeek();
+const dayOfWeek = date.getDayOfWeek();
 ```
 
-**Get ISO Year**
+**Get Day Of Week In Month**
 
-Get the ISO year in current time zone.
+Get the day of the week in the month, in current time zone.
 
-This method is identical to `getYear()` except in cases where the ISO week belongs to the previous or next year, then that value will be used instead.
+The `dayOfWeekInMonth` returned will be between *1* and *5*.
 
 ```javascript
-const isoYear = date.getISOYear();
+const dayOfWeekInMonth = date.getDayOfWeekInMonth();
 ```
 
-**Set ISO Day**
+**Get Week**
 
-Set the ISO day of the week in current time zone.
+Get the week of the year in current time zone.
 
-- `isoDay` is a number representing the ISO day (between *1* and *7*).
+The `week` returned will be between *1*  and *53* (week starting on Monday).
 
 ```javascript
-date.setISODay(isoDay);
+const week = date.getWeek();
 ```
 
-**Set ISO Week**
+**Get Week Of Month**
 
-Set the ISO week in current time zone.
+Get the week of the month in current time zone.
 
-- `isoWeek` is a number representing the ISO week.
-- `isoDay` is a number representing the ISO day (between *1* and *7*), and will default to the current value.
+The `weekOfMonth` returned will be between *1*  and *5*.
 
 ```javascript
-date.setISOWeek(isoWeek, isoDay);
+const weekOfMonth = date.getWeekOfMonth();
 ```
 
-**Set ISO Year**
+**Get Week Year**
+
+Get the week year in current time zone.
+
+This method is identical to `getYear()` except in cases where the week belongs to the previous or next year, then that value will be used instead.
+
+```javascript
+const weekYear = date.getWeekYear();
+```
+
+**Set Day Of Week**
+
+Set the local day of the week in current time zone.
+
+- `dayOfWeek` is a number representing the week day (between *1* and *7*).
+
+```javascript
+date.setDayOfWeek(dayOfWeek);
+```
+
+**Set Day Of Week In Month**
+
+Set the day of the week in the month, in current time zone.
+
+- `dayOfWeekInMonth` is a number representing the day of the week in month (between *1* and *5*).
+
+```javascript
+date.setDayOfWeekInMonth(dayOfWeekInMonth);
+```
+
+**Set Week**
+
+Set the week in current time zone.
+
+- `week` is a number representing the week.
+- `dayOfWeek` is a number representing the day (between *1* and *7*), and will default to the current value.
+
+```javascript
+date.setWeek(week, dayOfWeek);
+```
+
+**Set Week Of Month**
+
+Set the week of the month in current time zone.
+
+- `weekOfMonth` is a number representing the week of the month (between *1*  and *5*).
+
+```javascript
+date.setWeekOfMonth(weekOfMonth);
+```
+
+**Set Week Year**
 
 Set the ISO year in current time zone.
 
-- `isoYear` is a number representing the ISO year.
-- `isoWeek` is a number representing the ISO week, and will default to the current value.
-- `isoDay` is a number representing the ISO day (between *1* and *7*), and will default to the current value.
+- `weekYear` is a number representing the year.
+- `week` is a number representing the week, and will default to the current value.
+- `dayOfWeek` is a number representing the day (between *1* and *7*), and will default to the current value.
 
 ```javascript
-date.setISOYear(isoYear, isoWeek, isoDay);
+date.setWeekYear(weekYear, week, dayOfWeek);
 ```
 
 
@@ -531,14 +538,6 @@ Get the name of the current time zone.
 const timeZone = date.getTimeZone();
 ```
 
-**Get Time Zone Abbreviation**
-
-Get the abbreviated name of the current timeZone.
-
-```javascript
-const abbreviation = date.getTimeZoneAbbr();
-```
-
 **Get Time Zone Offset**
 
 Get the UTC offset (in minutes) of the current time zone.
@@ -551,7 +550,7 @@ const offset = date.getTimeZoneOffset();
 
 Set the current time zone.
 
-- `timeZone` is the name of the new time zone, which can be either "*UTC*" or a supported value from the [IANA timeZone database](https://www.iana.org/time-zones).
+- `timeZone` is the name of the new time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
 - `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
 
 ```javascript
@@ -607,16 +606,6 @@ Add a duration to the date.
 date.add(amount, timeUnit);
 ```
 
-**Add Interval**
-
-Add a *DateInterval* to the date.
-
-- `interval` is a *DateInterval*.
-
-```javascript
-date.addInterval(interval);
-```
-
 **End Of**
 
 Set the date to the end of a unit of time in current time zone.
@@ -646,16 +635,6 @@ date.startOf(timeUnit);
 date.sub(amount, timeUnit);
 ```
 
-**Subtract Interval**
-
-Subtract a *DateInterval* from the date.
-
-- `interval` is a *DateInterval* object.
-
-```javascript
-date.subInterval(interval);
-```
-
 
 ## Utility Methods
 
@@ -667,19 +646,11 @@ Create a new *DateTime* using the current date and time zone.
 const clone = date.clone();
 ```
 
-**Date Suffix**
-
-Get the ordinal suffix for the date of the month.
-
-```javascript
-const dateSuffix = date.dateSuffix();
-```
-
 **Day Name**
 
 Get the name of the day of the week in current time zone.
 
-- `type` can be either "*full*", "*short*" or "*min*", and will default to "*full*" if it is not set.
+- `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
 const dayName = date.dayName(type);
@@ -707,8 +678,6 @@ Get the difference between two Dates.
 
 - `other` is the *DateTime* object to compare to.
 - `absolute` is a boolean indicating whether the interval will be forced to be positive, and will default to *false*.
-
-This method returns a new *DateInterval* object.
 
 ```javascript
 const diff = date.diff(other, absolute);
@@ -813,18 +782,18 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 Get the name of the month in current time zone.
 
-- `type` can be either "*full*" or "*short*", and will default to "*full*" if it is not set.
+- `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
 const monthName = date.monthName(type);
 ```
 
-**Weeks In ISO Year**
+**Weeks In Year**
 
-Get the number of weeks in the current ISO year.
+Get the number of weeks in the current year.
 
 ```javascript
-const weeksInISOYear = date.weeksInISOYear();
+const weeksInYear = date.weeksInYear();
 ```
 
 
@@ -873,55 +842,12 @@ Return *true* if the year is a leap year.
 const isLeapYear = DateTime.isLeapYear(year);
 ```
 
-**Weeks In ISO Year**
+**Weeks In Year**
 
-Get the number of ISO weeks in a year.
+Get the number of weeks in a year.
 
 - `year` is a number representing the year.
 
 ```javascript
-const weeksInISOYear = DateTime.weeksInISOYear(year);
-```
-
-
-## Date Intervals
-
-A *DateInterval* represents a period of time (years, months, days, hours etc.), and can be created using the *DateTime* `diff()` method, from a string, or using the constructor.
-
-- `interval` is an [ISO-8601 duration string](https://en.wikipedia.org/wiki/ISO_8601#Durations).
-
-```javascript
-const duration = new DateInterval(interval);
-```
-
-**From String**
-
-Create a new *DateInterval* from the relative parts of the string.
-
-- `durationString` is a date string with relative parts, compatible with the PHP [DateInterval::createFromDateString](https://www.php.net/manual/en/dateinterval.createfromdatestring.php) method.
-
-```javascript
-const duration = DateInterval.fromString(durationString);
-```
-
-**To String**
-
-Format the current interval to a relative time string.
-
-- `maxValues` is a number indicating the maximum values to output, and will default to *1*.
-
-Values are output in order of most significant to least significant (years first), where the value is not equal to *0*.
-
-```javascript
-const relativeString = duration.toString(maxValues);
-```
-
-**Format**
-
-Format the current interval with a PHP DateInterval format string.
-
-- `formatString` is the string to use for formatting, and is compatible with the PHP [DateInterval::format](https://www.php.net/manual/en/dateinterval.format.php) method.
-
-```javascript
-const durationString = duration.format(formatString);
+const weeksInYear = DateTime.weeksInYear(year);
 ```

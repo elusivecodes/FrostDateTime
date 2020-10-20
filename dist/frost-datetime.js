@@ -236,12 +236,19 @@
         y: {
             key: 'year',
             regex: formatter => formatter.numberRegExp(),
-            input: (formatter, value) => formatter.parseNumber(value),
-            output: (datetime, length) =>
-                datetime.formatter.formatNumber(
-                    datetime.getYear(),
-                    length
-                )
+            input: (formatter, value) => {
+                value = formatter.parseNumber(value);
+                return value > 40 ?
+                    1900 + value:
+                    2000 + value;
+            },
+            output: (datetime, length) => {
+                let year = datetime.getYear();
+                if (length === 2) {
+                    year = `${year}`.slice(-2);
+                }
+                return datetime.formatter.formatNumber(year, length);
+            }
         },
 
         // week year
