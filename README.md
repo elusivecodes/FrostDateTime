@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It is a lightweight (~7kb gzipped) and modern library, and features support for ISO DateTime formats, time zones and locales.
+It is a lightweight (~7kb gzipped) and modern library, and features support for ICU DateTime formats, time zones and locales.
 
 
 ## Table Of Contents
@@ -10,13 +10,12 @@ It is a lightweight (~7kb gzipped) and modern library, and features support for 
 - [Date Creation](#date-creation)
 - [Date Formatting](#date-formatting)
 - [Date Attributes](#date-attributes)
-- [ISO Attributes](#iso-attributes)
+- [Week Attributes](#week-attributes)
 - [Time Attributes](#time-attributes)
 - [Time Zones](#time-zones)
 - [Timestamps](#timestamps)
 - [Utility Methods](#utility-methods)
 - [Static Methods](#static-methods)
-- [Date Intervals](#date-intervals)
 
 
 
