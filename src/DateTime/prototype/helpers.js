@@ -99,7 +99,7 @@ Object.assign(DateTime.prototype, {
     _makeFormatter() {
         this._formatter = new Intl.DateTimeFormat(this.constructor._formatterLocale, {
             ...this.constructor._formatterOptions,
-            timeZone: this._timeZone
+            timeZone: this.getTimeZone()
         });
     },
 

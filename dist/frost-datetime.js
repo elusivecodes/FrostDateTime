@@ -28,6 +28,25 @@
         constructor(locale) {
             this.locale = locale;
 
+            let weekStart;
+            const localeTest = locale.toLowerCase().split('-');
+            while (!weekStart && localeTest.length) {
+                for (const start in this.constructor._weekStart) {
+                    const locales = this.constructor._weekStart[start];
+
+                    if (locales.includes(localeTest.join('-'))) {
+                        weekStart = start;
+                        break;
+                    }
+                }
+
+                localeTest.pop();
+            }
+
+            this.weekStartOffset = weekStart ?
+                weekStart - 2 :
+                0;
+
             this._data = {};
         }
 
@@ -780,6 +799,7 @@
 
     };
 
+    DateFormatter._weekStart = {"1":["af","am","ar-il","ar-sa","ar-ye","as","bn","bo","brx","ccp","ceb","chr","dav","dz","ebu","en","es","fil","fr-ca","gu","guz","haw","he","hi","id","ii","ja","jv","kam","ki","kln","km","kn","ko","kok","ks","lkt","lo","luo","luy","mas","mer","mgh","ml","mr","ms","mt","my","nd","ne","om","or","pa","ps-pk","pt","qu","saq","sd","seh","sn","so-et","so-ke","sw","ta","te","teo","th","ti","ug","ur","xh","yue","zh","zu"],"2":["af-na","ar-001","ar-eh","ar-er","ar-km","ar-lb","ar-ma","ar-mr","ar-ps","ar-so","ar-ss","ar-td","ar-tn","en-001","en-150","en-ai","en-at","en-bb","en-be","en-bi","en-bm","en-cc","en-ch","en-ck","en-cm","en-cx","en-cy","en-de","en-dg","en-dk","en-er","en-fi","en-fj","en-fk","en-fm","en-gb","en-gd","en-gg","en-gh","en-gi","en-gm","en-gy","en-ie","en-im","en-io","en-je","en-ki","en-kn","en-ky","en-lc","en-lr","en-ls","en-mg","en-mp","en-ms","en-mu","en-mw","en-my","en-na","en-nf","en-ng","en-nl","en-nr","en-nu","en-nz","en-pg","en-pn","en-pw","en-rw","en-sb","en-sc","en-se","en-sh","en-si","en-sl","en-ss","en-sx","en-sz","en-tc","en-tk","en-to","en-tv","en-tz","en-ug","en-vc","en-vg","en-vu","en-zm","ko-kp","mas-tz","pt-ao","pt-ch","pt-cv","pt-gq","pt-gw","pt-lu","pt-st","pt-tl","qu-bo","qu-ec","ta-lk","ta-my","ti-er"],"7":["ar","ckb","en-ae","en-sd","fa","fr-dj","fr-dz","fr-sy","kab","lrc","mzn","ps","so-dj","uz"]}
     /**
      * DateFormatter Helpers
      */
@@ -1009,7 +1029,7 @@
                 if (this._offset && match[1] === '+') {
                     this._offset *= -1;
                 }
-                this._timeZone = this.constructor._formatOffset(this._offset);
+                this._timeZone = DateFormatter.formatOffset(this._offset);
             } else {
                 if (['Z', 'GMT'].includes(timeZone)) {
                     timeZone = 'UTC';
@@ -1056,22 +1076,27 @@
     class DateTimeImmutable extends DateTime {
 
         /**
+         * Set the current locale.
+         * @param {string} locale The name of the timeZone.
+         * @returns {DateTimeImmutable} A new DateTimeImmutable object.
+         */
+        setLocale(locale) {
+            return this.constructor.fromDate(this._utcDate, {
+                locale,
+                timeZone: this.getTimeZone()
+            });
+        }
+
+        /**
          * Set the number of milliseconds since the UNIX epoch.
          * @param {number} time The number of milliseconds since the UNIX epoch.
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTime(time) {
-            const tempDate = new DateTimeImmutable(null, {
-                locale: this._formatter.locale,
+            return this.constructor.fromTimestamp(time / 1000, {
+                locale: this.getLocale(),
                 timeZone: this.getTimeZone()
             });
-            tempDate._utcDate = new Date(time);
-
-            if (tempDate._dynamicTz) {
-                tempDate._checkOffset();
-            }
-
-            return tempDate;
         }
 
         /**
@@ -1080,11 +1105,10 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTimeZone(timeZone) {
-            const tempDate = new DateTimeImmutable(null, {
-                locale: this._formatter.locale,
+            return this.constructor.fromDate(this._utcDate, {
+                locale: this.getLocale(),
                 timeZone
             });
-            return tempDate.setTime(this.getTime());
         }
 
         /**
@@ -1093,14 +1117,10 @@
          * @returns {DateTimeImmutable} The DateTime object.
          */
         setTimeZoneOffset(offset) {
-            const tempDate = this.clone();
-
-            tempDate._dynamicTz = false;
-            tempDate._offset = offset || 0;
-            tempDate._timeZone = this.constructor._formatOffset(tempDate._offset);
-            tempDate._formatter = null;
-
-            return tempDate;
+            return this.constructor.fromDate(this._utcDate, {
+                locale: this.getLocale(),
+                timeZone: DateFormatter.formatOffset(offset)
+            });
         }
 
     }
@@ -1110,26 +1130,6 @@
      */
 
     Object.assign(DateTime.prototype, {
-
-        /**
-         * Get the internet swatch time beat in current timeZone.
-         * @returns {number} The internet swatch time beat.
-         */
-        getBeat() {
-            const tempDate = new Date(
-                this.getTime()
-                + 3600000
-            );
-            return (
-                (
-                    tempDate.getUTCHours() * 3600000
-                    + tempDate.getUTCMinutes() * 60000
-                    + tempDate.getUTCSeconds() * 1000
-                    + tempDate.getUTCMilliseconds()
-                )
-                / 86400
-            ) | 0;
-        },
 
         /**
          * Get the date of the month in current timeZone.
@@ -1148,11 +1148,12 @@
         },
 
         /**
-         * Get the ISO day of the week in current timeZone.
-         * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
+         * Get the local day of the week in current timeZone.
+         * @returns {number} The local day of the week. (1 - 7)
          */
         getDayOfWeek() {
-            return this.constructor._isoDay(
+            return this.constructor._localDay(
+                this.formatter.weekStartOffset,
                 this.getDay()
             );
         },
@@ -1186,6 +1187,14 @@
          */
         getHours() {
             return new Date(this._getOffsetTime()).getUTCHours();
+        },
+
+        /**
+         * Get the name of the current locale.
+         * @returns {string} The name of the current locale.
+         */
+        getLocale() {
+            return this._formatter.locale;
         },
 
         /**
@@ -1273,17 +1282,19 @@
         },
 
         /**
-         * Get the ISO week in current timeZone.
-         * @returns {number} The ISO week. (1, 53)
+         * Get the local week in current timeZone.
+         * @returns {number} The local week. (1, 53)
          */
         getWeek() {
             const
-                week = this.constructor._isoDate(
+                week = this.constructor._localDate(
+                    this.formatter.weekStartOffset,
                     this.getYear(),
                     this.getMonth(),
                     this.getDate()
                 ),
-                firstWeek = this.constructor._isoDate(
+                firstWeek = this.constructor._localDate(
+                    this.formatter.weekStartOffset,
                     week.getUTCFullYear(),
                     1,
                     4
@@ -1312,7 +1323,8 @@
          * @returns {number} The ISO year.
          */
         getWeekYear() {
-            return this.constructor._isoDate(
+            return this.constructor._localDate(
+                this.formatter.weekStartOffset,
                 this.getYear(),
                 this.getMonth(),
                 this.getDate()
@@ -1326,26 +1338,6 @@
      */
 
     Object.assign(DateTime.prototype, {
-
-        /**
-         * Set the internet swatch time beat in current timeZone.
-         * @param {number} beat The internet swatch time beat.
-         * @returns {DateTime} The DateTime object.
-         */
-        setBeat(beat) {
-            return this.setTime(
-                new Date(
-                    this.getTime()
-                    + 3600000
-                ).setUTCHours(
-                    0,
-                    0,
-                    0,
-                    beat * 86400
-                )
-                - 3600000
-            );
-        },
 
         /**
          * Set the date of the month in current timeZone.
@@ -1374,8 +1366,8 @@
         },
 
         /**
-         * Set the ISO day of the week in current timeZone.
-         * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
+         * Set the local day of the week in current timeZone.
+         * @param {number} day The local day of the week. (1 - 7)
          * @returns {DateTime} The DateTime object.
          */
         setDayOfWeek(day) {
@@ -1429,6 +1421,15 @@
             return this._setOffsetTime(
                 new Date(this._getOffsetTime()).setUTCHours(...args)
             );
+        },
+
+        /**
+         * Set the current locale.
+         * @param {string} locale The name of the timeZone.
+         * @returns {DateTime} The DateTime object.
+         */
+        setLocale(locale) {
+            this._formatter = DateFormatter.load(locale);
         },
 
         /**
@@ -1537,7 +1538,7 @@
         /**
          * Set the current timeZone.
          * @param {string} timeZone The name of the timeZone.
-         * @param {Boolean} [adjust=false] Whether to adjsut the timestamp.
+         * @param {Boolean} [adjust=false] Whether to adjust the timestamp.
          * @returns {DateTime} The DateTime object.
          */
         setTimeZone(timeZone, adjust = false) {
@@ -1551,7 +1552,7 @@
                 if (this._offset && match[1] === '+') {
                     this._offset *= -1;
                 }
-                this._timeZone = this.constructor._formatOffset(this._offset);
+                this._timeZone = DateFormatter.formatOffset(this._offset);
             } else {
                 if (['Z', 'GMT'].includes(timeZone)) {
                     timeZone = 'UTC';
@@ -1583,16 +1584,16 @@
         setTimeZoneOffset(offset) {
             this._dynamicTz = false;
             this._offset = offset || 0;
-            this._timeZone = this.constructor._formatOffset(this._offset);
+            this._timeZone = DateFormatter.formatOffset(this._offset);
             this._formatter = null;
 
             return this;
         },
 
         /**
-         * Set the ISO day of the week in current timeZone (and optionally, day of the week).
-         * @param {number} week The ISO week.
-         * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+         * Set the local day of the week in current timeZone (and optionally, day of the week).
+         * @param {number} week The local week.
+         * @param {null|number} [day] The local day of the week. (1 - 7)
          * @returns {DateTime} The DateTime object.
          */
         setWeek(week, day = null) {
@@ -1615,7 +1616,8 @@
             return this._setOffsetTime(
                 tempDate.setUTCDate(
                     tempDate.getUTCDate()
-                    - this.constructor._isoDay(
+                    - this.constructor._localDay(
+                        this.formatter.weekStartOffset,
                         tempDate.getUTCDay()
                     )
                     + parseInt(day)
@@ -1639,10 +1641,10 @@
         },
 
         /**
-         * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
-         * @param {number} year The ISO year.
-         * @param {null|number} [week] The ISO week.
-         * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+         * Set the local day of the week in current timeZone (and optionally, week and day of the week).
+         * @param {number} year The local year.
+         * @param {null|number} [week] The local week.
+         * @param {null|number} [day] The local day of the week. (1 - 7)
          * @returns {DateTime} The DateTime object.
          */
         setWeekYear(year, week = null, day = null) {
@@ -1669,7 +1671,8 @@
             return this._setOffsetTime(
                 tempDate.setUTCDate(
                     tempDate.getUTCDate()
-                    - this.constructor._isoDay(
+                    - this.constructor._localDay(
+                        this.formatter.weekStartOffset,
                         tempDate.getUTCDay()
                     )
                     + parseInt(day)
@@ -1811,7 +1814,7 @@
         _makeFormatter() {
             this._formatter = new Intl.DateTimeFormat(this.constructor._formatterLocale, {
                 ...this.constructor._formatterOptions,
-                timeZone: this._timeZone
+                timeZone: this.getTimeZone()
             });
         },
 
@@ -2032,14 +2035,14 @@
         },
 
         /**
-         * Format the current date using "yyyy-MM-dd'THH:mm:ss.0xxx".
+         * Format the current date using "yyyy-MM-dd'THH:mm:ss.SSSSSSxxx".
          * @returns {string} The formatted date string.
          */
         toISOString() {
             return this.constructor.fromDate(this._utcDate, {
                 locale: 'en-US',
                 timeZone: 'UTC'
-            }).toString();
+            }).format(this.constructor.formats.rfc3339_extended);
         },
 
         /**
@@ -2064,7 +2067,7 @@
          */
         toUTCString() {
             return this.constructor.fromDate(this._utcDate, {
-                locale: this._formatter.locale,
+                locale: this.getLocale(),
                 timeZone: 'UTC'
             }).toString();
         }
@@ -2083,7 +2086,7 @@
          */
         clone() {
             return this.constructor.fromTimestamp(this.getTimestamp(), {
-                locale: this._formatter.locale,
+                locale: this.getLocale(),
                 timeZone: this.getTimeZone()
             });
         },
@@ -2364,8 +2367,12 @@
             }
 
             const year = this.getYear(),
-                dateA = DateTime.fromArray([year, 1, 1], this._timeZone),
-                dateB = DateTime.fromArray([year, 6, 1], this._timeZone);
+                dateA = DateTime.fromArray([year, 1, 1], {
+                    timeZone: this.getTimeZone()
+                }),
+                dateB = DateTime.fromArray([year, 6, 1], {
+                    timeZone: this.getTimeZone()
+                });
 
             return this._offset < Math.max(dateA._offset, dateB._offset);
         },
@@ -2598,6 +2605,21 @@
         },
 
         /**
+         * Create a new DateTime from an ISO format string.
+         * @param {string} dateString The date string.
+         * @param {object} [options] Options for the new DateTime.
+         * @param {string} [options.locale] The locale to use.
+         * @param {string} [options.timeZone] The timeZone to use.
+         * @returns {DateTime} A new DateTime object.
+         */
+        fromISOString(dateString, options = {}) {
+            return this.fromFormat(this.constructor.formats.rfc3339_extended, dateString, {
+                locale: 'en-US',
+                ...options
+            });
+        },
+
+        /**
          * Create a new DateTime from a timestamp.
          * @param {number} timestamp The timestamp.
          * @param {object} [options] Options for the new DateTime.
@@ -2631,37 +2653,36 @@
 
         /**
          * Create a Date object set to Thursday of the ISO week.
+         * @param {number} offset The week start offset.
          * @param {number} year The year.
          * @param {number} month The month.
          * @param {number} date The date.
          * @returns {Date} A new Date object.
          */
-        _isoDate(...args) {
+        _localDate(offset, ...args) {
             if (args.length > 1) {
                 args[1]--;
             }
 
             const date = new Date(
                 Date.UTC(...args)
-            ),
-                day = this._isoDay(date.getUTCDay());
+            );
             date.setUTCDate(
                 date.getUTCDate()
-                - day
-                + 4
+                - this._localDay(offset, date.getUTCDay())
+                + this._localDay(offset, 4)
             );
             return date;
         },
 
         /**
-         * Convert a day of the week to a ISO format.
-         * @param {number} day The day of the week. (0 - Sunday, 6 - Saturday)
-         * @returns {number} The day of the week in ISO format. (1 - Monday, 7 - Sunday)
+         * Convert a day of the week to a local format.
+         * @param {number} offset The week start offset.
+         * @param {number} day The day of the week.
+         * @returns {number} The local day of the week.
          */
-        _isoDay(day) {
-            return (
-                (parseInt(day) + 6) % 7
-            ) + 1;
+        _localDay(offset, day) {
+            return (7 + parseInt(day) - offset) % 7 || 7;
         },
 
         /**
@@ -2858,7 +2879,7 @@
             rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
             rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
             rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
-            rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.0xxx`,
+            rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.SSSSSSxxx`,
             rss: `eee, dd MMM yyyy HH:mm:ss xx`,
             string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
             time: `HH:mm:ss xx (VV)`,

@@ -133,6 +133,21 @@ Object.assign(DateTime, {
     },
 
     /**
+     * Create a new DateTime from an ISO format string.
+     * @param {string} dateString The date string.
+     * @param {object} [options] Options for the new DateTime.
+     * @param {string} [options.locale] The locale to use.
+     * @param {string} [options.timeZone] The timeZone to use.
+     * @returns {DateTime} A new DateTime object.
+     */
+    fromISOString(dateString, options = {}) {
+        return this.fromFormat(this.constructor.formats.rfc3339_extended, dateString, {
+            locale: 'en-US',
+            ...options
+        });
+    },
+
+    /**
      * Create a new DateTime from a timestamp.
      * @param {number} timestamp The timestamp.
      * @param {object} [options] Options for the new DateTime.

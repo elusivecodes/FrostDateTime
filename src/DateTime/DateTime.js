@@ -54,7 +54,7 @@ class DateTime {
             if (this._offset && match[1] === '+') {
                 this._offset *= -1;
             }
-            this._timeZone = this.constructor._formatOffset(this._offset);
+            this._timeZone = DateFormatter.formatOffset(this._offset);
         } else {
             if (['Z', 'GMT'].includes(timeZone)) {
                 timeZone = 'UTC';

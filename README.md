@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It is a lightweight (~7kb gzipped) and modern library, and features support for ICU DateTime formats, time zones and locales.
+It is a lightweight (~7kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
 
 
 ## Table Of Contents
@@ -12,8 +12,9 @@ It is a lightweight (~7kb gzipped) and modern library, and features support for 
 - [Date Attributes](#date-attributes)
 - [Week Attributes](#week-attributes)
 - [Time Attributes](#time-attributes)
-- [Time Zones](#time-zones)
 - [Timestamps](#timestamps)
+- [Time Zones](#time-zones)
+- [Locales](#locales)
 - [Utility Methods](#utility-methods)
 - [Static Methods](#static-methods)
 
@@ -36,7 +37,7 @@ npm i frostdatetime
 In Node.js:
 
 ```javascript
-const { DateInterval, DateTime, DateTimeImmutable } = require('frostdatetime');
+const { DateTime, DateTimeImmutable } = require('frostdatetime');
 ```
 
 
@@ -105,6 +106,21 @@ The `isValid` property on the created *DateTime* object can be used to determine
 const date = DateTime.fromFormat(formatString, dateString, options);
 ```
 
+**From ISO Format**
+
+- `dateString` is a string representing the date you are parsing.
+- `options` is an object containing properties to define the new date.
+    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
+
+If the `dateString` contains time zone or offset information, and the `timeZone` option is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
+
+The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
+
+```javascript
+const date = DateTime.fromISOFormat(dateString, options);
+```
+
 **From Timestamp**
 
 - `timestamp` is the number of seconds since the UNIX epoch.
@@ -159,7 +175,7 @@ const dateString = date.toDateString();
 
 **To ISO String**
 
-Format the current date using "*yyyy-MM-dd'THH:mm:ss.0xxx*" (in English and UTC time zone).
+Format the current date using "*yyyy-MM-dd'THH:mm:ss.SSSSSSxxx*" (in English and UTC time zone).
 
 ```javascript
 const isoString = date.toISOString();
@@ -420,16 +436,6 @@ date.setWeekYear(weekYear, week, dayOfWeek);
 
 ## Time Attributes
 
-**Get Beat (Internet Swatch Time)**
-
-Get the internet swatch time beat in current time zone.
-
-The `beat` returned will be between *0* and *999*.
-
-```javascript
-const beat = date.getBeat();
-```
-
 **Get Hours**
 
 Get the hours of the day in current time zone.
@@ -468,16 +474,6 @@ The `seconds` returned will be between *0* and *59*.
 
 ```javascript
 const seconds = date.getSeconds();
-```
-
-**Set Beat (Internet Swatch Time)**
-
-Set the internet swatch time beat in current time zone.
-
-- `beat` is a number representing the beat of the day (between *0* and *999*).
-
-```javascript
-date.setBeat(beat);
 ```
 
 **Set Hours**
@@ -527,36 +523,6 @@ date.setSeconds(seconds, millis);
 ```
 
 
-## Time Zones
-
-**Get Time Zone**
-
-Get the name of the current time zone.
-
-```javascript
-const timeZone = date.getTimeZone();
-```
-
-**Get Time Zone Offset**
-
-Get the UTC offset (in minutes) of the current time zone.
-
-```javascript
-const offset = date.getTimeZoneOffset();
-```
-
-**Set Time Zone**
-
-Set the current time zone.
-
-- `timeZone` is the name of the new time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
-- `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
-
-```javascript
-date.setTimeZone(timeZone, adjust);
-```
-
-
 ## Timestamps
 
 **Get Milliseconds**
@@ -589,6 +555,57 @@ Set the number of seconds since the UNIX epoch.
 
 ```javascript
 date.setTimestamp(timestamp);
+```
+
+
+## Time Zones
+
+**Get Time Zone**
+
+Get the name of the current time zone.
+
+```javascript
+const timeZone = date.getTimeZone();
+```
+
+**Get Time Zone Offset**
+
+Get the UTC offset (in minutes) of the current time zone.
+
+```javascript
+const offset = date.getTimeZoneOffset();
+```
+
+**Set Time Zone**
+
+Set the current time zone.
+
+- `timeZone` is the name of the new time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
+- `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
+
+```javascript
+date.setTimeZone(timeZone, adjust);
+```
+
+
+## Locales
+
+**Get Locale**
+
+Get the name of the current locale.
+
+```javascript
+const locale = date.getLocale();
+```
+
+**Set Locale**
+
+Set the current locale.
+
+- `locale` is the name of the new locale.
+
+```javascript
+date.setLocale(timeZone, locale);
 ```
 
 

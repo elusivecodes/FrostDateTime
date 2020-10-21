@@ -12,6 +12,25 @@ class DateFormatter {
     constructor(locale) {
         this.locale = locale;
 
+        let weekStart;
+        const localeTest = locale.toLowerCase().split('-');
+        while (!weekStart && localeTest.length) {
+            for (const start in this.constructor._weekStart) {
+                const locales = this.constructor._weekStart[start];
+
+                if (locales.includes(localeTest.join('-'))) {
+                    weekStart = start;
+                    break;
+                }
+            }
+
+            localeTest.pop();
+        }
+
+        this.weekStartOffset = weekStart ?
+            weekStart - 2 :
+            0;
+
         this._data = {};
     }
 

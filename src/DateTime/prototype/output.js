@@ -45,14 +45,14 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Format the current date using "yyyy-MM-dd'THH:mm:ss.0xxx".
+     * Format the current date using "yyyy-MM-dd'THH:mm:ss.SSSSSSxxx".
      * @returns {string} The formatted date string.
      */
     toISOString() {
         return this.constructor.fromDate(this._utcDate, {
             locale: 'en-US',
             timeZone: 'UTC'
-        }).toString();
+        }).format(this.constructor.formats.rfc3339_extended);
     },
 
     /**
@@ -77,7 +77,7 @@ Object.assign(DateTime.prototype, {
      */
     toUTCString() {
         return this.constructor.fromDate(this._utcDate, {
-            locale: this._formatter.locale,
+            locale: this.getLocale(),
             timeZone: 'UTC'
         }).toString();
     }

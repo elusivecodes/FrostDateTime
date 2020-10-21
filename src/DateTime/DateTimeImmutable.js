@@ -5,22 +5,27 @@
 class DateTimeImmutable extends DateTime {
 
     /**
+     * Set the current locale.
+     * @param {string} locale The name of the timeZone.
+     * @returns {DateTimeImmutable} A new DateTimeImmutable object.
+     */
+    setLocale(locale) {
+        return this.constructor.fromDate(this._utcDate, {
+            locale,
+            timeZone: this.getTimeZone()
+        });
+    }
+
+    /**
      * Set the number of milliseconds since the UNIX epoch.
      * @param {number} time The number of milliseconds since the UNIX epoch.
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTime(time) {
-        const tempDate = new DateTimeImmutable(null, {
-            locale: this._formatter.locale,
+        return this.constructor.fromTimestamp(time / 1000, {
+            locale: this.getLocale(),
             timeZone: this.getTimeZone()
         });
-        tempDate._utcDate = new Date(time);
-
-        if (tempDate._dynamicTz) {
-            tempDate._checkOffset();
-        }
-
-        return tempDate;
     }
 
     /**
@@ -29,11 +34,10 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTimeZone(timeZone) {
-        const tempDate = new DateTimeImmutable(null, {
-            locale: this._formatter.locale,
+        return this.constructor.fromDate(this._utcDate, {
+            locale: this.getLocale(),
             timeZone
         });
-        return tempDate.setTime(this.getTime());
     }
 
     /**
@@ -42,14 +46,10 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} The DateTime object.
      */
     setTimeZoneOffset(offset) {
-        const tempDate = this.clone();
-
-        tempDate._dynamicTz = false;
-        tempDate._offset = offset || 0;
-        tempDate._timeZone = this.constructor._formatOffset(tempDate._offset);
-        tempDate._formatter = null;
-
-        return tempDate;
+        return this.constructor.fromDate(this._utcDate, {
+            locale: this.getLocale(),
+            timeZone: DateFormatter.formatOffset(offset)
+        });
     }
 
 }

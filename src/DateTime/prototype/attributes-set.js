@@ -5,26 +5,6 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Set the internet swatch time beat in current timeZone.
-     * @param {number} beat The internet swatch time beat.
-     * @returns {DateTime} The DateTime object.
-     */
-    setBeat(beat) {
-        return this.setTime(
-            new Date(
-                this.getTime()
-                + 3600000
-            ).setUTCHours(
-                0,
-                0,
-                0,
-                beat * 86400
-            )
-            - 3600000
-        );
-    },
-
-    /**
      * Set the date of the month in current timeZone.
      * @param {number} date The date of the month.
      * @returns {DateTime} The DateTime object.
@@ -51,8 +31,8 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the ISO day of the week in current timeZone.
-     * @param {number} day The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * Set the local day of the week in current timeZone.
+     * @param {number} day The local day of the week. (1 - 7)
      * @returns {DateTime} The DateTime object.
      */
     setDayOfWeek(day) {
@@ -106,6 +86,15 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             new Date(this._getOffsetTime()).setUTCHours(...args)
         );
+    },
+
+    /**
+     * Set the current locale.
+     * @param {string} locale The name of the timeZone.
+     * @returns {DateTime} The DateTime object.
+     */
+    setLocale(locale) {
+        this._formatter = DateFormatter.load(locale);
     },
 
     /**
@@ -214,7 +203,7 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the current timeZone.
      * @param {string} timeZone The name of the timeZone.
-     * @param {Boolean} [adjust=false] Whether to adjsut the timestamp.
+     * @param {Boolean} [adjust=false] Whether to adjust the timestamp.
      * @returns {DateTime} The DateTime object.
      */
     setTimeZone(timeZone, adjust = false) {
@@ -228,7 +217,7 @@ Object.assign(DateTime.prototype, {
             if (this._offset && match[1] === '+') {
                 this._offset *= -1;
             }
-            this._timeZone = this.constructor._formatOffset(this._offset);
+            this._timeZone = DateFormatter.formatOffset(this._offset);
         } else {
             if (['Z', 'GMT'].includes(timeZone)) {
                 timeZone = 'UTC';
@@ -260,16 +249,16 @@ Object.assign(DateTime.prototype, {
     setTimeZoneOffset(offset) {
         this._dynamicTz = false;
         this._offset = offset || 0;
-        this._timeZone = this.constructor._formatOffset(this._offset);
+        this._timeZone = DateFormatter.formatOffset(this._offset);
         this._formatter = null;
 
         return this;
     },
 
     /**
-     * Set the ISO day of the week in current timeZone (and optionally, day of the week).
-     * @param {number} week The ISO week.
-     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * Set the local day of the week in current timeZone (and optionally, day of the week).
+     * @param {number} week The local week.
+     * @param {null|number} [day] The local day of the week. (1 - 7)
      * @returns {DateTime} The DateTime object.
      */
     setWeek(week, day = null) {
@@ -292,7 +281,8 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             tempDate.setUTCDate(
                 tempDate.getUTCDate()
-                - this.constructor._isoDay(
+                - this.constructor._localDay(
+                    this.formatter.weekStartOffset,
                     tempDate.getUTCDay()
                 )
                 + parseInt(day)
@@ -316,10 +306,10 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the ISO day of the week in current timeZone (and optionally, week and day of the week).
-     * @param {number} year The ISO year.
-     * @param {null|number} [week] The ISO week.
-     * @param {null|number} [day] The ISO day of the week. (1 - Monday, 7 - Sunday)
+     * Set the local day of the week in current timeZone (and optionally, week and day of the week).
+     * @param {number} year The local year.
+     * @param {null|number} [week] The local week.
+     * @param {null|number} [day] The local day of the week. (1 - 7)
      * @returns {DateTime} The DateTime object.
      */
     setWeekYear(year, week = null, day = null) {
@@ -346,7 +336,8 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             tempDate.setUTCDate(
                 tempDate.getUTCDate()
-                - this.constructor._isoDay(
+                - this.constructor._localDay(
+                    this.formatter.weekStartOffset,
                     tempDate.getUTCDay()
                 )
                 + parseInt(day)

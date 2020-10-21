@@ -5,26 +5,6 @@
 Object.assign(DateTime.prototype, {
 
     /**
-     * Get the internet swatch time beat in current timeZone.
-     * @returns {number} The internet swatch time beat.
-     */
-    getBeat() {
-        const tempDate = new Date(
-            this.getTime()
-            + 3600000
-        );
-        return (
-            (
-                tempDate.getUTCHours() * 3600000
-                + tempDate.getUTCMinutes() * 60000
-                + tempDate.getUTCSeconds() * 1000
-                + tempDate.getUTCMilliseconds()
-            )
-            / 86400
-        ) | 0;
-    },
-
-    /**
      * Get the date of the month in current timeZone.
      * @returns {number} The date of the month.
      */
@@ -41,11 +21,12 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the ISO day of the week in current timeZone.
-     * @returns {number} The ISO day of the week. (1 - Monday, 7 = Sunday)
+     * Get the local day of the week in current timeZone.
+     * @returns {number} The local day of the week. (1 - 7)
      */
     getDayOfWeek() {
-        return this.constructor._isoDay(
+        return this.constructor._localDay(
+            this.formatter.weekStartOffset,
             this.getDay()
         );
     },
@@ -79,6 +60,14 @@ Object.assign(DateTime.prototype, {
      */
     getHours() {
         return new Date(this._getOffsetTime()).getUTCHours();
+    },
+
+    /**
+     * Get the name of the current locale.
+     * @returns {string} The name of the current locale.
+     */
+    getLocale() {
+        return this._formatter.locale;
     },
 
     /**
@@ -166,17 +155,19 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the ISO week in current timeZone.
-     * @returns {number} The ISO week. (1, 53)
+     * Get the local week in current timeZone.
+     * @returns {number} The local week. (1, 53)
      */
     getWeek() {
         const
-            week = this.constructor._isoDate(
+            week = this.constructor._localDate(
+                this.formatter.weekStartOffset,
                 this.getYear(),
                 this.getMonth(),
                 this.getDate()
             ),
-            firstWeek = this.constructor._isoDate(
+            firstWeek = this.constructor._localDate(
+                this.formatter.weekStartOffset,
                 week.getUTCFullYear(),
                 1,
                 4
@@ -205,7 +196,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getWeekYear() {
-        return this.constructor._isoDate(
+        return this.constructor._localDate(
+            this.formatter.weekStartOffset,
             this.getYear(),
             this.getMonth(),
             this.getDate()

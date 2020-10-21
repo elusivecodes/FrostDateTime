@@ -10,7 +10,7 @@ Object.assign(DateTime.prototype, {
      */
     clone() {
         return this.constructor.fromTimestamp(this.getTimestamp(), {
-            locale: this._formatter.locale,
+            locale: this.getLocale(),
             timeZone: this.getTimeZone()
         });
     },
@@ -291,8 +291,12 @@ Object.assign(DateTime.prototype, {
         }
 
         const year = this.getYear(),
-            dateA = DateTime.fromArray([year, 1, 1], this._timeZone),
-            dateB = DateTime.fromArray([year, 6, 1], this._timeZone);
+            dateA = DateTime.fromArray([year, 1, 1], {
+                timeZone: this.getTimeZone()
+            }),
+            dateB = DateTime.fromArray([year, 6, 1], {
+                timeZone: this.getTimeZone()
+            });
 
         return this._offset < Math.max(dateA._offset, dateB._offset);
     },
