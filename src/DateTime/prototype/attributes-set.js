@@ -31,21 +31,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the local day of the week in current timeZone.
-     * @param {number} day The local day of the week. (1 - 7)
-     * @returns {DateTime} The DateTime object.
-     */
-    setDayOfWeek(day) {
-        return this._setOffsetTime(
-            new Date(this._getOffsetTime()).setUTCDate(
-                this.getDate()
-                - this.getDayOfWeek()
-                + parseInt(day)
-            )
-        );
-    },
-
-    /**
      * Set the day of the week in month in current timeZone.
      * @param {number} week The day of the week in month.
      * @returns {DateTime} The DateTime object.
@@ -263,7 +248,7 @@ Object.assign(DateTime.prototype, {
      */
     setWeek(week, day = null) {
         if (day === null) {
-            day = this.getDayOfWeek();
+            day = this.getWeekDay();
         }
 
         const tempDate = new Date(this._getOffsetTime());
@@ -281,10 +266,24 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             tempDate.setUTCDate(
                 tempDate.getUTCDate()
-                - this.constructor._localDay(
-                    this.formatter.weekStartOffset,
+                - this.formatter.weekDay(
                     tempDate.getUTCDay()
                 )
+                + parseInt(day)
+            )
+        );
+    },
+
+    /**
+     * Set the local day of the week in current timeZone.
+     * @param {number} day The local day of the week. (1 - 7)
+     * @returns {DateTime} The DateTime object.
+     */
+    setWeekDay(day) {
+        return this._setOffsetTime(
+            new Date(this._getOffsetTime()).setUTCDate(
+                this.getDate()
+                - this.getWeekDay()
                 + parseInt(day)
             )
         );
@@ -318,7 +317,7 @@ Object.assign(DateTime.prototype, {
         }
 
         if (day === null) {
-            day = this.getDayOfWeek();
+            day = this.getWeekDay();
         }
 
         const tempDate = new Date(this._getOffsetTime());
@@ -336,8 +335,7 @@ Object.assign(DateTime.prototype, {
         return this._setOffsetTime(
             tempDate.setUTCDate(
                 tempDate.getUTCDate()
-                - this.constructor._localDay(
-                    this.formatter.weekStartOffset,
+                - this.formatter.weekDay(
                     tempDate.getUTCDay()
                 )
                 + parseInt(day)

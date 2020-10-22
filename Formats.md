@@ -382,6 +382,16 @@
             <td>Long localized GMT format</td>
         </tr>
         <tr>
+            <td><code>z.zzz</code></td>
+            <td><em>PDT</em></td>
+            <td>Short specific non-location format*</td>
+        </tr>
+        <tr>
+            <td><code>zzzz</code></td>
+            <td><em>Pacific Daylight Time</em></td>
+            <td>Long specific non-location format*</td>
+        </tr>
+        <tr>
             <td><code>VV</code></td>
             <td><em>America/Los_Angeles</em></td>
             <td>Long time zone ID</td>
@@ -418,3 +428,4 @@
         </tr>
     </tbody>
 </table>
+<em>* Output only</em>

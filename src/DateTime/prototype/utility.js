@@ -385,6 +385,17 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Get the name of the current timeZone.
+     * @param {string} [type=long] The formatting type.
+     * @returns {string} The name of the time zone.
+     */
+    timeZoneName(type = 'long') {
+        return this._dynamicTz ?
+            this.formatter.formatTimeZoneName(this._utcDate, this.getTimeZone(), type) :
+            DateFormatter.formatOffset(this.getTimeZoneOffset(), true, type === 'short');
+    },
+
+    /**
      * Get the number of weeks in the current ISO year.
      * @returns {number} The number of weeks in the current ISO year.
      */

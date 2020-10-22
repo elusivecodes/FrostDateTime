@@ -36,7 +36,7 @@ Object.assign(DateTime.prototype, {
                 return this.setDay(6)
                     .setHours(23, 59, 59, 999);
             case 'isoweek':
-                return this.setDayOfWeek(7)
+                return this.setWeekDay(7)
                     .setHours(23, 59, 59, 999);
             case 'month':
                 return this.setDate(this.daysInMonth())
@@ -75,7 +75,7 @@ Object.assign(DateTime.prototype, {
                 return this.setDay(0)
                     .setHours(0, 0, 0, 0);
             case 'isoweek':
-                return this.setDayOfWeek(1)
+                return this.setWeekDay(1)
                     .setHours(0, 0, 0, 0);
             case 'month':
                 return this.setDate(1)

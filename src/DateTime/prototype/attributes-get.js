@@ -21,23 +21,12 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the local day of the week in current timeZone.
-     * @returns {number} The local day of the week. (1 - 7)
-     */
-    getDayOfWeek() {
-        return this.constructor._localDay(
-            this.formatter.weekStartOffset,
-            this.getDay()
-        );
-    },
-
-    /**
      * Get the day of the week in month in current timeZone.
      * @returns {number} The day of the week in month.
      */
     getDayOfWeekInMonth() {
         const weeks = this.getWeek() - firstWeek.getWeek();
-        return this.clone().setDate(1).getDayOfWeek() > this.getDayOfWeek() ?
+        return this.clone().setDate(1).getWeekDay() > this.getWeekDay() ?
             weeks :
             weeks + 1;
     },
@@ -160,14 +149,12 @@ Object.assign(DateTime.prototype, {
      */
     getWeek() {
         const
-            week = this.constructor._localDate(
-                this.formatter.weekStartOffset,
+            week = this.formatter.weekDate(
                 this.getYear(),
                 this.getMonth(),
                 this.getDate()
             ),
-            firstWeek = this.constructor._localDate(
-                this.formatter.weekStartOffset,
+            firstWeek = this.formatter.weekDate(
                 week.getUTCFullYear(),
                 1,
                 4
@@ -180,6 +167,16 @@ Object.assign(DateTime.prototype, {
                     / 604800000
                 ) | 0
             );
+    },
+
+    /**
+     * Get the local day of the week in current timeZone.
+     * @returns {number} The local day of the week. (1 - 7)
+     */
+    getWeekDay() {
+        return this.formatter.weekDay(
+            this.getDay()
+        );
     },
 
     /**
@@ -196,8 +193,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getWeekYear() {
-        return this.constructor._localDate(
-            this.formatter.weekStartOffset,
+        return this.formatter.weekDate(
             this.getYear(),
             this.getMonth(),
             this.getDate()

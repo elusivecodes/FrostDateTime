@@ -27,26 +27,7 @@
          */
         constructor(locale) {
             this.locale = locale;
-
-            let weekStart;
-            const localeTest = locale.toLowerCase().split('-');
-            while (!weekStart && localeTest.length) {
-                for (const start in this.constructor._weekStart) {
-                    const locales = this.constructor._weekStart[start];
-
-                    if (locales.includes(localeTest.join('-'))) {
-                        weekStart = start;
-                        break;
-                    }
-                }
-
-                localeTest.pop();
-            }
-
-            this.weekStartOffset = weekStart ?
-                weekStart - 2 :
-                0;
-
+            this._weekStartOffset = this.constructor.getWeekStartOffset(this.locale);
             this._data = {};
         }
 
@@ -105,6 +86,20 @@
         }
 
         /**
+         * Format a time zone as a locale string.
+         * @param {Date} date The date to use.
+         * @param {string} timeZone The time zone to format.
+         * @param {string} [type=long] The formatting type.
+         * @returns {string} The formatted string.
+         */
+        formatTimeZoneName(date, timeZone, type = 'long') {
+            return this._makeFormatter({ second: 'numeric', timeZone, timeZoneName: type })
+                .formatToParts(date)
+                .find(part => part.type === 'timeZoneName')
+                .value;
+        }
+
+        /**
          * Parse a day from a locale string.
          * @param {string} value The value to parse.
          * @param {string} [type=long] The formatting type.
@@ -159,6 +154,40 @@
         }
 
         /**
+         * Create a Date object set to Thursday of the local week.
+         * @param {number} year The year.
+         * @param {number} month The month.
+         * @param {number} date The date.
+         * @returns {Date} A new Date object.
+         */
+        weekDate(...args) {
+            if (args.length > 1) {
+                args[1]--;
+            }
+
+            const date = new Date(
+                Date.UTC(...args)
+            );
+
+            date.setUTCDate(
+                date.getUTCDate()
+                - this.weekDay(date.getUTCDay())
+                + this.weekDay(4)
+            );
+
+            return date;
+        }
+
+        /**
+         * Convert a day of the week to a local format.
+         * @param {number} day The day of the week.
+         * @returns {number} The local day of the week.
+         */
+        weekDay(day) {
+            return (7 + parseInt(day) - this._weekStartOffset) % 7 || 7;
+        }
+
+        /**
          * Format a number to an offset string.
          * @param {number} offset The offset to format.
          * @param {Boolean} [useColon=true] Whether to use a colon seperator.
@@ -199,6 +228,32 @@
                 default:
                     return 'short';
             }
+        }
+
+        /**
+         * Get the week start offset for a locale.
+         * @param {string} [locale] The locale to load.
+         * @returns {number} The week start offset.
+         */
+        static getWeekStartOffset(locale) {
+            let weekStart;
+            const localeTest = locale.toLowerCase().split('-');
+            while (!weekStart && localeTest.length) {
+                for (const start in this._weekStart) {
+                    const locales = this._weekStart[start];
+
+                    if (locales.includes(localeTest.join('-'))) {
+                        weekStart = start;
+                        break;
+                    }
+                }
+
+                localeTest.pop();
+            }
+
+            return weekStart ?
+                weekStart - 2 :
+                0; 
         }
 
         /**
@@ -255,8 +310,13 @@
         y: {
             key: 'year',
             regex: formatter => formatter.numberRegExp(),
-            input: (formatter, value) => {
+            input: (formatter, value, length) => {
                 value = formatter.parseNumber(value);
+
+                if (length !== 2) {
+                    return value;
+                }
+
                 return value > 40 ?
                     1900 + value:
                     2000 + value;
@@ -274,7 +334,17 @@
         Y: {
             key: 'weekYear',
             regex: formatter => formatter.numberRegExp(),
-            input: (formatter, value) => formatter.parseNumber(value),
+            input: (formatter, value, length) => {
+                value = formatter.parseNumber(value);
+
+                if (length !== 2) {
+                    return value;
+                }
+
+                return value > 40 ?
+                    1900 + value:
+                    2000 + value;
+            },
             output: (datetime, length) =>
                 datetime.formatter.formatNumber(
                     datetime.getWeekYear(),
@@ -450,9 +520,9 @@
                 )
         },
 
-        // day of week name
+        // week day name
         E: {
-            key: 'dayOfWeek',
+            key: 'weekDay',
             regex: (formatter, length) => {
                 const type = DateFormatter.getType(length);
                 return formatter.getDays(type, false).join('|');
@@ -468,9 +538,9 @@
             }
         },
 
-        // day of week
+        // week day
         e: {
-            key: 'dayOfWeek',
+            key: 'weekDay',
             maxLength: 5,
             regex: (formatter, length) => {
                 switch (length) {
@@ -507,9 +577,9 @@
             }
         },
 
-        // day of week (standalone)
+        // week day (standalone)
         c: {
-            key: 'dayOfWeek',
+            key: 'weekDay',
             maxLength: 5,
             regex: (formatter, length) => {
                 switch (length) {
@@ -669,6 +739,16 @@
 
         /* TIMEZONE/OFFSET */
 
+        z: {
+            output: (datetime, length) => {
+                if (length === 5) {
+                    length = 1;
+                }
+                const type = DateFormatter.getType(length);
+                return datetime.timeZoneName(type);
+            }
+        },
+
         Z: {
             key: 'timeZone',
             regex: (_, length) => {
@@ -696,7 +776,7 @@
                         break;
                 }
 
-                return prefix + DateFormatter.formatOffset(datetime._offset, useColon);
+                return prefix + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
             }
         },
 
@@ -720,7 +800,7 @@
                         optionalMinutes = true;
                 }
 
-                return 'GMT' + DateFormatter.formatOffset(datetime._offset, true, optionalMinutes);
+                return 'GMT' + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), true, optionalMinutes);
             }
         },
 
@@ -747,7 +827,9 @@
             },
             input: (_, value) => value,
             output: (datetime, length) => {
-                if (!datetime._offset) {
+                const offset = datetime.getTimeZoneOffset();
+
+                if (!offset) {
                     return 'Z';
                 }
 
@@ -762,7 +844,7 @@
                         break;
                 }
 
-                return DateFormatter.formatOffset(datetime._offset, useColon);
+                return DateFormatter.formatOffset(offset, useColon);
             }
         },
 
@@ -793,7 +875,7 @@
                         break;
                 }
 
-                return DateFormatter.formatOffset(datetime._offset, useColon);
+                return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
             }
         }
 
@@ -1148,23 +1230,12 @@
         },
 
         /**
-         * Get the local day of the week in current timeZone.
-         * @returns {number} The local day of the week. (1 - 7)
-         */
-        getDayOfWeek() {
-            return this.constructor._localDay(
-                this.formatter.weekStartOffset,
-                this.getDay()
-            );
-        },
-
-        /**
          * Get the day of the week in month in current timeZone.
          * @returns {number} The day of the week in month.
          */
         getDayOfWeekInMonth() {
             const weeks = this.getWeek() - firstWeek.getWeek();
-            return this.clone().setDate(1).getDayOfWeek() > this.getDayOfWeek() ?
+            return this.clone().setDate(1).getWeekDay() > this.getWeekDay() ?
                 weeks :
                 weeks + 1;
         },
@@ -1287,14 +1358,12 @@
          */
         getWeek() {
             const
-                week = this.constructor._localDate(
-                    this.formatter.weekStartOffset,
+                week = this.formatter.weekDate(
                     this.getYear(),
                     this.getMonth(),
                     this.getDate()
                 ),
-                firstWeek = this.constructor._localDate(
-                    this.formatter.weekStartOffset,
+                firstWeek = this.formatter.weekDate(
                     week.getUTCFullYear(),
                     1,
                     4
@@ -1307,6 +1376,16 @@
                         / 604800000
                     ) | 0
                 );
+        },
+
+        /**
+         * Get the local day of the week in current timeZone.
+         * @returns {number} The local day of the week. (1 - 7)
+         */
+        getWeekDay() {
+            return this.formatter.weekDay(
+                this.getDay()
+            );
         },
 
         /**
@@ -1323,8 +1402,7 @@
          * @returns {number} The ISO year.
          */
         getWeekYear() {
-            return this.constructor._localDate(
-                this.formatter.weekStartOffset,
+            return this.formatter.weekDate(
                 this.getYear(),
                 this.getMonth(),
                 this.getDate()
@@ -1360,21 +1438,6 @@
                 new Date(this._getOffsetTime()).setUTCDate(
                     this.getDate()
                     - this.getDay()
-                    + parseInt(day)
-                )
-            );
-        },
-
-        /**
-         * Set the local day of the week in current timeZone.
-         * @param {number} day The local day of the week. (1 - 7)
-         * @returns {DateTime} The DateTime object.
-         */
-        setDayOfWeek(day) {
-            return this._setOffsetTime(
-                new Date(this._getOffsetTime()).setUTCDate(
-                    this.getDate()
-                    - this.getDayOfWeek()
                     + parseInt(day)
                 )
             );
@@ -1598,7 +1661,7 @@
          */
         setWeek(week, day = null) {
             if (day === null) {
-                day = this.getDayOfWeek();
+                day = this.getWeekDay();
             }
 
             const tempDate = new Date(this._getOffsetTime());
@@ -1616,10 +1679,24 @@
             return this._setOffsetTime(
                 tempDate.setUTCDate(
                     tempDate.getUTCDate()
-                    - this.constructor._localDay(
-                        this.formatter.weekStartOffset,
+                    - this.formatter.weekDay(
                         tempDate.getUTCDay()
                     )
+                    + parseInt(day)
+                )
+            );
+        },
+
+        /**
+         * Set the local day of the week in current timeZone.
+         * @param {number} day The local day of the week. (1 - 7)
+         * @returns {DateTime} The DateTime object.
+         */
+        setWeekDay(day) {
+            return this._setOffsetTime(
+                new Date(this._getOffsetTime()).setUTCDate(
+                    this.getDate()
+                    - this.getWeekDay()
                     + parseInt(day)
                 )
             );
@@ -1653,7 +1730,7 @@
             }
 
             if (day === null) {
-                day = this.getDayOfWeek();
+                day = this.getWeekDay();
             }
 
             const tempDate = new Date(this._getOffsetTime());
@@ -1671,8 +1748,7 @@
             return this._setOffsetTime(
                 tempDate.setUTCDate(
                     tempDate.getUTCDate()
-                    - this.constructor._localDay(
-                        this.formatter.weekStartOffset,
+                    - this.formatter.weekDay(
                         tempDate.getUTCDay()
                     )
                     + parseInt(day)
@@ -1920,7 +1996,7 @@
                     return this.setDay(6)
                         .setHours(23, 59, 59, 999);
                 case 'isoweek':
-                    return this.setDayOfWeek(7)
+                    return this.setWeekDay(7)
                         .setHours(23, 59, 59, 999);
                 case 'month':
                     return this.setDate(this.daysInMonth())
@@ -1959,7 +2035,7 @@
                     return this.setDay(0)
                         .setHours(0, 0, 0, 0);
                 case 'isoweek':
-                    return this.setDayOfWeek(1)
+                    return this.setWeekDay(1)
                         .setHours(0, 0, 0, 0);
                 case 'month':
                     return this.setDate(1)
@@ -2008,20 +2084,25 @@
                     position = match.index,
                     length = match[0].length;
 
+                if (position) {
+                    output += formatString.substring(0, position);
+                }
+    
+                formatString = formatString.substring(position + length);
+
+                if (!token) {
+                    output += match[0].slice(1, -1);
+                    continue;
+                }
+
                 if (!(token in DateFormatter._formatDate)) {
                     throw new Error(`Invalid token in DateTime format: ${token}`);
                 }
 
-                if (position) {
-                    const formatTemp = formatString.substring(0, position);
-                    output += this.constructor._unescapeOutput(formatTemp);
-                }
-
                 output += DateFormatter._formatDate[token].output(this, length);
-                formatString = formatString.substring(position + length);
             }
 
-            output += this.constructor._unescapeOutput(formatString);
+            output += formatString;
 
             return output;
         },
@@ -2461,6 +2542,17 @@
         },
 
         /**
+         * Get the name of the current timeZone.
+         * @param {string} [type=long] The formatting type.
+         * @returns {string} The name of the time zone.
+         */
+        timeZoneName(type = 'long') {
+            return this._dynamicTz ?
+                this.formatter.formatTimeZoneName(this._utcDate, this.getTimeZone(), type) :
+                DateFormatter.formatOffset(this.getTimeZoneOffset(), true, type === 'short');
+        },
+
+        /**
          * Get the number of weeks in the current ISO year.
          * @returns {number} The number of weeks in the current ISO year.
          */
@@ -2535,17 +2627,24 @@
                     position = match.index,
                     length = match[0].length;
 
-                if (!(token in DateFormatter._formatDate)) {
-                    throw new Error(`Invalid token in DateTime format: ${token}`);
-                }
-
                 if (position) {
                     const formatTest = formatString.substring(0, position);
                     this._parseCompare(formatTest, dateString);
                 }
 
-                formatString = formatString.substring(position);
+                formatString = formatString.substring(position + length);
                 dateString = dateString.substring(position);
+
+                if (!token) {
+                    const literal = match[0].slice(1, -1);
+                    this._parseCompare(literal || `'`, dateString);
+                    dateString = dateString.substring(literal.length);
+                    continue;
+                }
+
+                if (!(token in DateFormatter._formatDate)) {
+                    throw new Error(`Invalid token in DateTime format: ${token}`);
+                }
 
                 const regExp = DateFormatter._formatDate[token].regex(formatter, length),
                     matchedValue = dateString.match(new RegExp(`^${regExp}`));
@@ -2559,7 +2658,6 @@
 
                 values.push({ key, value });
 
-                formatString = formatString.substring(length);
                 dateString = dateString.substring(matchedValue[0].length);
             }
 
@@ -2652,58 +2750,17 @@
     Object.assign(DateTime, {
 
         /**
-         * Create a Date object set to Thursday of the ISO week.
-         * @param {number} offset The week start offset.
-         * @param {number} year The year.
-         * @param {number} month The month.
-         * @param {number} date The date.
-         * @returns {Date} A new Date object.
-         */
-        _localDate(offset, ...args) {
-            if (args.length > 1) {
-                args[1]--;
-            }
-
-            const date = new Date(
-                Date.UTC(...args)
-            );
-            date.setUTCDate(
-                date.getUTCDate()
-                - this._localDay(offset, date.getUTCDay())
-                + this._localDay(offset, 4)
-            );
-            return date;
-        },
-
-        /**
-         * Convert a day of the week to a local format.
-         * @param {number} offset The week start offset.
-         * @param {number} day The day of the week.
-         * @returns {number} The local day of the week.
-         */
-        _localDay(offset, day) {
-            return (7 + parseInt(day) - offset) % 7 || 7;
-        },
-
-        /**
          * Compare a literal format string with a date string.
          * @param {string} formatString The literal format string.
          * @param {string} dateString The date string.
          */
         _parseCompare(formatString, dateString) {
-            let i = 0,
-                escaped = false;
+            let i = 0;
             for (const char of formatString) {
-                if (char === "'" && !escaped) {
-                    escaped = true;
-                    continue;
-                }
-
                 if (char !== dateString[i]) {
                     throw new Error(`Unmatched character in DateTime string: ${char}`);
                 }
 
-                escaped = false;
                 i++;
             }
         },
@@ -2725,7 +2782,6 @@
                     }
                     return datetime.setHours(hours);
                 },
-                dayOfWeek: (datetime, value) => datetime.setDayOfWeek(value),
                 dayOfWeekInMonth: (datetime, value) => datetime.setDayOfWeekInMonth(value),
                 dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
                 era: (datetime, value) => {
@@ -2751,30 +2807,11 @@
                 quarter: (datetime, value) => datetime.setQuarter(value),
                 seconds: (datetime, value) => datetime.setSeconds(value),
                 week: (datetime, value) => datetime.setWeek(value),
+                weekDay: (datetime, value) => datetime.setWeekDay(value),
                 weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
                 weekYear: (datetime, value) => datetime.setWeekYear(value),
                 year: (datetime, value) => datetime.setYear(value)
             };
-        },
-
-        /**
-         * Get unescaped characters from a literal format string.
-         * @param {string} formatString The literal format string.
-         * @returns {string} The unescaped characters.
-         */
-        _unescapeOutput(formatString) {
-            let output = '',
-                escaped = false;
-            for (const char of formatString) {
-                if (char === "'" && !escaped) {
-                    escaped = true;
-                    continue;
-                }
-
-                escaped = false;
-                output += char;
-            }
-            return output;
         }
 
     });
@@ -2938,7 +2975,7 @@
         _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
 
         // Format token RegExp
-        _formatTokenRegExp: /(?<!\')([a-z])\1*/i,
+        _formatTokenRegExp: /([a-z])\1*|'[^']*'/i,
 
         // Offset RegExp
         _offsetRegExp: /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/,
@@ -2949,7 +2986,7 @@
             ['era'],
             ['quarter', 'month', 'week', 'dayOfYear'],
             ['weekOfMonth'],
-            ['date', 'dayOfWeek'],
+            ['date', 'weekDay'],
             ['dayOfWeekInMonth'],
             ['hours24', 'hours12', 'dayPeriod'],
             ['minutes', 'seconds', 'milliseconds']

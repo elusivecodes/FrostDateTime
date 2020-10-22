@@ -11,26 +11,7 @@ class DateFormatter {
      */
     constructor(locale) {
         this.locale = locale;
-
-        let weekStart;
-        const localeTest = locale.toLowerCase().split('-');
-        while (!weekStart && localeTest.length) {
-            for (const start in this.constructor._weekStart) {
-                const locales = this.constructor._weekStart[start];
-
-                if (locales.includes(localeTest.join('-'))) {
-                    weekStart = start;
-                    break;
-                }
-            }
-
-            localeTest.pop();
-        }
-
-        this.weekStartOffset = weekStart ?
-            weekStart - 2 :
-            0;
-
+        this._weekStartOffset = this.constructor.getWeekStartOffset(this.locale);
         this._data = {};
     }
 
@@ -89,6 +70,20 @@ class DateFormatter {
     }
 
     /**
+     * Format a time zone as a locale string.
+     * @param {Date} date The date to use.
+     * @param {string} timeZone The time zone to format.
+     * @param {string} [type=long] The formatting type.
+     * @returns {string} The formatted string.
+     */
+    formatTimeZoneName(date, timeZone, type = 'long') {
+        return this._makeFormatter({ second: 'numeric', timeZone, timeZoneName: type })
+            .formatToParts(date)
+            .find(part => part.type === 'timeZoneName')
+            .value;
+    }
+
+    /**
      * Parse a day from a locale string.
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
@@ -143,6 +138,40 @@ class DateFormatter {
     }
 
     /**
+     * Create a Date object set to Thursday of the local week.
+     * @param {number} year The year.
+     * @param {number} month The month.
+     * @param {number} date The date.
+     * @returns {Date} A new Date object.
+     */
+    weekDate(...args) {
+        if (args.length > 1) {
+            args[1]--;
+        }
+
+        const date = new Date(
+            Date.UTC(...args)
+        );
+
+        date.setUTCDate(
+            date.getUTCDate()
+            - this.weekDay(date.getUTCDay())
+            + this.weekDay(4)
+        );
+
+        return date;
+    }
+
+    /**
+     * Convert a day of the week to a local format.
+     * @param {number} day The day of the week.
+     * @returns {number} The local day of the week.
+     */
+    weekDay(day) {
+        return (7 + parseInt(day) - this._weekStartOffset) % 7 || 7;
+    }
+
+    /**
      * Format a number to an offset string.
      * @param {number} offset The offset to format.
      * @param {Boolean} [useColon=true] Whether to use a colon seperator.
@@ -183,6 +212,32 @@ class DateFormatter {
             default:
                 return 'short';
         }
+    }
+
+    /**
+     * Get the week start offset for a locale.
+     * @param {string} [locale] The locale to load.
+     * @returns {number} The week start offset.
+     */
+    static getWeekStartOffset(locale) {
+        let weekStart;
+        const localeTest = locale.toLowerCase().split('-');
+        while (!weekStart && localeTest.length) {
+            for (const start in this._weekStart) {
+                const locales = this._weekStart[start];
+
+                if (locales.includes(localeTest.join('-'))) {
+                    weekStart = start;
+                    break;
+                }
+            }
+
+            localeTest.pop();
+        }
+
+        return weekStart ?
+            weekStart - 2 :
+            0; 
     }
 
     /**

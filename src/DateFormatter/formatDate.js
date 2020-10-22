@@ -30,8 +30,13 @@ DateFormatter._formatDate = {
     y: {
         key: 'year',
         regex: formatter => formatter.numberRegExp(),
-        input: (formatter, value) => {
+        input: (formatter, value, length) => {
             value = formatter.parseNumber(value);
+
+            if (length !== 2) {
+                return value;
+            }
+
             return value > 40 ?
                 1900 + value:
                 2000 + value;
@@ -49,7 +54,17 @@ DateFormatter._formatDate = {
     Y: {
         key: 'weekYear',
         regex: formatter => formatter.numberRegExp(),
-        input: (formatter, value) => formatter.parseNumber(value),
+        input: (formatter, value, length) => {
+            value = formatter.parseNumber(value);
+
+            if (length !== 2) {
+                return value;
+            }
+
+            return value > 40 ?
+                1900 + value:
+                2000 + value;
+        },
         output: (datetime, length) =>
             datetime.formatter.formatNumber(
                 datetime.getWeekYear(),
@@ -225,9 +240,9 @@ DateFormatter._formatDate = {
             )
     },
 
-    // day of week name
+    // week day name
     E: {
-        key: 'dayOfWeek',
+        key: 'weekDay',
         regex: (formatter, length) => {
             const type = DateFormatter.getType(length);
             return formatter.getDays(type, false).join('|');
@@ -243,9 +258,9 @@ DateFormatter._formatDate = {
         }
     },
 
-    // day of week
+    // week day
     e: {
-        key: 'dayOfWeek',
+        key: 'weekDay',
         maxLength: 5,
         regex: (formatter, length) => {
             switch (length) {
@@ -282,9 +297,9 @@ DateFormatter._formatDate = {
         }
     },
 
-    // day of week (standalone)
+    // week day (standalone)
     c: {
-        key: 'dayOfWeek',
+        key: 'weekDay',
         maxLength: 5,
         regex: (formatter, length) => {
             switch (length) {
@@ -444,6 +459,16 @@ DateFormatter._formatDate = {
 
     /* TIMEZONE/OFFSET */
 
+    z: {
+        output: (datetime, length) => {
+            if (length === 5) {
+                length = 1;
+            }
+            const type = DateFormatter.getType(length);
+            return datetime.timeZoneName(type);
+        }
+    },
+
     Z: {
         key: 'timeZone',
         regex: (_, length) => {
@@ -471,7 +496,7 @@ DateFormatter._formatDate = {
                     break;
             }
 
-            return prefix + DateFormatter.formatOffset(datetime._offset, useColon);
+            return prefix + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
         }
     },
 
@@ -495,7 +520,7 @@ DateFormatter._formatDate = {
                     optionalMinutes = true;
             }
 
-            return 'GMT' + DateFormatter.formatOffset(datetime._offset, true, optionalMinutes);
+            return 'GMT' + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), true, optionalMinutes);
         }
     },
 
@@ -522,7 +547,9 @@ DateFormatter._formatDate = {
         },
         input: (_, value) => value,
         output: (datetime, length) => {
-            if (!datetime._offset) {
+            const offset = datetime.getTimeZoneOffset();
+
+            if (!offset) {
                 return 'Z';
             }
 
@@ -537,7 +564,7 @@ DateFormatter._formatDate = {
                     break;
             }
 
-            return DateFormatter.formatOffset(datetime._offset, useColon);
+            return DateFormatter.formatOffset(offset, useColon);
         }
     },
 
@@ -568,7 +595,7 @@ DateFormatter._formatDate = {
                     break;
             }
 
-            return DateFormatter.formatOffset(datetime._offset, useColon);
+            return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
         }
     }
 

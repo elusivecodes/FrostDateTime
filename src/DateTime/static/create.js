@@ -63,17 +63,24 @@ Object.assign(DateTime, {
                 position = match.index,
                 length = match[0].length;
 
-            if (!(token in DateFormatter._formatDate)) {
-                throw new Error(`Invalid token in DateTime format: ${token}`);
-            }
-
             if (position) {
                 const formatTest = formatString.substring(0, position);
                 this._parseCompare(formatTest, dateString);
             }
 
-            formatString = formatString.substring(position);
+            formatString = formatString.substring(position + length);
             dateString = dateString.substring(position);
+
+            if (!token) {
+                const literal = match[0].slice(1, -1);
+                this._parseCompare(literal || `'`, dateString);
+                dateString = dateString.substring(literal.length);
+                continue;
+            }
+
+            if (!(token in DateFormatter._formatDate)) {
+                throw new Error(`Invalid token in DateTime format: ${token}`);
+            }
 
             const regExp = DateFormatter._formatDate[token].regex(formatter, length),
                 matchedValue = dateString.match(new RegExp(`^${regExp}`));
@@ -87,7 +94,6 @@ Object.assign(DateTime, {
 
             values.push({ key, value });
 
-            formatString = formatString.substring(length);
             dateString = dateString.substring(matchedValue[0].length);
         }
 

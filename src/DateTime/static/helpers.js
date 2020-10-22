@@ -5,58 +5,17 @@
 Object.assign(DateTime, {
 
     /**
-     * Create a Date object set to Thursday of the ISO week.
-     * @param {number} offset The week start offset.
-     * @param {number} year The year.
-     * @param {number} month The month.
-     * @param {number} date The date.
-     * @returns {Date} A new Date object.
-     */
-    _localDate(offset, ...args) {
-        if (args.length > 1) {
-            args[1]--;
-        }
-
-        const date = new Date(
-            Date.UTC(...args)
-        );
-        date.setUTCDate(
-            date.getUTCDate()
-            - this._localDay(offset, date.getUTCDay())
-            + this._localDay(offset, 4)
-        );
-        return date;
-    },
-
-    /**
-     * Convert a day of the week to a local format.
-     * @param {number} offset The week start offset.
-     * @param {number} day The day of the week.
-     * @returns {number} The local day of the week.
-     */
-    _localDay(offset, day) {
-        return (7 + parseInt(day) - offset) % 7 || 7;
-    },
-
-    /**
      * Compare a literal format string with a date string.
      * @param {string} formatString The literal format string.
      * @param {string} dateString The date string.
      */
     _parseCompare(formatString, dateString) {
-        let i = 0,
-            escaped = false;
+        let i = 0;
         for (const char of formatString) {
-            if (char === "'" && !escaped) {
-                escaped = true;
-                continue;
-            }
-
             if (char !== dateString[i]) {
                 throw new Error(`Unmatched character in DateTime string: ${char}`);
             }
 
-            escaped = false;
             i++;
         }
     },
@@ -78,7 +37,6 @@ Object.assign(DateTime, {
                 }
                 return datetime.setHours(hours);
             },
-            dayOfWeek: (datetime, value) => datetime.setDayOfWeek(value),
             dayOfWeekInMonth: (datetime, value) => datetime.setDayOfWeekInMonth(value),
             dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
             era: (datetime, value) => {
@@ -104,30 +62,11 @@ Object.assign(DateTime, {
             quarter: (datetime, value) => datetime.setQuarter(value),
             seconds: (datetime, value) => datetime.setSeconds(value),
             week: (datetime, value) => datetime.setWeek(value),
+            weekDay: (datetime, value) => datetime.setWeekDay(value),
             weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
             weekYear: (datetime, value) => datetime.setWeekYear(value),
             year: (datetime, value) => datetime.setYear(value)
         };
-    },
-
-    /**
-     * Get unescaped characters from a literal format string.
-     * @param {string} formatString The literal format string.
-     * @returns {string} The unescaped characters.
-     */
-    _unescapeOutput(formatString) {
-        let output = '',
-            escaped = false;
-        for (const char of formatString) {
-            if (char === "'" && !escaped) {
-                escaped = true;
-                continue;
-            }
-
-            escaped = false;
-            output += char;
-        }
-        return output;
     }
 
 });

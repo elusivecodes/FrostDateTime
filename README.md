@@ -330,16 +330,6 @@ date.setYear(year, month, date);
 
 ## Week Attributes
 
-**Get Day Of Week**
-
-Get the local day of the week in current time zone.
-
-The `dayOfWeek` returned will be between *1* (Monday) and *7* (Sunday).
-
-```javascript
-const dayOfWeek = date.getDayOfWeek();
-```
-
 **Get Day Of Week In Month**
 
 Get the day of the week in the month, in current time zone.
@@ -358,6 +348,16 @@ The `week` returned will be between *1*  and *53* (week starting on Monday).
 
 ```javascript
 const week = date.getWeek();
+```
+
+**Get Week Day**
+
+Get the local day of the week in current time zone.
+
+The `weekDay` returned will be between *1* and *7*.
+
+```javascript
+const weekDay = date.getWeekDay();
 ```
 
 **Get Week Of Month**
@@ -380,16 +380,6 @@ This method is identical to `getYear()` except in cases where the week belongs t
 const weekYear = date.getWeekYear();
 ```
 
-**Set Day Of Week**
-
-Set the local day of the week in current time zone.
-
-- `dayOfWeek` is a number representing the week day (between *1* and *7*).
-
-```javascript
-date.setDayOfWeek(dayOfWeek);
-```
-
 **Set Day Of Week In Month**
 
 Set the day of the week in the month, in current time zone.
@@ -405,10 +395,20 @@ date.setDayOfWeekInMonth(dayOfWeekInMonth);
 Set the week in current time zone.
 
 - `week` is a number representing the week.
-- `dayOfWeek` is a number representing the day (between *1* and *7*), and will default to the current value.
+- `weekDay` is a number representing the day (between *1* and *7*), and will default to the current value.
 
 ```javascript
-date.setWeek(week, dayOfWeek);
+date.setWeek(week, weekDay);
+```
+
+**Set Week Day**
+
+Set the local day of the week in current time zone.
+
+- `weekDay` is a number representing the week day (between *1* and *7*).
+
+```javascript
+date.setWeekDay(weekDay);
 ```
 
 **Set Week Of Month**
@@ -427,10 +427,10 @@ Set the ISO year in current time zone.
 
 - `weekYear` is a number representing the year.
 - `week` is a number representing the week, and will default to the current value.
-- `dayOfWeek` is a number representing the day (between *1* and *7*), and will default to the current value.
+- `weekDay` is a number representing the day (between *1* and *7*), and will default to the current value.
 
 ```javascript
-date.setWeekYear(weekYear, week, dayOfWeek);
+date.setWeekYear(weekYear, week, weekDay);
 ```
 
 

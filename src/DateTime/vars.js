@@ -81,7 +81,7 @@ Object.assign(DateTime, {
     _dateStringTimeZoneRegExp: /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i,
 
     // Format token RegExp
-    _formatTokenRegExp: /(?<!\')([a-z])\1*/i,
+    _formatTokenRegExp: /([a-z])\1*|'[^']*'/i,
 
     // Offset RegExp
     _offsetRegExp: /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/,
@@ -92,7 +92,7 @@ Object.assign(DateTime, {
         ['era'],
         ['quarter', 'month', 'week', 'dayOfYear'],
         ['weekOfMonth'],
-        ['date', 'dayOfWeek'],
+        ['date', 'weekDay'],
         ['dayOfWeekInMonth'],
         ['hours24', 'hours12', 'dayPeriod'],
         ['minutes', 'seconds', 'milliseconds']

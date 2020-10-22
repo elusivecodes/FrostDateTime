@@ -18,20 +18,25 @@ Object.assign(DateTime.prototype, {
                 position = match.index,
                 length = match[0].length;
 
+            if (position) {
+                output += formatString.substring(0, position);
+            }
+    
+            formatString = formatString.substring(position + length);
+
+            if (!token) {
+                output += match[0].slice(1, -1);
+                continue;
+            }
+
             if (!(token in DateFormatter._formatDate)) {
                 throw new Error(`Invalid token in DateTime format: ${token}`);
             }
 
-            if (position) {
-                const formatTemp = formatString.substring(0, position);
-                output += this.constructor._unescapeOutput(formatTemp);
-            }
-
             output += DateFormatter._formatDate[token].output(this, length);
-            formatString = formatString.substring(position + length);
         }
 
-        output += this.constructor._unescapeOutput(formatString);
+        output += formatString;
 
         return output;
     },
