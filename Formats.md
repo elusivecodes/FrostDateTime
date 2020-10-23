@@ -33,8 +33,8 @@
             <td><em>2, 20, 201, 2017</em></td>
             <td rowspan="4">
                 Calendar year<br />
-                <small>Zero padded to pattern length.</small><br />
-                <small>The <code>yy</code> format will always use the 2 low-order digits of the year.</small>
+                Zero padded to pattern length.<br />
+                The <code>yy</code> format will always use the 2 low-order digits of the year.
             </td>
         </tr>
         <tr>
@@ -54,8 +54,8 @@
             <td><em>2, 20, 201, 2017</em></td>
             <td rowspan="4">
                 Week year<br />
-                <small>Zero padded to pattern length.</small><br />
-                <small>The <code>yy</code> format will always use the 2 low-order digits of the year.</small>
+                Zero padded to pattern length.<br />
+                The <code>YY</code> format will always use the 2 low-order digits of the year.
             </td>
         </tr>
         <tr>
@@ -182,7 +182,7 @@
             <td><em>345</em></td>
             <td>
                 Day of year<br />
-                <small>Zero padded to pattern length.</small>
+                Zero padded to pattern length.
             </td>
         </tr>
         <tr>
@@ -346,15 +346,25 @@
             <td>Second (2-digits)</td>
         </tr>
         <tr>
-            <td><code>S</code></td>
+            <td><code>S+</code></td>
             <td><em>3456</em></td>
             <td>
                 Fractional second<br />
-                <small>Truncated to pattern length.</small>
+                Truncated to pattern length.
             </td>
         </tr>
         <tr>
             <td colspan="3"><strong>Time Zone</strong></td>
+        </tr>
+        <tr>
+            <td><code>z..zzz</code></td>
+            <td><em>PDT</em></td>
+            <td>Short specific non-location format*</td>
+        </tr>
+        <tr>
+            <td><code>zzzz</code></td>
+            <td><em>Pacific Daylight Time</em></td>
+            <td>Long specific non-location format*</td>
         </tr>
         <tr>
             <td><code>Z..ZZZ</code></td>
@@ -380,16 +390,6 @@
             <td><code>OOOO</code></td>
             <td><em>GMT-8:00</em></td>
             <td>Long localized GMT format</td>
-        </tr>
-        <tr>
-            <td><code>z.zzz</code></td>
-            <td><em>PDT</em></td>
-            <td>Short specific non-location format*</td>
-        </tr>
-        <tr>
-            <td><code>zzzz</code></td>
-            <td><em>Pacific Daylight Time</em></td>
-            <td>Long specific non-location format*</td>
         </tr>
         <tr>
             <td><code>VV</code></td>
@@ -429,3 +429,4 @@
     </tbody>
 </table>
 <em>* Output only</em>
+<strong>Characters wrapped in <code>'</code> quotes will not be parsed.</strong>

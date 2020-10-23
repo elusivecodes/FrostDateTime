@@ -804,6 +804,16 @@ Get the name of the month in current time zone.
 const monthName = date.monthName(type);
 ```
 
+**Time Zone Name**
+
+Get the name of the current time zone.
+
+- `type` can be either "*long*" or "*short*", and will default to "*long*" if it is not set.
+
+```javascript
+const timeZoneName = date.timeZoneName(type);
+```
+
 **Weeks In Year**
 
 Get the number of weeks in the current year.
