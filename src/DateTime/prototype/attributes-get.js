@@ -21,17 +21,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the day of the week in month in current timeZone.
-     * @returns {number} The day of the week in month.
-     */
-    getDayOfWeekInMonth() {
-        const weeks = this.getWeek() - firstWeek.getWeek();
-        return this.clone().setDate(1).getWeekDay() > this.getWeekDay() ?
-            weeks :
-            weeks + 1;
-    },
-
-    /**
      * Get the day of the year in current timeZone.
      * @returns {number} The day of the year. (1, 366)
      */
@@ -56,7 +45,7 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The name of the current locale.
      */
     getLocale() {
-        return this._formatter.locale;
+        return this.formatter.locale;
     },
 
     /**
@@ -177,6 +166,18 @@ Object.assign(DateTime.prototype, {
         return this.formatter.weekDay(
             this.getDay()
         );
+    },
+
+    /**
+     * Get the week day in month in current timeZone.
+     * @returns {number} The week day in month.
+     */
+    getWeekDayInMonth() {
+        const firstWeek = this.clone().setDate(1);
+        const weeks = this.getWeek() - firstWeek.getWeek();
+        return firstWeek.getWeekDay() > this.getWeekDay() ?
+            weeks :
+            weeks + 1;
     },
 
     /**

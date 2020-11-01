@@ -271,11 +271,11 @@
             <td><em>am</em></td>
             <td>Day period (long)</td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td><code>aaaaa</code></td>
             <td><em>a</em></td>
             <td>Day period (narrow)</td>
-        </tr>
+        </tr> -->
         <tr>
             <td colspan="3"><strong>Hour</strong></td>
         </tr>
@@ -428,5 +428,5 @@
         </tr>
     </tbody>
 </table>
-<em>* Output only</em>
-<strong>Characters wrapped in <code>'</code> quotes will not be parsed.</strong>
+<p><em>* Output only</em></p>
+<p><strong>Characters wrapped in <code>'</code> quotes will not be parsed.</strong></p>

@@ -145,13 +145,17 @@ class DateFormatter {
      * @returns {Date} A new Date object.
      */
     weekDate(...args) {
+        const date = new Date();
+
+        date.setUTCFullYear(args[0]);
+
         if (args.length > 1) {
-            args[1]--;
+            date.setUTCMonth(args[1] - 1);
         }
 
-        const date = new Date(
-            Date.UTC(...args)
-        );
+        if (args.length > 2) {
+            date.setUTCDate(args[2]);
+        }
 
         date.setUTCDate(
             date.getUTCDate()
@@ -247,7 +251,7 @@ class DateFormatter {
      */
     static load(locale) {
         if (!locale) {
-            locale = Intl.DateTimeFormat().resolvedOptions().locale;
+            locale = this.defaultLocale;
         }
 
         if (!(locale in this._formatters)) {
@@ -258,6 +262,8 @@ class DateFormatter {
     }
 
 }
+
+DateFormatter.defaultLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
 // Cached formatters
 DateFormatter._formatters = {};

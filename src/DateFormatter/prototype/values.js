@@ -11,14 +11,14 @@ Object.assign(DateFormatter.prototype, {
      */
     getDayPeriods(type = 'long') {
         return this._getData(
-            key = `periods[${type}]`,
+            `periods[${type}]`,
             _ => {
-                const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hour12: true, dayPeriod: type })
+                const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11', dayPeriod: type })
                 return new Array(2)
                     .fill()
                     .map((_, index) =>
-                        dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, (1 + index) * 12))
-                            .find(part => part.type === 'dayperiod')
+                        dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, index * 12))
+                            .find(part => part.type === 'dayPeriod')
                             .value
                     );
             }

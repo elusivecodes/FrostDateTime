@@ -161,13 +161,17 @@
          * @returns {Date} A new Date object.
          */
         weekDate(...args) {
+            const date = new Date();
+
+            date.setUTCFullYear(args[0]);
+
             if (args.length > 1) {
-                args[1]--;
+                date.setUTCMonth(args[1] - 1);
             }
 
-            const date = new Date(
-                Date.UTC(...args)
-            );
+            if (args.length > 2) {
+                date.setUTCDate(args[2]);
+            }
 
             date.setUTCDate(
                 date.getUTCDate()
@@ -263,7 +267,7 @@
          */
         static load(locale) {
             if (!locale) {
-                locale = Intl.DateTimeFormat().resolvedOptions().locale;
+                locale = this.defaultLocale;
             }
 
             if (!(locale in this._formatters)) {
@@ -274,6 +278,8 @@
         }
 
     }
+
+    DateFormatter.defaultLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     // Cached formatters
     DateFormatter._formatters = {};
@@ -345,11 +351,13 @@
                     1900 + value:
                     2000 + value;
             },
-            output: (datetime, length) =>
-                datetime.formatter.formatNumber(
-                    datetime.getWeekYear(),
-                    length
-                )
+            output: (datetime, length) => {
+                let year = datetime.getWeekYear();
+                if (length === 2) {
+                    year = `${year}`.slice(-2);
+                }
+                return datetime.formatter.formatNumber(year, length);
+            }
         },
 
         /* QUARTER */
@@ -511,12 +519,12 @@
 
         // day of week in month
         F: {
-            key: 'dayOfWeekInMonth',
+            key: 'weekDayInMonth',
             regex: formatter => formatter.numberRegExp(),
             input: (formatter, value) => formatter.parseNumber(value),
             output: datetime =>
                 datetime.formatter.formatNumber(
-                    datetime.getDayOfWeekInMonth()
+                    datetime.getWeekDayInMonth()
                 )
         },
 
@@ -727,13 +735,13 @@
             input: (formatter, value) => formatter.parseNumber(value) / 1000,
             output: (datetime, length) =>
                 datetime.formatter.formatNumber(
-                    Math.floor(
+                    `${Math.floor(
                         (
                             datetime.getMilliseconds()
                             + datetime._fraction
                         )
                         * 1000
-                    ).slice(0, length)
+                    )}`.replace(/0+$/, '').slice(0, length) || 0
                 )
         },
 
@@ -754,11 +762,11 @@
             regex: (_, length) => {
                 switch (length) {
                     case 5:
-                        return `[\\+\\-]\d{2}\\:\d{2}`;
+                        return `[\\+\\-]\\d{2}\\:\\d{2}`;
                     case 4:
-                        return `GMT[\\+\\-]\d{2}\\:\d{2}`;
+                        return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
                     default:
-                        return `[\\+\\-]\d{4}`;
+                        return `[\\+\\-]\\d{4}`;
                 }
             },
             input: (_, value) => value,
@@ -785,9 +793,9 @@
             regex: (_, length) => {
                 switch (length) {
                     case 4:
-                        return `GMT[\\+\\-]\d{2}\\:\d{2}`;
+                        return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
                     default:
-                        return `GMT[\\+\\-]\d{2}`;
+                        return `GMT[\\+\\-]\\d{2}`;
                 }
             },
             input: (_, value) => value,
@@ -817,12 +825,12 @@
                 switch (length) {
                     case 5:
                     case 3:
-                        return `[\\+\\-]\d{2}\\:\d{2}|Z`;
+                        return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
                     case 4:
                     case 2:
-                        return `[\\+\\-]\d{4}|Z`;
+                        return `[\\+\\-]\\d{4}|Z`;
                     default:
-                        return `[\\+\\-]\d{2}(?:\d{2})?|Z`;
+                        return `[\\+\\-]\\d{2}(?:\\d{2})?|Z`;
                 }
             },
             input: (_, value) => value,
@@ -854,12 +862,12 @@
                 switch (length) {
                     case 5:
                     case 3:
-                        return `[\\+\\-]\d{2}\\:\d{2}`;
+                        return `[\\+\\-]\\d{2}\\:\\d{2}`;
                     case 4:
                     case 2:
-                        return `[\\+\\-]\d{4}`;
+                        return `[\\+\\-]\\d{4}`;
                     default:
-                        return `[\\+\\-]\d{2}(?:\d{2})?`;
+                        return `[\\+\\-]\\d{2}(?:\\d{2})?`;
                 }
             },
             input: (_, value) => value,
@@ -929,14 +937,14 @@
          */
         getDayPeriods(type = 'long') {
             return this._getData(
-                key = `periods[${type}]`,
+                `periods[${type}]`,
                 _ => {
-                    const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hour12: true, dayPeriod: type })
+                    const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11', dayPeriod: type })
                     return new Array(2)
                         .fill()
                         .map((_, index) =>
-                            dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, (1 + index) * 12))
-                                .find(part => part.type === 'dayperiod')
+                            dayPeriodFormatter.formatToParts(Date.UTC(2018, 0, 1, index * 12))
+                                .find(part => part.type === 'dayPeriod')
                                 .value
                         );
                 }
@@ -1054,6 +1062,247 @@
         }
 
     });
+
+    class DateInterval {
+
+        constructor(options) {
+            this.y = 0;
+            this.m = 0;
+            this.d = 0;
+            this.h = 0;
+            this.i = 0;
+            this.s = 0;
+            this.f = 0;
+
+            this.days = null;
+            this.invert = false;
+        }
+
+        /**
+         * Format the current interval with a PHP DateInterval format string.
+         * @param {string} formatString The format string to use.
+         * @returns {string} The formatted date interval.
+         */
+        format(formatString) {
+            let escaped = false;
+            return [...formatString].reduce(
+                (acc, char) => {
+                    if (!escaped && char === '%') {
+                        escaped = true;
+                    } else if (!escaped || !this.constructor._formatData[char]) {
+                        acc += char;
+                    } else {
+                        acc += this.constructor._formatData[char](this);
+                        escaped = false;
+                    }
+                    return acc;
+                },
+                ''
+            );
+        }
+
+        toISOString() {
+            let output = 'P';
+
+            if (this.y) {
+                output += `Y${this.y}`;
+            }
+
+            if (this.m) {
+                output += `M${this.m}`;
+            }
+
+            if (this.d) {
+                output += `D${this.d}`;
+            }
+
+            if (this.h || this.i || this.s) {
+                output += 'T';
+            }
+
+            if (this.h) {
+                output += `H${this.h}`;
+            }
+
+            if (this.i) {
+                output += `M${this.i}`;
+            }
+
+            if (this.s) {
+                output += `S${this.i}`;
+            }
+
+            return output;
+        }
+
+        toString() {
+            return this.formatter.format(amount, unit);
+        }
+
+        static fromISOString(string, options) {
+            const isoMatch = string.match(this.constructor._isoRegExp);
+
+            if (!isoMatch) {
+                throw new Error('Invalid string supplied');
+            }
+
+            const interval = new this(options);
+
+            if (isoMatch[1]) {
+                interval.y += parseInt(isoMatch[1]);
+            }
+
+            if (isoMatch[2]) {
+                interval.m += parseInt(isoMatch[2]);
+            }
+
+            if (isoMatch[3]) {
+                interval.d += parseInt(isoMatch[3]);
+            }
+
+            if (isoMatch[4]) {
+                interval.d += parseInt(isoMatch[4]) * 7;
+            }
+
+            if (isoMatch[5]) {
+                interval.h += parseInt(isoMatch[5]);
+            }
+
+            if (isoMatch[6]) {
+                interval.i += parseInt(isoMatch[6]);
+            }
+
+            if (isoMatch[7]) {
+                interval.s += parseInt(isoMatch[7]);
+            }
+
+            return interval;
+        }
+
+        static fromUnit(amount, timeUnit, options) {
+            const interval = new this(options);
+
+            timeUnit = timeUnit.toLowerCase();
+
+            switch (timeUnit) {
+                case 'second':
+                case 'seconds':
+                    interval.s = amount;
+                    break;
+                case 'minute':
+                case 'minutes':
+                    interval.i = amount;
+                    break;
+                case 'hour':
+                case 'hours':
+                    interval.h = amount;
+                    break;
+                case 'day':
+                case 'days':
+                    interval.d = amount;
+                    break;
+                case 'week':
+                case 'weeks':
+                    interval.d = amount * 7;
+                    break;
+                case 'month':
+                case 'months':
+                    interval.m = amount;
+                    break;
+                case 'year':
+                case 'years':
+                    interval.y = amount;
+                    break;
+                default:
+                    throw new Error('Invalid time unit supplied');
+            }
+
+            return interval;
+        }
+
+    }
+
+    // ISO RegExp
+    DateInterval._isoRegExp = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
+
+    /**
+     * DateInterval Format Data
+     */
+
+    DateInterval._formatData = {
+
+        /* YEAR */
+
+        Y: interval =>
+            interval.formatter.formatNumber(interval.y, 2),
+
+        y: interval =>
+            interval.formatter.formatNumber(interval.y),
+
+        /* MONTH */
+
+        M: interval =>
+            interval.formatter.formatNumber(interval.m, 2),
+
+        m: interval =>
+            interval.formatter.formatNumber(interval.m),
+
+        /* DAYS */
+
+        D: interval =>
+            interval.formatter.formatNumber(interval.d, 2),
+
+        d: interval =>
+            interval.formatter.formatNumber(interval.d),
+
+        a: interval =>
+            interval.formatter.formatNumber(interval.days),
+
+        /* HOURS */
+
+        H: interval =>
+            interval.formatter.formatNumber(interval.h, 2),
+
+        h: interval =>
+            interval.formatter.formatNumber(interval.h),
+
+        /* MINUTES */
+
+        I: interval =>
+            interval.formatter.formatNumber(interval.i, 2),
+
+        i: interval =>
+            interval.formatter.formatNumber(interval.i),
+
+        /* SECONDS */
+
+        S: interval =>
+            interval.formatter.formatNumber(interval.s, 2),
+
+        s: interval =>
+            interval.formatter.formatNumber(interval.s),
+
+        /* MICROSECONDS */
+
+        F: interval =>
+            interval.formatter.formatNumber(interval.f, 6),
+
+        f: interval =>
+            interval.formatter.formatNumber(interval.f),
+
+        /* SIGN */
+
+        R: interval =>
+            interval.invert ?
+                '-' :
+                '+',
+
+        r: interval =>
+            interval.invert ?
+                '-' :
+                ''
+
+    };
 
     /**
      * DateTime class
@@ -1230,17 +1479,6 @@
         },
 
         /**
-         * Get the day of the week in month in current timeZone.
-         * @returns {number} The day of the week in month.
-         */
-        getDayOfWeekInMonth() {
-            const weeks = this.getWeek() - firstWeek.getWeek();
-            return this.clone().setDate(1).getWeekDay() > this.getWeekDay() ?
-                weeks :
-                weeks + 1;
-        },
-
-        /**
          * Get the day of the year in current timeZone.
          * @returns {number} The day of the year. (1, 366)
          */
@@ -1265,7 +1503,7 @@
          * @returns {string} The name of the current locale.
          */
         getLocale() {
-            return this._formatter.locale;
+            return this.formatter.locale;
         },
 
         /**
@@ -1389,6 +1627,18 @@
         },
 
         /**
+         * Get the week day in month in current timeZone.
+         * @returns {number} The week day in month.
+         */
+        getWeekDayInMonth() {
+            const firstWeek = this.clone().setDate(1);
+            const weeks = this.getWeek() - firstWeek.getWeek();
+            return firstWeek.getWeekDay() > this.getWeekDay() ?
+                weeks :
+                weeks + 1;
+        },
+
+        /**
          * Get the week of month in current timeZone.
          * @returns {number} The week of month.
          */
@@ -1444,21 +1694,6 @@
         },
 
         /**
-         * Set the day of the week in month in current timeZone.
-         * @param {number} week The day of the week in month.
-         * @returns {DateTime} The DateTime object.
-         */
-        setDayOfWeekInMonth(week) {
-            return this.setDate(
-                this.getDate()
-                + (
-                    week -
-                    this.getDayOfWeekInMonth()
-                ) * 7
-            )
-        },
-
-        /**
          * Set the day of the year in current timeZone.
          * @param {number} day The day of the year. (1, 366)
          * @returns {DateTime} The DateTime object.
@@ -1492,7 +1727,7 @@
          * @returns {DateTime} The DateTime object.
          */
         setLocale(locale) {
-            this._formatter = DateFormatter.load(locale);
+            this.formatter = DateFormatter.load(locale);
         },
 
         /**
@@ -1700,6 +1935,21 @@
                     + parseInt(day)
                 )
             );
+        },
+
+        /**
+         * Set the week day in month in current timeZone.
+         * @param {number} week The week day in month.
+         * @returns {DateTime} The DateTime object.
+         */
+        setWeekDayInMonth(week) {
+            return this.setDate(
+                this.getDate()
+                + (
+                    week -
+                    this.getWeekDayInMonth()
+                ) * 7
+            )
         },
 
         /**
@@ -2782,7 +3032,6 @@
                     }
                     return datetime.setHours(hours);
                 },
-                dayOfWeekInMonth: (datetime, value) => datetime.setDayOfWeekInMonth(value),
                 dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
                 era: (datetime, value) => {
                     const offset = value ? 1 : -1;
@@ -2808,6 +3057,7 @@
                 seconds: (datetime, value) => datetime.setSeconds(value),
                 week: (datetime, value) => datetime.setWeek(value),
                 weekDay: (datetime, value) => datetime.setWeekDay(value),
+                weekDayInMonth: (datetime, value) => datetime.setWeekDayInMonth(value),
                 weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
                 weekYear: (datetime, value) => datetime.setWeekYear(value),
                 year: (datetime, value) => datetime.setYear(value)
@@ -2906,21 +3156,21 @@
 
         // Formats
         formats: {
-            atom: `yyyy-MM-dd'THH:mm:ssxxx`,
-            cookie: `eeee, dd-MMM-yyyy HH:mm:ss ZZZZ`,
-            date: `eee MMM dd yyyy`,
-            iso8601: `yyyy-MM-dd'THH:mm:ssxx`,
-            rfc822: `eee, dd MMM yy HH:mm:ss xx`,
-            rfc850: `eeee dd-MMM-yy HH:mm:ss ZZZZ`,
-            rfc1036: `eee, dd MMM yy HH:mm:ss xx`,
-            rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
-            rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
-            rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
-            rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.SSSSSSxxx`,
-            rss: `eee, dd MMM yyyy HH:mm:ss xx`,
-            string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
-            time: `HH:mm:ss xx (VV)`,
-            w3c: `yyyy-MM-dd'THH:mm:ssxxx`
+            atom: `yyyy-MM-dd'T'HH:mm:ssxxx`,
+            cookie: 'eeee, dd-MMM-yyyy HH:mm:ss ZZZZ',
+            date: 'eee MMM dd yyyy',
+            iso8601: `yyyy-MM-dd'T'HH:mm:ssxx`,
+            rfc822: 'eee, dd MMM yy HH:mm:ss xx',
+            rfc850: 'eeee dd-MMM-yy HH:mm:ss ZZZZ',
+            rfc1036: 'eee, dd MMM yy HH:mm:ss xx',
+            rfc1123: 'eee, dd MMM yyyy HH:mm:ss xx',
+            rfc2822: 'eee, dd MMM yyyy HH:mm:ss xx',
+            rfc3339: `yyyy-MM-dd'T'HH:mm:ssxxx`,
+            rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSSSSxxx`,
+            rss: 'eee, dd MMM yyyy HH:mm:ss xx',
+            string: 'eee MMM dd yyyy HH:mm:ss xx (VV)',
+            time: 'HH:mm:ss xx (VV)',
+            w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
         },
 
         // Comparison lookup
@@ -2987,7 +3237,7 @@
             ['quarter', 'month', 'week', 'dayOfYear'],
             ['weekOfMonth'],
             ['date', 'weekDay'],
-            ['dayOfWeekInMonth'],
+            ['weekDayInMonth'],
             ['hours24', 'hours12', 'dayPeriod'],
             ['minutes', 'seconds', 'milliseconds']
         ]

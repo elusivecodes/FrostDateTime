@@ -65,11 +65,13 @@ DateFormatter._formatDate = {
                 1900 + value:
                 2000 + value;
         },
-        output: (datetime, length) =>
-            datetime.formatter.formatNumber(
-                datetime.getWeekYear(),
-                length
-            )
+        output: (datetime, length) => {
+            let year = datetime.getWeekYear();
+            if (length === 2) {
+                year = `${year}`.slice(-2);
+            }
+            return datetime.formatter.formatNumber(year, length);
+        }
     },
 
     /* QUARTER */
@@ -231,12 +233,12 @@ DateFormatter._formatDate = {
 
     // day of week in month
     F: {
-        key: 'dayOfWeekInMonth',
+        key: 'weekDayInMonth',
         regex: formatter => formatter.numberRegExp(),
         input: (formatter, value) => formatter.parseNumber(value),
         output: datetime =>
             datetime.formatter.formatNumber(
-                datetime.getDayOfWeekInMonth()
+                datetime.getWeekDayInMonth()
             )
     },
 
@@ -447,13 +449,13 @@ DateFormatter._formatDate = {
         input: (formatter, value) => formatter.parseNumber(value) / 1000,
         output: (datetime, length) =>
             datetime.formatter.formatNumber(
-                Math.floor(
+                `${Math.floor(
                     (
                         datetime.getMilliseconds()
                         + datetime._fraction
                     )
                     * 1000
-                ).slice(0, length)
+                )}`.replace(/0+$/, '').slice(0, length) || 0
             )
     },
 
@@ -474,11 +476,11 @@ DateFormatter._formatDate = {
         regex: (_, length) => {
             switch (length) {
                 case 5:
-                    return `[\\+\\-]\d{2}\\:\d{2}`;
+                    return `[\\+\\-]\\d{2}\\:\\d{2}`;
                 case 4:
-                    return `GMT[\\+\\-]\d{2}\\:\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
                 default:
-                    return `[\\+\\-]\d{4}`;
+                    return `[\\+\\-]\\d{4}`;
             }
         },
         input: (_, value) => value,
@@ -505,9 +507,9 @@ DateFormatter._formatDate = {
         regex: (_, length) => {
             switch (length) {
                 case 4:
-                    return `GMT[\\+\\-]\d{2}\\:\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
                 default:
-                    return `GMT[\\+\\-]\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}`;
             }
         },
         input: (_, value) => value,
@@ -537,12 +539,12 @@ DateFormatter._formatDate = {
             switch (length) {
                 case 5:
                 case 3:
-                    return `[\\+\\-]\d{2}\\:\d{2}|Z`;
+                    return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
                 case 4:
                 case 2:
-                    return `[\\+\\-]\d{4}|Z`;
+                    return `[\\+\\-]\\d{4}|Z`;
                 default:
-                    return `[\\+\\-]\d{2}(?:\d{2})?|Z`;
+                    return `[\\+\\-]\\d{2}(?:\\d{2})?|Z`;
             }
         },
         input: (_, value) => value,
@@ -574,12 +576,12 @@ DateFormatter._formatDate = {
             switch (length) {
                 case 5:
                 case 3:
-                    return `[\\+\\-]\d{2}\\:\d{2}`;
+                    return `[\\+\\-]\\d{2}\\:\\d{2}`;
                 case 4:
                 case 2:
-                    return `[\\+\\-]\d{4}`;
+                    return `[\\+\\-]\\d{4}`;
                 default:
-                    return `[\\+\\-]\d{2}(?:\d{2})?`;
+                    return `[\\+\\-]\\d{2}(?:\\d{2})?`;
             }
         },
         input: (_, value) => value,

@@ -37,7 +37,6 @@ Object.assign(DateTime, {
                 }
                 return datetime.setHours(hours);
             },
-            dayOfWeekInMonth: (datetime, value) => datetime.setDayOfWeekInMonth(value),
             dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
             era: (datetime, value) => {
                 const offset = value ? 1 : -1;
@@ -63,6 +62,7 @@ Object.assign(DateTime, {
             seconds: (datetime, value) => datetime.setSeconds(value),
             week: (datetime, value) => datetime.setWeek(value),
             weekDay: (datetime, value) => datetime.setWeekDay(value),
+            weekDayInMonth: (datetime, value) => datetime.setWeekDayInMonth(value),
             weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
             weekYear: (datetime, value) => datetime.setWeekYear(value),
             year: (datetime, value) => datetime.setYear(value)

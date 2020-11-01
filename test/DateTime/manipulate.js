@@ -5,7 +5,7 @@ describe('DateTime Manipulation', function() {
 
     describe('#add', function() {
         it('works with year', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'year');
             assert.strictEqual(
                 date1.toISOString(),
@@ -18,7 +18,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'years');
             assert.strictEqual(
                 date1.toISOString(),
@@ -31,7 +31,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'month');
             assert.strictEqual(
                 date1.toISOString(),
@@ -44,7 +44,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'months');
             assert.strictEqual(
                 date1.toISOString(),
@@ -57,7 +57,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'week');
             assert.strictEqual(
                 date1.toISOString(),
@@ -70,7 +70,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'weeks');
             assert.strictEqual(
                 date1.toISOString(),
@@ -83,7 +83,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'day');
             assert.strictEqual(
                 date1.toISOString(),
@@ -96,7 +96,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'days');
             assert.strictEqual(
                 date1.toISOString(),
@@ -109,7 +109,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'hour');
             assert.strictEqual(
                 date1.toISOString(),
@@ -122,7 +122,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'hours');
             assert.strictEqual(
                 date1.toISOString(),
@@ -135,7 +135,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'minute');
             assert.strictEqual(
                 date1.toISOString(),
@@ -148,7 +148,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minutes', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'minutes');
             assert.strictEqual(
                 date1.toISOString(),
@@ -161,7 +161,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(1, 'second');
             assert.strictEqual(
                 date1.toISOString(),
@@ -174,7 +174,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.add(2, 'seconds');
             assert.strictEqual(
                 date1.toISOString(),
@@ -189,7 +189,7 @@ describe('DateTime Manipulation', function() {
 
     describe('#sub', function() {
         it('works with year', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'year');
             assert.strictEqual(
                 date1.toISOString(),
@@ -202,7 +202,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with years', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'years');
             assert.strictEqual(
                 date1.toISOString(),
@@ -215,7 +215,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'month');
             assert.strictEqual(
                 date1.toISOString(),
@@ -228,7 +228,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with months', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'months');
             assert.strictEqual(
                 date1.toISOString(),
@@ -241,7 +241,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'week');
             assert.strictEqual(
                 date1.toISOString(),
@@ -254,7 +254,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with weeks', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'weeks');
             assert.strictEqual(
                 date1.toISOString(),
@@ -267,7 +267,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'day');
             assert.strictEqual(
                 date1.toISOString(),
@@ -280,7 +280,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with days', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'days');
             assert.strictEqual(
                 date1.toISOString(),
@@ -293,7 +293,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'hour');
             assert.strictEqual(
                 date1.toISOString(),
@@ -306,7 +306,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hours', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'hours');
             assert.strictEqual(
                 date1.toISOString(),
@@ -319,7 +319,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'minute');
             assert.strictEqual(
                 date1.toISOString(),
@@ -332,7 +332,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'minutes');
             assert.strictEqual(
                 date1.toISOString(),
@@ -345,7 +345,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(1, 'second');
             assert.strictEqual(
                 date1.toISOString(),
@@ -358,7 +358,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with seconds', function() {
-            const date1 = DateTime.fromArray([2018, 1, 1], 'UTC');
+            const date1 = DateTime.fromArray([2018]);
             const date2 = date1.sub(2, 'seconds');
             assert.strictEqual(
                 date1.toISOString(),
@@ -373,7 +373,7 @@ describe('DateTime Manipulation', function() {
 
     describe('#startOf', function() {
         it('works with year', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('year');
             assert.strictEqual(
                 date1.toISOString(),
@@ -386,7 +386,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with quarter', function() {
-            const date1 = DateTime.fromArray([2018, 8, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 8, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('quarter');
             assert.strictEqual(
                 date1.toISOString(),
@@ -399,7 +399,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('month');
             assert.strictEqual(
                 date1.toISOString(),
@@ -411,8 +411,8 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with ISO week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+        it('works with local week', function() {
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('isoWeek');
             assert.strictEqual(
                 date1.toISOString(),
@@ -425,7 +425,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('week');
             assert.strictEqual(
                 date1.toISOString(),
@@ -438,7 +438,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('day');
             assert.strictEqual(
                 date1.toISOString(),
@@ -451,7 +451,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('hour');
             assert.strictEqual(
                 date1.toISOString(),
@@ -464,7 +464,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('minute');
             assert.strictEqual(
                 date1.toISOString(),
@@ -477,7 +477,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('second');
             assert.strictEqual(
                 date1.toISOString(),
@@ -492,7 +492,7 @@ describe('DateTime Manipulation', function() {
 
     describe('#endOf', function() {
         it('works with year', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('year');
             assert.strictEqual(
                 date1.toISOString(),
@@ -505,7 +505,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with quarter', function() {
-            const date1 = DateTime.fromArray([2018, 8, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 8, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('quarter');
             assert.strictEqual(
                 date1.toISOString(),
@@ -518,7 +518,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with month', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('month');
             assert.strictEqual(
                 date1.toISOString(),
@@ -530,8 +530,8 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with ISO week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+        it('works with local week', function() {
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('isoWeek');
             assert.strictEqual(
                 date1.toISOString(),
@@ -544,7 +544,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('week');
             assert.strictEqual(
                 date1.toISOString(),
@@ -557,7 +557,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with day', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('day');
             assert.strictEqual(
                 date1.toISOString(),
@@ -570,7 +570,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with hour', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('hour');
             assert.strictEqual(
                 date1.toISOString(),
@@ -583,7 +583,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with minute', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('minute');
             assert.strictEqual(
                 date1.toISOString(),
@@ -596,7 +596,7 @@ describe('DateTime Manipulation', function() {
         });
 
         it('works with second', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500], 'UTC');
+            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('second');
             assert.strictEqual(
                 date1.toISOString(),

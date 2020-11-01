@@ -31,21 +31,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Set the day of the week in month in current timeZone.
-     * @param {number} week The day of the week in month.
-     * @returns {DateTime} The DateTime object.
-     */
-    setDayOfWeekInMonth(week) {
-        return this.setDate(
-            this.getDate()
-            + (
-                week -
-                this.getDayOfWeekInMonth()
-            ) * 7
-        )
-    },
-
-    /**
      * Set the day of the year in current timeZone.
      * @param {number} day The day of the year. (1, 366)
      * @returns {DateTime} The DateTime object.
@@ -79,7 +64,7 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} The DateTime object.
      */
     setLocale(locale) {
-        this._formatter = DateFormatter.load(locale);
+        this.formatter = DateFormatter.load(locale);
     },
 
     /**
@@ -287,6 +272,21 @@ Object.assign(DateTime.prototype, {
                 + parseInt(day)
             )
         );
+    },
+
+    /**
+     * Set the week day in month in current timeZone.
+     * @param {number} week The week day in month.
+     * @returns {DateTime} The DateTime object.
+     */
+    setWeekDayInMonth(week) {
+        return this.setDate(
+            this.getDate()
+            + (
+                week -
+                this.getWeekDayInMonth()
+            ) * 7
+        )
     },
 
     /**

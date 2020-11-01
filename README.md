@@ -330,16 +330,6 @@ date.setYear(year, month, date);
 
 ## Week Attributes
 
-**Get Day Of Week In Month**
-
-Get the day of the week in the month, in current time zone.
-
-The `dayOfWeekInMonth` returned will be between *1* and *5*.
-
-```javascript
-const dayOfWeekInMonth = date.getDayOfWeekInMonth();
-```
-
 **Get Week**
 
 Get the week of the year in current time zone.
@@ -360,6 +350,16 @@ The `weekDay` returned will be between *1* and *7*.
 const weekDay = date.getWeekDay();
 ```
 
+**Get Week Day In Month**
+
+Get the day of the week in the month, in current time zone.
+
+The `weekDayInMonth` returned will be between *1* and *5*.
+
+```javascript
+const weekDayInMonth = date.getWeekDayInMonth();
+```
+
 **Get Week Of Month**
 
 Get the week of the month in current time zone.
@@ -378,16 +378,6 @@ This method is identical to `getYear()` except in cases where the week belongs t
 
 ```javascript
 const weekYear = date.getWeekYear();
-```
-
-**Set Day Of Week In Month**
-
-Set the day of the week in the month, in current time zone.
-
-- `dayOfWeekInMonth` is a number representing the day of the week in month (between *1* and *5*).
-
-```javascript
-date.setDayOfWeekInMonth(dayOfWeekInMonth);
 ```
 
 **Set Week**
@@ -411,6 +401,16 @@ Set the local day of the week in current time zone.
 date.setWeekDay(weekDay);
 ```
 
+**Set Week Day In Month**
+
+Set the day of the week in the month, in current time zone.
+
+- `weekDayInMonth` is a number representing the day of the week in month (between *1* and *5*).
+
+```javascript
+date.setWeekDayInMonth(weekDayInMonth);
+```
+
 **Set Week Of Month**
 
 Set the week of the month in current time zone.
@@ -423,7 +423,7 @@ date.setWeekOfMonth(weekOfMonth);
 
 **Set Week Year**
 
-Set the ISO year in current time zone.
+Set the week year in current time zone.
 
 - `weekYear` is a number representing the year.
 - `week` is a number representing the week, and will default to the current value.

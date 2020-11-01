@@ -12,21 +12,21 @@ Object.assign(DateTime, {
 
     // Formats
     formats: {
-        atom: `yyyy-MM-dd'THH:mm:ssxxx`,
-        cookie: `eeee, dd-MMM-yyyy HH:mm:ss ZZZZ`,
-        date: `eee MMM dd yyyy`,
-        iso8601: `yyyy-MM-dd'THH:mm:ssxx`,
-        rfc822: `eee, dd MMM yy HH:mm:ss xx`,
-        rfc850: `eeee dd-MMM-yy HH:mm:ss ZZZZ`,
-        rfc1036: `eee, dd MMM yy HH:mm:ss xx`,
-        rfc1123: `eee, dd MMM yyyy HH:mm:ss xx`,
-        rfc2822: `eee, dd MMM yyyy HH:mm:ss xx`,
-        rfc3339: `yyyy-MM-dd'THH:mm:ssxxx`,
-        rfc3339_extended: `yyyy-MM-dd'THH:mm:ss.SSSSSSxxx`,
-        rss: `eee, dd MMM yyyy HH:mm:ss xx`,
-        string: `eee MMM dd yyyy HH:mm:ss xx (VV)`,
-        time: `HH:mm:ss xx (VV)`,
-        w3c: `yyyy-MM-dd'THH:mm:ssxxx`
+        atom: `yyyy-MM-dd'T'HH:mm:ssxxx`,
+        cookie: 'eeee, dd-MMM-yyyy HH:mm:ss ZZZZ',
+        date: 'eee MMM dd yyyy',
+        iso8601: `yyyy-MM-dd'T'HH:mm:ssxx`,
+        rfc822: 'eee, dd MMM yy HH:mm:ss xx',
+        rfc850: 'eeee dd-MMM-yy HH:mm:ss ZZZZ',
+        rfc1036: 'eee, dd MMM yy HH:mm:ss xx',
+        rfc1123: 'eee, dd MMM yyyy HH:mm:ss xx',
+        rfc2822: 'eee, dd MMM yyyy HH:mm:ss xx',
+        rfc3339: `yyyy-MM-dd'T'HH:mm:ssxxx`,
+        rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSSSSxxx`,
+        rss: 'eee, dd MMM yyyy HH:mm:ss xx',
+        string: 'eee MMM dd yyyy HH:mm:ss xx (VV)',
+        time: 'HH:mm:ss xx (VV)',
+        w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
     },
 
     // Comparison lookup
@@ -93,7 +93,7 @@ Object.assign(DateTime, {
         ['quarter', 'month', 'week', 'dayOfYear'],
         ['weekOfMonth'],
         ['date', 'weekDay'],
-        ['dayOfWeekInMonth'],
+        ['weekDayInMonth'],
         ['hours24', 'hours12', 'dayPeriod'],
         ['minutes', 'seconds', 'milliseconds']
     ]

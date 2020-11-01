@@ -3,529 +3,1033 @@ const { DateTime } = require('../../dist/frost-datetime.min');
 
 describe('DateTime #format', function() {
 
-    describe('L - Leap Year', function() {
-        it('outputs 1 for leap years', function() {
-            const date = DateTime.fromArray([2016, 1, 1], 'UTC');
+    /**
+     * Era
+     */
+
+    describe('GGG - Era (Short)', function() {
+        it('outputs AD era', function() {
+            const date = DateTime.fromArray([2018]);
             assert.strictEqual(
-                date.format('L'),
-                '1'
+                date.format('GGG'),
+                'AD'
             );
         });
 
-        it('outputs 0 for non-leap years', function() {
-            const date = DateTime.fromArray([2018, 1, 1], 'UTC');
+        it('outputs BC era', function() {
+            const date = DateTime.fromArray([-5]);
             assert.strictEqual(
-                date.format('L'),
-                '0'
+                date.format('GGG'),
+                'BC'
             );
         });
     });
 
-    describe('Y - Full Year', function() {
-        it('outputs the full year', function() {
-            const date = DateTime.fromArray([2018, 1, 1], 'UTC');
+    describe('GGGG - Era (Long)', function() {
+        it('outputs AD era', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('GGGG'),
+                'Anno Domini'
+            );
+        });
+
+        it('outputs BC era', function() {
+            const date = DateTime.fromArray([-5]);
+            assert.strictEqual(
+                date.format('GGGG'),
+                'Before Christ'
+            );
+        });
+    });
+
+    describe('GGGGG - Era (Narrow)', function() {
+        it('outputs AD era', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('GGGGG'),
+                'A'
+            );
+        });
+
+        it('outputs BC era', function() {
+            const date = DateTime.fromArray([-5]);
+            assert.strictEqual(
+                date.format('GGGGG'),
+                'B'
+            );
+        });
+    });
+
+    /**
+     * Year
+     */
+
+    describe('y - Year (1-digit)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('y'),
+                '2018'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('y'),
+                '5'
+            );
+        });
+    });
+
+    describe('yy - Year (2-digits)', function() {
+        it('outputs 2 low-order digits of year', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('yy'),
+                '18'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('yy'),
+                '05'
+            );
+        });
+    });
+
+    describe('yyy - Year (3-digits)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('yyy'),
+                '2018'
+            );
+        });
+
+        it('zero pads to 3-digits', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('yyy'),
+                '005'
+            );
+        });
+    });
+
+    describe('yyyy - Year (4-digits)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('yyyy'),
+                '2018'
+            );
+        });
+
+        it('zero pads to 4-digits', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('yyyy'),
+                '0005'
+            );
+        });
+    });
+
+    /**
+     * Week Year
+     */
+
+    describe('Y - Year (1-digit)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
             assert.strictEqual(
                 date.format('Y'),
                 '2018'
             );
-        })
-    });
+        });
 
-    describe('y - Short Year', function() {
-        it('outputs the short year', function() {
-            const date = DateTime.fromArray([2018, 1, 1], 'UTC');
+        it('uses the year of Thursday of the current week', function() {
+            const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
-                date.format('y'),
-                '18'
+                date.format('Y'),
+                '2020'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('Y'),
+                '4'
             );
         });
     });
 
-    describe('o - ISO Year', function() {
-        it('outputs the ISO year', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('YY - Year (2-digits)', function() {
+        it('outputs 2 low-order digits of year', function() {
+            const date = DateTime.fromArray([2018]);
             assert.strictEqual(
-                date.format('o'),
-                '2019'
+                date.format('YY'),
+                '18'
             );
         });
 
         it('uses the year of Thursday of the current week', function() {
-            const date = DateTime.fromArray([2019, 12, 30], 'UTC');
+            const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
-                date.format('o'),
+                date.format('YY'),
+                '20'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('YY'),
+                '04'
+            );
+        });
+    });
+
+    describe('YYY - Year (3-digits)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
+            assert.strictEqual(
+                date.format('YYY'),
+                '2018'
+            );
+        });
+
+        it('uses the year of Thursday of the current week', function() {
+            const date = DateTime.fromArray([2019, 12, 30]);
+            assert.strictEqual(
+                date.format('YYY'),
                 '2020'
             );
         });
-    });
 
-    describe('m - 2-Digit Month', function() {
-        it('outputs the 2-digit month', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
+        it('zero pads to 3-digits', function() {
+            const date = DateTime.fromArray([5]);
             assert.strictEqual(
-                date.format('m'),
-                '06'
+                date.format('YYY'),
+                '004'
             );
         });
     });
 
-    describe('m - Month', function() {
-        it('outputs the month', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
+    describe('YYYY - Year (4-digits)', function() {
+        it('outputs full year', function() {
+            const date = DateTime.fromArray([2018]);
             assert.strictEqual(
-                date.format('n'),
-                '6'
+                date.format('YYYY'),
+                '2018'
+            );
+        });
+
+        it('uses the year of Thursday of the current week', function() {
+            const date = DateTime.fromArray([2019, 12, 30]);
+            assert.strictEqual(
+                date.format('YYYY'),
+                '2020'
+            );
+        });
+
+        it('zero pads to 4-digits', function() {
+            const date = DateTime.fromArray([5]);
+            assert.strictEqual(
+                date.format('YYYY'),
+                '0004'
             );
         });
     });
 
-    describe('F - Month Name', function() {
-        it('outputs the month name', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
+    /**
+     * Quarter
+     */
+
+    describe('q - Quarter (1-digit)', function() {
+        it('outputs quarter', function() {
+            const date = DateTime.fromArray([2018, 8]);
             assert.strictEqual(
-                date.format('F'),
-                'June'
+                date.format('q'),
+                '3'
             );
         });
     });
 
-    describe('M - Short Month Name', function() {
-        it('outputs the short month name', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
+    describe('q - Quarter (2-digits)', function() {
+        it('outputs quarter zero padded to 2-digits', function() {
+            const date = DateTime.fromArray([2018, 8]);
+            assert.strictEqual(
+                date.format('qq'),
+                '03'
+            );
+        });
+    });
+
+    describe('Q - Standalone Quarter (1-digit)', function() {
+        it('outputs quarter', function() {
+            const date = DateTime.fromArray([2018, 8]);
+            assert.strictEqual(
+                date.format('Q'),
+                '3'
+            );
+        });
+    });
+
+    describe('Q - Standalone Quarter (2-digits)', function() {
+        it('outputs quarter zero padded to 2-digits', function() {
+            const date = DateTime.fromArray([2018, 8]);
+            assert.strictEqual(
+                date.format('QQ'),
+                '03'
+            );
+        });
+    });
+
+    /**
+     * Month
+     */
+
+    describe('M - Month (1-digit)', function() {
+        it('outputs month', function() {
+            const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
                 date.format('M'),
-                'Jun'
-            );
-        });
-    });
-
-    describe('t - Days In Month', function() {
-        it('outputs the days in the month', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('t'),
-                '31'
+                '10'
             );
         });
 
-        it('works with non-leap years', function() {
-            const date = DateTime.fromArray([2018, 2, 1], 'UTC');
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date.format('t'),
-                '28'
-            );
-        });
-
-        it('works with leap years', function() {
-            const date = DateTime.fromArray([2020, 2, 1], 'UTC');
-            assert.strictEqual(
-                date.format('t'),
-                '29'
-            );
-        });
-    });
-
-    describe('W - ISO Week', function() {
-        it('outputs the ISO week of the year', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
-            assert.strictEqual(
-                date.format('W'),
-                '22'
-            );
-        });
-
-        it('uses the ISO year', function() {
-            const date = DateTime.fromArray([2019, 12, 30], 'UTC');
-            assert.strictEqual(
-                date.format('W'),
+                date.format('M'),
                 '1'
             );
         });
     });
 
-    describe('z - Day Of The Year', function() {
-        it('outputs the day of the year', function() {
-            const date = DateTime.fromArray([2019, 6, 1], 'UTC');
+    describe('MM - Month (2-digits)', function() {
+        it('outputs month', function() {
+            const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
-                date.format('z'),
-                '152'
+                date.format('MM'),
+                '10'
             );
         });
-    });
 
-    describe('d - 2-Digit Date', function() {
-        it('outputs the 2-digit date', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date.format('d'),
+                date.format('MM'),
                 '01'
             );
         });
     });
 
-    describe('j - Date', function() {
-        it('outputs the date', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('MMM - Month Name (Short)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
-                date.format('j'),
+                date.format('MMM'), 
+                'Oct'
+            );
+        });
+    });
+
+    describe('MMMM - Month Name (Long)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
+            assert.strictEqual(
+                date.format('MMMM'),
+                'October'
+            );
+        });
+    });
+
+    describe('MMMMM - Month Name (Narrow)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
+            assert.strictEqual(
+                date.format('MMMMM'),
+                'O'
+            );
+        });
+    });
+
+    describe('L - Standalone Month (1-digit)', function() {
+        it('outputs month', function() {
+            const date = DateTime.fromArray([2018, 10]);
+            assert.strictEqual(
+                date.format('L'),
+                '10'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2018, 1]);
+            assert.strictEqual(
+                date.format('L'),
                 '1'
             );
         });
     });
 
-    describe('S - Ordinal Suffix', function() {
-        it('outputs the ordinal suffix', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('LL - Standalone Month (2-digits)', function() {
+        it('outputs month', function() {
+            const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
-                date.format('S'),
-                'st'
+                date.format('LL'),
+                '10'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2018, 1]);
+            assert.strictEqual(
+                date.format('LL'),
+                '01'
             );
         });
     });
 
-    describe('N - ISO Day', function() {
-        it('outputs the ISO day of the week', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('LLL - Standalone Month Name (Short)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
-                date.format('N'),
+                date.format('LLL'),
+                'Oct'
+            );
+        });
+    });
+
+    describe('LLLL - Standalone Month Name (Long)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
+            assert.strictEqual(
+                date.format('LLLL'),
+                'October'
+            );
+        });
+    });
+
+    describe('LLLLL - Standalone Month Name (Narrow)', function() {
+        it('outputs month name', function() {
+            const date = DateTime.fromArray([2018, 10]);
+            assert.strictEqual(
+                date.format('LLLLL'),
+                'O'
+            );
+        });
+    });
+
+    /**
+     * Week
+     */
+
+    describe('w - Week Of Year (1-digit)', function() {
+        it('outputs week of year', function() {
+            const date = DateTime.fromArray([2018, 6]);
+            assert.strictEqual(
+                date.format('w'),
+                '22'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2018, 1]);
+            assert.strictEqual(
+                date.format('w'),
+                '1'
+            );
+        });
+    });
+
+    describe('ww - Week Of Year (2-digits)', function() {
+        it('outputs week of year', function() {
+            const date = DateTime.fromArray([2018, 6]);
+            assert.strictEqual(
+                date.format('ww'),
+                '22'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2018, 1]);
+            assert.strictEqual(
+                date.format('ww'),
+                '01'
+            );
+        });
+    });
+
+    describe('W - Week Of Month', function() {
+        it('outputs the week of the month', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 1])
+                    .format('W'),
+                '1'
+            );
+        });
+
+        it('uses the local week', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 3])
+                    .format('W'),
                 '2'
             );
         });
+    });
 
-        it('outputs 1 for Monday', function() {
-            const date = DateTime.fromArray([2019, 12, 30], 'UTC');
+    /**
+     * Day
+     */
+
+    describe('d - Day of Month (1-digit)', function() {
+        it('outputs the day of the month', function() {
             assert.strictEqual(
-                date.format('N'),
+                DateTime.fromArray([2019, 1, 21])
+                    .format('d'),
+                '21'
+            );
+        });
+
+        it('does not zero pad', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1])
+                    .format('d'),
+                '1'
+            );
+        });
+    });
+
+    describe('dd - Day of Month (2-digits)', function() {
+        it('outputs the day of the month', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 21])
+                    .format('dd'),
+                '21'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1])
+                    .format('dd'),
+                '01'
+            );
+        });
+    });
+
+    describe('D - Day of Year (1-digit)', function() {
+        it('outputs the day of the year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 1])
+                    .format('D'),
+                '152'
+            );
+        });
+
+        it('does not zero pad', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1])
+                    .format('D'),
+                '1'
+            );
+        });
+    });
+
+    describe('DD - Day of Year (2-digits)', function() {
+        it('outputs the day of the year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 1])
+                    .format('DD'),
+                '152'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1])
+                    .format('DD'),
+                '01'
+            );
+        });
+    });
+
+    describe('DDD - Day of Year (3-digits)', function() {
+        it('outputs the day of the year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 1])
+                    .format('DDD'),
+                '152'
+            );
+        });
+
+        it('zero pads to 3-digits', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1])
+                    .format('DDD'),
+                '001'
+            );
+        });
+    });
+
+    describe('F - Day Of Week In Month', function() {
+        it('outputs the week of the month', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 6, 1])
+                    .format('F'),
                 '1'
             );
         });
 
-        it('outputs 7 for Sunday', function() {
-            const date = DateTime.fromArray([2019, 12, 29], 'UTC');
+        it('uses the local week', function() {
             assert.strictEqual(
-                date.format('N'),
-                '7'
-            );
-        });
-    });
-
-    describe('w - Day', function() {
-        it('outputs the day of the week', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('w'),
-                '2'
-            );
-        });
-
-        it('outputs 1 for Monday', function() {
-            const date = DateTime.fromArray([2019, 12, 30], 'UTC');
-            assert.strictEqual(
-                date.format('w'),
+                DateTime.fromArray([2019, 6, 7])
+                    .format('F'),
                 '1'
             );
         });
+    });
 
-        it('outputs 0 for Sunday', function() {
-            const date = DateTime.fromArray([2019, 12, 29], 'UTC');
+    /**
+     * Week Day
+     */
+
+    describe('EEE - Week Day (Short)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
             assert.strictEqual(
-                date.format('w'),
-                '0'
+                date.format('EEE'),
+                'Fri'
             );
         });
     });
 
-    describe('l - Day Name', function() {
-        it('outputs the day name', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('EEEE - Week Day (Long)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
             assert.strictEqual(
-                date.format('l'),
-                'Tuesday'
+                date.format('EEEE'),
+                'Friday'
             );
         });
     });
 
-    describe('D - Short Day Name', function() {
-        it('outputs the short day name', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('EEEEE - Week Day (Narrow)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
             assert.strictEqual(
-                date.format('D'),
-                'Tue'
+                date.format('EEEEE'),
+                'F'
             );
         });
     });
 
-    // swatch time
-
-    describe('a - Lower-Case Day Period', function() {
-        it('outputs the short day name', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('e - Week Day (1-digit)', function() {
+        it('outputs day', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
             assert.strictEqual(
-                date.format('a'),
+                date.format('e'),
+                '5'
+            );
+        });
+    });
+
+    describe('ee - Week Day (2-digits)', function() {
+        it('outputs day', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('ee'),
+                '05'
+            );
+        });
+    });
+
+    describe('eee - Week Day (Short)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('eee'),
+                'Fri'
+            );
+        });
+    });
+
+    describe('eeee - Week Day (Long)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('eeee'),
+                'Friday'
+            );
+        });
+    });
+
+    describe('eeeee - Week Day (Narrow)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('eeeee'),
+                'F'
+            );
+        });
+    });
+
+    describe('c - Week Day (1-digit)', function() {
+        it('outputs day', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('c'),
+                '5'
+            );
+        });
+    });
+
+    describe('cc - Week Day (2-digits)', function() {
+        it('outputs day', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('cc'),
+                '05'
+            );
+        });
+    });
+
+    describe('ccc - Week Day (Short)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('ccc'),
+                'Fri'
+            );
+        });
+    });
+
+    describe('cccc - Week Day (Long)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('cccc'),
+                'Friday'
+            );
+        });
+    });
+
+    describe('ccccc - Week Day (Narrow)', function() {
+        it('outputs day name', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+            assert.strictEqual(
+                date.format('ccccc'),
+                'F'
+            );
+        });
+    });
+
+    /**
+     * Day Period
+     */
+
+    describe('aaa - Day Period (Short)', function() {
+        it('outputs AM day period', function() {
+            const date = DateTime.fromArray([2018, 1, 1, 0]);
+            assert.strictEqual(
+                date.format('aaa'),
                 'am'
             );
         });
 
-        it('works with PM', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 12], 'UTC');
+        it('outputs pm day period', function() {
+            const date = DateTime.fromArray([2018, 1, 1, 12]);
             assert.strictEqual(
-                date.format('a'),
+                date.format('aaa'),
                 'pm'
             );
         });
     });
 
-    describe('A - Upper-Case Day Period', function() {
-        it('outputs the short day name', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('aaaa - Day Period (Long)', function() {
+        it('outputs AM day period', function() {
+            const date = DateTime.fromArray([2018, 1, 1, 0]);
             assert.strictEqual(
-                date.format('A'),
-                'AM'
+                date.format('aaaa'),
+                'am'
             );
         });
 
-        it('works with PM', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 12], 'UTC');
+        it('outputs pm day period', function() {
+            const date = DateTime.fromArray([2018, 1, 1, 12]);
             assert.strictEqual(
-                date.format('A'),
-                'PM'
+                date.format('aaaa'),
+                'pm'
             );
         });
     });
 
-    describe('H - 2-digit 24-hour', function() {
-        it('outputs the 2-digit 24-hour', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    // describe('aaaaa - Day Period (Narrow)', function() {
+    //     it('outputs AM day period', function() {
+    //         const date = DateTime.fromArray([2018, 1, 1, 0]);
+    //         assert.strictEqual(
+    //             date.format('aaaaa'),
+    //             'a'
+    //         );
+    //     });
+
+    //     it('outputs pm day period', function() {
+    //         const date = DateTime.fromArray([2018, 1, 1, 12]);
+    //         assert.strictEqual(
+    //             date.format('aaaaa'),
+    //             'p'
+    //         );
+    //     });
+    // });
+
+    /**
+     * Hour
+     */
+
+    describe('h - Hour [1-12] (1-digit)', function() {
+        it('outputs the hour [1-12]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 12]);
+            assert.strictEqual(
+                date.format('h'),
+                '12'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            assert.strictEqual(
+                date.format('h'),
+                '1'
+            );
+        });
+    });
+
+    describe('hh - Hour [1-12] (2-digits)', function() {
+        it('outputs the hour [1-12]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            assert.strictEqual(
+                date.format('hh'),
+                '11'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            assert.strictEqual(
+                date.format('hh'),
+                '01'
+            );
+        });
+    });
+
+    describe('H - Hour [0-23] (1-digit)', function() {
+        it('outputs the hour [0-23]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 23]);
             assert.strictEqual(
                 date.format('H'),
+                '23'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            assert.strictEqual(
+                date.format('H'),
+                '0'
+            );
+        });
+    });
+
+    describe('HH - Hour [0-23] (2-digits)', function() {
+        it('outputs the hour [0-23]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            assert.strictEqual(
+                date.format('HH'),
+                '23'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            assert.strictEqual(
+                date.format('HH'),
                 '00'
             );
         });
-
-        it('works after 12 hours', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.strictEqual(
-                date.format('H'),
-                '13'
-            );
-        });
     });
 
-    describe('G - 24-hour', function() {
-        it('outputs the 24-hour', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('K - Hour [0-11] (1-digit)', function() {
+        it('outputs the hour [0-11]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 23]);
             assert.strictEqual(
-                date.format('G'),
+                date.format('K'),
+                '11'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            assert.strictEqual(
+                date.format('K'),
                 '0'
             );
         });
+    });
 
-        it('works after 12 hours', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 13], 'UTC');
+    describe('KK - Hour [0-11] (2-digits)', function() {
+        it('outputs the hour [0-11]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 23]);
             assert.strictEqual(
-                date.format('G'),
-                '13'
+                date.format('KK'),
+                '11'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            assert.strictEqual(
+                date.format('KK'),
+                '00'
             );
         });
     });
 
-    describe('h - 2-digit 12-hour', function() {
-        it('outputs the 2-digit 12-hour', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+    describe('k - Hour [1-24] (1-digit)', function() {
+        it('outputs the hour [1-24]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
             assert.strictEqual(
-                date.format('h'),
-                '12'
+                date.format('k'),
+                '24'
             );
         });
 
-        it('works after 12 hours', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 13], 'UTC');
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 1]);
             assert.strictEqual(
-                date.format('h'),
-                '01'
-            );
-        });
-    });
-
-    describe('g - 12-hour', function() {
-        it('outputs the 12-hour', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('g'),
-                '12'
-            );
-        });
-
-        it('works after 12 hours', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 13], 'UTC');
-            assert.strictEqual(
-                date.format('g'),
+                date.format('k'),
                 '1'
             );
         });
     });
 
-    describe('i - Minute', function() {
-        it('outputs the minute', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 1], 'UTC');
+    describe('kk - Hour [1-24] (2-digits)', function() {
+        it('outputs the hour [1-24]', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0]);
             assert.strictEqual(
-                date.format('i'),
+                date.format('kk'),
+                '24'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            assert.strictEqual(
+                date.format('kk'),
                 '01'
             );
         });
     });
 
-    describe('s - Second', function() {
+    /**
+     * Minute
+     */
+
+    describe('m - Minute (1-digit)', function() {
+        it('outputs the minute', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 25]);
+            assert.strictEqual(
+                date.format('m'),
+                '25'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 1]);
+            assert.strictEqual(
+                date.format('m'),
+                '1'
+            );
+        });
+    });
+
+    describe('mm - Minute (2-digits)', function() {
+        it('outputs the minute', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 25]);
+            assert.strictEqual(
+                date.format('mm'),
+                '25'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 1]);
+            assert.strictEqual(
+                date.format('mm'),
+                '01'
+            );
+        });
+    });
+
+    /**
+     * Second
+     */
+
+    describe('s - Minute (1-digit)', function() {
         it('outputs the second', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1], 'UTC');
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25]);
             assert.strictEqual(
                 date.format('s'),
+                '25'
+            );
+        });
+
+        it('does not zero pad', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1]);
+            assert.strictEqual(
+                date.format('s'),
+                '1'
+            );
+        });
+    });
+
+    describe('ss - Minute (2-digits)', function() {
+        it('outputs the second', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25]);
+            assert.strictEqual(
+                date.format('ss'),
+                '25'
+            );
+        });
+
+        it('zero pads to 2-digits', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1]);
+            assert.strictEqual(
+                date.format('ss'),
                 '01'
             );
         });
     });
 
-    describe('u - Microsecond', function() {
-        it('outputs the microsecond', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 550], 'UTC');
+    describe('S - Fractional Second', function() {
+        it.only('outputs the fractional second', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
             assert.strictEqual(
-                date.format('u'),
-                '550000'
-            );
-        });
-    });
-
-    describe('e - Timezone Name', function() {
-        it('outputs the timezone name', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('e'),
-                'Australia/Brisbane'
+                date.format('SSS'),
+                '123'
             );
         });
 
-        it('works with UTC', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
+        it.only('truncates to token length', function() {
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
             assert.strictEqual(
-                date.format('e'),
-                'UTC'
-            );
-        });
-    });
-
-    describe('I - Daylight Savings', function() {
-        it('outputs 1 for DST', function() {
-            const date = DateTime.fromArray([2019, 6, 30], 'America/New_York');
-            assert.strictEqual(
-                date.format('I'),
+                date.format('S'),
                 '1'
             );
-        });
-
-        it('outputs 0 for non-DST', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('I'),
-                '0'
-            );
-        });
-    });
-
-    describe('O - Offset', function() {
-        it('outputs offset without colon', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('O'),
-                '+1000'
-            );
-        });
-
-        it('works with UTC', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('O'),
-                '+0000'
-            );
-        });
-
-        it('works with negative offsets', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'America/New_York');
-            assert.strictEqual(
-                date.format('O'),
-                '-0500'
-            );
-        });
-    });
-
-    describe('P - Offset With Colon', function() {
-        it('outputs offset with colon', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('P'),
-                '+10:00'
-            );
-        });
-
-        it('works with UTC', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('P'),
-                '+00:00'
-            );
-        });
-
-        it('works with negative offsets', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'America/New_York');
-            assert.strictEqual(
-                date.format('P'),
-                '-05:00'
-            );
-        });
-    });
-
-    describe('Z - Offset Seconds', function() {
-        it('outputs offset in seconds', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('Z'),
-                '36000'
-            );
-        });
-
-        it('works with UTC', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'UTC');
-            assert.strictEqual(
-                date.format('Z'),
-                '0'
-            );
-        });
-
-        it('works with negative offsets', function() {
-            const date = DateTime.fromArray([2019, 1, 1], 'America/New_York');
-            assert.strictEqual(
-                date.format('Z'),
-                '-18000'
-            );
-        });
-    });
-
-    describe('c - ISO-8601 Date', function() {
-        it('outputs ISO-8601 date', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 12, 30, 59, 500], 'Australia/Brisbane');
-            assert.strictEqual(
-                date.format('c'),
-                '2019-01-01T12:30:59.500+10:00'
-            );
-        });
-    });
-
-    describe('\\ - Escape Character', function() {
-        it('outputs the following literal character', function() {
-            const date = new DateTime();
-            assert.strictEqual(
-                date.format('\\Y'),
-                'Y'
-            )
         });
     });
 
