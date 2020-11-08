@@ -33,7 +33,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             value = formatter.parseNumber(value);
 
-            if (length !== 2) {
+            if (length !== 2 || `${value}`.length !== 2) {
                 return value;
             }
 
@@ -57,7 +57,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             value = formatter.parseNumber(value);
 
-            if (length !== 2) {
+            if (length !== 2 || `${value}`.length !== 2) {
                 return value;
             }
 

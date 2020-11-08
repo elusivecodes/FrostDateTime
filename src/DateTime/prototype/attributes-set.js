@@ -236,27 +236,7 @@ Object.assign(DateTime.prototype, {
             day = this.getWeekDay();
         }
 
-        const tempDate = new Date(this._getOffsetTime());
-
-        tempDate.setUTCFullYear(
-            this.getWeekYear(),
-            0,
-            4
-            + (
-                (week - 1)
-                * 7
-            )
-        );
-
-        return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - this.formatter.weekDay(
-                    tempDate.getUTCDay()
-                )
-                + parseInt(day)
-            )
-        );
+        return this.setYear(this.getWeekYear(), 1, 4 + ((week - 1) * 7)).setWeekDay(day);
     },
 
     /**
@@ -313,34 +293,17 @@ Object.assign(DateTime.prototype, {
      */
     setWeekYear(year, week = null, day = null) {
         if (week === null) {
-            week = this.getWeek();
+            week = Math.min(
+                this.getWeek(),
+                DateTime.fromArray([year, 1, 4]).weeksInYear()
+            );
         }
 
         if (day === null) {
             day = this.getWeekDay();
         }
 
-        const tempDate = new Date(this._getOffsetTime());
-
-        tempDate.setUTCFullYear(
-            year,
-            0,
-            4
-            + (
-                (week - 1)
-                * 7
-            )
-        );
-
-        return this._setOffsetTime(
-            tempDate.setUTCDate(
-                tempDate.getUTCDate()
-                - this.formatter.weekDay(
-                    tempDate.getUTCDay()
-                )
-                + parseInt(day)
-            )
-        );
+        return this.setYear(year, 1, 4 + ((week - 1) * 7)).setWeekDay(day);
     },
 
     /**

@@ -535,7 +535,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with day argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeek(1, 5);
+            const date2 = date1.setWeek(1, 6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-04T00:00:00.0+00:00'
@@ -563,7 +563,7 @@ describe('DateTime Attributes Set', function() {
     describe('#setWeekDay', function() {
         it('sets the day of the week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(5);
+            const date2 = date1.setWeekDay(6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-04T00:00:00.0+00:00'
@@ -574,9 +574,9 @@ describe('DateTime Attributes Set', function() {
             );
         });
 
-        it('sets to Monday for 1', function() {
+        it('sets to Monday for 2', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(1);
+            const date2 = date1.setWeekDay(2);
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-12-31T00:00:00.0+00:00'
@@ -587,12 +587,12 @@ describe('DateTime Attributes Set', function() {
             );
         });
 
-        it('sets to Sunday for 7', function() {
+        it('sets to Sunday for 1', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(7);
+            const date2 = date1.setWeekDay(1);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-06T00:00:00.0+00:00'
+                '2018-12-30T00:00:00.0+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -602,7 +602,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(13);
+            const date2 = date1.setWeekDay(14);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-12T00:00:00.0+00:00'
@@ -712,7 +712,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with day argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekYear(2018, 1, 5);
+            const date2 = date1.setWeekYear(2018, 1, 6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-01-05T00:00:00.0+00:00'

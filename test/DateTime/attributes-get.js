@@ -72,7 +72,7 @@ describe('DateTime Attributes Get', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019])
                     .getLocale(),
-                'en-GB'
+                'en'
             );
         });
     });
@@ -206,23 +206,23 @@ describe('DateTime Attributes Get', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1])
                     .getWeekDay(),
+                3
+            );
+        });
+
+        it('returns 2 for Monday', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 12, 31])
+                    .getWeekDay(),
                 2
             );
         });
 
-        it('returns 1 for Monday', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 12, 31])
-                    .getWeekDay(),
-                1
-            );
-        });
-
-        it('returns 7 for Sunday', function() {
+        it('returns 1 for Sunday', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 12, 30])
                     .getWeekDay(),
-                7
+                1
             );
         });
     });

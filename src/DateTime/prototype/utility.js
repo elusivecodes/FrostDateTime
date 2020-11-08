@@ -400,7 +400,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of weeks in the current ISO year.
      */
     weeksInYear() {
-        return this.constructor.weeksInYear(this.getWeekYear());
+        return this.clone().setMonth(12, 28).getWeek();
     }
 
 });

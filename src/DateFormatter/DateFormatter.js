@@ -138,35 +138,6 @@ class DateFormatter {
     }
 
     /**
-     * Create a Date object set to Thursday of the local week.
-     * @param {number} year The year.
-     * @param {number} month The month.
-     * @param {number} date The date.
-     * @returns {Date} A new Date object.
-     */
-    weekDate(...args) {
-        const date = new Date();
-
-        date.setUTCFullYear(args[0]);
-
-        if (args.length > 1) {
-            date.setUTCMonth(args[1] - 1);
-        }
-
-        if (args.length > 2) {
-            date.setUTCDate(args[2]);
-        }
-
-        date.setUTCDate(
-            date.getUTCDate()
-            - this.weekDay(date.getUTCDay())
-            + this.weekDay(4)
-        );
-
-        return date;
-    }
-
-    /**
      * Convert a day of the week to a local format.
      * @param {number} day The day of the week.
      * @returns {number} The local day of the week.

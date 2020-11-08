@@ -626,7 +626,7 @@ date.add(amount, timeUnit);
 
 Set the date to the end of a unit of time in current time zone.
 
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*localWeek*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 date.endOf(timeUnit);
@@ -636,7 +636,7 @@ date.endOf(timeUnit);
 
 Set the date to the start of a unit of time in current time zone.
 
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*isoWeek*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*localWeek*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 date.startOf(timeUnit);

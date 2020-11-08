@@ -154,35 +154,6 @@
         }
 
         /**
-         * Create a Date object set to Thursday of the local week.
-         * @param {number} year The year.
-         * @param {number} month The month.
-         * @param {number} date The date.
-         * @returns {Date} A new Date object.
-         */
-        weekDate(...args) {
-            const date = new Date();
-
-            date.setUTCFullYear(args[0]);
-
-            if (args.length > 1) {
-                date.setUTCMonth(args[1] - 1);
-            }
-
-            if (args.length > 2) {
-                date.setUTCDate(args[2]);
-            }
-
-            date.setUTCDate(
-                date.getUTCDate()
-                - this.weekDay(date.getUTCDay())
-                + this.weekDay(4)
-            );
-
-            return date;
-        }
-
-        /**
          * Convert a day of the week to a local format.
          * @param {number} day The day of the week.
          * @returns {number} The local day of the week.
@@ -319,7 +290,7 @@
             input: (formatter, value, length) => {
                 value = formatter.parseNumber(value);
 
-                if (length !== 2) {
+                if (length !== 2 || `${value}`.length !== 2) {
                     return value;
                 }
 
@@ -343,7 +314,7 @@
             input: (formatter, value, length) => {
                 value = formatter.parseNumber(value);
 
-                if (length !== 2) {
+                if (length !== 2 || `${value}`.length !== 2) {
                     return value;
                 }
 
@@ -1595,17 +1566,8 @@
          * @returns {number} The local week. (1, 53)
          */
         getWeek() {
-            const
-                week = this.formatter.weekDate(
-                    this.getYear(),
-                    this.getMonth(),
-                    this.getDate()
-                ),
-                firstWeek = this.formatter.weekDate(
-                    week.getUTCFullYear(),
-                    1,
-                    4
-                );
+            const week = this.clone().startOf('day').setWeekDay(4);
+            const firstWeek = week.clone().setMonth(1, 4).setWeekDay(4);
 
             return 1
                 + (
@@ -1652,11 +1614,8 @@
          * @returns {number} The ISO year.
          */
         getWeekYear() {
-            return this.formatter.weekDate(
-                this.getYear(),
-                this.getMonth(),
-                this.getDate()
-            ).getUTCFullYear();
+            const day = this.formatter.weekDay(4);
+            return this.clone().setWeekDay(day).getYear();
         }
 
     });
@@ -1899,27 +1858,7 @@
                 day = this.getWeekDay();
             }
 
-            const tempDate = new Date(this._getOffsetTime());
-
-            tempDate.setUTCFullYear(
-                this.getWeekYear(),
-                0,
-                4
-                + (
-                    (week - 1)
-                    * 7
-                )
-            );
-
-            return this._setOffsetTime(
-                tempDate.setUTCDate(
-                    tempDate.getUTCDate()
-                    - this.formatter.weekDay(
-                        tempDate.getUTCDay()
-                    )
-                    + parseInt(day)
-                )
-            );
+            return this.setYear(this.getWeekYear(), 1, 4 + ((week - 1) * 7)).setWeekDay(day);
         },
 
         /**
@@ -1976,34 +1915,17 @@
          */
         setWeekYear(year, week = null, day = null) {
             if (week === null) {
-                week = this.getWeek();
+                week = Math.min(
+                    this.getWeek(),
+                    DateTime.fromArray([year, 1, 4]).weeksInYear()
+                );
             }
 
             if (day === null) {
                 day = this.getWeekDay();
             }
 
-            const tempDate = new Date(this._getOffsetTime());
-
-            tempDate.setUTCFullYear(
-                year,
-                0,
-                4
-                + (
-                    (week - 1)
-                    * 7
-                )
-            );
-
-            return this._setOffsetTime(
-                tempDate.setUTCDate(
-                    tempDate.getUTCDate()
-                    - this.formatter.weekDay(
-                        tempDate.getUTCDay()
-                    )
-                    + parseInt(day)
-                )
-            );
+            return this.setYear(year, 1, 4 + ((week - 1) * 7)).setWeekDay(day);
         },
 
         /**
@@ -2245,7 +2167,7 @@
                 case 'week':
                     return this.setDay(6)
                         .setHours(23, 59, 59, 999);
-                case 'isoweek':
+                case 'localweek':
                     return this.setWeekDay(7)
                         .setHours(23, 59, 59, 999);
                 case 'month':
@@ -2284,7 +2206,7 @@
                 case 'week':
                     return this.setDay(0)
                         .setHours(0, 0, 0, 0);
-                case 'isoweek':
+                case 'localweek':
                     return this.setWeekDay(1)
                         .setHours(0, 0, 0, 0);
                 case 'month':
@@ -2807,7 +2729,7 @@
          * @returns {number} The number of weeks in the current ISO year.
          */
         weeksInYear() {
-            return this.constructor.weeksInYear(this.getWeekYear());
+            return this.clone().setMonth(12, 28).getWeek();
         }
 
     });

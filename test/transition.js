@@ -5,7 +5,7 @@ describe('DateTime DST Transitions', function() {
 
     describe('Non-DST Offset (Post-Transition)', function() {
         it('creates correct date from format', function() {
-            const date = DateTime.fromFormat('dd/MM/YYYY HH:mm:ss ZZZZZ', '07/04/2019 03:01:00 +10:00');
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '07/04/2019 03:01:00 +10:00');
             date.setTimeZone('Australia/Sydney');
             assert.strictEqual(
                 date.toString(),
@@ -27,7 +27,7 @@ describe('DateTime DST Transitions', function() {
 
     describe('Non-DST Offset (Pre-Transition)', function() {
         it('creates correct date from format', function() {
-            const date = DateTime.fromFormat('dd/MM/YYYY HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +10:00');
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +10:00');
             date.setTimeZone('Australia/Sydney');
             assert.strictEqual(
                 date.toString(),
@@ -49,7 +49,7 @@ describe('DateTime DST Transitions', function() {
 
     describe('DST Offset (Pre-Transition)', function() {
         it('creates correct date from format', function() {
-            const date = DateTime.fromFormat('dd/MM/YYYY HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +11:00');
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +11:00');
             date.setTimeZone('Australia/Sydney');
             assert.strictEqual(
                 date.toString(),
@@ -71,7 +71,7 @@ describe('DateTime DST Transitions', function() {
 
     describe('DST Offset (Post-Transition)', function() {
         it('creates correct date if offset is not correct', function() {
-            const date = DateTime.fromFormat('dd/MM/YYYY HH:mm:ss ZZZZZ', '07/04/2019 03:01:00 +11:00');
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '07/04/2019 03:01:00 +11:00');
             date.setTimeZone('Australia/Sydney');
             assert.strictEqual(
                 date.toString(),
@@ -93,7 +93,7 @@ describe('DateTime DST Transitions', function() {
 
     describe('DST -> Non-DST', function() {
         it('uses correct offset after transition', function() {
-            const date = DateTime.fromFormat('dd/MM/YYYY HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +11:00');
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '07/04/2019 02:01:00 +11:00');
             date.setTimeZone('Australia/Sydney');
             date.add(1, 'hour');
             assert.strictEqual(

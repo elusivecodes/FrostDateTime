@@ -411,12 +411,12 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with local week', function() {
+        it('works with week', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.startOf('isoWeek');
+            const date2 = date1.startOf('week');
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-06-11T00:00:00.0+00:00'
+                '2018-06-10T00:00:00.0+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -424,9 +424,9 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with week', function() {
+        it('works with local week', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.startOf('week');
+            const date2 = date1.startOf('localWeek');
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-06-10T00:00:00.0+00:00'
@@ -530,12 +530,12 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with local week', function() {
+        it('works with week', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.endOf('isoWeek');
+            const date2 = date1.endOf('week');
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-06-17T23:59:59.999+00:00'
+                '2018-06-16T23:59:59.999+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -543,9 +543,9 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with week', function() {
+        it('works with local week', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.endOf('week');
+            const date2 = date1.endOf('localWeek');
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-06-16T23:59:59.999+00:00'

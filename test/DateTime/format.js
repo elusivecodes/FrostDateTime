@@ -141,8 +141,8 @@ describe('DateTime #format', function() {
      * Week Year
      */
 
-    describe('Y - Year (1-digit)', function() {
-        it('outputs full year', function() {
+    describe('Y - Week Year (1-digit)', function() {
+        it('outputs full week year', function() {
             const date = DateTime.fromArray([2018]);
             assert.strictEqual(
                 date.format('Y'),
@@ -150,7 +150,7 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('uses the year of Thursday of the current week', function() {
+        it('uses the year of current week', function() {
             const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
                 date.format('Y'),
@@ -167,7 +167,7 @@ describe('DateTime #format', function() {
         });
     });
 
-    describe('YY - Year (2-digits)', function() {
+    describe('YY - Week Year (2-digits)', function() {
         it('outputs 2 low-order digits of year', function() {
             const date = DateTime.fromArray([2018]);
             assert.strictEqual(
@@ -176,7 +176,7 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('uses the year of Thursday of the current week', function() {
+        it('uses the year of current week', function() {
             const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
                 date.format('YY'),
@@ -193,8 +193,8 @@ describe('DateTime #format', function() {
         });
     });
 
-    describe('YYY - Year (3-digits)', function() {
-        it('outputs full year', function() {
+    describe('YYY - Week Year (3-digits)', function() {
+        it('outputs full week year', function() {
             const date = DateTime.fromArray([2018]);
             assert.strictEqual(
                 date.format('YYY'),
@@ -202,7 +202,7 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('uses the year of Thursday of the current week', function() {
+        it('uses the year of current week', function() {
             const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
                 date.format('YYY'),
@@ -219,8 +219,8 @@ describe('DateTime #format', function() {
         });
     });
 
-    describe('YYYY - Year (4-digits)', function() {
-        it('outputs full year', function() {
+    describe('YYYY - Week Year (4-digits)', function() {
+        it('outputs full week year', function() {
             const date = DateTime.fromArray([2018]);
             assert.strictEqual(
                 date.format('YYYY'),
@@ -228,7 +228,7 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('uses the year of Thursday of the current week', function() {
+        it('uses the year of current week', function() {
             const date = DateTime.fromArray([2019, 12, 30]);
             assert.strictEqual(
                 date.format('YYYY'),
@@ -738,7 +738,7 @@ describe('DateTime #format', function() {
             const date = DateTime.fromArray([2018, 1, 1, 0]);
             assert.strictEqual(
                 date.format('aaa'),
-                'am'
+                'AM'
             );
         });
 
@@ -746,7 +746,7 @@ describe('DateTime #format', function() {
             const date = DateTime.fromArray([2018, 1, 1, 12]);
             assert.strictEqual(
                 date.format('aaa'),
-                'pm'
+                'PM'
             );
         });
     });
@@ -756,7 +756,7 @@ describe('DateTime #format', function() {
             const date = DateTime.fromArray([2018, 1, 1, 0]);
             assert.strictEqual(
                 date.format('aaaa'),
-                'am'
+                'AM'
             );
         });
 
@@ -764,7 +764,7 @@ describe('DateTime #format', function() {
             const date = DateTime.fromArray([2018, 1, 1, 12]);
             assert.strictEqual(
                 date.format('aaaa'),
-                'pm'
+                'PM'
             );
         });
     });
@@ -774,7 +774,7 @@ describe('DateTime #format', function() {
     //         const date = DateTime.fromArray([2018, 1, 1, 0]);
     //         assert.strictEqual(
     //             date.format('aaaaa'),
-    //             'a'
+    //             'A'
     //         );
     //     });
 
@@ -782,7 +782,7 @@ describe('DateTime #format', function() {
     //         const date = DateTime.fromArray([2018, 1, 1, 12]);
     //         assert.strictEqual(
     //             date.format('aaaaa'),
-    //             'p'
+    //             'P'
     //         );
     //     });
     // });
@@ -1016,7 +1016,7 @@ describe('DateTime #format', function() {
     });
 
     describe('S - Fractional Second', function() {
-        it.only('outputs the fractional second', function() {
+        it('outputs the fractional second', function() {
             const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
             assert.strictEqual(
                 date.format('SSS'),
@@ -1024,7 +1024,7 @@ describe('DateTime #format', function() {
             );
         });
 
-        it.only('truncates to token length', function() {
+        it('truncates to token length', function() {
             const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
             assert.strictEqual(
                 date.format('S'),

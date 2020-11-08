@@ -137,17 +137,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The local week. (1, 53)
      */
     getWeek() {
-        const
-            week = this.formatter.weekDate(
-                this.getYear(),
-                this.getMonth(),
-                this.getDate()
-            ),
-            firstWeek = this.formatter.weekDate(
-                week.getUTCFullYear(),
-                1,
-                4
-            );
+        const week = this.clone().startOf('day').setWeekDay(4);
+        const firstWeek = week.clone().setMonth(1, 4).setWeekDay(4);
 
         return 1
             + (
@@ -194,11 +185,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getWeekYear() {
-        return this.formatter.weekDate(
-            this.getYear(),
-            this.getMonth(),
-            this.getDate()
-        ).getUTCFullYear();
+        const day = this.formatter.weekDay(4);
+        return this.clone().setWeekDay(day).getYear();
     }
 
 });
