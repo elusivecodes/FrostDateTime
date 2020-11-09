@@ -566,7 +566,7 @@ DateFormatter._formatDate = {
                     break;
             }
 
-            return DateFormatter.formatOffset(offset, useColon);
+            return DateFormatter.formatOffset(offset, useColon, length === 1);
         }
     },
 
@@ -597,7 +597,7 @@ DateFormatter._formatDate = {
                     break;
             }
 
-            return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
+            return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1);
         }
     }
 

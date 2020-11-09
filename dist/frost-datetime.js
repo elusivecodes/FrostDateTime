@@ -104,10 +104,11 @@
          * @param {string} value The value to parse.
          * @param {string} [type=long] The formatting type.
          * @param {Boolean} [standalone=true] Whether the value is standalone.
-         * @returns {number} The month number (0-6).
+         * @returns {number} The day number (0-6).
          */
         parseDay(value, type = 'long', standalone = true) {
-            return this.getDays(type, standalone).indexOf(value) || 7;
+            const day = this.getDays(type, standalone).indexOf(value) || 7;
+            return this.weekDay(day);
         }
 
         /**
@@ -228,7 +229,7 @@
 
             return weekStart ?
                 weekStart - 2 :
-                0; 
+                0;
         }
 
         /**
@@ -823,7 +824,7 @@
                         break;
                 }
 
-                return DateFormatter.formatOffset(offset, useColon);
+                return DateFormatter.formatOffset(offset, useColon, length === 1);
             }
         },
 
@@ -854,7 +855,7 @@
                         break;
                 }
 
-                return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
+                return DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1);
             }
         }
 
@@ -1593,11 +1594,14 @@
          * @returns {number} The week day in month.
          */
         getWeekDayInMonth() {
-            const firstWeek = this.clone().setDate(1);
-            const weeks = this.getWeek() - firstWeek.getWeek();
-            return firstWeek.getWeekDay() > this.getWeekDay() ?
-                weeks :
-                weeks + 1;
+            const thisWeek = this.getWeek();
+            const first = this.clone().setDate(1);
+            const firstWeek = first.getWeek();
+            const offset = first.getDay() > this.getDay() ?
+                0 : 1;
+            return firstWeek > thisWeek ?
+                thisWeek + offset :
+                thisWeek - firstWeek + offset;
         },
 
         /**
@@ -1605,8 +1609,11 @@
          * @returns {number} The week of month.
          */
         getWeekOfMonth() {
-            return this.getWeek()
-                - this.clone().setDate(1).getWeek() + 1;
+            const thisWeek = this.getWeek();
+            let firstWeek = this.clone().setDate(1).getWeek();
+            return firstWeek > thisWeek ?
+                thisWeek + 1 :
+                thisWeek - firstWeek + 1;
         },
 
         /**
@@ -1614,8 +1621,7 @@
          * @returns {number} The ISO year.
          */
         getWeekYear() {
-            const day = this.formatter.weekDay(4);
-            return this.clone().setWeekDay(day).getYear();
+            return this.clone().setWeekDay(4).getYear();
         }
 
     });

@@ -164,11 +164,14 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The week day in month.
      */
     getWeekDayInMonth() {
-        const firstWeek = this.clone().setDate(1);
-        const weeks = this.getWeek() - firstWeek.getWeek();
-        return firstWeek.getWeekDay() > this.getWeekDay() ?
-            weeks :
-            weeks + 1;
+        const thisWeek = this.getWeek();
+        const first = this.clone().setDate(1);
+        const firstWeek = first.getWeek();
+        const offset = first.getDay() > this.getDay() ?
+            0 : 1;
+        return firstWeek > thisWeek ?
+            thisWeek + offset :
+            thisWeek - firstWeek + offset;
     },
 
     /**
@@ -176,8 +179,11 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The week of month.
      */
     getWeekOfMonth() {
-        return this.getWeek()
-            - this.clone().setDate(1).getWeek() + 1;
+        const thisWeek = this.getWeek();
+        let firstWeek = this.clone().setDate(1).getWeek();
+        return firstWeek > thisWeek ?
+            thisWeek + 1 :
+            thisWeek - firstWeek + 1;
     },
 
     /**
@@ -185,8 +191,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getWeekYear() {
-        const day = this.formatter.weekDay(4);
-        return this.clone().setWeekDay(day).getYear();
+        return this.clone().setWeekDay(4).getYear();
     }
 
 });

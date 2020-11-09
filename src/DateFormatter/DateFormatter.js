@@ -88,10 +88,11 @@ class DateFormatter {
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
      * @param {Boolean} [standalone=true] Whether the value is standalone.
-     * @returns {number} The month number (0-6).
+     * @returns {number} The day number (0-6).
      */
     parseDay(value, type = 'long', standalone = true) {
-        return this.getDays(type, standalone).indexOf(value) || 7;
+        const day = this.getDays(type, standalone).indexOf(value) || 7;
+        return this.weekDay(day);
     }
 
     /**
@@ -212,7 +213,7 @@ class DateFormatter {
 
         return weekStart ?
             weekStart - 2 :
-            0; 
+            0;
     }
 
     /**

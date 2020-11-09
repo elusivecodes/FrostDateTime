@@ -333,7 +333,7 @@ describe('DateTime #format', function() {
         it('outputs month name', function() {
             const date = DateTime.fromArray([2018, 10]);
             assert.strictEqual(
-                date.format('MMM'), 
+                date.format('MMM'),
                 'Oct'
             );
         });
@@ -578,7 +578,7 @@ describe('DateTime #format', function() {
     });
 
     describe('F - Day Of Week In Month', function() {
-        it('outputs the week of the month', function() {
+        it('outputs the day of week in the month', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 6, 1])
                     .format('F'),
@@ -1029,6 +1029,150 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 date.format('S'),
                 '1'
+            );
+        });
+    });
+
+    /**
+     * Time Zone
+     */
+
+    describe('zzz - Time Zone (Short specific non-location format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('zzz'),
+                'UTC'
+            );
+        });
+    });
+
+    describe('zzzz - Time Zone (Long specific non-location format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('zzzz'),
+                'Coordinated Universal Time'
+            );
+        });
+    });
+
+    describe('ZZZ - Time Zone (ISO8601 basic format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('ZZZ'),
+                '+0000'
+            );
+        });
+    });
+
+    describe('ZZZZ - Time Zone (ISO8601 basic format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('ZZZZ'),
+                'GMT+00:00'
+            );
+        });
+    });
+
+    describe('ZZZZZ - Time Zone (ISO8601 extended format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('ZZZZZ'),
+                '+00:00'
+            );
+        });
+    });
+
+    describe('O - Time Zone (Short localized GMT format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('O'),
+                'GMT+00'
+            );
+        });
+    });
+
+    describe('OOOO - Time Zone (Long localized GMT format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('OOOO'),
+                'GMT+00:00'
+            );
+        });
+    });
+
+    describe('VV - Time Zone (Long time zone ID)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('VV'),
+                'UTC'
+            );
+        });
+    });
+
+    describe('X - Time Zone (ISO8601 basic format with Z)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('X'),
+                'Z'
+            );
+        });
+    });
+
+    describe('XX - Time Zone (ISO8601 basic format with Z)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('XX'),
+                'Z'
+            );
+        });
+    });
+
+    describe('XXX - Time Zone (ISO8601 extended format with Z)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('XXX'),
+                'Z'
+            );
+        });
+    });
+
+    describe('x - Time Zone (ISO8601 basic format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('x'),
+                '+00'
+            );
+        });
+    });
+
+    describe('xx - Time Zone (ISO8601 basic format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('xx'),
+                '+0000'
+            );
+        });
+    });
+
+    describe('xxx - Time Zone (ISO8601 extended format)', function() {
+        it('outputs the time zone', function() {
+            const date = DateTime.now();
+            assert.strictEqual(
+                date.format('xxx'),
+                '+00:00'
             );
         });
     });
