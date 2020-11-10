@@ -9,11 +9,11 @@ describe('DateTime Utility', function() {
             const date2 = date1.clone();
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date2.toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
 
@@ -23,11 +23,11 @@ describe('DateTime Utility', function() {
             date2.setYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date2.toISOString(),
-                '2018-01-01T00:00:00.0+00:00'
+                '2018-01-01T00:00:00.000+00:00'
             );
         });
     });

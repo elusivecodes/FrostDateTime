@@ -88,7 +88,7 @@ describe('DateTime Variables', function() {
             assert.strictEqual(
                 DateTime.fromArray([2020])
                     .format(DateTime.formats.rfc3339_extended),
-                '2020-01-01T00:00:00.0+00:00'
+                '2020-01-01T00:00:00.000+00:00'
             );
         });
 

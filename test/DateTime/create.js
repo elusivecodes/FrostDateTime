@@ -15,7 +15,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00')
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
 
@@ -23,7 +23,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00')
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
 
@@ -31,7 +31,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019')
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
 
@@ -39,7 +39,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
                     .toISOString(),
-                '2018-12-31T14:00:00.0+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
 
@@ -47,7 +47,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+10:00' })
                     .toISOString(),
-                '2018-12-31T14:00:00.0+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
 
@@ -55,7 +55,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+1000' })
                     .toISOString(),
-                '2018-12-31T14:00:00.0+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
 
@@ -83,7 +83,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019])
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
 
@@ -91,7 +91,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 2])
                     .toISOString(),
-                '2019-02-01T00:00:00.0+00:00'
+                '2019-02-01T00:00:00.000+00:00'
             );
         });
 
@@ -99,7 +99,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 2])
                     .toISOString(),
-                '2019-01-02T00:00:00.0+00:00'
+                '2019-01-02T00:00:00.000+00:00'
             );
         });
 
@@ -107,7 +107,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 1])
                     .toISOString(),
-                '2019-01-01T01:00:00.0+00:00'
+                '2019-01-01T01:00:00.000+00:00'
             );
         });
 
@@ -115,7 +115,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 1])
                     .toISOString(),
-                '2019-01-01T00:01:00.0+00:00'
+                '2019-01-01T00:01:00.000+00:00'
             );
         });
 
@@ -123,7 +123,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 1])
                     .toISOString(),
-                '2019-01-01T00:00:01.0+00:00'
+                '2019-01-01T00:00:01.000+00:00'
             );
         });
 
@@ -131,7 +131,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1])
                     .toISOString(),
-                '2019-01-01T00:00:00.1+00:00'
+                '2019-01-01T00:00:00.100+00:00'
             );
         });
     });
@@ -142,7 +142,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromDate(date)
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
     });
@@ -152,7 +152,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromTimestamp(1546300800)
                     .toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
         });
     });

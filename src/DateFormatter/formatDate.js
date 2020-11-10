@@ -446,7 +446,7 @@ DateFormatter._formatDate = {
     S: {
         key: 'milliseconds',
         regex: formatter => formatter.numberRegExp(),
-        input: (formatter, value) => formatter.parseNumber(value) / 1000,
+        input: _ => 0,
         output: (datetime, length) =>
             datetime.formatter.formatNumber(
                 `${Math.floor(
@@ -455,7 +455,7 @@ DateFormatter._formatDate = {
                         + datetime._fraction
                     )
                     * 1000
-                )}`.replace(/0+$/, '').slice(0, length) || 0
+                )}`.padEnd(length, '0').slice(0, length)
             )
     },
 

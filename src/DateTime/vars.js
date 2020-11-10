@@ -22,7 +22,7 @@ Object.assign(DateTime, {
         rfc1123: 'eee, dd MMM yyyy HH:mm:ss xx',
         rfc2822: 'eee, dd MMM yyyy HH:mm:ss xx',
         rfc3339: `yyyy-MM-dd'T'HH:mm:ssxxx`,
-        rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSSSSxxx`,
+        rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSxxx`,
         rss: 'eee, dd MMM yyyy HH:mm:ss xx',
         string: 'eee MMM dd yyyy HH:mm:ss xx (VV)',
         time: 'HH:mm:ss xx (VV)',

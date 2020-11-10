@@ -951,4 +951,8 @@ describe('DateTime #fromFormat', function() {
 
     // fractional second
 
+    /**
+     * Time Zone
+     */
+
 });

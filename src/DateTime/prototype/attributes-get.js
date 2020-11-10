@@ -167,7 +167,7 @@ Object.assign(DateTime.prototype, {
         const thisWeek = this.getWeek();
         const first = this.clone().setDate(1);
         const firstWeek = first.getWeek();
-        const offset = first.getDay() > this.getDay() ?
+        const offset = first.getWeekDay() > this.getWeekDay() ?
             0 : 1;
         return firstWeek > thisWeek ?
             thisWeek + offset :

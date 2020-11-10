@@ -704,7 +704,7 @@
         S: {
             key: 'milliseconds',
             regex: formatter => formatter.numberRegExp(),
-            input: (formatter, value) => formatter.parseNumber(value) / 1000,
+            input: _ => 0,
             output: (datetime, length) =>
                 datetime.formatter.formatNumber(
                     `${Math.floor(
@@ -713,7 +713,7 @@
                             + datetime._fraction
                         )
                         * 1000
-                    )}`.replace(/0+$/, '').slice(0, length) || 0
+                    )}`.padEnd(length, '0').slice(0, length)
                 )
         },
 
@@ -1597,7 +1597,7 @@
             const thisWeek = this.getWeek();
             const first = this.clone().setDate(1);
             const firstWeek = first.getWeek();
-            const offset = first.getDay() > this.getDay() ?
+            const offset = first.getWeekDay() > this.getWeekDay() ?
                 0 : 1;
             return firstWeek > thisWeek ?
                 thisWeek + offset :
@@ -2767,6 +2767,7 @@
             }
 
             return new this(null, options)
+                .setTimestamp(0)
                 .setYear(...dateValues)
                 .setHours(...timeValues);
         },
@@ -2852,7 +2853,7 @@
                 timeZone = value;
             }
 
-            let datetime = this.fromArray([1970], {
+            let datetime = this.fromTimestamp(0, {
                 locale: options.locale,
                 timeZone
             });
@@ -3094,7 +3095,7 @@
             rfc1123: 'eee, dd MMM yyyy HH:mm:ss xx',
             rfc2822: 'eee, dd MMM yyyy HH:mm:ss xx',
             rfc3339: `yyyy-MM-dd'T'HH:mm:ssxxx`,
-            rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSSSSxxx`,
+            rfc3339_extended: `yyyy-MM-dd'T'HH:mm:ss.SSSxxx`,
             rss: 'eee, dd MMM yyyy HH:mm:ss xx',
             string: 'eee MMM dd yyyy HH:mm:ss xx (VV)',
             time: 'HH:mm:ss xx (VV)',

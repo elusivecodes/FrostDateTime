@@ -28,7 +28,7 @@ describe('DateTime Output', function() {
             const date = DateTime.fromArray([2018], { timeZone: 'Australia/Brisbane' });
             assert.strictEqual(
                 date.toISOString(),
-                '2017-12-31T14:00:00.0+00:00'
+                '2017-12-31T14:00:00.000+00:00'
             );
         });
     });

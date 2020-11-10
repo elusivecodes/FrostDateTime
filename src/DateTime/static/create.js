@@ -25,6 +25,7 @@ Object.assign(DateTime, {
         }
 
         return new this(null, options)
+            .setTimestamp(0)
             .setYear(...dateValues)
             .setHours(...timeValues);
     },
@@ -110,7 +111,7 @@ Object.assign(DateTime, {
             timeZone = value;
         }
 
-        let datetime = this.fromArray([1970], {
+        let datetime = this.fromTimestamp(0, {
             locale: options.locale,
             timeZone
         });

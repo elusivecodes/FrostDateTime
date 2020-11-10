@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { DateTime } = require('../../dist/frost-datetime.min');
 
-describe('DateTime #format', function() {
+describe('DateTime #format (Locale)', function() {
 
     /**
      * Era
@@ -9,54 +9,54 @@ describe('DateTime #format', function() {
 
     describe('GGG - Era (Short)', function() {
         it('outputs AD era', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGG'),
-                'AD'
+                'н. э.'
             );
         });
 
         it('outputs BC era', function() {
-            const date = DateTime.fromArray([-5]);
+            const date = DateTime.fromArray([-5], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGG'),
-                'BC'
+                'до н. э.'
             );
         });
     });
 
     describe('GGGG - Era (Long)', function() {
         it('outputs AD era', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGGG'),
-                'Anno Domini'
+                'от Рождества Христова'
             );
         });
 
         it('outputs BC era', function() {
-            const date = DateTime.fromArray([-5]);
+            const date = DateTime.fromArray([-5], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGGG'),
-                'Before Christ'
+                'до Рождества Христова'
             );
         });
     });
 
     describe('GGGGG - Era (Narrow)', function() {
         it('outputs AD era', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGGGG'),
-                'A'
+                'н.э.'
             );
         });
 
         it('outputs BC era', function() {
-            const date = DateTime.fromArray([-5]);
+            const date = DateTime.fromArray([-5], { locale: 'ru' });
             assert.strictEqual(
                 date.format('GGGGG'),
-                'B'
+                'до н.э.'
             );
         });
     });
@@ -67,72 +67,72 @@ describe('DateTime #format', function() {
 
     describe('y - Year (1-digit)', function() {
         it('outputs full year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('y'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('y'),
-                '5'
+                '٥'
             );
         });
     });
 
     describe('yy - Year (2-digits)', function() {
         it('outputs 2 low-order digits of year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yy'),
-                '18'
+                '١٨'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yy'),
-                '05'
+                '٠٥'
             );
         });
     });
 
     describe('yyy - Year (3-digits)', function() {
         it('outputs full year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yyy'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('zero pads to 3-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yyy'),
-                '005'
+                '٠٠٥'
             );
         });
     });
 
     describe('yyyy - Year (4-digits)', function() {
         it('outputs full year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yyyy'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('zero pads to 4-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('yyyy'),
-                '0005'
+                '٠٠٠٥'
             );
         });
     });
@@ -143,104 +143,104 @@ describe('DateTime #format', function() {
 
     describe('Y - Week Year (1-digit)', function() {
         it('outputs full week year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('Y'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('uses the year of current week', function() {
-            const date = DateTime.fromArray([2019, 12, 30]);
+            const date = DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('Y'),
-                '2020'
+                '٢٠١٩'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('Y'),
-                '4'
+                '٥'
             );
         });
     });
 
     describe('YY - Week Year (2-digits)', function() {
         it('outputs 2 low-order digits of year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YY'),
-                '18'
+                '١٨'
             );
         });
 
         it('uses the year of current week', function() {
-            const date = DateTime.fromArray([2019, 12, 30]);
+            const date = DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YY'),
-                '20'
+                '١٩'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YY'),
-                '04'
+                '٠٥'
             );
         });
     });
 
     describe('YYY - Week Year (3-digits)', function() {
         it('outputs full week year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYY'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('uses the year of current week', function() {
-            const date = DateTime.fromArray([2019, 12, 30]);
+            const date = DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYY'),
-                '2020'
+                '٢٠١٩'
             );
         });
 
         it('zero pads to 3-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYY'),
-                '004'
+                '٠٠٥'
             );
         });
     });
 
     describe('YYYY - Week Year (4-digits)', function() {
         it('outputs full week year', function() {
-            const date = DateTime.fromArray([2018]);
+            const date = DateTime.fromArray([2018], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYYY'),
-                '2018'
+                '٢٠١٨'
             );
         });
 
         it('uses the year of current week', function() {
-            const date = DateTime.fromArray([2019, 12, 30]);
+            const date = DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYYY'),
-                '2020'
+                '٢٠١٩'
             );
         });
 
         it('zero pads to 4-digits', function() {
-            const date = DateTime.fromArray([5]);
+            const date = DateTime.fromArray([5], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('YYYY'),
-                '0004'
+                '٠٠٠٥'
             );
         });
     });
@@ -251,40 +251,40 @@ describe('DateTime #format', function() {
 
     describe('q - Quarter (1-digit)', function() {
         it('outputs quarter', function() {
-            const date = DateTime.fromArray([2018, 8]);
+            const date = DateTime.fromArray([2018, 8], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('q'),
-                '3'
+                '٣'
             );
         });
     });
 
     describe('q - Quarter (2-digits)', function() {
         it('outputs quarter zero padded to 2-digits', function() {
-            const date = DateTime.fromArray([2018, 8]);
+            const date = DateTime.fromArray([2018, 8], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('qq'),
-                '03'
+                '٠٣'
             );
         });
     });
 
     describe('Q - Standalone Quarter (1-digit)', function() {
         it('outputs quarter', function() {
-            const date = DateTime.fromArray([2018, 8]);
+            const date = DateTime.fromArray([2018, 8], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('Q'),
-                '3'
+                '٣'
             );
         });
     });
 
     describe('Q - Standalone Quarter (2-digits)', function() {
         it('outputs quarter zero padded to 2-digits', function() {
-            const date = DateTime.fromArray([2018, 8]);
+            const date = DateTime.fromArray([2018, 8], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('QQ'),
-                '03'
+                '٠٣'
             );
         });
     });
@@ -295,132 +295,132 @@ describe('DateTime #format', function() {
 
     describe('M - Month (1-digit)', function() {
         it('outputs month', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('M'),
-                '10'
+                '١٠'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('M'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('MM - Month (2-digits)', function() {
         it('outputs month', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('MM'),
-                '10'
+                '١٠'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('MM'),
-                '01'
+                '٠١'
             );
         });
     });
 
     describe('MMM - Month Name (Short)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('MMM'),
-                'Oct'
+                'окт.'
             );
         });
     });
 
     describe('MMMM - Month Name (Long)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('MMMM'),
-                'October'
+                'октября'
             );
         });
     });
 
     describe('MMMMM - Month Name (Narrow)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('MMMMM'),
-                'O'
+                'О'
             );
         });
     });
 
     describe('L - Standalone Month (1-digit)', function() {
         it('outputs month', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('L'),
-                '10'
+                '١٠'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('L'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('LL - Standalone Month (2-digits)', function() {
         it('outputs month', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('LL'),
-                '10'
+                '١٠'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('LL'),
-                '01'
+                '٠١'
             );
         });
     });
 
     describe('LLL - Standalone Month Name (Short)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('LLL'),
-                'Oct'
+                'окт.'
             );
         });
     });
 
     describe('LLLL - Standalone Month Name (Long)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('LLLL'),
-                'October'
+                'октябрь'
             );
         });
     });
 
-    describe('LLLLL - Standalone Month Name (Narrow)', function() {
+    describe('LLLLL - standalone Month Name (Narrow)', function() {
         it('outputs month name', function() {
-            const date = DateTime.fromArray([2018, 10]);
+            const date = DateTime.fromArray([2018, 10], { locale: 'ru' });
             assert.strictEqual(
                 date.format('LLLLL'),
-                'O'
+                'О'
             );
         });
     });
@@ -431,36 +431,36 @@ describe('DateTime #format', function() {
 
     describe('w - Week Of Year (1-digit)', function() {
         it('outputs week of year', function() {
-            const date = DateTime.fromArray([2018, 6]);
+            const date = DateTime.fromArray([2018, 6], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('w'),
-                '22'
+                '٢٢'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('w'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('ww - Week Of Year (2-digits)', function() {
         it('outputs week of year', function() {
-            const date = DateTime.fromArray([2018, 6]);
+            const date = DateTime.fromArray([2018, 6], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('ww'),
-                '22'
+                '٢٢'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2018, 1]);
+            const date = DateTime.fromArray([2018, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('ww'),
-                '01'
+                '٠١'
             );
         });
     });
@@ -468,17 +468,17 @@ describe('DateTime #format', function() {
     describe('W - Week Of Month', function() {
         it('outputs the week of the month', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 1])
+                DateTime.fromArray([2019, 6, 1], { locale: 'ar-eg' })
                     .format('W'),
-                '1'
+                '١'
             );
         });
 
         it('uses the local week', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 3])
+                DateTime.fromArray([2019, 6, 8], { locale: 'ar-eg' })
                     .format('W'),
-                '2'
+                '٢'
             );
         });
     });
@@ -490,17 +490,17 @@ describe('DateTime #format', function() {
     describe('d - Day of Month (1-digit)', function() {
         it('outputs the day of the month', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 21])
+                DateTime.fromArray([2019, 1, 21], { locale: 'ar-eg' })
                     .format('d'),
-                '21'
+                '٢١'
             );
         });
 
         it('does not zero pad', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1])
+                DateTime.fromArray([2019, 1, 1], { locale: 'ar-eg' })
                     .format('d'),
-                '1'
+                '١'
             );
         });
     });
@@ -508,17 +508,17 @@ describe('DateTime #format', function() {
     describe('dd - Day of Month (2-digits)', function() {
         it('outputs the day of the month', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 21])
+                DateTime.fromArray([2019, 1, 21], { locale: 'ar-eg' })
                     .format('dd'),
-                '21'
+                '٢١'
             );
         });
 
         it('zero pads to 2-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1])
+                DateTime.fromArray([2019, 1, 1], { locale: 'ar-eg' })
                     .format('dd'),
-                '01'
+                '٠١'
             );
         });
     });
@@ -526,17 +526,17 @@ describe('DateTime #format', function() {
     describe('D - Day of Year (1-digit)', function() {
         it('outputs the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 1])
+                DateTime.fromArray([2019, 6, 1], { locale: 'ar-eg' })
                     .format('D'),
-                '152'
+                '١٥٢'
             );
         });
 
         it('does not zero pad', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1])
+                DateTime.fromArray([2019, 1, 1], { locale: 'ar-eg' })
                     .format('D'),
-                '1'
+                '١'
             );
         });
     });
@@ -544,17 +544,17 @@ describe('DateTime #format', function() {
     describe('DD - Day of Year (2-digits)', function() {
         it('outputs the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 1])
+                DateTime.fromArray([2019, 6, 1], { locale: 'ar-eg' })
                     .format('DD'),
-                '152'
+                '١٥٢'
             );
         });
 
         it('zero pads to 2-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1])
+                DateTime.fromArray([2019, 1, 1], { locale: 'ar-eg' })
                     .format('DD'),
-                '01'
+                '٠١'
             );
         });
     });
@@ -562,17 +562,17 @@ describe('DateTime #format', function() {
     describe('DDD - Day of Year (3-digits)', function() {
         it('outputs the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 1])
+                DateTime.fromArray([2019, 6, 1], { locale: 'ar-eg' })
                     .format('DDD'),
-                '152'
+                '١٥٢'
             );
         });
 
         it('zero pads to 3-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1])
+                DateTime.fromArray([2019, 1, 1], { locale: 'ar-eg' })
                     .format('DDD'),
-                '001'
+                '٠٠١'
             );
         });
     });
@@ -580,17 +580,17 @@ describe('DateTime #format', function() {
     describe('F - Day Of Week In Month', function() {
         it('outputs the day of week in the month', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 1])
+                DateTime.fromArray([2019, 6, 1], { locale: 'ar-eg' })
                     .format('F'),
-                '1'
+                '١'
             );
         });
 
         it('uses the local week', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 6, 7])
+                DateTime.fromArray([2019, 6, 7], { locale: 'ar-eg' })
                     .format('F'),
-                '1'
+                '١'
             );
         });
     });
@@ -601,130 +601,130 @@ describe('DateTime #format', function() {
 
     describe('EEE - Week Day (Short)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('EEE'),
-                'Fri'
+                'пт'
             );
         });
     });
 
     describe('EEEE - Week Day (Long)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('EEEE'),
-                'Friday'
+                'пятница'
             );
         });
     });
 
     describe('EEEEE - Week Day (Narrow)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('EEEEE'),
-                'F'
+                'П'
             );
         });
     });
 
     describe('e - Week Day (1-digit)', function() {
         it('outputs day', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('e'),
-                '5'
+                '٥'
             );
         });
     });
 
     describe('ee - Week Day (2-digits)', function() {
         it('outputs day', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('ee'),
-                '05'
+                '٠٥'
             );
         });
     });
 
     describe('eee - Week Day (Short)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('eee'),
-                'Fri'
+                'пт'
             );
         });
     });
 
     describe('eeee - Week Day (Long)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('eeee'),
-                'Friday'
+                'пятница'
             );
         });
     });
 
     describe('eeeee - Week Day (Narrow)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('eeeee'),
-                'F'
+                'П'
             );
         });
     });
 
     describe('c - Standalone Week Day (1-digit)', function() {
         it('outputs day', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('c'),
-                '5'
+                '٥'
             );
         });
     });
 
     describe('cc - Standalone Week Day (2-digits)', function() {
         it('outputs day', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('cc'),
-                '05'
+                '٠٥'
             );
         });
     });
 
     describe('ccc - Standalone Week Day (Short)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('ccc'),
-                'Fri'
+                'пт'
             );
         });
     });
 
     describe('cccc - Standalone Week Day (Long)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('cccc'),
-                'Friday'
+                'пятница'
             );
         });
     });
 
     describe('ccccc - Standalone Week Day (Narrow)', function() {
         it('outputs day name', function() {
-            const date = DateTime.fromArray([2018, 6, 1]);
+            const date = DateTime.fromArray([2018, 6, 1], { locale: 'ru' });
             assert.strictEqual(
                 date.format('ccccc'),
-                'F'
+                'П'
             );
         });
     });
@@ -735,57 +735,39 @@ describe('DateTime #format', function() {
 
     describe('aaa - Day Period (Short)', function() {
         it('outputs AM day period', function() {
-            const date = DateTime.fromArray([2018, 1, 1, 0]);
+            const date = DateTime.fromArray([2018, 1, 1, 0], { locale: 'zh' });
             assert.strictEqual(
                 date.format('aaa'),
-                'AM'
+                '上午'
             );
         });
 
         it('outputs pm day period', function() {
-            const date = DateTime.fromArray([2018, 1, 1, 12]);
+            const date = DateTime.fromArray([2018, 1, 1, 12], { locale: 'zh' });
             assert.strictEqual(
                 date.format('aaa'),
-                'PM'
+                '下午'
             );
         });
     });
 
     describe('aaaa - Day Period (Long)', function() {
         it('outputs AM day period', function() {
-            const date = DateTime.fromArray([2018, 1, 1, 0]);
+            const date = DateTime.fromArray([2018, 1, 1, 0], { locale: 'zh' });
             assert.strictEqual(
                 date.format('aaaa'),
-                'AM'
+                '上午'
             );
         });
 
         it('outputs pm day period', function() {
-            const date = DateTime.fromArray([2018, 1, 1, 12]);
+            const date = DateTime.fromArray([2018, 1, 1, 12], { locale: 'zh' });
             assert.strictEqual(
                 date.format('aaaa'),
-                'PM'
+                '下午'
             );
         });
     });
-
-    // describe('aaaaa - Day Period (Narrow)', function() {
-    //     it('outputs AM day period', function() {
-    //         const date = DateTime.fromArray([2018, 1, 1, 0]);
-    //         assert.strictEqual(
-    //             date.format('aaaaa'),
-    //             'A'
-    //         );
-    //     });
-
-    //     it('outputs pm day period', function() {
-    //         const date = DateTime.fromArray([2018, 1, 1, 12]);
-    //         assert.strictEqual(
-    //             date.format('aaaaa'),
-    //             'P'
-    //         );
-    //     });
-    // });
 
     /**
      * Hour
@@ -793,144 +775,144 @@ describe('DateTime #format', function() {
 
     describe('h - Hour [1-12] (1-digit)', function() {
         it('outputs the hour [1-12]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 12]);
+            const date = DateTime.fromArray([2019, 1, 1, 12], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('h'),
-                '12'
+                '١٢'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('h'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('hh - Hour [1-12] (2-digits)', function() {
         it('outputs the hour [1-12]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            const date = DateTime.fromArray([2019, 1, 1, 23], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('hh'),
-                '11'
+                '١١'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('hh'),
-                '01'
+                '٠١'
             );
         });
     });
 
     describe('H - Hour [0-23] (1-digit)', function() {
         it('outputs the hour [0-23]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            const date = DateTime.fromArray([2019, 1, 1, 23], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('H'),
-                '23'
+                '٢٣'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('H'),
-                '0'
+                '٠'
             );
         });
     });
 
     describe('HH - Hour [0-23] (2-digits)', function() {
         it('outputs the hour [0-23]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            const date = DateTime.fromArray([2019, 1, 1, 23], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('HH'),
-                '23'
+                '٢٣'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('HH'),
-                '00'
+                '٠٠'
             );
         });
     });
 
     describe('K - Hour [0-11] (1-digit)', function() {
         it('outputs the hour [0-11]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            const date = DateTime.fromArray([2019, 1, 1, 23], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('K'),
-                '11'
+                '١١'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('K'),
-                '0'
+                '٠'
             );
         });
     });
 
     describe('KK - Hour [0-11] (2-digits)', function() {
         it('outputs the hour [0-11]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 23]);
+            const date = DateTime.fromArray([2019, 1, 1, 23], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('KK'),
-                '11'
+                '١١'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('KK'),
-                '00'
+                '٠٠'
             );
         });
     });
 
     describe('k - Hour [1-24] (1-digit)', function() {
         it('outputs the hour [1-24]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('k'),
-                '24'
+                '٢٤'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('k'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('kk - Hour [1-24] (2-digits)', function() {
         it('outputs the hour [1-24]', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0]);
+            const date = DateTime.fromArray([2019, 1, 1, 0], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('kk'),
-                '24'
+                '٢٤'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('kk'),
-                '01'
+                '٠١'
             );
         });
     });
@@ -941,36 +923,36 @@ describe('DateTime #format', function() {
 
     describe('m - Minute (1-digit)', function() {
         it('outputs the minute', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 25]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 25], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('m'),
-                '25'
+                '٢٥'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('m'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('mm - Minute (2-digits)', function() {
         it('outputs the minute', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 25]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 25], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('mm'),
-                '25'
+                '٢٥'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('mm'),
-                '01'
+                '٠١'
             );
         });
     });
@@ -981,62 +963,62 @@ describe('DateTime #format', function() {
 
     describe('s - Minute (1-digit)', function() {
         it('outputs the second', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('s'),
-                '25'
+                '٢٥'
             );
         });
 
         it('does not zero pad', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('s'),
-                '1'
+                '١'
             );
         });
     });
 
     describe('ss - Minute (2-digits)', function() {
         it('outputs the second', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 25], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('ss'),
-                '25'
+                '٢٥'
             );
         });
 
         it('zero pads to 2-digits', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 1], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('ss'),
-                '01'
+                '٠١'
             );
         });
     });
 
     describe('S - Fractional Second', function() {
         it('outputs the fractional second', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('SSS'),
-                '123'
+                '١٢٣'
             );
         });
 
         it('truncates to token length', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('S'),
-                '1'
+                '١'
             );
         });
 
         it('pads to token length', function() {
-            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123]);
+            const date = DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123], { locale: 'ar-eg' });
             assert.strictEqual(
                 date.format('SSSSSS'),
-                '123000'
+                '١٢٣٠٠٠'
             );
         });
     });
@@ -1047,7 +1029,7 @@ describe('DateTime #format', function() {
 
     describe('zzz - Time Zone (Short specific non-location format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('zzz'),
                 'UTC'
@@ -1055,35 +1037,35 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('zzz'),
-                'EST'
+                'GMT-5'
             );
         });
     });
 
     describe('zzzz - Time Zone (Long specific non-location format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('zzzz'),
-                'Coordinated Universal Time'
+                'Всемирное координированное время'
             );
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('zzzz'),
-                'Eastern Standard Time'
+                'Восточная Америка, стандартное время'
             );
         });
     });
 
     describe('ZZZ - Time Zone (ISO8601 basic format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZ'),
                 '+0000'
@@ -1091,7 +1073,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZ'),
                 '-0500'
@@ -1101,7 +1083,7 @@ describe('DateTime #format', function() {
 
     describe('ZZZZ - Time Zone (ISO8601 basic format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZZ'),
                 'GMT+00:00'
@@ -1109,7 +1091,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZZ'),
                 'GMT-05:00'
@@ -1119,7 +1101,7 @@ describe('DateTime #format', function() {
 
     describe('ZZZZZ - Time Zone (ISO8601 extended format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZZZ'),
                 '+00:00'
@@ -1127,7 +1109,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('ZZZZZ'),
                 '-05:00'
@@ -1137,7 +1119,7 @@ describe('DateTime #format', function() {
 
     describe('O - Time Zone (Short localized GMT format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('O'),
                 'GMT+00'
@@ -1145,7 +1127,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('O'),
                 'GMT-05'
@@ -1155,7 +1137,7 @@ describe('DateTime #format', function() {
 
     describe('OOOO - Time Zone (Long localized GMT format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('OOOO'),
                 'GMT+00:00'
@@ -1163,7 +1145,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('OOOO'),
                 'GMT-05:00'
@@ -1173,7 +1155,7 @@ describe('DateTime #format', function() {
 
     describe('VV - Time Zone (Long time zone ID)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('VV'),
                 'UTC'
@@ -1181,7 +1163,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('VV'),
                 'America/New_York'
@@ -1191,7 +1173,7 @@ describe('DateTime #format', function() {
 
     describe('X - Time Zone (ISO8601 basic format with Z)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('X'),
                 'Z'
@@ -1199,7 +1181,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('X'),
                 '-05'
@@ -1209,7 +1191,7 @@ describe('DateTime #format', function() {
 
     describe('XX - Time Zone (ISO8601 basic format with Z)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('XX'),
                 'Z'
@@ -1217,7 +1199,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('XX'),
                 '-0500'
@@ -1227,7 +1209,7 @@ describe('DateTime #format', function() {
 
     describe('XXX - Time Zone (ISO8601 extended format with Z)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('XXX'),
                 'Z'
@@ -1235,7 +1217,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('XXX'),
                 '-05:00'
@@ -1245,7 +1227,7 @@ describe('DateTime #format', function() {
 
     describe('x - Time Zone (ISO8601 basic format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('x'),
                 '+00'
@@ -1253,7 +1235,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('x'),
                 '-05'
@@ -1263,7 +1245,7 @@ describe('DateTime #format', function() {
 
     describe('xx - Time Zone (ISO8601 basic format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('xx'),
                 '+0000'
@@ -1271,7 +1253,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('xx'),
                 '-0500'
@@ -1281,7 +1263,7 @@ describe('DateTime #format', function() {
 
     describe('xxx - Time Zone (ISO8601 extended format)', function() {
         it('outputs the time zone', function() {
-            const date = DateTime.now();
+            const date = DateTime.now({ locale: 'ru' });
             assert.strictEqual(
                 date.format('xxx'),
                 '+00:00'
@@ -1289,7 +1271,7 @@ describe('DateTime #format', function() {
         });
 
         it('works with time zones', function() {
-            const date = DateTime.now({ timeZone: 'America/New_York' });
+            const date = DateTime.now({ timeZone: 'America/New_York', locale: 'ru' });
             assert.strictEqual(
                 date.format('xxx'),
                 '-05:00'

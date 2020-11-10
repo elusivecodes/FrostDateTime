@@ -9,7 +9,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDate(15);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-15T00:00:00.0+00:00'
+                '2019-01-15T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -22,7 +22,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDate(31);
             assert.strictEqual(
                 date2.toISOString(),
-                '2019-07-01T00:00:00.0+00:00'
+                '2019-07-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -37,7 +37,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDay(5);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-04T00:00:00.0+00:00'
+                '2019-01-04T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -50,7 +50,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDay(1);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-12-31T00:00:00.0+00:00'
+                '2018-12-31T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -63,7 +63,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDay(0);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-12-30T00:00:00.0+00:00'
+                '2018-12-30T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -76,7 +76,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDay(12);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-11T00:00:00.0+00:00'
+                '2019-01-11T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -91,7 +91,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDayOfYear(235);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-08-23T00:00:00.0+00:00'
+                '2019-08-23T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -104,7 +104,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setDayOfYear(500);
             assert.strictEqual(
                 date1.toISOString(),
-                '2020-05-14T00:00:00.0+00:00'
+                '2020-05-14T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -119,7 +119,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setHours(9);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T09:00:00.0+00:00'
+                '2019-01-01T09:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -132,7 +132,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setHours(13);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T13:00:00.0+00:00'
+                '2019-01-01T13:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -145,7 +145,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setHours(0, 33);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:33:00.0+00:00'
+                '2019-01-01T00:33:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -158,7 +158,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setHours(0, 0, 23);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:23.0+00:00'
+                '2019-01-01T00:00:23.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -184,7 +184,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setHours(30);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-02T06:00:00.0+00:00'
+                '2019-01-02T06:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -199,7 +199,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMilliseconds(220);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.22+00:00'
+                '2019-01-01T00:00:00.220+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -212,7 +212,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMilliseconds(1220);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:01.22+00:00'
+                '2019-01-01T00:00:01.220+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -227,7 +227,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMinutes(15);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:15:00.0+00:00'
+                '2019-01-01T00:15:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -240,7 +240,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMinutes(0, 32);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:32.0+00:00'
+                '2019-01-01T00:00:32.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -253,7 +253,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMinutes(0, 0, 320);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.32+00:00'
+                '2019-01-01T00:00:00.320+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -266,7 +266,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMinutes(75);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T01:15:00.0+00:00'
+                '2019-01-01T01:15:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -281,7 +281,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMonth(9);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-09-01T00:00:00.0+00:00'
+                '2019-09-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -294,7 +294,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMonth(2);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-02-28T00:00:00.0+00:00'
+                '2019-02-28T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -307,7 +307,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMonth(1, 23);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-23T00:00:00.0+00:00'
+                '2019-01-23T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -320,7 +320,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMonth(15);
             assert.strictEqual(
                 date1.toISOString(),
-                '2020-03-01T00:00:00.0+00:00'
+                '2020-03-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -334,7 +334,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setMonth(2);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-03-03T00:00:00.0+00:00'
+                '2019-03-03T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -350,7 +350,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setQuarter(2);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-04-01T00:00:00.0+00:00'
+                '2019-04-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -363,7 +363,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setQuarter(6);
             assert.strictEqual(
                 date1.toISOString(),
-                '2020-04-01T00:00:00.0+00:00'
+                '2020-04-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -378,7 +378,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setSeconds(42);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:42.0+00:00'
+                '2019-01-01T00:00:42.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -391,7 +391,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setSeconds(0, 550);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.55+00:00'
+                '2019-01-01T00:00:00.550+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -404,7 +404,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setSeconds(105);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:01:45.0+00:00'
+                '2019-01-01T00:01:45.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -419,7 +419,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setTime(1546300800000);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -434,7 +434,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setTimestamp(1546300800);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-01T00:00:00.0+00:00'
+                '2019-01-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -512,7 +512,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeek(23);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-06-04T00:00:00.0+00:00'
+                '2019-06-04T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -525,7 +525,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeek(23);
             assert.strictEqual(
                 date1.toISOString(),
-                '2020-06-01T00:00:00.0+00:00'
+                '2020-06-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -538,7 +538,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeek(1, 6);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-04T00:00:00.0+00:00'
+                '2019-01-04T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -551,7 +551,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeek(77);
             assert.strictEqual(
                 date1.toISOString(),
-                '2020-06-16T00:00:00.0+00:00'
+                '2020-06-16T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -566,7 +566,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDay(6);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-04T00:00:00.0+00:00'
+                '2019-01-04T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -579,7 +579,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDay(2);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-12-31T00:00:00.0+00:00'
+                '2018-12-31T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -592,7 +592,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDay(1);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-12-30T00:00:00.0+00:00'
+                '2018-12-30T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -605,7 +605,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDay(14);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-01-12T00:00:00.0+00:00'
+                '2019-01-12T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -620,7 +620,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDayInMonth(4);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-06-22T00:00:00.0+00:00'
+                '2019-06-22T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -633,7 +633,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekDayInMonth(1);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-06-07T00:00:00.0+00:00'
+                '2019-06-07T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -648,7 +648,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekOfMonth(4);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-06-22T00:00:00.0+00:00'
+                '2019-06-22T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -661,7 +661,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekOfMonth(1);
             assert.strictEqual(
                 date1.toISOString(),
-                '2019-05-31T00:00:00.0+00:00'
+                '2019-05-31T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -676,7 +676,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-01-02T00:00:00.0+00:00'
+                '2018-01-02T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -689,7 +689,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-06-02T00:00:00.0+00:00'
+                '2018-06-02T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -702,7 +702,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekYear(2018, 14);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-04-03T00:00:00.0+00:00'
+                '2018-04-03T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -715,7 +715,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setWeekYear(2018, 1, 6);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-01-05T00:00:00.0+00:00'
+                '2018-01-05T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -730,7 +730,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-01-01T00:00:00.0+00:00'
+                '2018-01-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -743,7 +743,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setYear(2018, 6);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-06-01T00:00:00.0+00:00'
+                '2018-06-01T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
@@ -756,7 +756,7 @@ describe('DateTime Attributes Set', function() {
             const date2 = date1.setYear(2018, 1, 16);
             assert.strictEqual(
                 date1.toISOString(),
-                '2018-01-16T00:00:00.0+00:00'
+                '2018-01-16T00:00:00.000+00:00'
             );
             assert.strictEqual(
                 date1,
