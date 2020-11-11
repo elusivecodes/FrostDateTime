@@ -102,8 +102,12 @@ Object.assign(DateTime, {
             this._parseCompare(formatString, dateString);
         }
 
+        if (!('timeZone' in options)) {
+            options.timeZone = this.defaultTimeZone;
+        }
+
         let timeZone = options.timeZone;
-        for (const {key, value} of values) {
+        for (const { key, value } of values) {
             if (key !== 'timeZone') {
                 continue;
             }
@@ -120,7 +124,7 @@ Object.assign(DateTime, {
 
         for (const subKeys of this._parseOrderKeys) {
             for (const subKey of subKeys) {
-                for (const {key, value} of values) {
+                for (const { key, value } of values) {
                     if (key !== subKey) {
                         continue;
                     }
@@ -130,7 +134,7 @@ Object.assign(DateTime, {
             }
         }
 
-        if ('timeZone' in options && options.timeZone !== timeZone) {
+        if (options.timeZone !== timeZone) {
             datetime = datetime.setTimeZone(options.timeZone);
         }
 

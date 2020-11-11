@@ -786,7 +786,7 @@
 
         V: {
             key: 'timeZone',
-            regex: '([a-zA-Z_\/]+)',
+            regex: _ => '([a-zA-Z_\/]+)',
             input: (_, value) => value,
             output: datetime => datetime.getTimeZone()
         },
@@ -1326,21 +1326,29 @@
                 timeZone = this.constructor.defaultTimeZone;
             }
 
+            if (['Z', 'GMT'].includes(timeZone)) {
+                timeZone = 'UTC';
+            }
+
             const match = timeZone.match(this.constructor._offsetRegExp);
             if (match) {
-                this._offset = match[2] * 60 + parseInt(match[4]);
+                this._offset = match[2] * 60 + parseInt(match[4] || 0);
                 if (this._offset && match[1] === '+') {
                     this._offset *= -1;
                 }
-                this._timeZone = DateFormatter.formatOffset(this._offset);
-            } else {
-                if (['Z', 'GMT'].includes(timeZone)) {
-                    timeZone = 'UTC';
-                }
 
+                if (this._offset) {
+                    this._timeZone = DateFormatter.formatOffset(this._offset);
+                } else {
+                    this._dynamicTz = true;
+                    this._timeZone = 'UTC';
+                }
+            } else {
                 this._dynamicTz = true;
                 this._timeZone = timeZone;
+            }
 
+            if (this._dynamicTz) {
                 this._makeFormatter();
                 this._checkOffset();
             }
@@ -1805,25 +1813,33 @@
          * @returns {DateTime} The DateTime object.
          */
         setTimeZone(timeZone, adjust = false) {
+            if (['Z', 'GMT'].includes(timeZone)) {
+                timeZone = 'UTC';
+            }
+
             this._dynamicTz = false;
 
             const offset = this._offset;
 
             const match = timeZone.match(this.constructor._offsetRegExp);
             if (match) {
-                this._offset = match[2] * 60 + parseInt(match[4]);
+                this._offset = match[2] * 60 + parseInt(match[4] || 0);
                 if (this._offset && match[1] === '+') {
                     this._offset *= -1;
                 }
-                this._timeZone = DateFormatter.formatOffset(this._offset);
-            } else {
-                if (['Z', 'GMT'].includes(timeZone)) {
-                    timeZone = 'UTC';
-                }
 
+                if (this._offset) {
+                    this._timeZone = DateFormatter.formatOffset(this._offset);
+                } else {
+                    this._dynamicTz = true;
+                    this._timeZone = 'UTC';
+                }
+            } else {
                 this._dynamicTz = true;
                 this._timeZone = timeZone;
+            }
 
+            if (this._dynamicTz) {
                 this._makeFormatter();
                 this._checkOffset();
             }
@@ -2844,8 +2860,12 @@
                 this._parseCompare(formatString, dateString);
             }
 
+            if (!('timeZone' in options)) {
+                options.timeZone = this.defaultTimeZone;
+            }
+
             let timeZone = options.timeZone;
-            for (const {key, value} of values) {
+            for (const { key, value } of values) {
                 if (key !== 'timeZone') {
                     continue;
                 }
@@ -2862,7 +2882,7 @@
 
             for (const subKeys of this._parseOrderKeys) {
                 for (const subKey of subKeys) {
-                    for (const {key, value} of values) {
+                    for (const { key, value } of values) {
                         if (key !== subKey) {
                             continue;
                         }
@@ -2872,7 +2892,7 @@
                 }
             }
 
-            if ('timeZone' in options && options.timeZone !== timeZone) {
+            if (options.timeZone !== timeZone) {
                 datetime = datetime.setTimeZone(options.timeZone);
             }
 
@@ -3057,16 +3077,6 @@
         isLeapYear(year) {
             return new Date(year, 1, 29)
                 .getDate() === 29;
-        },
-
-        /**
-         * Get the number of ISO weeks in a year.
-         * @param {number} year  The year.
-         * @returns {number} The number of ISO weeks in the year.
-         */
-        weeksInYear(year) {
-            return new DateTime([year, 11, 28])
-                .getWeek();
         }
 
     });

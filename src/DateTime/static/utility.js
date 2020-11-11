@@ -60,16 +60,6 @@ Object.assign(DateTime, {
     isLeapYear(year) {
         return new Date(year, 1, 29)
             .getDate() === 29;
-    },
-
-    /**
-     * Get the number of ISO weeks in a year.
-     * @param {number} year  The year.
-     * @returns {number} The number of ISO weeks in the year.
-     */
-    weeksInYear(year) {
-        return new DateTime([year, 11, 28])
-            .getWeek();
     }
 
 });

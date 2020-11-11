@@ -9,17 +9,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('GGG - Era (Short)', function() {
         it('parses AD era', function() {
-            const date = DateTime.fromFormat('GGG', 'AD');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGG', 'AD')
+                    .getYear(),
                 1970
             );
         });
 
         it('parses BC era', function() {
-            const date = DateTime.fromFormat('GGG', 'BC');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGG', 'BC')
+                    .getYear(),
                 -1970
             );
         });
@@ -27,17 +27,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('GGGG - Era (Long)', function() {
         it('parses AD era', function() {
-            const date = DateTime.fromFormat('GGGG', 'Anno Domini');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGGG', 'Anno Domini')
+                    .getYear(),
                 1970
             );
         });
 
         it('parses BC era', function() {
-            const date = DateTime.fromFormat('GGGG', 'Before Christ');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGGG', 'Before Christ')
+                    .getYear(),
                 -1970
             );
         });
@@ -45,17 +45,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('GGGGG - Era (Narrow)', function() {
         it('parses AD era', function() {
-            const date = DateTime.fromFormat('GGGGG', 'A');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGGGG', 'A')
+                    .getYear(),
                 1970
             );
         });
 
         it('parses BC era', function() {
-            const date = DateTime.fromFormat('GGGGG', 'B');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('GGGGG', 'B')
+                    .getYear(),
                 -1970
             );
         });
@@ -67,17 +67,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('y - Year (1-digit)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('y', '2018');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('y', '2018')
+                    .getYear(),
                 2018
             );
         });
 
         it('parses 1-digit year', function() {
-            const date = DateTime.fromFormat('y', '5');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('y', '5')
+                    .getYear(),
                 5
             );
         });
@@ -85,17 +85,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('yy - Year (2-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('yy', '2018');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yy', '2018')
+                    .getYear(),
                 2018
             );
         });
 
         it('parses 2-digit year', function() {
-            const date = DateTime.fromFormat('yy', '88');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yy', '88')
+                    .getYear(),
                 1988
             );
         });
@@ -103,17 +103,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('yyy - Year (3-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('yyy', '2018');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yyy', '2018')
+                    .getYear(),
                 2018
             );
         });
 
         it('parses zero padded year', function() {
-            const date = DateTime.fromFormat('yyy', '088');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yyy', '088')
+                    .getYear(),
                 88
             );
         });
@@ -121,17 +121,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('yyyy - Year (4-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('yyyy', '2018');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yyyy', '2018')
+                    .getYear(),
                 2018
             );
         });
 
         it('parses zero padded year', function() {
-            const date = DateTime.fromFormat('yyyy', '0088');
             assert.strictEqual(
-                date.getYear(),
+                DateTime.fromFormat('yyyy', '0088')
+                    .getYear(),
                 88
             );
         });
@@ -143,17 +143,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('Y - Year (1-digit)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('Y', '2018');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('Y', '2018')
+                    .getWeekYear(),
                 2018
             );
         });
 
         it('parses 1-digit year', function() {
-            const date = DateTime.fromFormat('Y', '5');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('Y', '5')
+                    .getWeekYear(),
                 5
             );
         });
@@ -161,17 +161,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('YY - Year (2-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('YY', '2018');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YY', '2018')
+                    .getWeekYear(),
                 2018
             );
         });
 
         it('parses 2-digit year', function() {
-            const date = DateTime.fromFormat('YY', '88');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YY', '88')
+                    .getWeekYear(),
                 1988
             );
         });
@@ -179,17 +179,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('YYY - Year (3-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('YYY', '2018');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YYY', '2018')
+                    .getWeekYear(),
                 2018
             );
         });
 
         it('parses zero padded year', function() {
-            const date = DateTime.fromFormat('YYY', '088');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YYY', '088')
+                    .getWeekYear(),
                 88
             );
         });
@@ -197,17 +197,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('YYYY - Year (4-digits)', function() {
         it('parses full year', function() {
-            const date = DateTime.fromFormat('YYYY', '2018');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YYYY', '2018')
+                    .getWeekYear(),
                 2018
             );
         });
 
         it('parses zero padded year', function() {
-            const date = DateTime.fromFormat('YYYY', '0088');
             assert.strictEqual(
-                date.getWeekYear(),
+                DateTime.fromFormat('YYYY', '0088')
+                    .getWeekYear(),
                 88
             );
         });
@@ -219,9 +219,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('q - Quarter (1-digit)', function() {
         it('parses quarter', function() {
-            const date = DateTime.fromFormat('q', '3');
             assert.strictEqual(
-                date.getQuarter(),
+                DateTime.fromFormat('q', '3')
+                    .getQuarter(),
                 3
             );
         });
@@ -229,9 +229,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('qq - Quarter (2-digits)', function() {
         it('parses quarter', function() {
-            const date = DateTime.fromFormat('qq', '03');
             assert.strictEqual(
-                date.getQuarter(),
+                DateTime.fromFormat('qq', '03')
+                    .getQuarter(),
                 3
             );
         });
@@ -239,9 +239,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('Q - Quarter (1-digit)', function() {
         it('parses quarter', function() {
-            const date = DateTime.fromFormat('Q', '3');
             assert.strictEqual(
-                date.getQuarter(),
+                DateTime.fromFormat('Q', '3')
+                    .getQuarter(),
                 3
             );
         });
@@ -249,9 +249,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('QQ - Quarter (2-digits)', function() {
         it('parses quarter', function() {
-            const date = DateTime.fromFormat('QQ', '03');
             assert.strictEqual(
-                date.getQuarter(),
+                DateTime.fromFormat('QQ', '03')
+                    .getQuarter(),
                 3
             );
         });
@@ -263,17 +263,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('M - Month (1-digit)', function() {
         it('parses month', function() {
-            const date = DateTime.fromFormat('M', '10');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('M', '10')
+                    .getMonth(),
                 10
             );
         });
 
         it('parses 1-digit month', function() {
-            const date = DateTime.fromFormat('M', '1');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('M', '1')
+                    .getMonth(),
                 1
             );
         });
@@ -281,17 +281,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('MM - Month (2-digits)', function() {
         it('parses month', function() {
-            const date = DateTime.fromFormat('MM', '10');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('MM', '10')
+                    .getMonth(),
                 10
             );
         });
 
         it('parses zero padded month', function() {
-            const date = DateTime.fromFormat('MM', '01');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('MM', '01')
+                    .getMonth(),
                 1
             );
         });
@@ -299,9 +299,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('MMM - Month Name (Short)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('MMM', 'Oct');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('MMM', 'Oct')
+                    .getMonth(),
                 10
             );
         });
@@ -309,9 +309,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('MMMM - Month Name (Long)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('MMMM', 'October');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('MMMM', 'October')
+                    .getMonth(),
                 10
             );
         });
@@ -319,9 +319,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('MMMMM - Month Name (Narrow)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('MMMMM', 'O');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('MMMMM', 'O')
+                    .getMonth(),
                 10
             );
         });
@@ -329,17 +329,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('L - Month (1-digit)', function() {
         it('parses month', function() {
-            const date = DateTime.fromFormat('L', '10');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('L', '10')
+                    .getMonth(),
                 10
             );
         });
 
         it('parses 1-digit month', function() {
-            const date = DateTime.fromFormat('L', '1');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('L', '1')
+                    .getMonth(),
                 1
             );
         });
@@ -347,17 +347,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('LL - Month (2-digits)', function() {
         it('parses month', function() {
-            const date = DateTime.fromFormat('LL', '10');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('LL', '10')
+                    .getMonth(),
                 10
             );
         });
 
         it('parses zero padded month', function() {
-            const date = DateTime.fromFormat('LL', '01');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('LL', '01')
+                    .getMonth(),
                 1
             );
         });
@@ -365,9 +365,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('LLL - Month Name (Short)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('LLL', 'Oct');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('LLL', 'Oct')
+                    .getMonth(),
                 10
             );
         });
@@ -375,9 +375,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('LLLL - Month Name (Long)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('LLLL', 'October');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('LLLL', 'October')
+                    .getMonth(),
                 10
             );
         });
@@ -385,9 +385,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('LLLLL - Month Name (Narrow)', function() {
         it('parses month name', function() {
-            const date = DateTime.fromFormat('LLLLL', 'O');
             assert.strictEqual(
-                date.getMonth(),
+                DateTime.fromFormat('LLLLL', 'O')
+                    .getMonth(),
                 10
             );
         });
@@ -399,17 +399,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('w - Week Of Year (1-digit)', function() {
         it('parses week of year', function() {
-            const date = DateTime.fromFormat('w', '22');
             assert.strictEqual(
-                date.getWeek(),
+                DateTime.fromFormat('w', '22')
+                    .getWeek(),
                 22
             );
         });
 
         it('parses 1-digit week of year', function() {
-            const date = DateTime.fromFormat('w', '1');
             assert.strictEqual(
-                date.getWeek(),
+                DateTime.fromFormat('w', '1')
+                    .getWeek(),
                 1
             );
         });
@@ -417,17 +417,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('ww - Week Of Year (2-digits)', function() {
         it('parses week of year', function() {
-            const date = DateTime.fromFormat('ww', '22');
             assert.strictEqual(
-                date.getWeek(),
+                DateTime.fromFormat('ww', '22')
+                    .getWeek(),
                 22
             );
         });
 
         it('parses zero padded week of year', function() {
-            const date = DateTime.fromFormat('ww', '01');
             assert.strictEqual(
-                date.getWeek(),
+                DateTime.fromFormat('ww', '01')
+                    .getWeek(),
                 1
             );
         });
@@ -553,9 +553,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('EEE - Week Day (Short)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('EEE', 'Fri');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('EEE', 'Fri')
+                    .getWeekDay(),
                 6
             );
         });
@@ -563,9 +563,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('EEEE - Week Day (Long)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('EEEE', 'Friday');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('EEEE', 'Friday')
+                    .getWeekDay(),
                 6
             );
         });
@@ -573,9 +573,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('EEEEE - Week Day (Narrow)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('EEEEE', 'F');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('EEEEE', 'F')
+                    .getWeekDay(),
                 6
             );
         });
@@ -583,9 +583,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('e - Week Day (1-digit)', function() {
         it('parses day', function() {
-            const date = DateTime.fromFormat('e', '6');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('e', '6')
+                    .getWeekDay(),
                 6
             );
         });
@@ -593,9 +593,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('ee - Week Day (2-digits)', function() {
         it('parses day', function() {
-            const date = DateTime.fromFormat('ee', '06');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('ee', '06')
+                    .getWeekDay(),
                 6
             );
         });
@@ -603,9 +603,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('eee - Week Day (Short)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('eee', 'Fri');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('eee', 'Fri')
+                    .getWeekDay(),
                 6
             );
         });
@@ -613,9 +613,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('eeee - Week Day (Long)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('eeee', 'Friday');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('eeee', 'Friday')
+                    .getWeekDay(),
                 6
             );
         });
@@ -623,9 +623,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('eeeee - Week Day (Narrow)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('eeeee', 'F');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('eeeee', 'F')
+                    .getWeekDay(),
                 6
             );
         });
@@ -633,9 +633,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('c - Week Day (1-digit)', function() {
         it('parses day', function() {
-            const date = DateTime.fromFormat('c', '6');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('c', '6')
+                    .getWeekDay(),
                 6
             );
         });
@@ -643,9 +643,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('cc - Week Day (2-digits)', function() {
         it('parses day', function() {
-            const date = DateTime.fromFormat('cc', '06');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('cc', '06')
+                    .getWeekDay(),
                 6
             );
         });
@@ -653,9 +653,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('ccc - Week Day (Short)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('ccc', 'Fri');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('ccc', 'Fri')
+                    .getWeekDay(),
                 6
             );
         });
@@ -663,9 +663,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('cccc - Week Day (Long)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('cccc', 'Friday');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('cccc', 'Friday')
+                    .getWeekDay(),
                 6
             );
         });
@@ -673,9 +673,9 @@ describe('DateTime #fromFormat', function() {
 
     describe('ccccc - Week Day (Narrow)', function() {
         it('parses day name', function() {
-            const date = DateTime.fromFormat('ccccc', 'F');
             assert.strictEqual(
-                date.getWeekDay(),
+                DateTime.fromFormat('ccccc', 'F')
+                    .getWeekDay(),
                 6
             );
         });
@@ -687,17 +687,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('aaa - Day Period (Short)', function() {
         it('parses AM day period', function() {
-            const date = DateTime.fromFormat('aaa', 'AM');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('aaa', 'AM')
+                    .getHours(),
                 0
             );
         });
 
         it('parses pm day period', function() {
-            const date = DateTime.fromFormat('aaa', 'PM');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('aaa', 'PM')
+                    .getHours(),
                 12
             );
         });
@@ -705,17 +705,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('aaaa - Day Period (Long)', function() {
         it('parses AM day period', function() {
-            const date = DateTime.fromFormat('aaa', 'AM');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('aaa', 'AM')
+                    .getHours(),
                 0
             );
         });
 
         it('parses pm day period', function() {
-            const date = DateTime.fromFormat('aaa', 'PM');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('aaa', 'PM')
+                    .getHours(),
                 12
             );
         });
@@ -727,17 +727,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('h - Hour [1-12] (1-digit)', function() {
         it('parses the hour [1-12]', function() {
-            const date = DateTime.fromFormat('h', '12');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('h', '12')
+                    .getHours(),
                 0
             );
         });
 
         it('parses 1-digit hour', function() {
-            const date = DateTime.fromFormat('h', '1');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('h', '1')
+                    .getHours(),
                 1
             );
         });
@@ -745,17 +745,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('hh - Hour [1-12] (2-digits)', function() {
         it('parses the hour [1-12]', function() {
-            const date = DateTime.fromFormat('hh', '12');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('hh', '12')
+                    .getHours(),
                 0
             );
         });
 
         it('parses zero padded hour', function() {
-            const date = DateTime.fromFormat('hh', '01');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('hh', '01')
+                    .getHours(),
                 1
             );
         });
@@ -763,17 +763,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('H - Hour [0-23] (1-digit)', function() {
         it('parses the hour [0-23]', function() {
-            const date = DateTime.fromFormat('H', '23');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('H', '23')
+                    .getHours(),
                 23
             );
         });
 
         it('parses 1-digit hour', function() {
-            const date = DateTime.fromFormat('H', '0')
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('H', '0')
+                    .getHours(),
                 0
             );
         });
@@ -781,17 +781,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('HH - Hour [0-23] (2-digits)', function() {
         it('parses the hour [0-23]', function() {
-            const date = DateTime.fromFormat('HH', '23');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('HH', '23')
+                    .getHours(),
                 23
             );
         });
 
         it('parses zero padded hour', function() {
-            const date = DateTime.fromFormat('HH', '00')
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('HH', '00')
+                    .getHours(),
                 0
             );
         });
@@ -799,17 +799,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('K - Hour [0-11] (1-digit)', function() {
         it('parses the hour [0-11]', function() {
-            const date = DateTime.fromFormat('K', '11');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('K', '11')
+                    .getHours(),
                 11
             );
         });
 
         it('parses 1-digit hour', function() {
-            const date = DateTime.fromFormat('K', '0');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('K', '0')
+                    .getHours(),
                 0
             );
         });
@@ -817,17 +817,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('KK - Hour [0-11] (2-digits)', function() {
         it('parses the hour [0-11]', function() {
-            const date = DateTime.fromFormat('KK', '11');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('KK', '11')
+                    .getHours(),
                 11
             );
         });
 
         it('parses zero padded hour', function() {
-            const date = DateTime.fromFormat('KK', '00');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('KK', '00')
+                    .getHours(),
                 0
             );
         });
@@ -835,17 +835,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('k - Hour [1-24] (1-digit)', function() {
         it('parses the hour [1-24]', function() {
-            const date = DateTime.fromFormat('k', '24');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('k', '24')
+                    .getHours(),
                 0
             );
         });
 
         it('parses 1-digit hour', function() {
-            const date = DateTime.fromFormat('k', '1')
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('k', '1')
+                    .getHours(),
                 1
             );
         });
@@ -853,17 +853,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('kk - Hour [1-24] (2-digits)', function() {
         it('parses the hour [1-24]', function() {
-            const date = DateTime.fromFormat('kk', '24');
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('kk', '24')
+                    .getHours(),
                 0
             );
         });
 
         it('parses zero padded hour', function() {
-            const date = DateTime.fromFormat('kk', '01')
             assert.strictEqual(
-                date.getHours(),
+                DateTime.fromFormat('kk', '01')
+                    .getHours(),
                 1
             );
         });
@@ -875,17 +875,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('m - Minute (1-digit)', function() {
         it('parses the minute', function() {
-            const date = DateTime.fromFormat('m', '25');
             assert.strictEqual(
-                date.getMinutes(),
+                DateTime.fromFormat('m', '25')
+                    .getMinutes(),
                 25
             );
         });
 
         it('parses 1-digit minute', function() {
-            const date = DateTime.fromFormat('m', '1');
             assert.strictEqual(
-                date.getMinutes(),
+                DateTime.fromFormat('m', '1')
+                    .getMinutes(),
                 1
             );
         });
@@ -893,17 +893,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('mm - Minute (2-digits)', function() {
         it('parses the minute', function() {
-            const date = DateTime.fromFormat('mm', '25');
             assert.strictEqual(
-                date.getMinutes(),
+                DateTime.fromFormat('mm', '25')
+                    .getMinutes(),
                 25
             );
         });
 
         it('parses zero padded minute', function() {
-            const date = DateTime.fromFormat('mm', '01');
             assert.strictEqual(
-                date.getMinutes(),
+                DateTime.fromFormat('mm', '01')
+                    .getMinutes(),
                 1
             );
         });
@@ -915,17 +915,17 @@ describe('DateTime #fromFormat', function() {
 
     describe('s - Second (1-digit)', function() {
         it('parses the second', function() {
-            const date = DateTime.fromFormat('s', '25');
             assert.strictEqual(
-                date.getSeconds(),
+                DateTime.fromFormat('s', '25')
+                    .getSeconds(),
                 25
             );
         });
 
         it('parses 1-digit second', function() {
-            const date = DateTime.fromFormat('s', '1');
             assert.strictEqual(
-                date.getSeconds(),
+                DateTime.fromFormat('s', '1')
+                    .getSeconds(),
                 1
             );
         });
@@ -933,26 +933,250 @@ describe('DateTime #fromFormat', function() {
 
     describe('ss - Second (2-digits)', function() {
         it('parses the second', function() {
-            const date = DateTime.fromFormat('ss', '25');
             assert.strictEqual(
-                date.getSeconds(),
+                DateTime.fromFormat('ss', '25')
+                    .getSeconds(),
                 25
             );
         });
 
         it('parses zero padded second', function() {
-            const date = DateTime.fromFormat('ss', '01');
             assert.strictEqual(
-                date.getSeconds(),
+                DateTime.fromFormat('ss', '01')
+                    .getSeconds(),
                 1
             );
         });
     });
 
-    // fractional second
+    describe('S - Fractional Second', function() {
+        it('parses the fractional second', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('SSS', '123')
+                    .getMilliseconds(),
+                0
+            );
+        });
+    });
 
     /**
      * Time Zone
      */
+
+    describe('ZZZ - Time Zone (ISO8601 basic format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +0000')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 -0500')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('ZZZZ - Time Zone (Long localized GMT format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT-05:00')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('ZZZZZ - Time Zone (ISO8601 extended format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 -05:00')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('O - Time Zone (Short localized GMT format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT-05')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('OOOO - Time Zone (Long localized GMT format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT-05:00')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('VV - Time Zone (Long time zone ID)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 UTC')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 America/New_York')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('X - Time Zone (ISO8601 basic format with Z)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 Z')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 -05')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('XX - Time Zone (ISO8601 basic format with Z)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 Z')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 -0500')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('XXX - Time Zone (ISO8601 extended format with Z)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 Z')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 -05:00')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('x - Time Zone (ISO8601 basic format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 -05')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('xx - Time Zone (ISO8601 basic format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +0000')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 -0500')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
+
+    describe('xxx - Time Zone (ISO8601 extended format)', function() {
+        it('parses the time zone', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zones', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 -05:00')
+                    .toISOString(),
+                '2019-01-01T05:00:00.000+00:00'
+            );
+        });
+    });
 
 });

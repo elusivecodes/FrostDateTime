@@ -177,25 +177,33 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} The DateTime object.
      */
     setTimeZone(timeZone, adjust = false) {
+        if (['Z', 'GMT'].includes(timeZone)) {
+            timeZone = 'UTC';
+        }
+
         this._dynamicTz = false;
 
         const offset = this._offset;
 
         const match = timeZone.match(this.constructor._offsetRegExp);
         if (match) {
-            this._offset = match[2] * 60 + parseInt(match[4]);
+            this._offset = match[2] * 60 + parseInt(match[4] || 0);
             if (this._offset && match[1] === '+') {
                 this._offset *= -1;
             }
-            this._timeZone = DateFormatter.formatOffset(this._offset);
-        } else {
-            if (['Z', 'GMT'].includes(timeZone)) {
-                timeZone = 'UTC';
-            }
 
+            if (this._offset) {
+                this._timeZone = DateFormatter.formatOffset(this._offset);
+            } else {
+                this._dynamicTz = true;
+                this._timeZone = 'UTC';
+            }
+        } else {
             this._dynamicTz = true;
             this._timeZone = timeZone;
+        }
 
+        if (this._dynamicTz) {
             this._makeFormatter();
             this._checkOffset();
         }

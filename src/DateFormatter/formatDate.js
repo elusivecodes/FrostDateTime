@@ -528,7 +528,7 @@ DateFormatter._formatDate = {
 
     V: {
         key: 'timeZone',
-        regex: '([a-zA-Z_\/]+)',
+        regex: _ => '([a-zA-Z_\/]+)',
         input: (_, value) => value,
         output: datetime => datetime.getTimeZone()
     },

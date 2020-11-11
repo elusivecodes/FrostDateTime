@@ -106,7 +106,7 @@ The `isValid` property on the created *DateTime* object can be used to determine
 const date = DateTime.fromFormat(formatString, dateString, options);
 ```
 
-**From ISO Format**
+**From ISO String**
 
 - `dateString` is a string representing the date you are parsing.
 - `options` is an object containing properties to define the new date.
@@ -118,7 +118,7 @@ If the `dateString` contains time zone or offset information, and the `timeZone`
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
 ```javascript
-const date = DateTime.fromISOFormat(dateString, options);
+const date = DateTime.fromISOString(dateString, options);
 ```
 
 **From Timestamp**
@@ -175,7 +175,7 @@ const dateString = date.toDateString();
 
 **To ISO String**
 
-Format the current date using "*yyyy-MM-dd'THH:mm:ss.SSSSSSxxx*" (in English and UTC time zone).
+Format the current date using "*yyyy-MM-dd'THH:mm:ss.SSSxxx*" (in English and UTC time zone).
 
 ```javascript
 const isoString = date.toISOString();
@@ -866,14 +866,4 @@ Return *true* if the year is a leap year.
 
 ```javascript
 const isLeapYear = DateTime.isLeapYear(year);
-```
-
-**Weeks In Year**
-
-Get the number of weeks in a year.
-
-- `year` is a number representing the year.
-
-```javascript
-const weeksInYear = DateTime.weeksInYear(year);
 ```
