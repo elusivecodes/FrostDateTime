@@ -3,9 +3,10 @@
 [ ] DateTimeImmutable tests
 
 [X] Check string truncation for fractional seconds
-[ ] Always use local week in startOf() and endOf()
-[ ] Add dayPeriod() and era() utility methods
+[X] Always use local week in startOf() and endOf()
+[X] Add dayPeriod() and era() utility methods
 [ ] Add toObject/fromObject
+[ ] Don't overwrite narrow day/month if current day/month already matches
 
 [ ] Add DateInterval (RelativeTimeFormat)
 [ ] DateInterval tests

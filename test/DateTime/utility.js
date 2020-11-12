@@ -70,6 +70,40 @@ describe('DateTime Utility', function() {
         });
     });
 
+    describe('#dayPeriod', function() {
+        it('returns the day period', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1, 0])
+                    .dayPeriod(),
+                'AM'
+            );
+        });
+
+        it('works with pm day period', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1, 12])
+                    .dayPeriod(),
+                'PM'
+            );
+        });
+
+        it('works with short am periods', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1, 0])
+                    .dayPeriod('short'),
+                'AM'
+            );
+        });
+
+        it('works with short pm periods', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1, 12])
+                    .dayPeriod('short'),
+                'PM'
+            );
+        });
+    });
+
     describe('#daysInMonth', function() {
         it('returns the days in the month', function() {
             const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -87,6 +121,56 @@ describe('DateTime Utility', function() {
                 DateTime.fromArray([2020, 2, 1])
                     .daysInMonth(),
                 29
+            );
+        });
+    });
+
+    describe('#era', function() {
+        it('returns the era', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018])
+                    .era(),
+                'Anno Domini'
+            );
+        });
+
+        it('works with bc era', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-5])
+                    .era(),
+                'Before Christ'
+            );
+        });
+
+        it('works with short bc eras', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018])
+                    .era('short'),
+                'AD'
+            );
+        });
+
+        it('works with short ad eras', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-5])
+                    .era('short'),
+                'BC'
+            );
+        });
+
+        it('works with narrow bc eras', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018])
+                    .era('narrow'),
+                'A'
+            );
+        });
+
+        it('works with narrow ad eras', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-5])
+                    .era('narrow'),
+                'B'
             );
         });
     });

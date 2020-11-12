@@ -25,6 +25,20 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Get the day period in current timeZone.
+     * @param {string} [type=long] The type of day period to return.
+     * @returns {string} The day period.
+     */
+    dayPeriod(type = 'long') {
+        return this.formatter.formatDayPeriod(
+            this.getHours() < 12 ?
+                0 :
+                1,
+            type
+        );
+    },
+
+    /**
      * Get the number of days in the current month.
      * @returns {number} The number of days in the current month.
      */
@@ -219,6 +233,20 @@ Object.assign(DateTime.prototype, {
         }
 
         return interval;
+    },
+
+    /**
+     * Get the era in current timeZone.
+     * @param {string} [type=long] The type of era to return.
+     * @returns {string} The era.
+     */
+    era(type = 'long') {
+        return this.formatter.formatEra(
+            this.getYear() < 0 ?
+                0 :
+                1,
+            type
+        );
     },
 
     /**

@@ -424,19 +424,6 @@ describe('DateTime Manipulation', function() {
             );
         });
 
-        it('works with local week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.startOf('localWeek');
-            assert.strictEqual(
-                date1.toISOString(),
-                '2018-06-10T00:00:00.000+00:00'
-            );
-            assert.strictEqual(
-                date1,
-                date2
-            );
-        });
-
         it('works with day', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.startOf('day');
@@ -533,19 +520,6 @@ describe('DateTime Manipulation', function() {
         it('works with week', function() {
             const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
             const date2 = date1.endOf('week');
-            assert.strictEqual(
-                date1.toISOString(),
-                '2018-06-16T23:59:59.999+00:00'
-            );
-            assert.strictEqual(
-                date1,
-                date2
-            );
-        });
-
-        it('works with local week', function() {
-            const date1 = DateTime.fromArray([2018, 6, 15, 11, 30, 30, 500]);
-            const date2 = date1.endOf('localWeek');
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-06-16T23:59:59.999+00:00'

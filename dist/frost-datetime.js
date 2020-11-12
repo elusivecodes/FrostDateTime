@@ -277,8 +277,7 @@
             },
             output: (datetime, length) => {
                 const type = DateFormatter.getType(length);
-                const index = datetime.getYear() < 0 ? 0 : 1;
-                return datetime.formatter.formatEra(index, type);
+                return datetime.era(type);
             }
         },
 
@@ -296,7 +295,7 @@
                 }
 
                 return value > 40 ?
-                    1900 + value:
+                    1900 + value :
                     2000 + value;
             },
             output: (datetime, length) => {
@@ -320,7 +319,7 @@
                 }
 
                 return value > 40 ?
-                    1900 + value:
+                    1900 + value :
                     2000 + value;
             },
             output: (datetime, length) => {
@@ -535,6 +534,7 @@
             },
             input: (formatter, value, length) => {
                 switch (length) {
+                    case 5:
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -574,6 +574,7 @@
             },
             input: (formatter, value, length) => {
                 switch (length) {
+                    case 5:
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -610,8 +611,7 @@
             },
             output: (datetime, length) => {
                 const type = DateFormatter.getType(length);
-                const index = datetime.getHours() < 12 ? 0 : 1;
-                return datetime.formatter.formatDayPeriod(index, type);
+                return datetime.dayPeriod(type);
             }
         },
 
@@ -2187,9 +2187,6 @@
                 case 'date':
                     return this.setHours(23, 59, 59, 999);
                 case 'week':
-                    return this.setDay(6)
-                        .setHours(23, 59, 59, 999);
-                case 'localweek':
                     return this.setWeekDay(7)
                         .setHours(23, 59, 59, 999);
                 case 'month':
@@ -2226,9 +2223,6 @@
                 case 'date':
                     return this.setHours(0, 0, 0, 0);
                 case 'week':
-                    return this.setDay(0)
-                        .setHours(0, 0, 0, 0);
-                case 'localweek':
                     return this.setWeekDay(1)
                         .setHours(0, 0, 0, 0);
                 case 'month':
@@ -2373,6 +2367,20 @@
          */
         dayName(type = 'long') {
             return this.formatter.formatDay(this.getDay(), type);
+        },
+
+        /**
+         * Get the day period in current timeZone.
+         * @param {string} [type=long] The type of day period to return.
+         * @returns {string} The day period.
+         */
+        dayPeriod(type = 'long') {
+            return this.formatter.formatDayPeriod(
+                this.getHours() < 12 ?
+                    0 :
+                    1,
+                type
+            );
         },
 
         /**
@@ -2570,6 +2578,20 @@
             }
 
             return interval;
+        },
+
+        /**
+         * Get the era in current timeZone.
+         * @param {string} [type=long] The type of era to return.
+         * @returns {string} The era.
+         */
+        era(type = 'long') {
+            return this.formatter.formatEra(
+                this.getYear() < 0 ?
+                    0 :
+                    1,
+                type
+            );
         },
 
         /**

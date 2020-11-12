@@ -19,8 +19,7 @@ DateFormatter._formatDate = {
         },
         output: (datetime, length) => {
             const type = DateFormatter.getType(length);
-            const index = datetime.getYear() < 0 ? 0 : 1;
-            return datetime.formatter.formatEra(index, type);
+            return datetime.era(type);
         }
     },
 
@@ -38,7 +37,7 @@ DateFormatter._formatDate = {
             }
 
             return value > 40 ?
-                1900 + value:
+                1900 + value :
                 2000 + value;
         },
         output: (datetime, length) => {
@@ -62,7 +61,7 @@ DateFormatter._formatDate = {
             }
 
             return value > 40 ?
-                1900 + value:
+                1900 + value :
                 2000 + value;
         },
         output: (datetime, length) => {
@@ -277,6 +276,7 @@ DateFormatter._formatDate = {
         },
         input: (formatter, value, length) => {
             switch (length) {
+                case 5:
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
@@ -316,6 +316,7 @@ DateFormatter._formatDate = {
         },
         input: (formatter, value, length) => {
             switch (length) {
+                case 5:
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
@@ -352,8 +353,7 @@ DateFormatter._formatDate = {
         },
         output: (datetime, length) => {
             const type = DateFormatter.getType(length);
-            const index = datetime.getHours() < 12 ? 0 : 1;
-            return datetime.formatter.formatDayPeriod(index, type);
+            return datetime.dayPeriod(type);
         }
     },
 

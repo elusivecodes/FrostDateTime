@@ -33,9 +33,6 @@ Object.assign(DateTime.prototype, {
             case 'date':
                 return this.setHours(23, 59, 59, 999);
             case 'week':
-                return this.setDay(6)
-                    .setHours(23, 59, 59, 999);
-            case 'localweek':
                 return this.setWeekDay(7)
                     .setHours(23, 59, 59, 999);
             case 'month':
@@ -72,9 +69,6 @@ Object.assign(DateTime.prototype, {
             case 'date':
                 return this.setHours(0, 0, 0, 0);
             case 'week':
-                return this.setDay(0)
-                    .setHours(0, 0, 0, 0);
-            case 'localweek':
                 return this.setWeekDay(1)
                     .setHours(0, 0, 0, 0);
             case 'month':

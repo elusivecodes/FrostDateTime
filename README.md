@@ -626,7 +626,7 @@ date.add(amount, timeUnit);
 
 Set the date to the end of a unit of time in current time zone.
 
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*localWeek*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 date.endOf(timeUnit);
@@ -636,7 +636,7 @@ date.endOf(timeUnit);
 
 Set the date to the start of a unit of time in current time zone.
 
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*localWeek*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 date.startOf(timeUnit);
@@ -672,6 +672,16 @@ Get the name of the day of the week in current time zone.
 const dayName = date.dayName(type);
 ```
 
+**Day Period**
+
+Get the day period in current time zone.
+
+- `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
+
+```javascript
+const dayPeriod = date.dayPeriod(type);
+```
+
 **Days In Month**
 
 Get the number of days in the current month.
@@ -697,6 +707,16 @@ Get the difference between two Dates.
 
 ```javascript
 const diff = date.diff(other, absolute);
+```
+
+**Era**
+
+Get the era in current time zone.
+
+- `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
+
+```javascript
+const era = date.era(type);
 ```
 
 **Is After?**
