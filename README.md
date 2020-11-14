@@ -664,7 +664,7 @@ const clone = date.clone();
 
 **Day Name**
 
-Get the name of the day of the week in current time zone.
+Get the name of the day of the week in current time zone and locale.
 
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
@@ -674,7 +674,7 @@ const dayName = date.dayName(type);
 
 **Day Period**
 
-Get the day period in current time zone.
+Get the day period in current time zone and locale.
 
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
@@ -703,20 +703,35 @@ const daysInYear = date.daysInYear();
 Get the difference between two Dates.
 
 - `other` is the *DateTime* object to compare to.
-- `absolute` is a boolean indicating whether the interval will be forced to be positive, and will default to *false*.
+- `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+
+If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
 ```javascript
-const diff = date.diff(other, absolute);
+const diff = date.diff(other, timeUnit);
 ```
 
 **Era**
 
-Get the era in current time zone.
+Get the era in current time zone and locale.
 
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
 const era = date.era(type);
+```
+
+**Human Difference**
+
+Get the relative difference between two Dates in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+- `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+
+If the `timeUnit` is omitted, this method will return the most significant non-zero value.
+
+```javascript
+const diff = date.humanDiff(other, timeUnit);
 ```
 
 **Is After?**
@@ -816,7 +831,7 @@ If a `granularity` is not specified, a direct comparison of the timestamps will 
 
 **Month Name**
 
-Get the name of the month in current time zone.
+Get the name of the month in current time zone and locale.
 
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
@@ -826,7 +841,7 @@ const monthName = date.monthName(type);
 
 **Time Zone Name**
 
-Get the name of the current time zone.
+Get the name of the current time zone and locale.
 
 - `type` can be either "*long*" or "*short*", and will default to "*long*" if it is not set.
 

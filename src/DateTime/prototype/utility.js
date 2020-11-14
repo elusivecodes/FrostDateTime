@@ -60,179 +60,55 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the difference between two Dates.
+     * Get the difference between this and another Date.
      * @param {DateTime} [other] The date to compare to.
-     * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
-     * @returns {object} A new object.
+     * @param {string} [timeUnit] The unit of time.
+     * @returns {number} The difference.
      */
-    diff(other = null, absolute = false) {
-        const interval = {};
-
-        const lessThan = this < other,
-            thisMonth = this.getMonth(),
-            thisDate = this.getDate(),
-            thisHour = this.getHours(),
-            thisMinute = this.getMinutes(),
-            thisSecond = this.getSeconds(),
-            thisMillisecond = this.getMilliseconds()
-                * 1000,
-            otherMonth = other.getMonth(),
-            otherDate = other.getDate(),
-            otherHour = other.getHours(),
-            otherMinute = other.getMinutes(),
-            otherSecond = other.getSeconds(),
-            otherMillisecond = other.getMilliseconds()
-                * 1000;
-
-        interval.y = Math.abs(
-            this.getYear()
-            - other.getYear()
-        );
-        interval.m = Math.abs(
-            thisMonth
-            - otherMonth
-        );
-        interval.d = Math.abs(
-            thisDate
-            - otherDate
-        );
-        interval.h = Math.abs(
-            thisHour
-            - otherHour
-        );
-        interval.i = Math.abs(
-            thisMinute
-            - otherMinute
-        );
-        interval.s = Math.abs(
-            thisSecond
-            - otherSecond
-        );
-        interval.f = Math.abs(
-            thisMillisecond
-            - otherMillisecond
-        );
-        interval.days = (
-            Math.abs(
-                (this - other)
-                / 86400000
-            )
-        ) | 0;
-        interval.invert = !absolute && lessThan;
-
-        if (
-            interval.y &&
-            interval.m &&
-            (
-                (
-                    !lessThan &&
-                    thisMonth < otherMonth
-                ) ||
-                (
-                    lessThan &&
-                    thisMonth > otherMonth
-                )
-            )
-        ) {
-            interval.y--;
-            interval.m = 12 - interval.m;
+    diff(other, timeUnit) {
+        if (!other) {
+            other = new this.constructor;
         }
 
-        if (
-            interval.m &&
-            interval.d &&
-            (
-                (!
-                    lessThan &&
-                    thisDate < otherDate
-                ) ||
-                (
-                    lessThan &&
-                    thisDate > otherDate
-                )
-            )
-        ) {
-            interval.m--;
-            interval.d = (
-                lessThan ?
-                    this.daysInMonth() :
-                    other.daysInMonth()
-            ) - interval.d;
+        if (timeUnit) {
+            timeUnit = timeUnit.toLowerCase();
         }
 
-        if (
-            interval.d &&
-            interval.h &&
-            (
-                (
-                    !lessThan &&
-                    thisHour < otherHour
-                ) ||
-                (
-                    lessThan &&
-                    thisHour > otherHour
-                )
-            )
-        ) {
-            interval.d--;
-            interval.h = 24 - interval.h;
+        let divisor;
+        switch (timeUnit) {
+            case 'year':
+            case 'years':
+                return this.getYear() - other.getYear();
+            case 'month':
+            case 'months':
+                return this.diff(other, 'year') * 12
+                    + this.getMonth()
+                    - other.getMonth();
+            case 'day':
+            case 'days':
+                divisor = 86400000;
+                break;
+            case 'hour':
+            case 'hours':
+                divisor = 3600000;
+                break;
+            case 'minute':
+            case 'minutes':
+                divisor = 60000;
+                break;
+            case 'second':
+            case 'seconds':
+                divisor = 1000;
+                break;
+            default:
+                divisor = 1;
         }
 
-        if (
-            interval.h &&
-            interval.i &&
-            (
-                (
-                    !lessThan &&
-                    thisMinute < otherMinute
-                ) ||
-                (
-                    lessThan &&
-                    thisMinute > otherMinute
-                )
-            )
-        ) {
-            interval.h--;
-            interval.i = 60 - interval.i;
-        }
+        const diff = (this - other) / divisor;
 
-        if (
-            interval.i &&
-            interval.s &&
-            (
-                (
-                    !lessThan &&
-                    thisSecond < otherSecond
-                ) ||
-                (
-                    lessThan &&
-                    thisSecond > otherSecond
-                )
-            )
-        ) {
-            interval.i--;
-            interval.s = 60 - interval.s;
-        }
-
-        if (
-            interval.s &&
-            interval.f &&
-            (
-                (
-                    !lessThan &&
-                    thisMillisecond < otherMillisecond
-                ) ||
-                (
-                    lessThan &&
-                    thisMillisecond > otherMillisecond
-                )
-            )
-        ) {
-            interval.s--;
-            interval.f = 1000000 - interval.f;
-        }
-
-        return interval;
+        return diff > 0 ?
+            Math.floor(diff) :
+            Math.ceil(diff);
     },
 
     /**
@@ -247,6 +123,27 @@ Object.assign(DateTime.prototype, {
                 1,
             type
         );
+    },
+
+    /**
+     * Get the difference between this and another Date in human readable form.
+     * @param {DateTime} [other] The date to compare to.
+     * @param {string} [timeUnit] The unit of time.
+     * @returns {string} The difference in human readable form.
+     */
+    humanDiff(other, timeUnit) {
+        if (!other) {
+            other = new this.constructor;
+        }
+
+        let amount;
+        if (timeUnit) {
+            amount = this.diff(other, timeUnit);
+        } else {
+            [amount, timeUnit] = this._getBiggestDiff(other);
+        }
+
+        return this.relativeFormatter.format(amount, timeUnit);
     },
 
     /**

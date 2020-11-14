@@ -80,6 +80,7 @@ class DateTime {
         }
 
         this.formatter = DateFormatter.load(options.locale);
+        this.relativeFormatter = DateFormatter.loadRelative(options.locale);
     }
 
     /**

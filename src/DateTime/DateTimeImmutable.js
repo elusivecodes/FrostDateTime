@@ -22,10 +22,18 @@ class DateTimeImmutable extends DateTime {
      * @returns {DateTimeImmutable} A new DateTimeImmutable object.
      */
     setTime(time) {
-        return this.constructor.fromTimestamp(time / 1000, {
+        const date = new this.constructor(null, {
             locale: this.getLocale(),
             timeZone: this.getTimeZone()
         });
+
+        date._utcDate.setTime(time);
+
+        if (date._dynamicTz) {
+            date._checkOffset();
+        }
+
+        return date;
     }
 
     /**

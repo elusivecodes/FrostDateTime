@@ -1,7 +1,7 @@
 const assert = require('assert');
-const { DateTime } = require('../../dist/frost-datetime.min');
+const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTime #fromFormat (Locale)', function() {
+describe('DateTimeImmutable #fromFormat', function() {
 
     /**
      * Era
@@ -10,7 +10,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGG - Era (Short)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'н. э.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGG', 'AD')
                     .getYear(),
                 1970
             );
@@ -18,7 +18,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'до н. э.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGG', 'BC')
                     .getYear(),
                 -1970
             );
@@ -28,7 +28,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGGG - Era (Long)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'от Рождества Христова', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGGG', 'Anno Domini')
                     .getYear(),
                 1970
             );
@@ -36,7 +36,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'до Рождества Христова', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGGG', 'Before Christ')
                     .getYear(),
                 -1970
             );
@@ -46,7 +46,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGGGG - Era (Narrow)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'н.э.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGGGG', 'A')
                     .getYear(),
                 1970
             );
@@ -54,7 +54,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'до н.э.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('GGGGG', 'B')
                     .getYear(),
                 -1970
             );
@@ -68,7 +68,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('y - Year (1-digit)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('y', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('y', '2018')
                     .getYear(),
                 2018
             );
@@ -76,7 +76,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('y', '٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('y', '5')
                     .getYear(),
                 5
             );
@@ -86,7 +86,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('yy - Year (2-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yy', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yy', '2018')
                     .getYear(),
                 2018
             );
@@ -94,7 +94,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 2-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yy', '٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yy', '88')
                     .getYear(),
                 1988
             );
@@ -104,7 +104,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('yyy - Year (3-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yyy', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yyy', '2018')
                     .getYear(),
                 2018
             );
@@ -112,7 +112,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yyy', '٠٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yyy', '088')
                     .getYear(),
                 88
             );
@@ -122,7 +122,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('yyyy - Year (4-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yyyy', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yyyy', '2018')
                     .getYear(),
                 2018
             );
@@ -130,7 +130,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('yyyy', '٠٠٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('yyyy', '0088')
                     .getYear(),
                 88
             );
@@ -144,7 +144,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('Y - Year (1-digit)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('Y', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('Y', '2018')
                     .getWeekYear(),
                 2018
             );
@@ -152,7 +152,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('Y', '٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('Y', '5')
                     .getWeekYear(),
                 5
             );
@@ -162,7 +162,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('YY - Year (2-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YY', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YY', '2018')
                     .getWeekYear(),
                 2018
             );
@@ -170,7 +170,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 2-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YY', '٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YY', '88')
                     .getWeekYear(),
                 1988
             );
@@ -180,7 +180,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('YYY - Year (3-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYY', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YYY', '2018')
                     .getWeekYear(),
                 2018
             );
@@ -188,7 +188,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYY', '٠٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YYY', '088')
                     .getWeekYear(),
                 88
             );
@@ -198,7 +198,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('YYYY - Year (4-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYYY', '٢٠١٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YYYY', '2018')
                     .getWeekYear(),
                 2018
             );
@@ -206,7 +206,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYYY', '٠٠٨٨', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('YYYY', '0088')
                     .getWeekYear(),
                 88
             );
@@ -220,7 +220,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('q - Quarter (1-digit)', function() {
         it('parses quarter', function() {
             assert.strictEqual(
-                DateTime.fromFormat('q', '٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('q', '3')
                     .getQuarter(),
                 3
             );
@@ -230,7 +230,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('qq - Quarter (2-digits)', function() {
         it('parses quarter', function() {
             assert.strictEqual(
-                DateTime.fromFormat('qq', '٠٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('qq', '03')
                     .getQuarter(),
                 3
             );
@@ -240,7 +240,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('Q - Quarter (1-digit)', function() {
         it('parses quarter', function() {
             assert.strictEqual(
-                DateTime.fromFormat('Q', '٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('Q', '3')
                     .getQuarter(),
                 3
             );
@@ -250,7 +250,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('QQ - Quarter (2-digits)', function() {
         it('parses quarter', function() {
             assert.strictEqual(
-                DateTime.fromFormat('QQ', '٠٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('QQ', '03')
                     .getQuarter(),
                 3
             );
@@ -264,7 +264,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('M - Month (1-digit)', function() {
         it('parses month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('M', '١٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('M', '10')
                     .getMonth(),
                 10
             );
@@ -272,7 +272,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('M', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('M', '1')
                     .getMonth(),
                 1
             );
@@ -282,7 +282,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('MM - Month (2-digits)', function() {
         it('parses month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('MM', '١٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('MM', '10')
                     .getMonth(),
                 10
             );
@@ -290,7 +290,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('MM', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('MM', '01')
                     .getMonth(),
                 1
             );
@@ -300,7 +300,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('MMM - Month Name (Short)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('MMM', 'окт.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('MMM', 'Oct')
                     .getMonth(),
                 10
             );
@@ -310,7 +310,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('MMMM - Month Name (Long)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('MMMM', 'октября', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('MMMM', 'October')
                     .getMonth(),
                 10
             );
@@ -320,7 +320,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('MMMMM - Month Name (Narrow)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('MMMMM', 'О', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('MMMMM', 'O')
                     .getMonth(),
                 10
             );
@@ -330,7 +330,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('L - Month (1-digit)', function() {
         it('parses month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('L', '١٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('L', '10')
                     .getMonth(),
                 10
             );
@@ -338,7 +338,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('L', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('L', '1')
                     .getMonth(),
                 1
             );
@@ -348,7 +348,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('LL - Month (2-digits)', function() {
         it('parses month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('LL', '١٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('LL', '10')
                     .getMonth(),
                 10
             );
@@ -356,7 +356,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('LL', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('LL', '01')
                     .getMonth(),
                 1
             );
@@ -366,7 +366,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('LLL - Month Name (Short)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('LLL', 'окт.', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('LLL', 'Oct')
                     .getMonth(),
                 10
             );
@@ -376,7 +376,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('LLLL - Month Name (Long)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('LLLL', 'октябрь', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('LLLL', 'October')
                     .getMonth(),
                 10
             );
@@ -386,7 +386,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('LLLLL - Month Name (Narrow)', function() {
         it('parses month name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('LLLLL', 'О', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('LLLLL', 'O')
                     .getMonth(),
                 10
             );
@@ -400,7 +400,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('w - Week Of Year (1-digit)', function() {
         it('parses week of year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('w', '٢٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('w', '22')
                     .getWeek(),
                 22
             );
@@ -408,7 +408,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit week of year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('w', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('w', '1')
                     .getWeek(),
                 1
             );
@@ -418,7 +418,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ww - Week Of Year (2-digits)', function() {
         it('parses week of year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ww', '٢٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('ww', '22')
                     .getWeek(),
                 22
             );
@@ -426,7 +426,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded week of year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ww', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('ww', '01')
                     .getWeek(),
                 1
             );
@@ -436,7 +436,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('W - Week Of Month', function() {
         it('parses the week of the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('W', '٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('W', '3')
                     .getWeekOfMonth(),
                 3
             );
@@ -450,7 +450,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('d - Day of Month (1-digit)', function() {
         it('parses the day of the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('d', '٢١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('d', '21')
                     .getDate(),
                 21
             );
@@ -458,7 +458,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit day of the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('d', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('d', '1')
                     .getDate(),
                 1
             );
@@ -468,7 +468,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('dd - Day of Month (2-digits)', function() {
         it('parses the day of the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd', '٢١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('dd', '21')
                     .getDate(),
                 21
             );
@@ -476,7 +476,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded day of the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('dd', '01')
                     .getDate(),
                 1
             );
@@ -486,7 +486,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('D - Day of Year (1-digit)', function() {
         it('parses the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('D', '١٥٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('D', '152')
                     .getDayOfYear(),
                 152
             );
@@ -494,7 +494,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('D', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('D', '1')
                     .getDayOfYear(),
                 1
             );
@@ -504,7 +504,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('DD - Day of Year (2-digits)', function() {
         it('parses the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('DD', '١٥٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('DD', '152')
                     .getDayOfYear(),
                 152
             );
@@ -512,7 +512,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('DD', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('DD', '01')
                     .getDayOfYear(),
                 1
             );
@@ -522,7 +522,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('DDD - Day of Year (3-digits)', function() {
         it('parses the day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('DDD', '١٥٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('DDD', '152')
                     .getDayOfYear(),
                 152
             );
@@ -530,7 +530,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded day of the year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('DDD', '٠٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('DDD', '001')
                     .getDayOfYear(),
                 1
             );
@@ -540,7 +540,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('F - Day Of Week In Month', function() {
         it('parses the day of week in the month', function() {
             assert.strictEqual(
-                DateTime.fromFormat('F', '٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('F', '3')
                     .getWeekDayInMonth(),
                 3
             );
@@ -554,9 +554,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('EEE - Week Day (Short)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('EEE', 'пт', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('EEE', 'Fri')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -564,9 +564,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('EEEE - Week Day (Long)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('EEEE', 'пятница', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('EEEE', 'Friday')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -574,9 +574,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('EEEEE - Week Day (Narrow)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('EEEEE', 'П', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('EEEEE', 'F')
                     .getWeekDay(),
-                1
+                6
             );
         });
     });
@@ -584,9 +584,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('e - Week Day (1-digit)', function() {
         it('parses day', function() {
             assert.strictEqual(
-                DateTime.fromFormat('e', '٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('e', '6')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -594,9 +594,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ee - Week Day (2-digits)', function() {
         it('parses day', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ee', '٠٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('ee', '06')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -604,9 +604,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('eee - Week Day (Short)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('eee', 'пт', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('eee', 'Fri')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -614,9 +614,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('eeee - Week Day (Long)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('eeee', 'пятница', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('eeee', 'Friday')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -624,9 +624,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('eeeee - Week Day (Narrow)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('eeeee', 'П', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('eeeee', 'F')
                     .getWeekDay(),
-                1
+                6
             );
         });
     });
@@ -634,9 +634,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('c - Week Day (1-digit)', function() {
         it('parses day', function() {
             assert.strictEqual(
-                DateTime.fromFormat('c', '٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('c', '6')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -644,9 +644,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('cc - Week Day (2-digits)', function() {
         it('parses day', function() {
             assert.strictEqual(
-                DateTime.fromFormat('cc', '٠٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('cc', '06')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -654,9 +654,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ccc - Week Day (Short)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ccc', 'пт', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('ccc', 'Fri')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -664,9 +664,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('cccc - Week Day (Long)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('cccc', 'пятница', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('cccc', 'Friday')
                     .getWeekDay(),
-                5
+                6
             );
         });
     });
@@ -674,9 +674,9 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ccccc - Week Day (Narrow)', function() {
         it('parses day name', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ccccc', 'П', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('ccccc', 'F')
                     .getWeekDay(),
-                1
+                6
             );
         });
     });
@@ -688,7 +688,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('aaa - Day Period (Short)', function() {
         it('parses AM day period', function() {
             assert.strictEqual(
-                DateTime.fromFormat('aaa', '上午', { locale: 'zh' })
+                DateTimeImmutable.fromFormat('aaa', 'AM')
                     .getHours(),
                 0
             );
@@ -696,7 +696,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses pm day period', function() {
             assert.strictEqual(
-                DateTime.fromFormat('aaa', '下午', { locale: 'zh' })
+                DateTimeImmutable.fromFormat('aaa', 'PM')
                     .getHours(),
                 12
             );
@@ -706,7 +706,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('aaaa - Day Period (Long)', function() {
         it('parses AM day period', function() {
             assert.strictEqual(
-                DateTime.fromFormat('aaa', '上午', { locale: 'zh' })
+                DateTimeImmutable.fromFormat('aaa', 'AM')
                     .getHours(),
                 0
             );
@@ -714,7 +714,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses pm day period', function() {
             assert.strictEqual(
-                DateTime.fromFormat('aaa', '下午', { locale: 'zh' })
+                DateTimeImmutable.fromFormat('aaa', 'PM')
                     .getHours(),
                 12
             );
@@ -728,7 +728,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('h - Hour [1-12] (1-digit)', function() {
         it('parses the hour [1-12]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('h', '١٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('h', '12')
                     .getHours(),
                 0
             );
@@ -736,7 +736,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('h', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('h', '1')
                     .getHours(),
                 1
             );
@@ -746,7 +746,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('hh - Hour [1-12] (2-digits)', function() {
         it('parses the hour [1-12]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('hh', '١٢', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('hh', '12')
                     .getHours(),
                 0
             );
@@ -754,7 +754,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('hh', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('hh', '01')
                     .getHours(),
                 1
             );
@@ -764,7 +764,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('H - Hour [0-23] (1-digit)', function() {
         it('parses the hour [0-23]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('H', '٢٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('H', '23')
                     .getHours(),
                 23
             );
@@ -772,7 +772,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('H', '٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('H', '0')
                     .getHours(),
                 0
             );
@@ -782,7 +782,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('HH - Hour [0-23] (2-digits)', function() {
         it('parses the hour [0-23]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('HH', '٢٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('HH', '23')
                     .getHours(),
                 23
             );
@@ -790,7 +790,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('HH', '٠٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('HH', '00')
                     .getHours(),
                 0
             );
@@ -800,7 +800,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('K - Hour [0-11] (1-digit)', function() {
         it('parses the hour [0-11]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('K', '١١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('K', '11')
                     .getHours(),
                 11
             );
@@ -808,7 +808,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('K', '٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('K', '0')
                     .getHours(),
                 0
             );
@@ -818,7 +818,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('KK - Hour [0-11] (2-digits)', function() {
         it('parses the hour [0-11]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('KK', '١١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('KK', '11')
                     .getHours(),
                 11
             );
@@ -826,7 +826,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('KK', '٠٠', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('KK', '00')
                     .getHours(),
                 0
             );
@@ -836,7 +836,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('k - Hour [1-24] (1-digit)', function() {
         it('parses the hour [1-24]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('k', '٢٤', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('k', '24')
                     .getHours(),
                 0
             );
@@ -844,7 +844,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('k', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('k', '1')
                     .getHours(),
                 1
             );
@@ -854,7 +854,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('kk - Hour [1-24] (2-digits)', function() {
         it('parses the hour [1-24]', function() {
             assert.strictEqual(
-                DateTime.fromFormat('kk', '٢٤', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('kk', '24')
                     .getHours(),
                 0
             );
@@ -862,7 +862,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded hour', function() {
             assert.strictEqual(
-                DateTime.fromFormat('kk', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('kk', '01')
                     .getHours(),
                 1
             );
@@ -876,7 +876,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('m - Minute (1-digit)', function() {
         it('parses the minute', function() {
             assert.strictEqual(
-                DateTime.fromFormat('m', '٢٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('m', '25')
                     .getMinutes(),
                 25
             );
@@ -884,7 +884,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit minute', function() {
             assert.strictEqual(
-                DateTime.fromFormat('m', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('m', '1')
                     .getMinutes(),
                 1
             );
@@ -894,7 +894,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('mm - Minute (2-digits)', function() {
         it('parses the minute', function() {
             assert.strictEqual(
-                DateTime.fromFormat('mm', '٢٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('mm', '25')
                     .getMinutes(),
                 25
             );
@@ -902,7 +902,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded minute', function() {
             assert.strictEqual(
-                DateTime.fromFormat('mm', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('mm', '01')
                     .getMinutes(),
                 1
             );
@@ -916,7 +916,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('s - Second (1-digit)', function() {
         it('parses the second', function() {
             assert.strictEqual(
-                DateTime.fromFormat('s', '٢٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('s', '25')
                     .getSeconds(),
                 25
             );
@@ -924,7 +924,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses 1-digit second', function() {
             assert.strictEqual(
-                DateTime.fromFormat('s', '١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('s', '1')
                     .getSeconds(),
                 1
             );
@@ -934,7 +934,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ss - Second (2-digits)', function() {
         it('parses the second', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ss', '٢٥', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('ss', '25')
                     .getSeconds(),
                 25
             );
@@ -942,7 +942,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses zero padded second', function() {
             assert.strictEqual(
-                DateTime.fromFormat('ss', '٠١', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('ss', '01')
                     .getSeconds(),
                 1
             );
@@ -952,7 +952,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('S - Fractional Second', function() {
         it('parses the fractional second', function() {
             assert.strictEqual(
-                DateTime.fromFormat('SSS', '١٢٣', { locale: 'ar-eg' })
+                DateTimeImmutable.fromFormat('SSS', '123')
                     .getMilliseconds(),
                 0
             );
@@ -966,7 +966,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ZZZ - Time Zone (ISO8601 basic format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +0000', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +0000')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -974,7 +974,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 -0500', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 -0500')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -984,7 +984,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ZZZZ - Time Zone (Long localized GMT format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+00:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -992,7 +992,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT-05:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT-05:00')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1002,7 +1002,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('ZZZZZ - Time Zone (ISO8601 extended format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1010,7 +1010,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 -05:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 -05:00')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1020,7 +1020,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('O - Time Zone (Short localized GMT format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1028,7 +1028,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT-05', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT-05')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1038,7 +1038,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('OOOO - Time Zone (Long localized GMT format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+00:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1046,7 +1046,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT-05:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT-05:00')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1056,7 +1056,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('VV - Time Zone (Long time zone ID)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 UTC', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 UTC')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1064,7 +1064,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 America/New_York', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 America/New_York')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1074,7 +1074,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('X - Time Zone (ISO8601 basic format with Z)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 Z', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 Z')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1082,7 +1082,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 -05', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 -05')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1092,7 +1092,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('XX - Time Zone (ISO8601 basic format with Z)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 Z', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 Z')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1100,7 +1100,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 -0500', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 -0500')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1110,7 +1110,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('XXX - Time Zone (ISO8601 extended format with Z)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 Z', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 Z')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1118,7 +1118,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 -05:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 -05:00')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1128,7 +1128,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('x - Time Zone (ISO8601 basic format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1136,7 +1136,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 -05', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 -05')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1146,7 +1146,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('xx - Time Zone (ISO8601 basic format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +0000', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +0000')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1154,7 +1154,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 -0500', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 -0500')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );
@@ -1164,7 +1164,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('xxx - Time Zone (ISO8601 extended format)', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +00:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -1172,7 +1172,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 -05:00', { locale: 'ru' })
+                DateTimeImmutable.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 -05:00')
                     .toISOString(),
                 '2019-01-01T05:00:00.000+00:00'
             );

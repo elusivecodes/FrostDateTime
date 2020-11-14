@@ -85,6 +85,23 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Get the biggest difference between this and another Date.
+     * @param {DateTime} [other] The date to compare to.
+     * @return {array} The biggest difference (amount and time unit).
+     */
+    _getBiggestDiff(other) {
+        for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
+            const amount = this.diff(other, timeUnit);
+
+            if (amount) {
+                return [amount, timeUnit];
+            }
+        }
+
+        return [0, 'second'];
+    },
+
+    /**
      * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
      * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
      */

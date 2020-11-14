@@ -1,15 +1,10 @@
-[~] Update tests
+
+[ ] Don't overwrite narrow day/month if current day/month already matches*
+[ ] Fix isValid date property (test values individually)
+
 [ ] Test return type of create/fromFormat methods
-[ ] DateTimeImmutable tests
-
-[X] Check string truncation for fractional seconds
-[X] Always use local week in startOf() and endOf()
-[X] Add dayPeriod() and era() utility methods
+[ ] Test fromFormat date creation in non-conventional order
 [ ] Add toObject/fromObject
-[ ] Don't overwrite narrow day/month if current day/month already matches
-
-[ ] Add DateInterval (RelativeTimeFormat)
-[ ] DateInterval tests
 
 [ ] ar-AR -> ar-EG
 [ ] ./node_modules/bin/mocha -> mocha

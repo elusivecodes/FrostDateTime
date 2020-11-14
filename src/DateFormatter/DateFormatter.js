@@ -233,9 +233,27 @@ class DateFormatter {
         return this._formatters[locale];
     }
 
+    /**
+     * Load a (cached) Intl.RelativeTimeFormat for a locale.
+     * @param {string} [locale] The locale to load.
+     * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
+     */
+    static loadRelative(locale) {
+        if (!locale) {
+            locale = this.defaultLocale;
+        }
+
+        if (!(locale in this._relativeFormatters)) {
+            this._relativeFormatters[locale] = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
+        }
+
+        return this._relativeFormatters[locale];
+    }
+
 }
 
 DateFormatter.defaultLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
 // Cached formatters
 DateFormatter._formatters = {};
+DateFormatter._relativeFormatters = {};

@@ -1,13 +1,13 @@
 const assert = require('assert');
-const { DateTime } = require('../../dist/frost-datetime.min');
+const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTime #diff', function() {
+describe('DateTimeImmutable #diff', function() {
 
     it('returns the difference in milliseconds', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30, 30, 500])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30, 500])
                 .diff(
-                    DateTime.fromArray([2016, 9, 23, 23, 40, 15, 350])
+                    DateTimeImmutable.fromArray([2016, 9, 23, 23, 40, 15, 350])
                 ),
             54391815150
         )
@@ -15,9 +15,9 @@ describe('DateTime #diff', function() {
 
     it('works with year', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018])
+            DateTimeImmutable.fromArray([2018])
                 .diff(
-                    DateTime.fromArray([2017]),
+                    DateTimeImmutable.fromArray([2017]),
                     'year'
                 ),
             1
@@ -26,9 +26,9 @@ describe('DateTime #diff', function() {
 
     it('works with years', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018])
+            DateTimeImmutable.fromArray([2018])
                 .diff(
-                    DateTime.fromArray([2016]),
+                    DateTimeImmutable.fromArray([2016]),
                     'years'
                 ),
             2
@@ -37,9 +37,9 @@ describe('DateTime #diff', function() {
 
     it('works with years (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2016])
+            DateTimeImmutable.fromArray([2016])
                 .diff(
-                    DateTime.fromArray([2018]),
+                    DateTimeImmutable.fromArray([2018]),
                     'years'
                 ),
             -2
@@ -48,9 +48,9 @@ describe('DateTime #diff', function() {
 
     it('works with month', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 9])
+            DateTimeImmutable.fromArray([2018, 9])
                 .diff(
-                    DateTime.fromArray([2018, 8]),
+                    DateTimeImmutable.fromArray([2018, 8]),
                     'month'
                 ),
             1
@@ -59,9 +59,9 @@ describe('DateTime #diff', function() {
 
     it('works with months', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 9])
+            DateTimeImmutable.fromArray([2018, 9])
                 .diff(
-                    DateTime.fromArray([2018, 6]),
+                    DateTimeImmutable.fromArray([2018, 6]),
                     'months'
                 ),
             3
@@ -70,9 +70,9 @@ describe('DateTime #diff', function() {
 
     it('works with months (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6])
+            DateTimeImmutable.fromArray([2018, 6])
                 .diff(
-                    DateTime.fromArray([2018, 9]),
+                    DateTimeImmutable.fromArray([2018, 9]),
                     'months'
                 ),
             -3
@@ -81,9 +81,9 @@ describe('DateTime #diff', function() {
 
     it('works with months and years', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 9])
+            DateTimeImmutable.fromArray([2018, 9])
                 .diff(
-                    DateTime.fromArray([2016, 6]),
+                    DateTimeImmutable.fromArray([2016, 6]),
                     'months'
                 ),
             27
@@ -92,9 +92,9 @@ describe('DateTime #diff', function() {
 
     it('works with day', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 23])
+            DateTimeImmutable.fromArray([2018, 6, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 22]),
+                    DateTimeImmutable.fromArray([2018, 6, 22]),
                     'day'
                 ),
             1
@@ -103,9 +103,9 @@ describe('DateTime #diff', function() {
 
     it('works with days', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 23])
+            DateTimeImmutable.fromArray([2018, 6, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15]),
                     'days'
                 ),
             8
@@ -114,9 +114,9 @@ describe('DateTime #diff', function() {
 
     it('works with days (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15])
+            DateTimeImmutable.fromArray([2018, 6, 15])
                 .diff(
-                    DateTime.fromArray([2018, 6, 23]),
+                    DateTimeImmutable.fromArray([2018, 6, 23]),
                     'days'
                 ),
             -8
@@ -125,9 +125,9 @@ describe('DateTime #diff', function() {
 
     it('works with days and months', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 8, 23])
+            DateTimeImmutable.fromArray([2018, 8, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15]),
                     'days'
                 ),
             69
@@ -136,9 +136,9 @@ describe('DateTime #diff', function() {
 
     it('works with hour', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 23])
+            DateTimeImmutable.fromArray([2018, 6, 15, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 22]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 22]),
                     'hour'
                 ),
             1
@@ -147,9 +147,9 @@ describe('DateTime #diff', function() {
 
     it('works with hours', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 23])
+            DateTimeImmutable.fromArray([2018, 6, 15, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12]),
                     'hours'
                 ),
             11
@@ -158,9 +158,9 @@ describe('DateTime #diff', function() {
 
     it('works with hours (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 23]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 23]),
                     'hours'
                 ),
             -11
@@ -169,9 +169,9 @@ describe('DateTime #diff', function() {
 
     it('works with hours and days', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 18, 23])
+            DateTimeImmutable.fromArray([2018, 6, 18, 23])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12]),
                     'hours'
                 ),
             83
@@ -180,9 +180,9 @@ describe('DateTime #diff', function() {
 
     it('works with minute', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 29]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 29]),
                     'minute'
                 ),
             1
@@ -191,9 +191,9 @@ describe('DateTime #diff', function() {
 
     it('works with minutes', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 15]),
                     'minutes'
                 ),
             15
@@ -202,9 +202,9 @@ describe('DateTime #diff', function() {
 
     it('works with minutes (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 15])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 15])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 30]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30]),
                     'minutes'
                 ),
             -15
@@ -213,9 +213,9 @@ describe('DateTime #diff', function() {
 
     it('works with minutes and hours', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 16, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 16, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 15]),
                     'minutes'
                 ),
             255
@@ -224,9 +224,9 @@ describe('DateTime #diff', function() {
 
     it('works with second', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 30, 29]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 29]),
                     'second'
                 ),
             1
@@ -235,9 +235,9 @@ describe('DateTime #diff', function() {
 
     it('works with seconds', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15]),
                     'seconds'
                 ),
             15
@@ -246,9 +246,9 @@ describe('DateTime #diff', function() {
 
     it('works with seconds (negative)', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 30, 15])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30]),
                     'seconds'
                 ),
             -15
@@ -257,9 +257,9 @@ describe('DateTime #diff', function() {
 
     it('works with seconds and minutes', function() {
         assert.strictEqual(
-            DateTime.fromArray([2018, 6, 15, 12, 50, 30])
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 50, 30])
                 .diff(
-                    DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15]),
                     'seconds'
                 ),
             1215

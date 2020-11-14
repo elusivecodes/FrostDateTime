@@ -249,12 +249,30 @@
             return this._formatters[locale];
         }
 
+        /**
+         * Load a (cached) Intl.RelativeTimeFormat for a locale.
+         * @param {string} [locale] The locale to load.
+         * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
+         */
+        static loadRelative(locale) {
+            if (!locale) {
+                locale = this.defaultLocale;
+            }
+
+            if (!(locale in this._relativeFormatters)) {
+                this._relativeFormatters[locale] = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
+            }
+
+            return this._relativeFormatters[locale];
+        }
+
     }
 
     DateFormatter.defaultLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     // Cached formatters
     DateFormatter._formatters = {};
+    DateFormatter._relativeFormatters = {};
 
     /**
      * DateFormatter Format Data
@@ -1035,247 +1053,6 @@
 
     });
 
-    class DateInterval {
-
-        constructor(options) {
-            this.y = 0;
-            this.m = 0;
-            this.d = 0;
-            this.h = 0;
-            this.i = 0;
-            this.s = 0;
-            this.f = 0;
-
-            this.days = null;
-            this.invert = false;
-        }
-
-        /**
-         * Format the current interval with a PHP DateInterval format string.
-         * @param {string} formatString The format string to use.
-         * @returns {string} The formatted date interval.
-         */
-        format(formatString) {
-            let escaped = false;
-            return [...formatString].reduce(
-                (acc, char) => {
-                    if (!escaped && char === '%') {
-                        escaped = true;
-                    } else if (!escaped || !this.constructor._formatData[char]) {
-                        acc += char;
-                    } else {
-                        acc += this.constructor._formatData[char](this);
-                        escaped = false;
-                    }
-                    return acc;
-                },
-                ''
-            );
-        }
-
-        toISOString() {
-            let output = 'P';
-
-            if (this.y) {
-                output += `Y${this.y}`;
-            }
-
-            if (this.m) {
-                output += `M${this.m}`;
-            }
-
-            if (this.d) {
-                output += `D${this.d}`;
-            }
-
-            if (this.h || this.i || this.s) {
-                output += 'T';
-            }
-
-            if (this.h) {
-                output += `H${this.h}`;
-            }
-
-            if (this.i) {
-                output += `M${this.i}`;
-            }
-
-            if (this.s) {
-                output += `S${this.i}`;
-            }
-
-            return output;
-        }
-
-        toString() {
-            return this.formatter.format(amount, unit);
-        }
-
-        static fromISOString(string, options) {
-            const isoMatch = string.match(this.constructor._isoRegExp);
-
-            if (!isoMatch) {
-                throw new Error('Invalid string supplied');
-            }
-
-            const interval = new this(options);
-
-            if (isoMatch[1]) {
-                interval.y += parseInt(isoMatch[1]);
-            }
-
-            if (isoMatch[2]) {
-                interval.m += parseInt(isoMatch[2]);
-            }
-
-            if (isoMatch[3]) {
-                interval.d += parseInt(isoMatch[3]);
-            }
-
-            if (isoMatch[4]) {
-                interval.d += parseInt(isoMatch[4]) * 7;
-            }
-
-            if (isoMatch[5]) {
-                interval.h += parseInt(isoMatch[5]);
-            }
-
-            if (isoMatch[6]) {
-                interval.i += parseInt(isoMatch[6]);
-            }
-
-            if (isoMatch[7]) {
-                interval.s += parseInt(isoMatch[7]);
-            }
-
-            return interval;
-        }
-
-        static fromUnit(amount, timeUnit, options) {
-            const interval = new this(options);
-
-            timeUnit = timeUnit.toLowerCase();
-
-            switch (timeUnit) {
-                case 'second':
-                case 'seconds':
-                    interval.s = amount;
-                    break;
-                case 'minute':
-                case 'minutes':
-                    interval.i = amount;
-                    break;
-                case 'hour':
-                case 'hours':
-                    interval.h = amount;
-                    break;
-                case 'day':
-                case 'days':
-                    interval.d = amount;
-                    break;
-                case 'week':
-                case 'weeks':
-                    interval.d = amount * 7;
-                    break;
-                case 'month':
-                case 'months':
-                    interval.m = amount;
-                    break;
-                case 'year':
-                case 'years':
-                    interval.y = amount;
-                    break;
-                default:
-                    throw new Error('Invalid time unit supplied');
-            }
-
-            return interval;
-        }
-
-    }
-
-    // ISO RegExp
-    DateInterval._isoRegExp = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:(\d+)W)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?|)$/;
-
-    /**
-     * DateInterval Format Data
-     */
-
-    DateInterval._formatData = {
-
-        /* YEAR */
-
-        Y: interval =>
-            interval.formatter.formatNumber(interval.y, 2),
-
-        y: interval =>
-            interval.formatter.formatNumber(interval.y),
-
-        /* MONTH */
-
-        M: interval =>
-            interval.formatter.formatNumber(interval.m, 2),
-
-        m: interval =>
-            interval.formatter.formatNumber(interval.m),
-
-        /* DAYS */
-
-        D: interval =>
-            interval.formatter.formatNumber(interval.d, 2),
-
-        d: interval =>
-            interval.formatter.formatNumber(interval.d),
-
-        a: interval =>
-            interval.formatter.formatNumber(interval.days),
-
-        /* HOURS */
-
-        H: interval =>
-            interval.formatter.formatNumber(interval.h, 2),
-
-        h: interval =>
-            interval.formatter.formatNumber(interval.h),
-
-        /* MINUTES */
-
-        I: interval =>
-            interval.formatter.formatNumber(interval.i, 2),
-
-        i: interval =>
-            interval.formatter.formatNumber(interval.i),
-
-        /* SECONDS */
-
-        S: interval =>
-            interval.formatter.formatNumber(interval.s, 2),
-
-        s: interval =>
-            interval.formatter.formatNumber(interval.s),
-
-        /* MICROSECONDS */
-
-        F: interval =>
-            interval.formatter.formatNumber(interval.f, 6),
-
-        f: interval =>
-            interval.formatter.formatNumber(interval.f),
-
-        /* SIGN */
-
-        R: interval =>
-            interval.invert ?
-                '-' :
-                '+',
-
-        r: interval =>
-            interval.invert ?
-                '-' :
-                ''
-
-    };
-
     /**
      * DateTime class
      * @class
@@ -1358,6 +1135,7 @@
             }
 
             this.formatter = DateFormatter.load(options.locale);
+            this.relativeFormatter = DateFormatter.loadRelative(options.locale);
         }
 
         /**
@@ -1404,10 +1182,18 @@
          * @returns {DateTimeImmutable} A new DateTimeImmutable object.
          */
         setTime(time) {
-            return this.constructor.fromTimestamp(time / 1000, {
+            const date = new this.constructor(null, {
                 locale: this.getLocale(),
                 timeZone: this.getTimeZone()
             });
+
+            date._utcDate.setTime(time);
+
+            if (date._dynamicTz) {
+                date._checkOffset();
+            }
+
+            return date;
         }
 
         /**
@@ -2070,6 +1856,23 @@
         },
 
         /**
+         * Get the biggest difference between this and another Date.
+         * @param {DateTime} [other] The date to compare to.
+         * @return {array} The biggest difference (amount and time unit).
+         */
+        _getBiggestDiff(other) {
+            for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
+                const amount = this.diff(other, timeUnit);
+
+                if (amount) {
+                    return [amount, timeUnit];
+                }
+            }
+
+            return [0, 'second'];
+        },
+
+        /**
          * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
          * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
          */
@@ -2405,179 +2208,55 @@
         },
 
         /**
-         * Get the difference between two Dates.
+         * Get the difference between this and another Date.
          * @param {DateTime} [other] The date to compare to.
-         * @param {Boolean} [absolute=false] Whether the interval will be forced to be positive.
-         * @returns {object} A new object.
+         * @param {string} [timeUnit] The unit of time.
+         * @returns {number} The difference.
          */
-        diff(other = null, absolute = false) {
-            const interval = {};
-
-            const lessThan = this < other,
-                thisMonth = this.getMonth(),
-                thisDate = this.getDate(),
-                thisHour = this.getHours(),
-                thisMinute = this.getMinutes(),
-                thisSecond = this.getSeconds(),
-                thisMillisecond = this.getMilliseconds()
-                    * 1000,
-                otherMonth = other.getMonth(),
-                otherDate = other.getDate(),
-                otherHour = other.getHours(),
-                otherMinute = other.getMinutes(),
-                otherSecond = other.getSeconds(),
-                otherMillisecond = other.getMilliseconds()
-                    * 1000;
-
-            interval.y = Math.abs(
-                this.getYear()
-                - other.getYear()
-            );
-            interval.m = Math.abs(
-                thisMonth
-                - otherMonth
-            );
-            interval.d = Math.abs(
-                thisDate
-                - otherDate
-            );
-            interval.h = Math.abs(
-                thisHour
-                - otherHour
-            );
-            interval.i = Math.abs(
-                thisMinute
-                - otherMinute
-            );
-            interval.s = Math.abs(
-                thisSecond
-                - otherSecond
-            );
-            interval.f = Math.abs(
-                thisMillisecond
-                - otherMillisecond
-            );
-            interval.days = (
-                Math.abs(
-                    (this - other)
-                    / 86400000
-                )
-            ) | 0;
-            interval.invert = !absolute && lessThan;
-
-            if (
-                interval.y &&
-                interval.m &&
-                (
-                    (
-                        !lessThan &&
-                        thisMonth < otherMonth
-                    ) ||
-                    (
-                        lessThan &&
-                        thisMonth > otherMonth
-                    )
-                )
-            ) {
-                interval.y--;
-                interval.m = 12 - interval.m;
+        diff(other, timeUnit) {
+            if (!other) {
+                other = new this.constructor;
             }
 
-            if (
-                interval.m &&
-                interval.d &&
-                (
-                    (!
-                        lessThan &&
-                        thisDate < otherDate
-                    ) ||
-                    (
-                        lessThan &&
-                        thisDate > otherDate
-                    )
-                )
-            ) {
-                interval.m--;
-                interval.d = (
-                    lessThan ?
-                        this.daysInMonth() :
-                        other.daysInMonth()
-                ) - interval.d;
+            if (timeUnit) {
+                timeUnit = timeUnit.toLowerCase();
             }
 
-            if (
-                interval.d &&
-                interval.h &&
-                (
-                    (
-                        !lessThan &&
-                        thisHour < otherHour
-                    ) ||
-                    (
-                        lessThan &&
-                        thisHour > otherHour
-                    )
-                )
-            ) {
-                interval.d--;
-                interval.h = 24 - interval.h;
+            let divisor;
+            switch (timeUnit) {
+                case 'year':
+                case 'years':
+                    return this.getYear() - other.getYear();
+                case 'month':
+                case 'months':
+                    return this.diff(other, 'year') * 12
+                        + this.getMonth()
+                        - other.getMonth();
+                case 'day':
+                case 'days':
+                    divisor = 86400000;
+                    break;
+                case 'hour':
+                case 'hours':
+                    divisor = 3600000;
+                    break;
+                case 'minute':
+                case 'minutes':
+                    divisor = 60000;
+                    break;
+                case 'second':
+                case 'seconds':
+                    divisor = 1000;
+                    break;
+                default:
+                    divisor = 1;
             }
 
-            if (
-                interval.h &&
-                interval.i &&
-                (
-                    (
-                        !lessThan &&
-                        thisMinute < otherMinute
-                    ) ||
-                    (
-                        lessThan &&
-                        thisMinute > otherMinute
-                    )
-                )
-            ) {
-                interval.h--;
-                interval.i = 60 - interval.i;
-            }
+            const diff = (this - other) / divisor;
 
-            if (
-                interval.i &&
-                interval.s &&
-                (
-                    (
-                        !lessThan &&
-                        thisSecond < otherSecond
-                    ) ||
-                    (
-                        lessThan &&
-                        thisSecond > otherSecond
-                    )
-                )
-            ) {
-                interval.i--;
-                interval.s = 60 - interval.s;
-            }
-
-            if (
-                interval.s &&
-                interval.f &&
-                (
-                    (
-                        !lessThan &&
-                        thisMillisecond < otherMillisecond
-                    ) ||
-                    (
-                        lessThan &&
-                        thisMillisecond > otherMillisecond
-                    )
-                )
-            ) {
-                interval.s--;
-                interval.f = 1000000 - interval.f;
-            }
-
-            return interval;
+            return diff > 0 ?
+                Math.floor(diff) :
+                Math.ceil(diff);
         },
 
         /**
@@ -2592,6 +2271,27 @@
                     1,
                 type
             );
+        },
+
+        /**
+         * Get the difference between this and another Date in human readable form.
+         * @param {DateTime} [other] The date to compare to.
+         * @param {string} [timeUnit] The unit of time.
+         * @returns {string} The difference in human readable form.
+         */
+        humanDiff(other, timeUnit) {
+            if (!other) {
+                other = new this.constructor;
+            }
+
+            let amount;
+            if (timeUnit) {
+                amount = this.diff(other, timeUnit);
+            } else {
+                [amount, timeUnit] = this._getBiggestDiff(other);
+            }
+
+            return this.relativeFormatter.format(amount, timeUnit);
         },
 
         /**
