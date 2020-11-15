@@ -45,7 +45,10 @@ DateFormatter._formatDate = {
             if (length === 2) {
                 year = `${year}`.slice(-2);
             }
-            return datetime.formatter.formatNumber(year, length);
+            return datetime.formatter.formatNumber(
+                Math.abs(year),
+                length
+            );
         }
     },
 
@@ -69,7 +72,10 @@ DateFormatter._formatDate = {
             if (length === 2) {
                 year = `${year}`.slice(-2);
             }
-            return datetime.formatter.formatNumber(year, length);
+            return datetime.formatter.formatNumber(
+                Math.abs(year),
+                length
+            );
         }
     },
 

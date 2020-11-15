@@ -321,7 +321,10 @@
                 if (length === 2) {
                     year = `${year}`.slice(-2);
                 }
-                return datetime.formatter.formatNumber(year, length);
+                return datetime.formatter.formatNumber(
+                    Math.abs(year),
+                    length
+                );
             }
         },
 
@@ -345,7 +348,10 @@
                 if (length === 2) {
                     year = `${year}`.slice(-2);
                 }
-                return datetime.formatter.formatNumber(year, length);
+                return datetime.formatter.formatNumber(
+                    Math.abs(year),
+                    length
+                );
             }
         },
 
@@ -2570,12 +2576,13 @@
                     throw new Error(`Unmatched token in DateTime string: ${token}`);
                 }
 
-                const key = DateFormatter._formatDate[token].key,
-                    value = DateFormatter._formatDate[token].input(formatter, matchedValue[0], length);
+                const literal = matchedValue[0],
+                    key = DateFormatter._formatDate[token].key,
+                    value = DateFormatter._formatDate[token].input(formatter, literal, length);
 
-                values.push({ key, value });
+                values.push({ key, value, literal, token, length });
 
-                dateString = dateString.substring(matchedValue[0].length);
+                dateString = dateString.substring(literal.length);
             }
 
             if (formatString) {
@@ -2602,15 +2609,36 @@
 
             const methods = this._parseFactory();
 
+            const testValues = [];
+
             for (const subKeys of this._parseOrderKeys) {
                 for (const subKey of subKeys) {
-                    for (const { key, value } of values) {
+                    for (const data of values) {
+                        const { key, value, literal, token, length } = data;
+
                         if (key !== subKey) {
                             continue;
                         }
 
-                        datetime = methods[key](datetime, value);
+                        // skip narrow month and day names if output already matches
+                        if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
+                            const fullToken = token.repeat(length);
+                            if (datetime.format(fullToken) === literal) {
+                                continue;
+                            }
+                        }
+
+                        datetime = methods[key].set(datetime, value);
+                        testValues.push(data);
                     }
+                }
+            }
+
+            let isValid = true;
+            for (const { key, value } of testValues) {
+                if (key in methods && methods[key].get(datetime) !== value) {
+                    isValid = false;
+                    break;
                 }
             }
 
@@ -2618,7 +2646,7 @@
                 datetime = datetime.setTimeZone(options.timeZone);
             }
 
-            datetime.isValid = datetime.format(originalFormat) === originalString;
+            datetime.isValid = isValid;
 
             return datetime;
         },
@@ -2694,44 +2722,95 @@
             let isPM = false,
                 lastAM = true;
             return {
-                date: (datetime, value) => datetime.setDate(value),
-                dayPeriod: (datetime, value) => {
-                    isPM = value;
-                    let hours = value ? 12 : 0;
-                    if (lastAM) {
-                        hours += datetime.getHours();
+                date: {
+                    get: datetime => datetime.getDate(),
+                    set: (datetime, value) => datetime.setDate(value)
+                },
+                dayPeriod: {
+                    get: datetime => datetime.getHours() < 12 ? 0 : 1,
+                    set: (datetime, value) => {
+                        isPM = value;
+                        let hours = value ? 12 : 0;
+                        if (lastAM) {
+                            hours += datetime.getHours();
+                        }
+                        return datetime.setHours(hours);
                     }
-                    return datetime.setHours(hours);
                 },
-                dayOfYear: (datetime, value) => datetime.setDayOfYear(value),
-                era: (datetime, value) => {
-                    const offset = value ? 1 : -1;
-                    return datetime.setYear(
-                        datetime.getYear() * offset
-                    );
+                dayOfYear: {
+                    get: datetime => datetime.getDayOfYear(),
+                    set: (datetime, value) => datetime.setDayOfYear(value)
                 },
-                hours12: (datetime, value) => {
-                    if (isPM) {
-                        value += 12;
+                era: {
+                    get: datetime => datetime.getYear() < 1 ? 0 : 1,
+                    set: (datetime, value) => {
+                        const offset = value ? 1 : -1;
+                        return datetime.setYear(
+                            datetime.getYear() * offset
+                        );
                     }
-                    lastAM = true;
-                    return datetime.setHours(value);
                 },
-                hours24: (datetime, value) => {
-                    lastAM = false;
-                    return datetime.setHours(value);
+                hours12: {
+                    get: datetime => datetime.getHours() % 12,
+                    set: (datetime, value) => {
+                        if (isPM) {
+                            value += 12;
+                        }
+                        lastAM = true;
+                        return datetime.setHours(value);
+                    }
                 },
-                milliseconds: (datetime, value) => datetime.setMilliseconds(value),
-                minutes: (datetime, value) => datetime.setMinutes(value),
-                month: (datetime, value) => datetime.setMonth(value),
-                quarter: (datetime, value) => datetime.setQuarter(value),
-                seconds: (datetime, value) => datetime.setSeconds(value),
-                week: (datetime, value) => datetime.setWeek(value),
-                weekDay: (datetime, value) => datetime.setWeekDay(value),
-                weekDayInMonth: (datetime, value) => datetime.setWeekDayInMonth(value),
-                weekOfMonth: (datetime, value) => datetime.setWeekOfMonth(value),
-                weekYear: (datetime, value) => datetime.setWeekYear(value),
-                year: (datetime, value) => datetime.setYear(value)
+                hours24: {
+                    get: datetime => datetime.getHours(),
+                    set: (datetime, value) => {
+                        lastAM = false;
+                        return datetime.setHours(value);
+                    }
+                },
+                milliseconds: {
+                    get: datetime => datetime.getMilliseconds(),
+                    set: (datetime, value) => datetime.setMilliseconds(value)
+                },
+                minutes: {
+                    get: datetime => datetime.getMinutes(),
+                    set: (datetime, value) => datetime.setMinutes(value)
+                },
+                month: {
+                    get: datetime => datetime.getMonth(),
+                    set: (datetime, value) => datetime.setMonth(value)
+                },
+                quarter: {
+                    get: datetime => datetime.getQuarter(),
+                    set: (datetime, value) => datetime.setQuarter(value)
+                },
+                seconds: {
+                    get: datetime => datetime.getSeconds(),
+                    set: (datetime, value) => datetime.setSeconds(value)
+                },
+                week: {
+                    get: datetime => datetime.getWeek(),
+                    set: (datetime, value) => datetime.setWeek(value)
+                },
+                weekDay: {
+                    get: datetime => datetime.getWeekDay(),
+                    set: (datetime, value) => datetime.setWeekDay(value)
+                },
+                weekDayInMonth: {
+                    get: datetime => datetime.getWeekDayInMonth(),
+                    set: (datetime, value) => datetime.setWeekDayInMonth(value)
+                },
+                weekOfMonth: {
+                    get: datetime => datetime.getWeekOfMonth(),
+                    set: (datetime, value) => datetime.setWeekOfMonth(value)
+                },
+                weekYear: {
+                    get: datetime => datetime.getWeekYear(),
+                    set: (datetime, value) => datetime.setWeekYear(value)
+                },
+                year: {
+                    get: datetime => datetime.getYear(),
+                    set: (datetime, value) => datetime.setYear(value)
+                }
             };
         }
 

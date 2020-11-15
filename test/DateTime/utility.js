@@ -30,6 +30,12 @@ describe('DateTime Utility', function() {
                 '2018-01-01T00:00:00.000+00:00'
             );
         });
+
+        it('returns a new DateTime', function() {
+            assert.ok(
+                DateTime.fromArray([2019]).clone().constructor === DateTime
+            );
+        });
     });
 
     describe('#dayName', function() {

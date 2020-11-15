@@ -1,19 +1,19 @@
 const assert = require('assert');
-const { DateTime } = require('../../dist/frost-datetime.min');
+const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
-describe('DateTime Creation', function() {
+describe('DateTimeImmutable Creation', function() {
 
     describe('#constructor', function() {
         it('works with no argument', function() {
             const start = Date.now();
-            const now = new DateTime().getTime();
+            const now = new DateTimeImmutable().getTime();
             const end = Date.now();
             assert.ok(start <= now && end >= now);
         });
 
         it('works with date string', function() {
             assert.strictEqual(
-                new DateTime('January 1, 2019 00:00:00')
+                new DateTimeImmutable('January 1, 2019 00:00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -21,7 +21,7 @@ describe('DateTime Creation', function() {
 
         it('works with ISO string', function() {
             assert.strictEqual(
-                new DateTime('2019-01-01T00:00:00')
+                new DateTimeImmutable('2019-01-01T00:00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -29,7 +29,7 @@ describe('DateTime Creation', function() {
 
         it('works with partial string', function() {
             assert.strictEqual(
-                new DateTime('January 1, 2019')
+                new DateTimeImmutable('January 1, 2019')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -37,7 +37,7 @@ describe('DateTime Creation', function() {
 
         it('uses the provided time zone', function() {
             assert.strictEqual(
-                new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
+                new DateTimeImmutable('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00'
             );
@@ -45,7 +45,7 @@ describe('DateTime Creation', function() {
 
         it('works with offsets with colon', function() {
             assert.strictEqual(
-                new DateTime('January 1, 2019 00:00:00', { timeZone: '+10:00' })
+                new DateTimeImmutable('January 1, 2019 00:00:00', { timeZone: '+10:00' })
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00'
             );
@@ -53,7 +53,7 @@ describe('DateTime Creation', function() {
 
         it('works with offsets without colon', function() {
             assert.strictEqual(
-                new DateTime('January 1, 2019 00:00:00', { timeZone: '+1000' })
+                new DateTimeImmutable('January 1, 2019 00:00:00', { timeZone: '+1000' })
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00'
             );
@@ -61,19 +61,19 @@ describe('DateTime Creation', function() {
 
         it('throws error with invalid date string', function() {
             assert.throws(_ => {
-                new DateTime('INVALID');
+                new DateTimeImmutable('INVALID');
             });
         });
 
         it('throws error with invalid date', function() {
             assert.throws(_ => {
-                new DateTime({ a: 1 });
+                new DateTimeImmutable({ a: 1 });
             });
         });
 
         it('throws error with invalid timezone', function() {
             assert.throws(_ => {
-                new DateTime(Date.now(), { timeZone: 'INVALID' });
+                new DateTimeImmutable(Date.now(), { timeZone: 'INVALID' });
             });
         });
     });
@@ -81,7 +81,7 @@ describe('DateTime Creation', function() {
     describe('#fromArray', function() {
         it('works with year', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019])
+                DateTimeImmutable.fromArray([2019])
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
@@ -89,7 +89,7 @@ describe('DateTime Creation', function() {
 
         it('works with month', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 2])
+                DateTimeImmutable.fromArray([2019, 2])
                     .toISOString(),
                 '2019-02-01T00:00:00.000+00:00'
             );
@@ -97,7 +97,7 @@ describe('DateTime Creation', function() {
 
         it('works with date', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 2])
+                DateTimeImmutable.fromArray([2019, 1, 2])
                     .toISOString(),
                 '2019-01-02T00:00:00.000+00:00'
             );
@@ -105,7 +105,7 @@ describe('DateTime Creation', function() {
 
         it('works with hour', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1, 1])
+                DateTimeImmutable.fromArray([2019, 1, 1, 1])
                     .toISOString(),
                 '2019-01-01T01:00:00.000+00:00'
             );
@@ -113,7 +113,7 @@ describe('DateTime Creation', function() {
 
         it('works with minute', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1, 0, 1])
+                DateTimeImmutable.fromArray([2019, 1, 1, 0, 1])
                     .toISOString(),
                 '2019-01-01T00:01:00.000+00:00'
             );
@@ -121,7 +121,7 @@ describe('DateTime Creation', function() {
 
         it('works with second', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1, 0, 0, 1])
+                DateTimeImmutable.fromArray([2019, 1, 1, 0, 0, 1])
                     .toISOString(),
                 '2019-01-01T00:00:01.000+00:00'
             );
@@ -129,15 +129,15 @@ describe('DateTime Creation', function() {
 
         it('works with millisecond', function() {
             assert.strictEqual(
-                DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1])
+                DateTimeImmutable.fromArray([2019, 1, 1, 0, 0, 0, 1])
                     .toISOString(),
                 '2019-01-01T00:00:00.100+00:00'
             );
         });
 
-        it('returns a new DateTime', function() {
+        it('returns a new DateTimeImmutable', function() {
             assert.ok(
-                DateTime.fromArray([2018]).constructor === DateTime
+                DateTimeImmutable.fromArray([2018]).constructor === DateTimeImmutable
             );
         });
     });
@@ -146,16 +146,16 @@ describe('DateTime Creation', function() {
         it('works with date', function() {
             const date = new Date(1546300800000);
             assert.strictEqual(
-                DateTime.fromDate(date)
+                DateTimeImmutable.fromDate(date)
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
         });
 
-        it('returns a new DateTime', function() {
+        it('returns a new DateTimeImmutable', function() {
             const date = new Date();
             assert.ok(
-                DateTime.fromDate(date).constructor === DateTime
+                DateTimeImmutable.fromDate(date).constructor === DateTimeImmutable
             );
         });
     });
@@ -163,38 +163,38 @@ describe('DateTime Creation', function() {
     describe('#fromTimestamp', function() {
         it('works with timestamp', function() {
             assert.strictEqual(
-                DateTime.fromTimestamp(1546300800)
+                DateTimeImmutable.fromTimestamp(1546300800)
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
             );
         });
 
-        it('returns a new DateTime', function() {
+        it('returns a new DateTimeImmutable', function() {
             assert.ok(
-                DateTime.fromTimestamp(1546300800).constructor === DateTime
+                DateTimeImmutable.fromTimestamp(1546300800).constructor === DateTimeImmutable
             );
         });
     });
 
     describe('#now', function() {
-        it('creates a DateTime with the current timestamp', function() {
+        it('creates a DateTimeImmutable with the current timestamp', function() {
             const start = Date.now();
-            const now = DateTime.now();
+            const now = DateTimeImmutable.now();
             const end = Date.now();
             assert.ok(start <= now && end >= now);
         });
 
         it('uses the provided time zone', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'Australia/Brisbane' })
+                DateTimeImmutable.now({ timeZone: 'Australia/Brisbane' })
                     .getTimeZone(),
                 'Australia/Brisbane'
             );
         });
 
-        it('returns a new DateTime', function() {
+        it('returns a new DateTimeImmutable', function() {
             assert.ok(
-                DateTime.now().constructor === DateTime
+                DateTimeImmutable.now().constructor === DateTimeImmutable
             );
         });
     });

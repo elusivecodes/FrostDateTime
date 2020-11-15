@@ -1179,4 +1179,24 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
+    it('works with narrow month names when month is specified prior', function() {
+        assert.strictEqual(
+            DateTime.fromFormat('yyyy-MM MMMMM', '2019-06 J').isValid,
+            true
+        );
+    });
+
+    it('works with narrow day names when date is specified prior', function() {
+        assert.strictEqual(
+            DateTime.fromFormat('yyyy-MM-dd EEEEE', '2019-01-03 T').isValid,
+            true
+        );
+    });
+
+    it('returns a new DateTime', function() {
+        assert.ok(
+            DateTime.fromFormat('yyyy', '2018').constructor === DateTime
+        );
+    });
+
 });

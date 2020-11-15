@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
 
-It is a lightweight (~10kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
+It is a lightweight (~9kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
 
 
 ## Table Of Contents
@@ -676,7 +676,7 @@ const dayName = date.dayName(type);
 
 Get the day period in current time zone and locale.
 
-- `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
+- `type` can be either "*long*" or "*short*", and will default to "*long*" if it is not set.
 
 ```javascript
 const dayPeriod = date.dayPeriod(type);
@@ -745,7 +745,7 @@ Return *true* if the *DateTime* is after another date.
 const isAfter = date.isAfter(other, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is Before?**
 
@@ -758,7 +758,7 @@ Return *true* if the *DateTime* is before another date.
 const isBefore = date.isBefore(other, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is Between?**
 
@@ -772,7 +772,7 @@ Return *true* if the *DateTime* is between two other dates.
 const isBetween = date.isBetween(start, end, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is DST?**
 
@@ -801,7 +801,7 @@ Return *true* if the *DateTime* is the same as another date.
 const isSame = date.isSame(other, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is Same Or After?**
 
@@ -814,7 +814,7 @@ Return *true* if the *DateTime* is the same or after another date.
 const isSameOrAfter = date.isSameOrAfter(other, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is Same Or Before?**
 
@@ -827,7 +827,7 @@ Return *true* if the *DateTime* is the same or before another date.
 const isSameOrBefore = date.isSameOrBefore(other, granularity);
 ```
 
-If a `granularity` is not specified, a direct comparison of the timestamps will be performed instead.
+If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Month Name**
 

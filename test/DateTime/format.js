@@ -81,6 +81,14 @@ describe('DateTime #format', function() {
                 '5'
             );
         });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000])
+                    .format('y'),
+                '2000'
+            );
+        });
     });
 
     describe('yy - Year (2-digits)', function() {
@@ -97,6 +105,14 @@ describe('DateTime #format', function() {
                 DateTime.fromArray([5])
                     .format('yy'),
                 '05'
+            );
+        });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000])
+                    .format('yy'),
+                '00'
             );
         });
     });
@@ -117,6 +133,14 @@ describe('DateTime #format', function() {
                 '005'
             );
         });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000])
+                    .format('yyy'),
+                '2000'
+            );
+        });
     });
 
     describe('yyyy - Year (4-digits)', function() {
@@ -133,6 +157,14 @@ describe('DateTime #format', function() {
                 DateTime.fromArray([5])
                     .format('yyyy'),
                 '0005'
+            );
+        });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000])
+                    .format('yyyy'),
+                '2000'
             );
         });
     });
@@ -165,6 +197,14 @@ describe('DateTime #format', function() {
                 '4'
             );
         });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000, 1, 4])
+                    .format('Y'),
+                '2000'
+            );
+        });
     });
 
     describe('YY - Week Year (2-digits)', function() {
@@ -189,6 +229,14 @@ describe('DateTime #format', function() {
                 DateTime.fromArray([5])
                     .format('YY'),
                 '04'
+            );
+        });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000, 1, 4])
+                    .format('YY'),
+                '00'
             );
         });
     });
@@ -217,6 +265,14 @@ describe('DateTime #format', function() {
                 '004'
             );
         });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000, 1, 4])
+                    .format('YYY'),
+                '2000'
+            );
+        });
     });
 
     describe('YYYY - Week Year (4-digits)', function() {
@@ -241,6 +297,14 @@ describe('DateTime #format', function() {
                 DateTime.fromArray([5])
                     .format('YYYY'),
                 '0004'
+            );
+        });
+
+        it('outputs absolute year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-2000, 1, 4])
+                    .format('YYYY'),
+                '2000'
             );
         });
     });

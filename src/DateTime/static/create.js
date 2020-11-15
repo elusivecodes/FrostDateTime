@@ -90,12 +90,13 @@ Object.assign(DateTime, {
                 throw new Error(`Unmatched token in DateTime string: ${token}`);
             }
 
-            const key = DateFormatter._formatDate[token].key,
-                value = DateFormatter._formatDate[token].input(formatter, matchedValue[0], length);
+            const literal = matchedValue[0],
+                key = DateFormatter._formatDate[token].key,
+                value = DateFormatter._formatDate[token].input(formatter, literal, length);
 
-            values.push({ key, value });
+            values.push({ key, value, literal, token, length });
 
-            dateString = dateString.substring(matchedValue[0].length);
+            dateString = dateString.substring(literal.length);
         }
 
         if (formatString) {
@@ -122,15 +123,36 @@ Object.assign(DateTime, {
 
         const methods = this._parseFactory();
 
+        const testValues = [];
+
         for (const subKeys of this._parseOrderKeys) {
             for (const subKey of subKeys) {
-                for (const { key, value } of values) {
+                for (const data of values) {
+                    const { key, value, literal, token, length } = data;
+
                     if (key !== subKey) {
                         continue;
                     }
 
-                    datetime = methods[key](datetime, value);
+                    // skip narrow month and day names if output already matches
+                    if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
+                        const fullToken = token.repeat(length);
+                        if (datetime.format(fullToken) === literal) {
+                            continue;
+                        }
+                    }
+
+                    datetime = methods[key].set(datetime, value);
+                    testValues.push(data);
                 }
+            }
+        }
+
+        let isValid = true;
+        for (const { key, value } of testValues) {
+            if (key in methods && methods[key].get(datetime) !== value) {
+                isValid = false;
+                break;
             }
         }
 
@@ -138,7 +160,7 @@ Object.assign(DateTime, {
             datetime = datetime.setTimeZone(options.timeZone);
         }
 
-        datetime.isValid = datetime.format(originalFormat) === originalString;
+        datetime.isValid = isValid;
 
         return datetime;
     },
