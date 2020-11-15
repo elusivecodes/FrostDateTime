@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v3.0.0
+ * FrostDateTime v3.0.1
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -1493,6 +1493,7 @@
          */
         setLocale(locale) {
             this.formatter = DateFormatter.load(locale);
+            this.relativeFormatter = DateFormatter.loadRelative(locale);
         },
 
         /**
