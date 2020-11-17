@@ -708,11 +708,11 @@ Get the difference between two Dates.
 
 If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
-If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
-
 ```javascript
 const diff = date.diff(other, timeUnit);
 ```
+
+If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
 
 ```javascript
 DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), 'years', true); // 1
