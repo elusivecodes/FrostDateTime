@@ -46,6 +46,29 @@ describe('DateTime #diff', function() {
         )
     });
 
+    it('works with years (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1])
+                .diff(
+                    DateTime.fromArray([2017, 2]),
+                    'years'
+                ),
+            1
+        )
+    });
+
+    it('works with years (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1])
+                .diff(
+                    DateTime.fromArray([2017, 2]),
+                    'years',
+                    false
+                ),
+            0
+        )
+    });
+
     it('works with month', function() {
         assert.strictEqual(
             DateTime.fromArray([2018, 9])
@@ -76,6 +99,29 @@ describe('DateTime #diff', function() {
                     'months'
                 ),
             -3
+        )
+    });
+
+    it('works with months (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 2, 1])
+                .diff(
+                    DateTime.fromArray([2018, 1, 2]),
+                    'months'
+                ),
+            1
+        )
+    });
+
+    it('works with months (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 2, 1])
+                .diff(
+                    DateTime.fromArray([2018, 1, 2]),
+                    'months',
+                    false
+                ),
+            0
         )
     });
 
@@ -123,6 +169,29 @@ describe('DateTime #diff', function() {
         )
     });
 
+    it('works with days (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 2, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 1]),
+                    'days'
+                ),
+            1
+        )
+    });
+
+    it('works with days (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 2, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 1]),
+                    'days',
+                    false
+                ),
+            0
+        )
+    });
+
     it('works with days and months', function() {
         assert.strictEqual(
             DateTime.fromArray([2018, 8, 23])
@@ -164,6 +233,29 @@ describe('DateTime #diff', function() {
                     'hours'
                 ),
             -11
+        )
+    });
+
+    it('works with hours (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 1]),
+                    'hours'
+                ),
+            1
+        )
+    });
+
+    it('works with hours (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 1]),
+                    'hours',
+                    false
+                ),
+            0
         )
     });
 
@@ -211,6 +303,29 @@ describe('DateTime #diff', function() {
         )
     });
 
+    it('works with minutes (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 0, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 0, 1]),
+                    'minutes'
+                ),
+            1
+        )
+    });
+
+    it('works with minutes (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 0, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 0, 1]),
+                    'minutes',
+                    false
+                ),
+            0
+        )
+    });
+
     it('works with minutes and hours', function() {
         assert.strictEqual(
             DateTime.fromArray([2018, 6, 15, 16, 30])
@@ -252,6 +367,29 @@ describe('DateTime #diff', function() {
                     'seconds'
                 ),
             -15
+        )
+    });
+
+    it('works with seconds (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 0, 0, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 0, 0, 1]),
+                    'seconds'
+                ),
+            1
+        )
+    });
+
+    it('works with seconds (exact)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1, 0, 0, 1, 0])
+                .diff(
+                    DateTime.fromArray([2018, 1, 1, 0, 0, 0, 1]),
+                    'seconds',
+                    false
+                ),
+            0
         )
     });
 

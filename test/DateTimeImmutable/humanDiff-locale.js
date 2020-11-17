@@ -5,9 +5,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (years)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2016, 9, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2016])
                 ),
             'через 2 года'
         )
@@ -15,9 +15,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (months)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 9, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 4])
                 ),
             '3 месяца назад'
         )
@@ -25,9 +25,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (days)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1, 1], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 9])
                 ),
             '8 дней назад'
         )
@@ -35,9 +35,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (hours)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1, 1, 0], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 11])
                 ),
             '11 часов назад'
         )
@@ -45,9 +45,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (minutes)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 9])
                 ),
             '9 минут назад'
         )
@@ -55,9 +55,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (seconds)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 15], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0])
                 ),
             'через 15 секунд'
         )
@@ -65,9 +65,9 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
 
     it('returns the difference in human readable form (now)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0], { locale: 'ru' })
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0])
                 ),
             'сейчас'
         )
@@ -117,6 +117,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
         )
     });
 
+    it('works with years (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2016, 2]),
+                    'years'
+                ),
+            'через 2 года'
+        )
+    });
+
     it('works with month', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 7], { locale: 'ru' })
@@ -158,6 +169,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
                     'months'
                 ),
             '3 месяца назад'
+        )
+    });
+
+    it('works with months (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 9, 1], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 2]),
+                    'months'
+                ),
+            'через 3 месяца'
         )
     });
 
@@ -216,6 +238,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
         )
     });
 
+    it('works with days (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23, 0], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 1]),
+                    'days'
+                ),
+            'через 8 дней'
+        )
+    });
+
     it('works with days and months', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 8, 23], { locale: 'ru' })
@@ -268,6 +301,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
                     'hours'
                 ),
             '11 часов назад'
+        )
+    });
+
+    it('works with hours (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 23, 0], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 1]),
+                    'hours'
+                ),
+            'через 11 часов'
         )
     });
 
@@ -326,6 +370,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
         )
     });
 
+    it('works with minutes (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 0], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 15, 1]),
+                    'minutes'
+                ),
+            'через 15 минут'
+        )
+    });
+
     it('works with minutes and hours', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 6, 15, 16, 30], { locale: 'ru' })
@@ -378,6 +433,17 @@ describe('DateTimeImmutable #humanDiff (Locale)', function() {
                     'seconds'
                 ),
             '15 секунд назад'
+        )
+    });
+
+    it('works with seconds (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30, 0], { locale: 'ru' })
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15, 1]),
+                    'seconds'
+                ),
+            'через 15 секунд'
         )
     });
 

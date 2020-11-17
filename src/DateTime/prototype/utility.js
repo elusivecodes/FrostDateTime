@@ -63,52 +63,105 @@ Object.assign(DateTime.prototype, {
      * Get the difference between this and another Date.
      * @param {DateTime} [other] The date to compare to.
      * @param {string} [timeUnit] The unit of time.
+     * @param {Boolean} [relative=true] Whether to use the relative difference.
      * @returns {number} The difference.
      */
-    diff(other, timeUnit) {
+    diff(other, timeUnit, relative = true) {
         if (!other) {
             other = new this.constructor;
+        }
+
+        if (!timeUnit) {
+            return this - other;
         }
 
         if (timeUnit) {
             timeUnit = timeUnit.toLowerCase();
         }
 
-        let divisor;
+        other = other.clone().setTimeZone(this.getTimeZone());
+
         switch (timeUnit) {
             case 'year':
             case 'years':
-                return this.getYear() - other.getYear();
+                return this._compensateDiff(
+                    this.getYear() - other.getYear(),
+                    other.setYear(
+                        this.getYear()
+                    ),
+                    !relative,
+                    -1
+                );
             case 'month':
             case 'months':
-                return this.diff(other, 'year') * 12
+                return this._compensateDiff(
+                    (this.getYear() - other.getYear())
+                    * 12
                     + this.getMonth()
-                    - other.getMonth();
+                    - other.getMonth(),
+                    other.setYear(
+                        this.getYear(),
+                        this.getMonth()
+                    ),
+                    !relative,
+                    -1
+                );
             case 'day':
             case 'days':
-                divisor = 86400000;
-                break;
+                return this._compensateDiff(
+                    (this - other) / 86400000,
+                    other.setYear(
+                        this.getYear(),
+                        this.getMonth(),
+                        this.getDate()
+                    ),
+                    relative
+                );
             case 'hour':
             case 'hours':
-                divisor = 3600000;
-                break;
+                return this._compensateDiff(
+                    (this - other) / 3600000,
+                    other.setYear(
+                        this.getYear(),
+                        this.getMonth(),
+                        this.getDate()
+                    ).setHours(
+                        this.getHours()
+                    ),
+                    relative
+                );
             case 'minute':
             case 'minutes':
-                divisor = 60000;
-                break;
+                return this._compensateDiff(
+                    (this - other) / 60000,
+                    other.setYear(
+                        this.getYear(),
+                        this.getMonth(),
+                        this.getDate()
+                    ).setHours(
+                        this.getHours(),
+                        this.getMinutes()
+                    ),
+                    relative
+                );
             case 'second':
             case 'seconds':
-                divisor = 1000;
-                break;
+                return this._compensateDiff(
+                    (this - other) / 1000,
+                    other.setYear(
+                        this.getYear(),
+                        this.getMonth(),
+                        this.getDate()
+                    ).setHours(
+                        this.getHours(),
+                        this.getMinutes(),
+                        this.getSeconds()
+                    ),
+                    relative
+                );
             default:
-                divisor = 1;
+                throw new Error('Invalid time unit supplied');
         }
-
-        const diff = (this - other) / divisor;
-
-        return diff > 0 ?
-            Math.floor(diff) :
-            Math.ceil(diff);
     },
 
     /**

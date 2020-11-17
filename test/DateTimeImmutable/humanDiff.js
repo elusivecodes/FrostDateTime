@@ -5,9 +5,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (years)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2016, 9, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2016])
                 ),
             'in 2 years'
         )
@@ -15,9 +15,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (months)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 9, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 4])
                 ),
             '3 months ago'
         )
@@ -25,9 +25,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (days)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1, 1])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 23, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 9])
                 ),
             '8 days ago'
         )
@@ -35,9 +35,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (hours)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1, 1, 0])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 23, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 11])
                 ),
             '11 hours ago'
         )
@@ -45,9 +45,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (minutes)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 40, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 9])
                 ),
             '9 minutes ago'
         )
@@ -55,9 +55,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (seconds)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 15])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0])
                 ),
             'in 15 seconds'
         )
@@ -65,9 +65,9 @@ describe('DateTimeImmutable #humanDiff', function() {
 
     it('returns the difference in human readable form (now)', function() {
         assert.strictEqual(
-            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+            DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30])
+                    DateTimeImmutable.fromArray([2018, 1, 1, 0, 0, 0])
                 ),
             'now'
         )
@@ -117,6 +117,17 @@ describe('DateTimeImmutable #humanDiff', function() {
         )
     });
 
+    it('works with years (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2016, 2]),
+                    'years'
+                ),
+            'in 2 years'
+        )
+    });
+
     it('works with month', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 7])
@@ -158,6 +169,17 @@ describe('DateTimeImmutable #humanDiff', function() {
                     'months'
                 ),
             '3 months ago'
+        )
+    });
+
+    it('works with months (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 9, 1])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 2]),
+                    'months'
+                ),
+            'in 3 months'
         )
     });
 
@@ -216,6 +238,17 @@ describe('DateTimeImmutable #humanDiff', function() {
         )
     });
 
+    it('works with days (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23, 0])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 1]),
+                    'days'
+                ),
+            'in 8 days'
+        )
+    });
+
     it('works with days and months', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 8, 23])
@@ -268,6 +301,17 @@ describe('DateTimeImmutable #humanDiff', function() {
                     'hours'
                 ),
             '11 hours ago'
+        )
+    });
+
+    it('works with hours (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 23, 0])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 1]),
+                    'hours'
+                ),
+            'in 11 hours'
         )
     });
 
@@ -326,6 +370,17 @@ describe('DateTimeImmutable #humanDiff', function() {
         )
     });
 
+    it('works with minutes (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 1])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 15, 0]),
+                    'minutes'
+                ),
+            'in 15 minutes'
+        )
+    });
+
     it('works with minutes and hours', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 6, 15, 16, 30])
@@ -378,6 +433,17 @@ describe('DateTimeImmutable #humanDiff', function() {
                     'seconds'
                 ),
             '15 seconds ago'
+        )
+    });
+
+    it('works with seconds (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 30, 1])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15, 12, 30, 15, 0]),
+                    'seconds'
+                ),
+            'in 15 seconds'
         )
     });
 

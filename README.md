@@ -704,11 +704,21 @@ Get the difference between two Dates.
 
 - `other` is the *DateTime* object to compare to.
 - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+- `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
 
 If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
+If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
+
 ```javascript
 const diff = date.diff(other, timeUnit);
+```
+
+```javascript
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), 'years', true); // 1
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), 'years', false); // 0
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), 'years', true); // 2
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), 'years', false); // 1
 ```
 
 **Era**
@@ -728,10 +738,21 @@ Get the relative difference between two Dates in a human readable format using t
 - `other` is the *DateTime* object to compare to.
 - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
-If the `timeUnit` is omitted, this method will return the most significant non-zero value.
+If the `timeUnit` is omitted, this method will use the (relative) most significant non-zero value.
 
 ```javascript
 const diff = date.humanDiff(other, timeUnit);
+```
+
+The most significant non-zero value is determined where the unit of time has a non-relative difference, or the next relative difference value is greater than or equal to the unit of time.
+
+```javascript
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31')); // "tomorrow"
+DateTime.fromFormat('yyyy-MM-dd', '2019-02-27').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "in 27 days"
+DateTime.fromFormat('yyyy-MM-dd', '2019-02-28').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "next month"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-06-01')); // "in 6 months"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-01-31')); // "next year"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31')); // "in 2 years"
 ```
 
 **Is After?**

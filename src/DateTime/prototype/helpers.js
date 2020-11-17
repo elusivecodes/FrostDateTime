@@ -85,20 +85,67 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
+     * Compensate the difference between this and another Date.
+     * @param {number} amount The amount to compensate.
+     * @param {DateTime} [other] The date to compare to.
+     * @param {Boolean} [compensate=true] Whether to compensate the amount.
+     * @param {number} [compensation=1] The compensation offset.
+     * @return {number} The compensated amount.
+     */
+    _compensateDiff(amount, other, compensate = true, compensation = 1) {
+        if (amount > 0) {
+            amount = Math.floor(amount);
+
+            if (compensate && this < other) {
+                amount += compensation;
+            }
+        } else if (amount < 0) {
+            amount = Math.ceil(amount);
+
+            if (compensate && this > other) {
+                amount -= compensation;
+            }
+        }
+
+        return amount;
+    },
+
+    /**
      * Get the biggest difference between this and another Date.
      * @param {DateTime} [other] The date to compare to.
      * @return {array} The biggest difference (amount and time unit).
      */
     _getBiggestDiff(other) {
-        for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
-            const amount = this.diff(other, timeUnit);
+        const limits = {
+            month: 12,
+            day: Math.min(this.daysInMonth(), other.daysInMonth()),
+            hour: 24,
+            minute: 60,
+            second: 60
+        };
 
-            if (amount) {
-                return [amount, timeUnit];
+        let lastResult;
+        for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
+            const relativeDiff = this.diff(other, timeUnit);
+            if (lastResult && Math.abs(relativeDiff) >= limits[timeUnit]) {
+                return lastResult;
+            }
+
+            const actualDiff = this.diff(other, timeUnit, false);
+            if (actualDiff) {
+                return [relativeDiff, timeUnit];
+            }
+
+            if (relativeDiff) {
+                lastResult = [relativeDiff, timeUnit];
+            } else {
+                lastResult = null;
             }
         }
 
-        return [0, 'second'];
+        return lastResult ?
+            lastResult :
+            [0, 'second'];
     },
 
     /**
