@@ -21,7 +21,7 @@ Object.assign(DateTime.prototype, {
             if (position) {
                 output += formatString.substring(0, position);
             }
-    
+
             formatString = formatString.substring(position + length);
 
             if (!token) {
@@ -55,7 +55,7 @@ Object.assign(DateTime.prototype, {
      */
     toISOString() {
         return this.constructor.fromDate(this._utcDate, {
-            locale: 'en-US',
+            locale: 'en',
             timeZone: 'UTC'
         }).format(this.constructor.formats.rfc3339_extended);
     },

@@ -45,7 +45,7 @@ const { DateTime, DateTimeImmutable } = require('frostdatetime');
 
 - `dateString` is a string representing the date, and will default to the current timestamp.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
@@ -66,7 +66,7 @@ const date = new DateTimeImmutable(dateString, options);
 
 - `dateArray` is an array containing the year, month, date, hours, minutes, seconds and milliseconds.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
@@ -79,7 +79,7 @@ The month and date in the `dateArray` will default to 1 if not set. The hours, m
 
 - `dateObj` is a native JS *Date* object.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
@@ -93,8 +93,8 @@ If you wish to parse a date string and you know the exact format, you can use th
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
-    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 The `formatString` supports a subset of the ICU specification described in [Formats](Formats.md).
 
@@ -110,10 +110,12 @@ const date = DateTime.fromFormat(formatString, dateString, options);
 
 - `dateString` is a string representing the date you are parsing.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
-    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone (unless a time zone is specified in the `dateString`).
+    - `locale` is a string representing the locale of the date, and will default to English.
+    - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
-If the `dateString` contains time zone or offset information, and the `timeZone` option is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
+The `dateString` must be in *yyyy-MM-dd'T'HH:mm:ss.SSSxxx*" format and in English.
+
+If the `timeZone` option is also passed, the created *DateTime* will be converted to the new `timeZone`.
 
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
@@ -125,7 +127,7 @@ const date = DateTime.fromISOString(dateString, options);
 
 - `timestamp` is the number of seconds since the UNIX epoch.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
@@ -135,7 +137,7 @@ const date = DateTime.fromTimestamp(timestamp, options);
 **Now**
 
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the localeof the date, and will default to the system locale.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
 
 ```javascript
@@ -175,7 +177,7 @@ const dateString = date.toDateString();
 
 **To ISO String**
 
-Format the current date using "*yyyy-MM-dd'THH:mm:ss.SSSxxx*" (in English and UTC time zone).
+Format the current date using "*yyyy-MM-dd'T'HH:mm:ss.SSSxxx*" (in English and UTC time zone).
 
 ```javascript
 const isoString = date.toISOString();

@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v3.0.3
+ * FrostDateTime v3.0.4
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -1494,6 +1494,8 @@
         setLocale(locale) {
             this.formatter = DateFormatter.load(locale);
             this.relativeFormatter = DateFormatter.loadRelative(locale);
+
+            return this;
         },
 
         /**
@@ -2132,7 +2134,7 @@
                 if (position) {
                     output += formatString.substring(0, position);
                 }
-    
+
                 formatString = formatString.substring(position + length);
 
                 if (!token) {
@@ -2166,7 +2168,7 @@
          */
         toISOString() {
             return this.constructor.fromDate(this._utcDate, {
-                locale: 'en-US',
+                locale: 'en',
                 timeZone: 'UTC'
             }).format(this.constructor.formats.rfc3339_extended);
         },
@@ -2761,10 +2763,19 @@
          * @returns {DateTime} A new DateTime object.
          */
         fromISOString(dateString, options = {}) {
-            return this.fromFormat(this.constructor.formats.rfc3339_extended, dateString, {
-                locale: 'en-US',
-                ...options
+            let date = this.fromFormat(this.formats.rfc3339_extended, dateString, {
+                locale: 'en'
             });
+
+            if ('timeZone' in options) {
+                date = date.setTimeZone(options.timeZone);
+            }
+
+            if ('locale' in options) {
+                date = date.setLocale(options.locale);
+            }
+
+            return date;
         },
 
         /**
@@ -3043,7 +3054,7 @@
         ],
 
         // Formatter locale
-        _formatterLocale: 'en-US',
+        _formatterLocale: 'en',
 
         // Formatter options
         _formatterOptions: {

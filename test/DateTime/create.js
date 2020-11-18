@@ -35,7 +35,7 @@ describe('DateTime Creation', function() {
             );
         });
 
-        it('uses the provided time zone', function() {
+        it('works with time zone', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
                     .toISOString(),
@@ -56,6 +56,14 @@ describe('DateTime Creation', function() {
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+1000' })
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00'
+            );
+        });
+
+        it('works with locale', function() {
+            assert.strictEqual(
+                new DateTime('January 1, 2019 00:00:00', { locale: 'ar-eg' })
+                    .toString(),
+                'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)'
             );
         });
 
@@ -135,6 +143,22 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('works with time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1, 0, 0, 0], { timeZone: 'Australia/Brisbane' })
+                    .toString(),
+                'Tue Jan 01 2019 00:00:00 +1000 (Australia/Brisbane)'
+            );
+        });
+
+        it('works with locale', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1, 0, 0, 0], { locale: 'ar-eg' })
+                    .toString(),
+                'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)'
+            );
+        });
+
         it('returns a new DateTime', function() {
             assert.ok(
                 DateTime.fromArray([2018]).constructor === DateTime
@@ -152,10 +176,60 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('works with time zone', function() {
+            const date = new Date(1546300800000);
+            assert.strictEqual(
+                DateTime.fromDate(date, { timeZone: 'Australia/Brisbane' })
+                    .toString(),
+                'Tue Jan 01 2019 10:00:00 +1000 (Australia/Brisbane)'
+            );
+        });
+
+        it('works with locale', function() {
+            const date = new Date(1546300800000);
+            assert.strictEqual(
+                DateTime.fromDate(date, { locale: 'ar-eg' })
+                    .toString(),
+                'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)'
+            );
+        });
+
         it('returns a new DateTime', function() {
             const date = new Date();
             assert.ok(
                 DateTime.fromDate(date).constructor === DateTime
+            );
+        });
+    });
+
+    describe('#fromISOString', function() {
+        it('works with date', function() {
+            assert.strictEqual(
+                DateTime.fromISOString('2019-01-01T00:00:00.000+00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zone', function() {
+            assert.strictEqual(
+                DateTime.fromISOString('2019-01-01T00:00:00.000+00:00', { timeZone: 'Australia/Brisbane' })
+                    .toString(),
+                'Tue Jan 01 2019 10:00:00 +1000 (Australia/Brisbane)'
+            );
+        });
+
+        it('works with locale', function() {
+            assert.strictEqual(
+                DateTime.fromISOString('2019-01-01T00:00:00.000+00:00', { locale: 'ar-eg' })
+                    .toString(),
+                'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)'
+            );
+        });
+
+        it('returns a new DateTime', function() {
+            assert.ok(
+                DateTime.fromISOString('2019-01-01T00:00:00.000+00:00').constructor === DateTime
             );
         });
     });
@@ -166,6 +240,22 @@ describe('DateTime Creation', function() {
                 DateTime.fromTimestamp(1546300800)
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00'
+            );
+        });
+
+        it('works with time zone', function() {
+            assert.strictEqual(
+                DateTime.fromTimestamp(1546300800, { timeZone: 'Australia/Brisbane' })
+                    .toString(),
+                'Tue Jan 01 2019 10:00:00 +1000 (Australia/Brisbane)'
+            );
+        });
+
+        it('works with locale', function() {
+            assert.strictEqual(
+                DateTime.fromTimestamp(1546300800, { locale: 'ar-eg' })
+                    .toString(),
+                'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)'
             );
         });
 
@@ -184,11 +274,19 @@ describe('DateTime Creation', function() {
             assert.ok(start <= now && end >= now);
         });
 
-        it('uses the provided time zone', function() {
+        it('works with time zone', function() {
             assert.strictEqual(
                 DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .getTimeZone(),
                 'Australia/Brisbane'
+            );
+        });
+
+        it('works with locale', function() {
+            assert.strictEqual(
+                DateTime.now({ locale: 'ar-eg' })
+                    .getLocale(),
+                'ar-eg'
             );
         });
 

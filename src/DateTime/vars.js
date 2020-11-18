@@ -58,7 +58,7 @@ Object.assign(DateTime, {
     ],
 
     // Formatter locale
-    _formatterLocale: 'en-US',
+    _formatterLocale: 'en',
 
     // Formatter options
     _formatterOptions: {

@@ -174,10 +174,19 @@ Object.assign(DateTime, {
      * @returns {DateTime} A new DateTime object.
      */
     fromISOString(dateString, options = {}) {
-        return this.fromFormat(this.constructor.formats.rfc3339_extended, dateString, {
-            locale: 'en-US',
-            ...options
+        let date = this.fromFormat(this.formats.rfc3339_extended, dateString, {
+            locale: 'en'
         });
+
+        if ('timeZone' in options) {
+            date = date.setTimeZone(options.timeZone);
+        }
+
+        if ('locale' in options) {
+            date = date.setLocale(options.locale);
+        }
+
+        return date;
     },
 
     /**

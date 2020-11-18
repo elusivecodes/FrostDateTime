@@ -66,6 +66,8 @@ Object.assign(DateTime.prototype, {
     setLocale(locale) {
         this.formatter = DateFormatter.load(locale);
         this.relativeFormatter = DateFormatter.loadRelative(locale);
+
+        return this;
     },
 
     /**
