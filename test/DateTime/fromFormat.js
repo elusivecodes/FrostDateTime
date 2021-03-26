@@ -974,9 +974,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 -0500')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +1000')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -992,9 +992,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT-05:00')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+10:00')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1010,9 +1010,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 -05:00')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +10:00')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1028,9 +1028,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT-05')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+10')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1046,9 +1046,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT-05:00')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+10:00')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1064,9 +1064,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 America/New_York')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 Australia/Brisbane')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1082,9 +1082,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 -05')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 +10')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1100,9 +1100,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 -0500')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 +1000')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1118,9 +1118,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 -05:00')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 +10:00')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1136,9 +1136,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 -05')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +10')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1154,9 +1154,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 -0500')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +1000')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });
@@ -1172,9 +1172,9 @@ describe('DateTime #fromFormat', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 -05:00')
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +10:00')
                     .toISOString(),
-                '2019-01-01T05:00:00.000+00:00'
+                '2018-12-31T14:00:00.000+00:00'
             );
         });
     });

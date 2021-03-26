@@ -1102,9 +1102,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('zzz'),
-                'EST'
+                'GMT+10'
             );
         });
     });
@@ -1120,9 +1120,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('zzzz'),
-                'Eastern Standard Time'
+                'Australian Eastern Standard Time'
             );
         });
     });
@@ -1138,9 +1138,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('ZZZ'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1156,9 +1156,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('ZZZZ'),
-                'GMT-05:00'
+                'GMT+10:00'
             );
         });
     });
@@ -1174,9 +1174,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('ZZZZZ'),
-                '-05:00'
+                '+10:00'
             );
         });
     });
@@ -1192,9 +1192,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('O'),
-                'GMT-05'
+                'GMT+10'
             );
         });
     });
@@ -1210,9 +1210,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('OOOO'),
-                'GMT-05:00'
+                'GMT+10:00'
             );
         });
     });
@@ -1228,9 +1228,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('VV'),
-                'America/New_York'
+                'Australia/Brisbane'
             );
         });
     });
@@ -1246,9 +1246,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('X'),
-                '-05'
+                '+10'
             );
         });
     });
@@ -1264,9 +1264,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('XX'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1282,9 +1282,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('XXX'),
-                '-05:00'
+                '+10:00'
             );
         });
     });
@@ -1300,9 +1300,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('x'),
-                '-05'
+                '+10'
             );
         });
     });
@@ -1318,9 +1318,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('xx'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1336,9 +1336,9 @@ describe('DateTime #format', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York' })
+                DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('xxx'),
-                '-05:00'
+                '+10:00'
             );
         });
     });

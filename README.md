@@ -711,7 +711,7 @@ Get the difference between two Dates.
 If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
 ```javascript
-const diff = date.diff(other, timeUnit);
+const diff = date.diff(other, timeUnit, relative);
 ```
 
 If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.

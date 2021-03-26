@@ -1038,9 +1038,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('zzz'),
-                'GMT-5'
+                'GMT+10'
             );
         });
     });
@@ -1056,9 +1056,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('zzzz'),
-                'Восточная Америка, стандартное время'
+                'Восточная Австралия, стандартное время'
             );
         });
     });
@@ -1074,9 +1074,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('ZZZ'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1092,9 +1092,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('ZZZZ'),
-                'GMT-05:00'
+                'GMT+10:00'
             );
         });
     });
@@ -1110,9 +1110,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('ZZZZZ'),
-                '-05:00'
+                '+10:00'
             );
         });
     });
@@ -1128,9 +1128,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('O'),
-                'GMT-05'
+                'GMT+10'
             );
         });
     });
@@ -1146,9 +1146,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('OOOO'),
-                'GMT-05:00'
+                'GMT+10:00'
             );
         });
     });
@@ -1164,9 +1164,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('VV'),
-                'America/New_York'
+                'Australia/Brisbane'
             );
         });
     });
@@ -1182,9 +1182,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('X'),
-                '-05'
+                '+10'
             );
         });
     });
@@ -1200,9 +1200,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('XX'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1218,9 +1218,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('XXX'),
-                '-05:00'
+                '+10:00'
             );
         });
     });
@@ -1236,9 +1236,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('x'),
-                '-05'
+                '+10'
             );
         });
     });
@@ -1254,9 +1254,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('xx'),
-                '-0500'
+                '+1000'
             );
         });
     });
@@ -1272,9 +1272,9 @@ describe('DateTime #format (Locale)', function() {
 
         it('works with time zones', function() {
             assert.strictEqual(
-                DateTime.now({ timeZone: 'America/New_York', locale: 'ru' })
+                DateTime.now({ timeZone: 'Australia/Brisbane', locale: 'ru' })
                     .format('xxx'),
-                '-05:00'
+                '+10:00'
             );
         });
     });
