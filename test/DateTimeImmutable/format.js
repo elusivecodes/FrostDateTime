@@ -758,7 +758,7 @@ describe('DateTimeImmutable #format', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2018, 6, 1])
                     .format('cc'),
-                '06'
+                '6'
             );
         });
     });

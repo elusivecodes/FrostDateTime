@@ -758,7 +758,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1])
                     .format('cc'),
-                '06'
+                '6'
             );
         });
     });

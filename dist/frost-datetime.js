@@ -618,7 +618,7 @@
                         return datetime.formatter.formatDay(day, type);
                     default:
                         const weekDay = datetime.getWeekDay();
-                        return datetime.formatter.formatNumber(weekDay, length);
+                        return datetime.formatter.formatNumber(weekDay);
                 }
             }
         },

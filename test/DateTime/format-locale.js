@@ -694,7 +694,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' })
                     .format('cc'),
-                '٠٧'
+                '٧'
             );
         });
     });
