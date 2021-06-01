@@ -16,7 +16,7 @@ describe('DateTimeImmutable Variables', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2020])
                     .format(DateTimeImmutable.formats.cookie),
-                'Wednesday, 01-Jan-2020 00:00:00 GMT+00:00'
+                'Wednesday, 01-Jan-2020 00:00:00 GMT'
             );
         });
 
@@ -48,7 +48,7 @@ describe('DateTimeImmutable Variables', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2020])
                     .format(DateTimeImmutable.formats.rfc850),
-                'Wednesday 01-Jan-20 00:00:00 GMT+00:00'
+                'Wednesday 01-Jan-20 00:00:00 GMT'
             );
         });
 

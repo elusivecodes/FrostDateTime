@@ -1150,7 +1150,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.now()
                     .format('ZZZZ'),
-                'GMT+00:00'
+                'GMT'
             );
         });
 
@@ -1168,7 +1168,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.now()
                     .format('ZZZZZ'),
-                '+00:00'
+                'Z'
             );
         });
 
@@ -1186,7 +1186,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.now()
                     .format('O'),
-                'GMT+00'
+                'GMT'
             );
         });
 
@@ -1204,7 +1204,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.now()
                     .format('OOOO'),
-                'GMT+00:00'
+                'GMT'
             );
         });
 

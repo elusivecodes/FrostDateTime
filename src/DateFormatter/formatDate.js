@@ -484,29 +484,39 @@ DateFormatter._formatDate = {
         regex: (_, length) => {
             switch (length) {
                 case 5:
-                    return `[\\+\\-]\\d{2}\\:\\d{2}`;
+                    return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
                 case 4:
-                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
                 default:
                     return `[\\+\\-]\\d{4}`;
             }
         },
         input: (_, value) => value,
         output: (datetime, length) => {
+            const offset = datetime.getTimeZoneOffset();
+
             let useColon = true;
             let prefix = '';
             switch (length) {
                 case 5:
+                    if (!offset) {
+                        return 'Z';
+                    }
                     break;
                 case 4:
                     prefix = 'GMT';
+
+                    if (!offset) {
+                        return prefix;
+                    }
+
                     break;
                 default:
                     useColon = false;
                     break;
             }
 
-            return prefix + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), useColon);
+            return prefix + DateFormatter.formatOffset(offset, useColon);
         }
     },
 
@@ -515,13 +525,20 @@ DateFormatter._formatDate = {
         regex: (_, length) => {
             switch (length) {
                 case 4:
-                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
                 default:
-                    return `GMT[\\+\\-]\\d{2}`;
+                    return `GMT[\\+\\-]\\d{2}|GMT`;
             }
         },
         input: (_, value) => value,
         output: (datetime, length) => {
+            const offset = datetime.getTimeZoneOffset();
+            const prefix = 'GMT';
+
+            if (!offset) {
+                return prefix;
+            }
+
             let optionalMinutes = false;
             switch (length) {
                 case 4:
@@ -530,7 +547,7 @@ DateFormatter._formatDate = {
                     optionalMinutes = true;
             }
 
-            return 'GMT' + DateFormatter.formatOffset(datetime.getTimeZoneOffset(), true, optionalMinutes);
+            return prefix + DateFormatter.formatOffset(offset, true, optionalMinutes);
         }
     },
 

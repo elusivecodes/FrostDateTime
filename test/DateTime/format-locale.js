@@ -1086,7 +1086,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.now({ locale: 'ru' })
                     .format('ZZZZ'),
-                'GMT+00:00'
+                'GMT'
             );
         });
 
@@ -1104,7 +1104,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.now({ locale: 'ru' })
                     .format('ZZZZZ'),
-                '+00:00'
+                'Z'
             );
         });
 
@@ -1122,7 +1122,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.now({ locale: 'ru' })
                     .format('O'),
-                'GMT+00'
+                'GMT'
             );
         });
 
@@ -1140,7 +1140,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.now({ locale: 'ru' })
                     .format('OOOO'),
-                'GMT+00:00'
+                'GMT'
             );
         });
 
