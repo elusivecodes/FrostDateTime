@@ -9,39 +9,50 @@ foreach ($locales AS $locale) {
     $prefixes[$prefix][] = $locale;
 }
 
-$results = [];
+$firstDays = [];
+$minimumDays = [];
 
 foreach ($prefixes AS $prefix => $locales) {
     $cal = IntlCalendar::createInstance(null, $prefix);
     $prefixFirstDayOfWeek = $cal->getFirstDayOfWeek();
+    $prefixMinimalDaysInFirstWeek = $cal->getMinimalDaysInFirstWeek();
 
-    $test = [];
+    $firstDaysTemp = [];
 
     foreach ($locales AS $locale) {
         $cal = IntlCalendar::createInstance(null, $locale);
         $firstDayOfWeek = $cal->getFirstDayOfWeek();
+        $minimalDaysInFirstWeek = $cal->getMinimalDaysInFirstWeek();
+        $localeKey = str_replace('_', '-', strtolower($locale));
 
         if (
-            ($locale !== $prefix && $firstDayOfWeek === $prefixFirstDayOfWeek) ||
-            ($firstDayOfWeek === 2 && $prefixFirstDayOfWeek === 2)
+            ($locale === $prefix || $firstDayOfWeek !== $prefixFirstDayOfWeek) &&
+            ($firstDayOfWeek !== 2 && $prefixFirstDayOfWeek !== 2)
         ) {
-            continue;
+            $firstDaysTemp[$firstDayOfWeek][] = $localeKey;
         }
 
-        $test[$firstDayOfWeek][] = str_replace('_', '-', strtolower($locale));
+        if (
+            ($locale === $prefix || $minimalDaysInFirstWeek !== $prefixMinimalDaysInFirstWeek) &&
+            $minimalDaysInFirstWeek > 1
+        ) {
+            $minimumDays[$minimalDaysInFirstWeek][] = $localeKey;
+        }
     }
 
-    foreach ($test AS $day => $locales) {
-        $results[$day] ??= [];
+    foreach ($firstDaysTemp AS $day => $locales) {
+        $firstDays[$day] ??= [];
 
-        if (count($test) === 1) {
+        if (count($firstDaysTemp) === 1) {
             if ($day != 2) {
-                $results[$day][] = $prefix;
+                $firstDays[$day][] = $prefix;
             }
         } else {
-            $results[$day] = array_merge($results[$day], $locales);
+            $firstDays[$day] = array_merge($firstDays[$day], $locales);
         }
     }
 }
 
-echo 'DateFormatter._weekStart = '.json_encode($results, JSON_UNESCAPED_SLASHES);
+echo 'DateFormatter._weekStart = '.json_encode($firstDays, JSON_UNESCAPED_SLASHES).';';
+echo "\n";
+echo 'DateFormatter._minimumDays = '.json_encode($minimumDays, JSON_UNESCAPED_SLASHES).';';

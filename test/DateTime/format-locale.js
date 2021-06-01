@@ -154,13 +154,13 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' })
                     .format('Y'),
-                '٢٠١٩'
+                '٢٠٢٠'
             );
         });
 
         it('does not zero pad', function() {
             assert.strictEqual(
-                DateTime.fromArray([5], { locale: 'ar-eg' })
+                DateTime.fromArray([5, 2], { locale: 'ar-eg' })
                     .format('Y'),
                 '٥'
             );
@@ -180,13 +180,13 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' })
                     .format('YY'),
-                '١٩'
+                '٢٠'
             );
         });
 
         it('zero pads to 2-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([5], { locale: 'ar-eg' })
+                DateTime.fromArray([5, 2], { locale: 'ar-eg' })
                     .format('YY'),
                 '٠٥'
             );
@@ -206,13 +206,13 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' })
                     .format('YYY'),
-                '٢٠١٩'
+                '٢٠٢٠'
             );
         });
 
         it('zero pads to 3-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([5], { locale: 'ar-eg' })
+                DateTime.fromArray([5, 2], { locale: 'ar-eg' })
                     .format('YYY'),
                 '٠٠٥'
             );
@@ -232,13 +232,13 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 12, 30], { locale: 'ar-eg' })
                     .format('YYYY'),
-                '٢٠١٩'
+                '٢٠٢٠'
             );
         });
 
         it('zero pads to 4-digits', function() {
             assert.strictEqual(
-                DateTime.fromArray([5], { locale: 'ar-eg' })
+                DateTime.fromArray([5, 2], { locale: 'ar-eg' })
                     .format('YYYY'),
                 '٠٠٠٥'
             );

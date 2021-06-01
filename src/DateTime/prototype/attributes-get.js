@@ -125,25 +125,17 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the year in current timeZone.
-     * @returns {number} The year.
-     */
-    getYear() {
-        return new Date(this._getOffsetTime()).getUTCFullYear();
-    },
-
-    /**
      * Get the local week in current timeZone.
      * @returns {number} The local week. (1, 53)
      */
     getWeek() {
-        const week = this.clone().startOf('day').setWeekDay(4);
-        const firstWeek = week.clone().setMonth(1, 4).setWeekDay(4);
+        const thisWeek = this.clone().startOf('day').setWeekDay(1);
+        const firstWeek = thisWeek.clone().setWeek(1, 1);
 
         return 1
             + (
                 (
-                    (week - firstWeek)
+                    (thisWeek - firstWeek)
                     / 604800000
                 ) | 0
             );
@@ -191,7 +183,16 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The ISO year.
      */
     getWeekYear() {
-        return this.clone().setWeekDay(4).getYear();
+        const minimumDays = this.formatter.minimumDays();
+        return this.clone().setWeekDay(7 - minimumDays + 1).getYear();
+    },
+
+    /**
+     * Get the year in current timeZone.
+     * @returns {number} The year.
+     */
+    getYear() {
+        return new Date(this._getOffsetTime()).getUTCFullYear();
     }
 
 });

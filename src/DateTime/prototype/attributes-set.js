@@ -247,7 +247,8 @@ Object.assign(DateTime.prototype, {
             day = this.getWeekDay();
         }
 
-        return this.setYear(this.getWeekYear(), 1, 4 + ((week - 1) * 7)).setWeekDay(day);
+        const minimumDays = this.formatter.minimumDays();
+        return this.setYear(this.getWeekYear(), 1, minimumDays + ((week - 1) * 7)).setWeekDay(day);
     },
 
     /**
@@ -303,10 +304,12 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} The DateTime object.
      */
     setWeekYear(year, week = null, day = null) {
+        const minimumDays = this.formatter.minimumDays();
+
         if (week === null) {
             week = Math.min(
                 this.getWeek(),
-                DateTime.fromArray([year, 1, 4]).weeksInYear()
+                DateTime.fromArray([year, 1, minimumDays]).weeksInYear()
             );
         }
 
@@ -314,7 +317,7 @@ Object.assign(DateTime.prototype, {
             day = this.getWeekDay();
         }
 
-        return this.setYear(year, 1, 4 + ((week - 1) * 7)).setWeekDay(day);
+        return this.setYear(year, 1, minimumDays + ((week - 1) * 7)).setWeekDay(day);
     },
 
     /**

@@ -11,6 +11,7 @@ class DateFormatter {
      */
     constructor(locale) {
         this.locale = locale;
+        this._minimumDays = this.constructor.getMinimumDays(this.locale);
         this._weekStartOffset = this.constructor.getWeekStartOffset(this.locale);
         this._data = {};
     }
@@ -81,6 +82,14 @@ class DateFormatter {
             .formatToParts(date)
             .find(part => part.type === 'timeZoneName')
             .value;
+    }
+
+    /**
+     * Get the minimum days.
+     * @returns {number} The minimum days.
+     */
+    minimumDays() {
+        return this._minimumDays;
     }
 
     /**
@@ -191,6 +200,30 @@ class DateFormatter {
     }
 
     /**
+     * Get the minimum days for a locale.
+     * @param {string} [locale] The locale to load.
+     * @returns {number} The minimum days.
+     */
+    static getMinimumDays(locale) {
+        let minimumDays = 1;
+        const localeTest = locale.toLowerCase().split('-');
+        while (minimumDays === 1 && localeTest.length) {
+            for (const days in this._minimumDays) {
+                const locales = this._minimumDays[days];
+
+                if (locales.includes(localeTest.join('-'))) {
+                    minimumDays = parseInt(days);
+                    break;
+                }
+            }
+
+            localeTest.pop();
+        }
+
+        return minimumDays;
+    }
+
+    /**
      * Get the week start offset for a locale.
      * @param {string} [locale] The locale to load.
      * @returns {number} The week start offset.
@@ -203,7 +236,7 @@ class DateFormatter {
                 const locales = this._weekStart[start];
 
                 if (locales.includes(localeTest.join('-'))) {
-                    weekStart = start;
+                    weekStart = parseInt(start);
                     break;
                 }
             }

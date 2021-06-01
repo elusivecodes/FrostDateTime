@@ -194,7 +194,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.fromArray([5])
                     .format('Y'),
-                '4'
+                '5'
             );
         });
 
@@ -228,7 +228,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.fromArray([5])
                     .format('YY'),
-                '04'
+                '05'
             );
         });
 
@@ -262,7 +262,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.fromArray([5])
                     .format('YYY'),
-                '004'
+                '005'
             );
         });
 
@@ -296,7 +296,7 @@ describe('DateTime #format', function() {
             assert.strictEqual(
                 DateTime.fromArray([5])
                     .format('YYYY'),
-                '0004'
+                '0005'
             );
         });
 
