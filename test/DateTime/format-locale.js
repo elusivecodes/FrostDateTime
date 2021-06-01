@@ -634,7 +634,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' })
                     .format('e'),
-                '٥'
+                '٧'
             );
         });
     });
@@ -644,7 +644,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' })
                     .format('ee'),
-                '٠٥'
+                '٠٧'
             );
         });
     });
@@ -684,7 +684,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' })
                     .format('c'),
-                '٥'
+                '٧'
             );
         });
     });
@@ -694,7 +694,7 @@ describe('DateTime #format (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { locale: 'ar-eg' })
                     .format('cc'),
-                '٠٥'
+                '٠٧'
             );
         });
     });

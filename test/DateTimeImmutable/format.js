@@ -698,7 +698,7 @@ describe('DateTimeImmutable #format', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2018, 6, 1])
                     .format('e'),
-                '5'
+                '6'
             );
         });
     });
@@ -708,7 +708,7 @@ describe('DateTimeImmutable #format', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2018, 6, 1])
                     .format('ee'),
-                '05'
+                '06'
             );
         });
     });
@@ -748,7 +748,7 @@ describe('DateTimeImmutable #format', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2018, 6, 1])
                     .format('c'),
-                '5'
+                '6'
             );
         });
     });
@@ -758,7 +758,7 @@ describe('DateTimeImmutable #format', function() {
             assert.strictEqual(
                 DateTimeImmutable.fromArray([2018, 6, 1])
                     .format('cc'),
-                '05'
+                '06'
             );
         });
     });

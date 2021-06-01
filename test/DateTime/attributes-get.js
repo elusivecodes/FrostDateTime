@@ -160,7 +160,7 @@ describe('DateTime Attributes Get', function() {
             assert.strictEqual(
                 DateTime.now({ timeZone: '+10:00' })
                     .getTimeZone(),
-                    '+10:00'
+                '+10:00'
             );
         });
 
@@ -168,7 +168,7 @@ describe('DateTime Attributes Get', function() {
             assert.strictEqual(
                 DateTime.now({ timeZone: '+1000' })
                     .getTimeZone(),
-                    '+10:00'
+                '+10:00'
             );
         });
     });

@@ -568,15 +568,16 @@
                 }
             },
             output: (datetime, length) => {
-                const day = datetime.getDay();
                 switch (length) {
                     case 5:
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
+                        const day = datetime.getDay();
                         return datetime.formatter.formatDay(day, type, false);
                     default:
-                        return datetime.formatter.formatNumber(day, length);
+                        const weekDay = datetime.getWeekDay();
+                        return datetime.formatter.formatNumber(weekDay, length);
                 }
             }
         },
@@ -608,15 +609,16 @@
                 }
             },
             output: (datetime, length) => {
-                const day = datetime.getDay();
                 switch (length) {
                     case 5:
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
+                        const day = datetime.getDay();
                         return datetime.formatter.formatDay(day, type);
                     default:
-                        return datetime.formatter.formatNumber(day, length);
+                        const weekDay = datetime.getWeekDay();
+                        return datetime.formatter.formatNumber(weekDay, length);
                 }
             }
         },
