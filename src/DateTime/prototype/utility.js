@@ -378,7 +378,8 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of weeks in the current ISO year.
      */
     weeksInYear() {
-        return this.clone().setMonth(12, 28).getWeek();
+        const minimumDays = this.formatter.minimumDays();
+        return this.clone().setMonth(12, 24 + minimumDays).getWeek();
     }
 
 });

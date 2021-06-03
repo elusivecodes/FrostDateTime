@@ -10,7 +10,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGG - Era (Short)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'н. э.', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGG', '1970 н. э.', { locale: 'ru' })
                     .getYear(),
                 1970
             );
@@ -18,7 +18,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'до н. э.', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGG', '1970 до н. э.', { locale: 'ru' })
                     .getYear(),
                 -1970
             );
@@ -28,7 +28,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGGG - Era (Long)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'от Рождества Христова', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGGG', '1970 от Рождества Христова', { locale: 'ru' })
                     .getYear(),
                 1970
             );
@@ -36,7 +36,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'до Рождества Христова', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGGG', '1970 до Рождества Христова', { locale: 'ru' })
                     .getYear(),
                 -1970
             );
@@ -46,7 +46,7 @@ describe('DateTime #fromFormat (Locale)', function() {
     describe('GGGGG - Era (Narrow)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'н.э.', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGGGG', '1970 н.э.', { locale: 'ru' })
                     .getYear(),
                 1970
             );
@@ -54,7 +54,7 @@ describe('DateTime #fromFormat (Locale)', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'до н.э.', { locale: 'ru' })
+                DateTime.fromFormat('yyyy GGGGG', '1970 до н.э.', { locale: 'ru' })
                     .getYear(),
                 -1970
             );

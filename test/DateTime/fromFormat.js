@@ -10,7 +10,7 @@ describe('DateTime #fromFormat', function() {
     describe('GGG - Era (Short)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'AD')
+                DateTime.fromFormat('yyyy GGG', '1970 AD')
                     .getYear(),
                 1970
             );
@@ -18,7 +18,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGG', 'BC')
+                DateTime.fromFormat('yyyy GGG', '1970 BC')
                     .getYear(),
                 -1970
             );
@@ -28,7 +28,7 @@ describe('DateTime #fromFormat', function() {
     describe('GGGG - Era (Long)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'Anno Domini')
+                DateTime.fromFormat('yyyy GGGG', '1970 Anno Domini')
                     .getYear(),
                 1970
             );
@@ -36,7 +36,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGG', 'Before Christ')
+                DateTime.fromFormat('yyyy GGGG', '1970 Before Christ')
                     .getYear(),
                 -1970
             );
@@ -46,7 +46,7 @@ describe('DateTime #fromFormat', function() {
     describe('GGGGG - Era (Narrow)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'A')
+                DateTime.fromFormat('yyyy GGGGG', '1970 A')
                     .getYear(),
                 1970
             );
@@ -54,7 +54,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTime.fromFormat('GGGGG', 'B')
+                DateTime.fromFormat('yyyy GGGGG', '1970 B')
                     .getYear(),
                 -1970
             );
@@ -144,7 +144,7 @@ describe('DateTime #fromFormat', function() {
     describe('Y - Year (1-digit)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('Y', '2018')
+                DateTime.fromFormat('Y w e', '2018 1 1')
                     .getWeekYear(),
                 2018
             );
@@ -152,7 +152,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses 1-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('Y', '5')
+                DateTime.fromFormat('Y w e', '5 1 1')
                     .getWeekYear(),
                 5
             );
@@ -162,7 +162,7 @@ describe('DateTime #fromFormat', function() {
     describe('YY - Year (2-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YY', '2018')
+                DateTime.fromFormat('YY w e', '2018 1 1')
                     .getWeekYear(),
                 2018
             );
@@ -170,7 +170,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses 2-digit year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YY', '88')
+                DateTime.fromFormat('YY w e', '88 1 1')
                     .getWeekYear(),
                 1988
             );
@@ -180,7 +180,7 @@ describe('DateTime #fromFormat', function() {
     describe('YYY - Year (3-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYY', '2018')
+                DateTime.fromFormat('YYY w e', '2018 1 1')
                     .getWeekYear(),
                 2018
             );
@@ -188,7 +188,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYY', '088')
+                DateTime.fromFormat('YYY w e', '088 1 1')
                     .getWeekYear(),
                 88
             );
@@ -198,7 +198,7 @@ describe('DateTime #fromFormat', function() {
     describe('YYYY - Year (4-digits)', function() {
         it('parses full year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYYY', '2018')
+                DateTime.fromFormat('YYYY w e', '2018 1 1')
                     .getWeekYear(),
                 2018
             );
@@ -206,7 +206,7 @@ describe('DateTime #fromFormat', function() {
 
         it('parses zero padded year', function() {
             assert.strictEqual(
-                DateTime.fromFormat('YYYY', '0088')
+                DateTime.fromFormat('YYYY w e', '0088 1 1')
                     .getWeekYear(),
                 88
             );

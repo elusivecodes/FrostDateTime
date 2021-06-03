@@ -54,8 +54,6 @@ Object.assign(DateTime, {
      */
     fromFormat(formatString, dateString, options = {}) {
         const formatter = DateFormatter.load(options.locale),
-            originalFormat = formatString,
-            originalString = dateString,
             values = [];
 
         let match;
@@ -127,6 +125,10 @@ Object.assign(DateTime, {
 
         for (const subKeys of this._parseOrderKeys) {
             for (const subKey of subKeys) {
+                if (subKey === 'era' && !values.find(data => data.key === 'year')) {
+                    continue;
+                }
+
                 for (const data of values) {
                     const { key, value, literal, token, length } = data;
 

@@ -187,7 +187,7 @@ DateFormatter._formatDate = {
 
     /* WEEK */
 
-    // iso week
+    // local week
     w: {
         key: 'week',
         regex: formatter => formatter.numberRegExp(),
@@ -199,7 +199,7 @@ DateFormatter._formatDate = {
             )
     },
 
-    // iso week of month
+    // local week of month
     W: {
         key: 'weekOfMonth',
         regex: formatter => formatter.numberRegExp(),

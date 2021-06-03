@@ -114,7 +114,10 @@ Object.assign(DateTime, {
                 set: (datetime, value) => datetime.setWeekYear(value)
             },
             year: {
-                get: datetime => datetime.getYear(),
+                get: datetime => {
+                    const year = datetime.getYear();
+                    return Math.abs(year);
+                },
                 set: (datetime, value) => datetime.setYear(value)
             }
         };

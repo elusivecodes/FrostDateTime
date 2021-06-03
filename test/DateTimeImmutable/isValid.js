@@ -6,21 +6,21 @@ describe('DateTimeImmutable Is Valid', function() {
     describe('Era', function() {
         it('validates AD era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGG', 'AD').isValid,
+                DateTimeImmutable.fromFormat('yyyy GGG', '1970 AD').isValid,
                 true
             );
         });
 
         it('validates BC era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGG', 'BC').isValid,
+                DateTimeImmutable.fromFormat('yyyy GGG', '1970 BC').isValid,
                 true
             );
         });
 
         it('invalid eras', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGG GGG', 'AD BC').isValid,
+                DateTimeImmutable.fromFormat('yyyy GGG GGG', '1970 AD BC').isValid,
                 false
             );
         });
@@ -45,14 +45,14 @@ describe('DateTimeImmutable Is Valid', function() {
     describe('Week Year', function() {
         it('validates week year', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('YYYY', '2018').isValid,
+                DateTimeImmutable.fromFormat('YYYY w e', '2018 1 1').isValid,
                 true
             );
         });
 
         it('invalid years', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('YYYY YYYY', '2012 2018').isValid,
+                DateTimeImmutable.fromFormat('YYYY YYYY w e', '2012 2018 1 1').isValid,
                 false
             );
         });

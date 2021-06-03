@@ -10,7 +10,7 @@ describe('DateTimeImmutable #fromFormat', function() {
     describe('GGG - Era (Short)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGG', 'AD')
+                DateTimeImmutable.fromFormat('yyyy GGG', '1970 AD')
                     .getYear(),
                 1970
             );
@@ -18,7 +18,7 @@ describe('DateTimeImmutable #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGG', 'BC')
+                DateTimeImmutable.fromFormat('yyyy GGG', '1970 BC')
                     .getYear(),
                 -1970
             );
@@ -28,7 +28,7 @@ describe('DateTimeImmutable #fromFormat', function() {
     describe('GGGG - Era (Long)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGGG', 'Anno Domini')
+                DateTimeImmutable.fromFormat('yyyy GGGG', '1970 Anno Domini')
                     .getYear(),
                 1970
             );
@@ -36,7 +36,7 @@ describe('DateTimeImmutable #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGGG', 'Before Christ')
+                DateTimeImmutable.fromFormat('yyyy GGGG', '1970 Before Christ')
                     .getYear(),
                 -1970
             );
@@ -46,7 +46,7 @@ describe('DateTimeImmutable #fromFormat', function() {
     describe('GGGGG - Era (Narrow)', function() {
         it('parses AD era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGGGG', 'A')
+                DateTimeImmutable.fromFormat('yyyy GGGGG', '1970 A')
                     .getYear(),
                 1970
             );
@@ -54,7 +54,7 @@ describe('DateTimeImmutable #fromFormat', function() {
 
         it('parses BC era', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('GGGGG', 'B')
+                DateTimeImmutable.fromFormat('yyyy GGGGG', '1970 B')
                     .getYear(),
                 -1970
             );

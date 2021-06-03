@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v3.0.6
+ * FrostDateTime v4.0.0
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -496,7 +496,7 @@
 
         /* WEEK */
 
-        // iso week
+        // local week
         w: {
             key: 'week',
             regex: formatter => formatter.numberRegExp(),
@@ -508,7 +508,7 @@
                 )
         },
 
-        // iso week of month
+        // local week of month
         W: {
             key: 'weekOfMonth',
             regex: formatter => formatter.numberRegExp(),
@@ -938,7 +938,7 @@
     };
 
     DateFormatter._weekStart = {"1":["af","am","ar-il","ar-sa","ar-ye","as","bn","bo","brx","ccp","ceb","chr","dav","dz","ebu","en","fil","gu","guz","haw","he","hi","id","ii","ja","jv","kam","ki","kln","km","kn","ko","kok","ks","lkt","lo","luo","luy","mas","mer","mgh","ml","mr","mt","my","nd","ne","om","or","pa","ps-pk","pt","qu","saq","sd","seh","sn","ta","te","th","ti","ug","ur","xh","yue","zh","zu"],"7":["ar","ckb","en-ae","en-sd","fa","kab","lrc","mzn","ps"]};
-    DateFormatter._minimumDays = {"1":["af","af-na","af-za","agq","agq-cm","ak","ak-gh","am","am-et","ar","ar-001","ar-ae","ar-bh","ar-dj","ar-dz","ar-eg","ar-eh","ar-er","ar-il","ar-iq","ar-jo","ar-km","ar-kw","ar-lb","ar-ly","ar-ma","ar-mr","ar-om","ar-ps","ar-qa","ar-sa","ar-sd","ar-so","ar-ss","ar-sy","ar-td","ar-tn","ar-ye","as","as-in","asa","asa-tz","az","az-cyrl","az-cyrl-az","az-latn","az-latn-az","bas","bas-cm","be","be-by","bem","bem-zm","bez","bez-tz","bm","bm-ml","bn","bn-bd","bn-in","bo","bo-cn","bo-in","brx","brx-in","bs","bs-cyrl","bs-cyrl-ba","bs-latn","bs-latn-ba","ccp","ccp-bd","ccp-in","ceb","ceb-ph","cgg","cgg-ug","chr","chr-us","ckb","ckb-iq","ckb-ir","da-gl","dav","dav-ke","dje","dje-ne","dua","dua-cm","dyo","dyo-sn","dz","dz-bt","ebu","ebu-ke","ee","ee-gh","ee-tg","el-cy","en","en-001","en-150","en-ae","en-ag","en-ai","en-as","en-au","en-bb","en-bi","en-bm","en-bs","en-bw","en-bz","en-ca","en-cc","en-ck","en-cm","en-cx","en-cy","en-dg","en-dm","en-er","en-fk","en-fm","en-gd","en-gh","en-gm","en-gu","en-gy","en-hk","en-il","en-in","en-io","en-jm","en-ke","en-ki","en-kn","en-ky","en-lc","en-lr","en-ls","en-mg","en-mh","en-mo","en-mp","en-ms","en-mt","en-mu","en-mw","en-my","en-na","en-nf","en-ng","en-nr","en-nu","en-nz","en-pg","en-ph","en-pk","en-pn","en-pr","en-pw","en-rw","en-sb","en-sc","en-sd","en-sg","en-sh","en-si","en-sl","en-ss","en-sx","en-sz","en-tc","en-tk","en-to","en-tt","en-tv","en-tz","en-ug","en-um","en-us","en-us-posix","en-vc","en-vg","en-vi","en-vu","en-ws","en-za","en-zm","en-zw","eo","eo-001","es-419","es-ar","es-bo","es-br","es-bz","es-cl","es-co","es-cr","es-cu","es-do","es-ea","es-ec","es-gq","es-gt","es-hn","es-ic","es-mx","es-ni","es-pa","es-pe","es-ph","es-pr","es-py","es-sv","es-us","es-uy","es-ve","ewo","ewo-cm","fa","fa-af","fa-ir","ff","ff-latn","ff-latn-bf","ff-latn-cm","ff-latn-gh","ff-latn-gm","ff-latn-gn","ff-latn-gw","ff-latn-lr","ff-latn-mr","ff-latn-ne","ff-latn-ng","ff-latn-sl","ff-latn-sn","fil","fil-ph","fr-bf","fr-bi","fr-bj","fr-bl","fr-ca","fr-cd","fr-cf","fr-cg","fr-ci","fr-cm","fr-dj","fr-dz","fr-ga","fr-gn","fr-gq","fr-ht","fr-km","fr-ma","fr-mf","fr-mg","fr-ml","fr-mr","fr-mu","fr-nc","fr-ne","fr-pf","fr-pm","fr-rw","fr-sc","fr-sn","fr-sy","fr-td","fr-tg","fr-tn","fr-vu","fr-wf","fr-yt","gu","gu-in","guz","guz-ke","ha","ha-gh","ha-ne","ha-ng","haw","haw-us","he","he-il","hi","hi-in","hr","hr-ba","hr-hr","hy","hy-am","ia","ia-001","id","id-id","ig","ig-ng","ii","ii-cn","ja","ja-jp","jgo","jgo-cm","jmc","jmc-tz","jv","jv-id","ka","ka-ge","kab","kab-dz","kam","kam-ke","kde","kde-tz","kea","kea-cv","khq","khq-ml","ki","ki-ke","kk","kk-kz","kkj","kkj-cm","kl","kl-gl","kln","kln-ke","km","km-kh","kn","kn-in","ko","ko-kp","ko-kr","kok","kok-in","ks","ks-in","ksb","ksb-tz","ksf","ksf-cm","ku","ku-tr","ky","ky-kg","lag","lag-tz","lg","lg-ug","lkt","lkt-us","ln","ln-ao","ln-cd","ln-cf","ln-cg","lo","lo-la","lrc","lrc-iq","lrc-ir","lu","lu-cd","luo","luo-ke","luy","luy-ke","lv","lv-lv","mas","mas-ke","mas-tz","mer","mer-ke","mfe","mfe-mu","mg","mg-mg","mgh","mgh-mz","mgo","mgo-cm","mi","mi-nz","mk","mk-mk","ml","ml-in","mn","mn-mn","mr","mr-in","ms","ms-bn","ms-my","ms-sg","mt","mt-mt","mua","mua-cm","my","my-mm","mzn","mzn-ir","naq","naq-na","nd","nd-zw","ne","ne-in","ne-np","nl-aw","nl-bq","nl-cw","nl-sr","nl-sx","nmg","nmg-cm","nnh","nnh-cm","nus","nus-ss","nyn","nyn-ug","om","om-et","om-ke","or","or-in","os","os-ge","pa","pa-arab","pa-arab-pk","pa-guru","pa-guru-in","ps","ps-af","ps-pk","pt","pt-ao","pt-br","pt-cv","pt-gq","pt-gw","pt-mo","pt-mz","pt-st","pt-tl","qu","qu-bo","qu-ec","qu-pe","rn","rn-bi","ro","ro-md","ro-ro","rof","rof-tz","ru-by","ru-kg","ru-kz","ru-md","ru-ua","rw","rw-rw","rwk","rwk-tz","saq","saq-ke","sbp","sbp-tz","sd","sd-pk","seh","seh-mz","ses","ses-ml","sg","sg-cf","shi","shi-latn","shi-latn-ma","shi-tfng","shi-tfng-ma","si","si-lk","sl","sl-si","sn","sn-zw","so","so-dj","so-et","so-ke","so-so","sq","sq-al","sq-mk","sq-xk","sr","sr-cyrl","sr-cyrl-ba","sr-cyrl-me","sr-cyrl-rs","sr-cyrl-xk","sr-latn","sr-latn-ba","sr-latn-me","sr-latn-rs","sr-latn-xk","sw","sw-cd","sw-ke","sw-tz","sw-ug","ta","ta-in","ta-lk","ta-my","ta-sg","te","te-in","teo","teo-ke","teo-ug","tg","tg-tj","th","th-th","ti","ti-er","ti-et","tk","tk-tm","to","to-to","tr","tr-cy","tr-tr","twq","twq-ne","tzm","tzm-ma","ug","ug-cn","uk","uk-ua","ur","ur-in","ur-pk","uz","uz-arab","uz-arab-af","uz-cyrl","uz-cyrl-uz","uz-latn","uz-latn-uz","vai","vai-latn","vai-latn-lr","vai-vaii","vai-vaii-lr","vi","vi-vn","vun","vun-tz","wo","wo-sn","xh","xh-za","xog","xog-ug","yav","yav-cm","yi","yi-001","yo","yo-bj","yo-ng","yue","yue-hans","yue-hans-cn","yue-hant","yue-hant-hk","zgh","zgh-ma","zh","zh-hans","zh-hans-cn","zh-hans-hk","zh-hans-mo","zh-hans-sg","zh-hant","zh-hant-hk","zh-hant-mo","zh-hant-tw","zu","zu-za"],"4":["ast","ast-es","bg","bg-bg","br","br-fr","ca","ca-ad","ca-es","ca-fr","ca-it","ce","ce-ru","cs","cs-cz","cy","cy-gb","da","da-dk","de","de-at","de-be","de-ch","de-de","de-it","de-li","de-lu","dsb","dsb-de","el","el-gr","en-at","en-be","en-ch","en-de","en-dk","en-fi","en-fj","en-gb","en-gg","en-gi","en-ie","en-im","en-je","en-nl","en-se","es","es-es","et","et-ee","eu","eu-es","fi","fi-fi","fo","fo-dk","fo-fo","fr","fr-be","fr-ch","fr-fr","fr-gf","fr-gp","fr-lu","fr-mc","fr-mq","fr-re","fur","fur-it","fy","fy-nl","ga","ga-gb","ga-ie","gd","gd-gb","gl","gl-es","gsw","gsw-ch","gsw-fr","gsw-li","gv","gv-im","hsb","hsb-de","hu","hu-hu","is","is-is","it","it-ch","it-it","it-sm","it-va","ksh","ksh-de","kw","kw-gb","lb","lb-lu","lt","lt-lt","nb","nb-no","nb-sj","nds","nds-de","nds-nl","nl","nl-be","nl-nl","nn","nn-no","os-ru","pl","pl-pl","pt-ch","pt-lu","pt-pt","rm","rm-ch","ru","ru-ru","sah","sah-ru","se","se-fi","se-no","se-se","sk","sk-sk","smn","smn-fi","sv","sv-ax","sv-fi","sv-se","tt","tt-ru","wae","wae-ch"]};
+    DateFormatter._minimumDays = {"4":["ast","bg","br","ca","ce","cs","cy","da","de","dsb","el","en-at","en-be","en-ch","en-de","en-dk","en-fi","en-fj","en-gb","en-gg","en-gi","en-ie","en-im","en-je","en-nl","en-se","es","et","eu","fi","fo","fr","fur","fy","ga","gd","gl","gsw","gv","hsb","hu","is","it","ksh","kw","lb","lt","nb","nds","nl","nn","os-ru","pl","pt-ch","pt-lu","pt-pt","rm","ru","sah","se","sk","smn","sv","tt","wae"]};
     /**
      * DateFormatter Helpers
      */
@@ -1462,8 +1462,8 @@
         },
 
         /**
-         * Get the ISO year in current timeZone.
-         * @returns {number} The ISO year.
+         * Get the week year in current timeZone.
+         * @returns {number} The week year.
          */
         getWeekYear() {
             const minimumDays = this.formatter.minimumDays();
@@ -2639,7 +2639,8 @@
          * @returns {number} The number of weeks in the current ISO year.
          */
         weeksInYear() {
-            return this.clone().setMonth(12, 28).getWeek();
+            const minimumDays = this.formatter.minimumDays();
+            return this.clone().setMonth(12, 24 + minimumDays).getWeek();
         }
 
     });
@@ -2700,8 +2701,6 @@
          */
         fromFormat(formatString, dateString, options = {}) {
             const formatter = DateFormatter.load(options.locale),
-                originalFormat = formatString,
-                originalString = dateString,
                 values = [];
 
             let match;
@@ -2773,6 +2772,10 @@
 
             for (const subKeys of this._parseOrderKeys) {
                 for (const subKey of subKeys) {
+                    if (subKey === 'era' && !values.find(data => data.key === 'year')) {
+                        continue;
+                    }
+
                     for (const data of values) {
                         const { key, value, literal, token, length } = data;
 
@@ -2977,7 +2980,10 @@
                     set: (datetime, value) => datetime.setWeekYear(value)
                 },
                 year: {
-                    get: datetime => datetime.getYear(),
+                    get: datetime => {
+                        const year = datetime.getYear();
+                        return Math.abs(year);
+                    },
                     set: (datetime, value) => datetime.setYear(value)
                 }
             };

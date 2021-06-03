@@ -179,8 +179,8 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the ISO year in current timeZone.
-     * @returns {number} The ISO year.
+     * Get the week year in current timeZone.
+     * @returns {number} The week year.
      */
     getWeekYear() {
         const minimumDays = this.formatter.minimumDays();
