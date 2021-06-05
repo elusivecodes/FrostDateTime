@@ -433,6 +433,7 @@
             input: (formatter, value, length) => {
                 switch (length) {
                     case 5:
+                        return null;
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -472,6 +473,7 @@
             input: (formatter, value, length) => {
                 switch (length) {
                     case 5:
+                        return null;
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -564,6 +566,10 @@
                 return formatter.getDays(type, false).join('|');
             },
             input: (formatter, value, length) => {
+                if (length === 5) {
+                    return null;
+                }
+
                 const type = DateFormatter.getType(length);
                 return formatter.parseDay(value, type, false);
             },
@@ -592,6 +598,7 @@
             input: (formatter, value, length) => {
                 switch (length) {
                     case 5:
+                        return null;
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -633,6 +640,7 @@
             input: (formatter, value, length) => {
                 switch (length) {
                     case 5:
+                        return null;
                     case 4:
                     case 3:
                         const type = DateFormatter.getType(length);
@@ -1886,42 +1894,6 @@
         },
 
         /**
-         * Compare this DateTime with another date.
-         * @param {DateTime} other The date to compare to.
-         * @param {string} granularity The level of granularity to use for comparison.
-         * @param {function} callback The callback to compare the difference in values.
-         * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
-         */
-        _compare(other, granularity, callback) {
-            if (!granularity) {
-                const timeDiff = this.getTime()
-                    - other.getTime();
-                return callback(timeDiff) >= 0;
-            }
-
-            granularity = granularity.toLowerCase();
-
-            for (const lookup of this.constructor._compareLookup) {
-                const preCheck = !lookup.values.includes(granularity);
-                const method = lookup.method;
-                const diff = this[method]() - other[method]();
-                const result = callback(diff, preCheck);
-
-                if (result < 0) {
-                    return false;
-                } else if (result > 0) {
-                    return true;
-                }
-
-                if (!preCheck) {
-                    break;
-                }
-            }
-
-            return true;
-        },
-
-        /**
          * Compensate the difference between this and another Date.
          * @param {number} amount The amount to compensate.
          * @param {DateTime} [other] The date to compare to.
@@ -2467,21 +2439,7 @@
          * @returns {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
          */
         isAfter(other, granularity) {
-            return this._compare(
-                other,
-                granularity,
-                (diff, preCheck) => {
-                    if (diff > 0) {
-                        return 1;
-                    }
-
-                    if (diff < 0 || (!diff && !preCheck)) {
-                        return -1;
-                    }
-
-                    return 0;
-                }
-            );
+            return this.diff(other, granularity) > 0;
         },
 
         /**
@@ -2491,21 +2449,7 @@
          * @returns {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
          */
         isBefore(other, granularity) {
-            return this._compare(
-                other,
-                granularity,
-                (diff, preCheck) => {
-                    if (diff < 0) {
-                        return 1;
-                    }
-
-                    if (diff > 0 || (!diff && !preCheck)) {
-                        return -1;
-                    }
-
-                    return 0;
-                }
-            );
+            return this.diff(other, granularity) < 0;
         },
 
         /**
@@ -2516,8 +2460,7 @@
          * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
          */
         isBetween(start, end, granularity) {
-            return this.isAfter(start, granularity) &&
-                this.isBefore(end, granularity);
+            return this.diff(start, granularity) > 0 && this.diff(end, granularity) < 0;
         },
 
         /**
@@ -2557,13 +2500,7 @@
          * @returns {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
          */
         isSame(other, granularity) {
-            return this._compare(
-                other,
-                granularity,
-                diff => diff ?
-                    -1 :
-                    0
-            );
+            return this.diff(other, granularity) === 0;
         },
 
         /**
@@ -2573,21 +2510,7 @@
          * @returns {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
          */
         isSameOrAfter(other, granularity) {
-            return this._compare(
-                other,
-                granularity,
-                diff => {
-                    if (diff > 0) {
-                        return 1;
-                    }
-
-                    if (diff < 0) {
-                        return -1;
-                    }
-
-                    return 0;
-                }
-            );
+            return this.diff(other, granularity) >= 0;
         },
 
         /**
@@ -2597,21 +2520,7 @@
          * @returns {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
          */
         isSameOrBefore(other, granularity) {
-            return this._compare(
-                other,
-                granularity,
-                diff => {
-                    if (diff < 0) {
-                        return 1;
-                    }
-
-                    if (diff > 0) {
-                        return -1;
-                    }
-
-                    return 0;
-                }
-            );
+            return this.diff(other, granularity) <= 0;
         },
 
         /**
@@ -2735,11 +2644,13 @@
                     throw new Error(`Unmatched token in DateTime string: ${token}`);
                 }
 
-                const literal = matchedValue[0],
-                    key = DateFormatter._formatDate[token].key,
-                    value = DateFormatter._formatDate[token].input(formatter, literal, length);
+                const literal = matchedValue[0];
+                const value = DateFormatter._formatDate[token].input(formatter, literal, length);
 
-                values.push({ key, value, literal, token, length });
+                if (value !== null) {
+                    const key = DateFormatter._formatDate[token].key;
+                    values.push({ key, value, literal, token, length });
+                }
 
                 dateString = dateString.substring(literal.length);
             }
@@ -2762,9 +2673,8 @@
             }
 
             let datetime = this.fromTimestamp(0, {
-                locale: options.locale,
-                timeZone
-            });
+                locale: options.locale
+            }).setYear(1).setTimeZone(timeZone);
 
             const methods = this._parseFactory();
 
@@ -3087,34 +2997,6 @@
             time: 'HH:mm:ss xx (VV)',
             w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
         },
-
-        // Comparison lookup
-        _compareLookup: [
-            {
-                values: ['year'],
-                method: 'getYear'
-            },
-            {
-                values: ['month'],
-                method: 'getMonth'
-            },
-            {
-                values: ['day', 'date'],
-                method: 'getDate'
-            },
-            {
-                values: ['hour'],
-                method: 'getHours'
-            },
-            {
-                values: ['minute'],
-                method: 'getMinutes'
-            },
-            {
-                values: ['second'],
-                method: 'getSeconds'
-            }
-        ],
 
         // Formatter locale
         _formatterLocale: 'en',

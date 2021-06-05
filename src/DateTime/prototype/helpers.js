@@ -49,42 +49,6 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Compare this DateTime with another date.
-     * @param {DateTime} other The date to compare to.
-     * @param {string} granularity The level of granularity to use for comparison.
-     * @param {function} callback The callback to compare the difference in values.
-     * @returns {Boolean} TRUE if the comparison test was passed for the level of granularity, otherwise FALSE.
-     */
-    _compare(other, granularity, callback) {
-        if (!granularity) {
-            const timeDiff = this.getTime()
-                - other.getTime();
-            return callback(timeDiff) >= 0;
-        }
-
-        granularity = granularity.toLowerCase();
-
-        for (const lookup of this.constructor._compareLookup) {
-            const preCheck = !lookup.values.includes(granularity);
-            const method = lookup.method;
-            const diff = this[method]() - other[method]();
-            const result = callback(diff, preCheck);
-
-            if (result < 0) {
-                return false;
-            } else if (result > 0) {
-                return true;
-            }
-
-            if (!preCheck) {
-                break;
-            }
-        }
-
-        return true;
-    },
-
-    /**
      * Compensate the difference between this and another Date.
      * @param {number} amount The amount to compensate.
      * @param {DateTime} [other] The date to compare to.

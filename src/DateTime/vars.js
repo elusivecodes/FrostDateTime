@@ -29,34 +29,6 @@ Object.assign(DateTime, {
         w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
     },
 
-    // Comparison lookup
-    _compareLookup: [
-        {
-            values: ['year'],
-            method: 'getYear'
-        },
-        {
-            values: ['month'],
-            method: 'getMonth'
-        },
-        {
-            values: ['day', 'date'],
-            method: 'getDate'
-        },
-        {
-            values: ['hour'],
-            method: 'getHours'
-        },
-        {
-            values: ['minute'],
-            method: 'getMinutes'
-        },
-        {
-            values: ['second'],
-            method: 'getSeconds'
-        }
-    ],
-
     // Formatter locale
     _formatterLocale: 'en',
 

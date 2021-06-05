@@ -88,11 +88,13 @@ Object.assign(DateTime, {
                 throw new Error(`Unmatched token in DateTime string: ${token}`);
             }
 
-            const literal = matchedValue[0],
-                key = DateFormatter._formatDate[token].key,
-                value = DateFormatter._formatDate[token].input(formatter, literal, length);
+            const literal = matchedValue[0];
+            const value = DateFormatter._formatDate[token].input(formatter, literal, length);
 
-            values.push({ key, value, literal, token, length });
+            if (value !== null) {
+                const key = DateFormatter._formatDate[token].key;
+                values.push({ key, value, literal, token, length });
+            }
 
             dateString = dateString.substring(literal.length);
         }
@@ -115,9 +117,8 @@ Object.assign(DateTime, {
         }
 
         let datetime = this.fromTimestamp(0, {
-            locale: options.locale,
-            timeZone
-        });
+            locale: options.locale
+        }).setYear(1).setTimeZone(timeZone);
 
         const methods = this._parseFactory();
 

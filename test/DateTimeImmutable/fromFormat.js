@@ -317,15 +317,15 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    describe('MMMMM - Month Name (Narrow)', function() {
-        it('parses month name', function() {
-            assert.strictEqual(
-                DateTimeImmutable.fromFormat('MMMMM', 'O')
-                    .getMonth(),
-                10
-            );
-        });
-    });
+    // describe('MMMMM - Month Name (Narrow)', function() {
+    //     it('parses month name', function() {
+    //         assert.strictEqual(
+    //             DateTimeImmutable.fromFormat('MMMMM', 'O')
+    //                 .getMonth(),
+    //             10
+    //         );
+    //     });
+    // });
 
     describe('L - Month (1-digit)', function() {
         it('parses month', function() {
@@ -383,15 +383,15 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    describe('LLLLL - Month Name (Narrow)', function() {
-        it('parses month name', function() {
-            assert.strictEqual(
-                DateTimeImmutable.fromFormat('LLLLL', 'O')
-                    .getMonth(),
-                10
-            );
-        });
-    });
+    // describe('LLLLL - Month Name (Narrow)', function() {
+    //     it('parses month name', function() {
+    //         assert.strictEqual(
+    //             DateTimeImmutable.fromFormat('LLLLL', 'O')
+    //                 .getMonth(),
+    //             10
+    //         );
+    //     });
+    // });
 
     /**
      * Week
@@ -571,15 +571,15 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    describe('EEEEE - Week Day (Narrow)', function() {
-        it('parses day name', function() {
-            assert.strictEqual(
-                DateTimeImmutable.fromFormat('EEEEE', 'F')
-                    .getWeekDay(),
-                6
-            );
-        });
-    });
+    // describe('EEEEE - Week Day (Narrow)', function() {
+    //     it('parses day name', function() {
+    //         assert.strictEqual(
+    //             DateTimeImmutable.fromFormat('EEEEE', 'F')
+    //                 .getWeekDay(),
+    //             6
+    //         );
+    //     });
+    // });
 
     describe('e - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -621,15 +621,15 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    describe('eeeee - Week Day (Narrow)', function() {
-        it('parses day name', function() {
-            assert.strictEqual(
-                DateTimeImmutable.fromFormat('eeeee', 'F')
-                    .getWeekDay(),
-                6
-            );
-        });
-    });
+    // describe('eeeee - Week Day (Narrow)', function() {
+    //     it('parses day name', function() {
+    //         assert.strictEqual(
+    //             DateTimeImmutable.fromFormat('eeeee', 'F')
+    //                 .getWeekDay(),
+    //             6
+    //         );
+    //     });
+    // });
 
     describe('c - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -671,15 +671,15 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    describe('ccccc - Week Day (Narrow)', function() {
-        it('parses day name', function() {
-            assert.strictEqual(
-                DateTimeImmutable.fromFormat('ccccc', 'F')
-                    .getWeekDay(),
-                6
-            );
-        });
-    });
+    // describe('ccccc - Week Day (Narrow)', function() {
+    //     it('parses day name', function() {
+    //         assert.strictEqual(
+    //             DateTimeImmutable.fromFormat('ccccc', 'F')
+    //                 .getWeekDay(),
+    //             6
+    //         );
+    //     });
+    // });
 
     /**
      * Day Period
@@ -706,7 +706,7 @@ describe('DateTimeImmutable #fromFormat', function() {
     describe('aaaa - Day Period (Long)', function() {
         it('parses AM day period', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('aaa', 'AM')
+                DateTimeImmutable.fromFormat('aaaa', 'AM')
                     .getHours(),
                 0
             );
@@ -714,7 +714,7 @@ describe('DateTimeImmutable #fromFormat', function() {
 
         it('parses pm day period', function() {
             assert.strictEqual(
-                DateTimeImmutable.fromFormat('aaa', 'PM')
+                DateTimeImmutable.fromFormat('aaaa', 'PM')
                     .getHours(),
                 12
             );
@@ -1179,19 +1179,19 @@ describe('DateTimeImmutable #fromFormat', function() {
         });
     });
 
-    it('works with narrow month names when month is specified prior', function() {
-        assert.strictEqual(
-            DateTimeImmutable.fromFormat('yyyy-MM MMMMM', '2019-06 J').isValid,
-            true
-        );
-    });
+    // it('works with narrow month names when month is specified prior', function() {
+    //     assert.strictEqual(
+    //         DateTimeImmutable.fromFormat('yyyy-MM MMMMM', '2019-06 J').isValid,
+    //         true
+    //     );
+    // });
 
-    it('works with narrow day names when date is specified prior', function() {
-        assert.strictEqual(
-            DateTimeImmutable.fromFormat('yyyy-MM-dd EEEEE', '2019-01-03 T').isValid,
-            true
-        );
-    });
+    // it('works with narrow day names when date is specified prior', function() {
+    //     assert.strictEqual(
+    //         DateTimeImmutable.fromFormat('yyyy-MM-dd EEEEE', '2019-01-03 T').isValid,
+    //         true
+    //     );
+    // });
 
     it('returns a new DateTimeImmutable', function() {
         assert.ok(

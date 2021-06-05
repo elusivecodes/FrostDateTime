@@ -206,21 +206,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
      */
     isAfter(other, granularity) {
-        return this._compare(
-            other,
-            granularity,
-            (diff, preCheck) => {
-                if (diff > 0) {
-                    return 1;
-                }
-
-                if (diff < 0 || (!diff && !preCheck)) {
-                    return -1;
-                }
-
-                return 0;
-            }
-        );
+        return this.diff(other, granularity) > 0;
     },
 
     /**
@@ -230,21 +216,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
      */
     isBefore(other, granularity) {
-        return this._compare(
-            other,
-            granularity,
-            (diff, preCheck) => {
-                if (diff < 0) {
-                    return 1;
-                }
-
-                if (diff > 0 || (!diff && !preCheck)) {
-                    return -1;
-                }
-
-                return 0;
-            }
-        );
+        return this.diff(other, granularity) < 0;
     },
 
     /**
@@ -255,8 +227,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
      */
     isBetween(start, end, granularity) {
-        return this.isAfter(start, granularity) &&
-            this.isBefore(end, granularity);
+        return this.diff(start, granularity) > 0 && this.diff(end, granularity) < 0;
     },
 
     /**
@@ -296,13 +267,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
      */
     isSame(other, granularity) {
-        return this._compare(
-            other,
-            granularity,
-            diff => diff ?
-                -1 :
-                0
-        );
+        return this.diff(other, granularity) === 0;
     },
 
     /**
@@ -312,21 +277,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
      */
     isSameOrAfter(other, granularity) {
-        return this._compare(
-            other,
-            granularity,
-            diff => {
-                if (diff > 0) {
-                    return 1;
-                }
-
-                if (diff < 0) {
-                    return -1;
-                }
-
-                return 0;
-            }
-        );
+        return this.diff(other, granularity) >= 0;
     },
 
     /**
@@ -336,21 +287,7 @@ Object.assign(DateTime.prototype, {
      * @returns {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
      */
     isSameOrBefore(other, granularity) {
-        return this._compare(
-            other,
-            granularity,
-            diff => {
-                if (diff < 0) {
-                    return 1;
-                }
-
-                if (diff > 0) {
-                    return -1;
-                }
-
-                return 0;
-            }
-        );
+        return this.diff(other, granularity) <= 0;
     },
 
     /**

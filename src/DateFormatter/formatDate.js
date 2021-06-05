@@ -124,6 +124,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             switch (length) {
                 case 5:
+                    return null;
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
@@ -163,6 +164,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             switch (length) {
                 case 5:
+                    return null;
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
@@ -255,6 +257,10 @@ DateFormatter._formatDate = {
             return formatter.getDays(type, false).join('|');
         },
         input: (formatter, value, length) => {
+            if (length === 5) {
+                return null;
+            }
+
             const type = DateFormatter.getType(length);
             return formatter.parseDay(value, type, false);
         },
@@ -283,6 +289,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             switch (length) {
                 case 5:
+                    return null;
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
@@ -324,6 +331,7 @@ DateFormatter._formatDate = {
         input: (formatter, value, length) => {
             switch (length) {
                 case 5:
+                    return null;
                 case 4:
                 case 3:
                     const type = DateFormatter.getType(length);
