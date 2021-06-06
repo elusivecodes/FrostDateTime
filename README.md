@@ -769,7 +769,7 @@ DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('y
 Return *true* if the *DateTime* is after another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isAfter = date.isAfter(other, granularity);
@@ -782,7 +782,7 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is before another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isBefore = date.isBefore(other, granularity);
@@ -796,7 +796,7 @@ Return *true* if the *DateTime* is between two other dates.
 
 - `start` is the starting *DateTime* object to compare to.
 - `end` is the ending *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isBetween = date.isBetween(start, end, granularity);
@@ -825,7 +825,7 @@ const isLeapYear = date.isLeapYear();
 Return *true* if the *DateTime* is the same as another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isSame = date.isSame(other, granularity);
@@ -838,7 +838,7 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is the same or after another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isSameOrAfter = date.isSameOrAfter(other, granularity);
@@ -851,7 +851,7 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is the same or before another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*date*", "*day*", "*hour*", "*minute*" or "*second*".
+- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
 const isSameOrBefore = date.isSameOrBefore(other, granularity);
