@@ -63,7 +63,7 @@ describe('DateTime Utility', function() {
             }
         });
 
-        it('works with minimal names', function() {
+        it('works with narrow names', function() {
             const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
             for (const i in dayNames) {
                 assert.strictEqual(
@@ -127,6 +127,24 @@ describe('DateTime Utility', function() {
                 DateTime.fromArray([2020, 2, 1])
                     .daysInMonth(),
                 29
+            );
+        });
+    });
+
+    describe('#daysInYear', function() {
+        it('returns the days in the year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1])
+                    .daysInYear(),
+                365
+            );
+        });
+
+        it('works with leap years', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2020, 1, 1])
+                    .daysInYear(),
+                366
             );
         });
     });
@@ -238,6 +256,69 @@ describe('DateTime Utility', function() {
                     monthNames[i]
                 );
             }
+        });
+
+        it('works with narrow names', function() {
+            const monthNames = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+            for (const i of [...new Array(12).keys()]) {
+                assert.strictEqual(
+                    DateTime.fromArray([2019, parseInt(i) + 1, 1])
+                        .monthName('narrow'),
+                    monthNames[i]
+                );
+            }
+        });
+    });
+
+    describe('#timeZoneName', function() {
+        it('returns the time zone name', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018], { timeZone: 'Australia/Brisbane' })
+                    .timeZoneName(),
+                'Australian Eastern Standard Time'
+            );
+        });
+
+        it('works with time zone offsets', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018], { timeZone: '+10:00' })
+                    .timeZoneName(),
+                'GMT+10:00'
+            );
+        });
+
+        it('works with short time zone names', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018], { timeZone: 'Australia/Brisbane' })
+                    .timeZoneName('short'),
+                'GMT+10'
+            );
+        });
+
+        it('works with short time zone offsets', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018], { timeZone: '+10:00' })
+                    .timeZoneName('short'),
+                'GMT+10'
+            );
+        });
+    });
+
+    describe('#weeksInYear', function() {
+        it('returns the weeks in the year', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 1, 1])
+                    .weeksInYear(),
+                52
+            );
+        });
+
+        it('uses local weeks', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2016, 1, 1])
+                    .weeksInYear(),
+                53
+            );
         });
     });
 

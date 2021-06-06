@@ -2540,7 +2540,7 @@
         timeZoneName(type = 'long') {
             return this._dynamicTz ?
                 this.formatter.formatTimeZoneName(this._utcDate, this.getTimeZone(), type) :
-                DateFormatter.formatOffset(this.getTimeZoneOffset(), true, type === 'short');
+                'GMT' + DateFormatter.formatOffset(this.getTimeZoneOffset(), true, type === 'short');
         },
 
         /**
