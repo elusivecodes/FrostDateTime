@@ -77,10 +77,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The quarter of the year. (1, 4)
      */
     getQuarter() {
-        return Math.ceil(
-            (this.getMonth() + 1)
-            / 3
-        );
+        return Math.ceil(this.getMonth() / 3);
     },
 
     /**
@@ -104,8 +101,7 @@ Object.assign(DateTime.prototype, {
      * @returns {number} The number of seconds since the UNIX epoch.
      */
     getTimestamp() {
-        return this.getTime()
-            / 1000;
+        return Math.floor(this.getTime() / 1000);
     },
 
     /**

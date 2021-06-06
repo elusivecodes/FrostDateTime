@@ -1,6 +1,6 @@
-const { DateFormatter, DateTime } = require('../dist/frost-datetime.min');
+const { DateTime } = require('../dist/frost-datetime.min');
 
 before(async function() {
-    DateFormatter.defaultLocale = 'en';
-    DateTime.defaultTimeZone = 'UTC';
+    DateTime.setDefaultLocale('en');
+    DateTime.setDefaultTimeZone('UTC');
 });

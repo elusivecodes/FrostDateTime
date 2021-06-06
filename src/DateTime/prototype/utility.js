@@ -9,10 +9,18 @@ Object.assign(DateTime.prototype, {
      * @returns {DateTime} A new DateTime object.
      */
     clone() {
-        return this.constructor.fromTimestamp(this.getTimestamp(), {
+        const date = this.constructor.fromTimestamp(this.getTimestamp(), {
             locale: this.getLocale(),
             timeZone: this.getTimeZone()
         });
+
+        const milliseconds = this.getMilliseconds();
+
+        if (!milliseconds) {
+            return date;
+        }
+
+        return date.setMilliseconds(milliseconds);
     },
 
     /**
@@ -311,8 +319,8 @@ Object.assign(DateTime.prototype, {
     },
 
     /**
-     * Get the number of weeks in the current ISO year.
-     * @returns {number} The number of weeks in the current ISO year.
+     * Get the number of weeks in the current year.
+     * @returns {number} The number of weeks in the current year.
      */
     weeksInYear() {
         const minimumDays = this.formatter.minimumDays();

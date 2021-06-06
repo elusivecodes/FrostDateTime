@@ -4,12 +4,6 @@
 
 Object.assign(DateTime, {
 
-    // Whether to clamp current date when adjusting month
-    clampDates: true,
-
-    // Default timeZone
-    defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-
     // Formats
     formats: {
         atom: `yyyy-MM-dd'T'HH:mm:ssxxx`,
@@ -28,6 +22,15 @@ Object.assign(DateTime, {
         time: 'HH:mm:ss xx (VV)',
         w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
     },
+
+    // Whether to clamp current date when adjusting month
+    _clampDates: true,
+
+    // Default locale
+    _defaultLocale: Intl.DateTimeFormat().resolvedOptions().locale,
+
+    // Default timeZone
+    _defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
     // Formatter locale
     _formatterLocale: 'en',

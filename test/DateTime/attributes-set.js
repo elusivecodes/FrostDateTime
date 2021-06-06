@@ -329,7 +329,7 @@ describe('DateTime Attributes Set', function() {
         });
 
         it('works with clampDates false', function() {
-            DateTime.clampDates = false;
+            DateTime.setDateClamping(false);
             const date1 = DateTime.fromArray([2019, 1, 31]);
             const date2 = date1.setMonth(2);
             assert.strictEqual(
@@ -340,7 +340,7 @@ describe('DateTime Attributes Set', function() {
                 date1,
                 date2
             );
-            DateTime.clampDates = true;
+            DateTime.setDateClamping(true);
         });
     });
 

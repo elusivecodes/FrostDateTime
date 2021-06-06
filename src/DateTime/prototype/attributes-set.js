@@ -75,9 +75,9 @@ Object.assign(DateTime.prototype, {
      * @param {number} milliseconds The milliseconds.
      * @returns {DateTime} The DateTime object.
      */
-    setMilliseconds(ms) {
+    setMilliseconds(milliseconds) {
         return this._setOffsetTime(
-            new Date(this._getOffsetTime()).setUTCMilliseconds(ms)
+            new Date(this._getOffsetTime()).setUTCMilliseconds(milliseconds)
         );
     },
 
@@ -97,14 +97,14 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the month in current timeZone (and optionally, date).
      * @param {number} month The month. (1, 12)
-     * @param {null|number} [date] The date of the month.
+     * @param {number|null} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setMonth(month, date = null) {
         if (date === null) {
             date = this.getDate();
 
-            if (this.constructor.clampDates) {
+            if (this.constructor._clampDates) {
                 date = Math.min(
                     date,
                     this.constructor.daysInMonth(
@@ -176,17 +176,14 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the current timeZone.
      * @param {string} timeZone The name of the timeZone.
-     * @param {Boolean} [adjust=false] Whether to adjust the timestamp.
      * @returns {DateTime} The DateTime object.
      */
-    setTimeZone(timeZone, adjust = false) {
+    setTimeZone(timeZone) {
         if (['Z', 'GMT'].includes(timeZone)) {
             timeZone = 'UTC';
         }
 
         this._dynamicTz = false;
-
-        const offset = this._offset;
 
         const match = timeZone.match(this.constructor._offsetRegExp);
         if (match) {
@@ -211,14 +208,6 @@ Object.assign(DateTime.prototype, {
             this._checkOffset();
         }
 
-        // compensate for DST transitions
-        if (adjust && offset !== this._offset) {
-            this._utcDate.setTime(
-                this._utcDate.getTime()
-                - (offset - this._offset) * 60000
-            );
-        }
-
         return this;
     },
 
@@ -239,7 +228,7 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the local day of the week in current timeZone (and optionally, day of the week).
      * @param {number} week The local week.
-     * @param {null|number} [day] The local day of the week. (1 - 7)
+     * @param {number|null} [day] The local day of the week. (1 - 7)
      * @returns {DateTime} The DateTime object.
      */
     setWeek(week, day = null) {
@@ -299,8 +288,8 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the local day of the week in current timeZone (and optionally, week and day of the week).
      * @param {number} year The local year.
-     * @param {null|number} [week] The local week.
-     * @param {null|number} [day] The local day of the week. (1 - 7)
+     * @param {number|null} [week] The local week.
+     * @param {number|null} [day] The local day of the week. (1 - 7)
      * @returns {DateTime} The DateTime object.
      */
     setWeekYear(year, week = null, day = null) {
@@ -323,8 +312,8 @@ Object.assign(DateTime.prototype, {
     /**
      * Set the year in current timeZone (and optionally, month and date).
      * @param {number} year The year.
-     * @param {null|number} [month] The month. (1, 12)
-     * @param {null|number} [date] The date of the month.
+     * @param {number|null} [month] The month. (1, 12)
+     * @param {number|null} [date] The date of the month.
      * @returns {DateTime} The DateTime object.
      */
     setYear(year, month = null, date = null) {
@@ -332,7 +321,7 @@ Object.assign(DateTime.prototype, {
             month = this.getMonth();
         }
 
-        if (this.constructor.clampDates && date === null) {
+        if (this.constructor._clampDates && date === null) {
             date = Math.min(
                 this.getDate(),
                 this.constructor.daysInMonth(

@@ -45,8 +45,8 @@ const { DateTime, DateTimeImmutable } = require('frostdatetime');
 
 - `dateString` is a string representing the date, and will default to the current timestamp.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
 const date = new DateTime(dateString, options);
@@ -66,8 +66,8 @@ const date = new DateTimeImmutable(dateString, options);
 
 - `dateArray` is an array containing the year, month, date, hours, minutes, seconds and milliseconds.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
 const date = DateTime.fromArray(dateArray, options);
@@ -79,8 +79,8 @@ The month and date in the `dateArray` will default to 1 if not set. The hours, m
 
 - `dateObj` is a native JS *Date* object.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
 const date = DateTime.fromDate(dateObj, options);
@@ -93,12 +93,10 @@ If you wish to parse a date string and you know the exact format, you can use th
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 The `formatString` supports a subset of the ICU specification described in [Formats](Formats.md).
-
-If the `dateString` contains time zone or offset information, and the `timeZone` option is also passed, the created *DateTime* will be converted to the new `timeZone`, otherwise the `timeZone` will be used during date creation.
 
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
@@ -110,8 +108,8 @@ const date = DateTime.fromFormat(formatString, dateString, options);
 
 - `dateString` is a string representing the date you are parsing.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to English.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to English.
 
 The `dateString` must be in *yyyy-MM-dd'T'HH:mm:ss.SSSxxx*" format and in English.
 
@@ -127,8 +125,8 @@ const date = DateTime.fromISOString(dateString, options);
 
 - `timestamp` is the number of seconds since the UNIX epoch.
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
 const date = DateTime.fromTimestamp(timestamp, options);
@@ -137,8 +135,8 @@ const date = DateTime.fromTimestamp(timestamp, options);
 **Now**
 
 - `options` is an object containing properties to define the new date.
-    - `locale` is a string representing the locale of the date, and will default to the system locale.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
+    - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
 const date = DateTime.now(options);
@@ -297,7 +295,7 @@ Set the month in current time zone.
 
 If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
 
-To disable date clamping, set the property `DateTime.clampDates` to *false*.
+To disable date clamping, use the method `DateTime.setDateClamping()` using *false* as the argument.
 
 ```javascript
 date.setMonth(month, date);
@@ -323,7 +321,7 @@ Set the year in current time zone.
 
 If the `date` argument is omitted, and the new month contains less days than the current date, the date will be set to the last day of the new month.
 
-To disable date clamping, set the property `DateTime.clampDates` to *false*.
+To disable date clamping, use the method `DateTime.setDateClamping()` using *false* as the argument.
 
 ```javascript
 date.setYear(year, month, date);
@@ -452,10 +450,10 @@ const hours = date.getHours();
 
 Get the milliseconds of the second in current time zone.
 
-The `millis` returned will be between *0* and *999*.
+The `milliseconds` returned will be between *0* and *999*.
 
 ```javascript
-const millis = date.getMilliseconds();
+const milliseconds = date.getMilliseconds();
 ```
 
 **Get Minutes**
@@ -485,20 +483,20 @@ Set the hours of the day in current time zone.
 - `hours` is a number representing the hours of the day (between *0* and *23*).
 - `minutes` is a number representing the minutes of the hour (between *0* and *59*), and will default to the current value.
 - `seconds` is a number representing the seconds of the minute (between *0* and *59*), and will default to the current value.
-- `millis` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
+- `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setHours(hours, minutes, seconds, millis);
+date.setHours(hours, minutes, seconds, milliseconds);
 ```
 
 **Set Milliseconds**
 
 Set the milliseconds of the second in current time zone.
 
-- `millis` is a number representing the milliseconds of the second (between *0* and *999*).
+- `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*).
 
 ```javascript
-date.setMilliseconds(millis);
+date.setMilliseconds(milliseconds);
 ```
 
 **Set Minutes**
@@ -507,10 +505,10 @@ Set the minutes of the hour in current time zone.
 
 - `minutes` is a number representing the minutes of the hour (between *0* and *59*).
 - `seconds` is a number representing the seconds of the minute (between *0* and *59*), and will default to the current value.
-- `millis` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
+- `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setMinutes(minutes, seconds, millis);
+date.setMinutes(minutes, seconds, milliseconds);
 ```
 
 **Set Seconds**
@@ -518,10 +516,10 @@ date.setMinutes(minutes, seconds, millis);
 Set the seconds of the minute in current time zone.
 
 - `seconds` is a number representing the seconds of the minute (between *0* and *59*).
-- `millis` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
+- `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setSeconds(seconds, millis);
+date.setSeconds(seconds, milliseconds);
 ```
 
 
@@ -583,10 +581,19 @@ const offset = date.getTimeZoneOffset();
 Set the current time zone.
 
 - `timeZone` is the name of the new time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
-- `adjust` is a boolean indicating whether to negate a difference in the offset, and will default to *false*.
 
 ```javascript
-date.setTimeZone(timeZone, adjust);
+date.setTimeZone(timeZone);
+```
+
+**Set Time Zone Offset**
+
+Set the UTC offset (in minutes).
+
+- `offset` is the UTC offset (in minutes).
+
+```javascript
+date.setTimeZoneOffset(offset);
 ```
 
 
@@ -607,7 +614,7 @@ Set the current locale.
 - `locale` is the name of the new locale.
 
 ```javascript
-date.setLocale(timeZone, locale);
+date.setLocale(locale);
 ```
 
 
@@ -924,4 +931,34 @@ Return *true* if the year is a leap year.
 
 ```javascript
 const isLeapYear = DateTime.isLeapYear(year);
+```
+
+**Set Date Clamping**
+
+Set whether dates will be clamped when changing months.
+
+- `clampDates` is a boolean indicating whether to clamp dates.
+
+```javascript
+DateTime.setDateClamping(clampDates);
+```
+
+**Set Default Locale**
+
+Set the default locale.
+
+- `locale` is the name of the locale.
+
+```javascript
+DateTime.setDefaultLocale(locale);
+```
+
+**Set Default Time Zone**
+
+Set the default time zone.
+
+- `timeZone` is the name of the time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
+
+```javascript
+DateTime.setDefaultTimeZone(timeZone);
 ```

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { DateTimeImmutable } = require('../../dist/frost-datetime.min');
+const { DateTime, DateTimeImmutable } = require('../../dist/frost-datetime.min');
 
 describe('DateTimeImmutable Attributes Set', function() {
 
@@ -329,7 +329,7 @@ describe('DateTimeImmutable Attributes Set', function() {
         });
 
         it('works with clampDates false', function() {
-            DateTimeImmutable.clampDates = false;
+            DateTime.setDateClamping(false);
             const date1 = DateTimeImmutable.fromArray([2019, 1, 31]);
             const date2 = date1.setMonth(2);
             assert.strictEqual(
@@ -340,7 +340,7 @@ describe('DateTimeImmutable Attributes Set', function() {
                 date2.toISOString(),
                 '2019-03-03T00:00:00.000+00:00'
             );
-            DateTimeImmutable.clampDates = true;
+            DateTime.setDateClamping(true);
         });
     });
 

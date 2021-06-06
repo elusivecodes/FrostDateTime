@@ -6,10 +6,10 @@ class DateTime {
 
     /**
      * New DateTime constructor.
-     * @param {null|string} [dateString] The date to parse.
+     * @param {string|null} [dateString] The date to parse.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     constructor(dateString = null, options = {}) {
@@ -45,7 +45,7 @@ class DateTime {
         let timeZone = options.timeZone;
 
         if (!timeZone) {
-            timeZone = this.constructor.defaultTimeZone;
+            timeZone = this.constructor._defaultTimeZone;
         }
 
         if (['Z', 'GMT'].includes(timeZone)) {
@@ -77,6 +77,10 @@ class DateTime {
 
         if (adjustOffset) {
             this._adjustOffset();
+        }
+
+        if (!('locale' in options)) {
+            options.locale = this.constructor._defaultLocale;
         }
 
         this.formatter = DateFormatter.load(options.locale);

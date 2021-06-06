@@ -60,6 +60,30 @@ Object.assign(DateTime, {
     isLeapYear(year) {
         return new Date(year, 1, 29)
             .getDate() === 29;
+    },
+
+    /**
+     * Set whether dates will be clamped when changing months.
+     * @param {Boolean} clampDates Whether to clamp dates.
+     */
+    setDateClamping(clampDates) {
+        this._clampDates = clampDates;
+    },
+
+    /**
+     * Set the default locale.
+     * @param {string} locale The locale.
+     */
+    setDefaultLocale(locale) {
+        this._defaultLocale = locale;
+    },
+
+    /**
+     * Set the default timeZone.
+     * @param {string} timeZone The name of the timeZone.
+     */
+    setDefaultTimeZone(timeZone) {
+        this._defaultTimeZone = timeZone;
     }
 
 });

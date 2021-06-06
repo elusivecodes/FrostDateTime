@@ -271,10 +271,6 @@
          * @returns {DateFormatter} The cached DateFormatter object.
          */
         static load(locale) {
-            if (!locale) {
-                locale = this.defaultLocale;
-            }
-
             if (!(locale in this._formatters)) {
                 this._formatters[locale] = new this(locale);
             }
@@ -288,10 +284,6 @@
          * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
          */
         static loadRelative(locale) {
-            if (!locale) {
-                locale = this.defaultLocale;
-            }
-
             if (!(locale in this._relativeFormatters)) {
                 this._relativeFormatters[locale] = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
             }
@@ -300,8 +292,6 @@
         }
 
     }
-
-    DateFormatter.defaultLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     // Cached formatters
     DateFormatter._formatters = {};
@@ -1128,10 +1118,10 @@
 
         /**
          * New DateTime constructor.
-         * @param {null|string} [dateString] The date to parse.
+         * @param {string|null} [dateString] The date to parse.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         constructor(dateString = null, options = {}) {
@@ -1167,7 +1157,7 @@
             let timeZone = options.timeZone;
 
             if (!timeZone) {
-                timeZone = this.constructor.defaultTimeZone;
+                timeZone = this.constructor._defaultTimeZone;
             }
 
             if (['Z', 'GMT'].includes(timeZone)) {
@@ -1199,6 +1189,10 @@
 
             if (adjustOffset) {
                 this._adjustOffset();
+            }
+
+            if (!('locale' in options)) {
+                options.locale = this.constructor._defaultLocale;
             }
 
             this.formatter = DateFormatter.load(options.locale);
@@ -1368,10 +1362,7 @@
          * @returns {number} The quarter of the year. (1, 4)
          */
         getQuarter() {
-            return Math.ceil(
-                (this.getMonth() + 1)
-                / 3
-            );
+            return Math.ceil(this.getMonth() / 3);
         },
 
         /**
@@ -1395,8 +1386,7 @@
          * @returns {number} The number of seconds since the UNIX epoch.
          */
         getTimestamp() {
-            return this.getTime()
-                / 1000;
+            return Math.floor(this.getTime() / 1000);
         },
 
         /**
@@ -1565,9 +1555,9 @@
          * @param {number} milliseconds The milliseconds.
          * @returns {DateTime} The DateTime object.
          */
-        setMilliseconds(ms) {
+        setMilliseconds(milliseconds) {
             return this._setOffsetTime(
-                new Date(this._getOffsetTime()).setUTCMilliseconds(ms)
+                new Date(this._getOffsetTime()).setUTCMilliseconds(milliseconds)
             );
         },
 
@@ -1587,14 +1577,14 @@
         /**
          * Set the month in current timeZone (and optionally, date).
          * @param {number} month The month. (1, 12)
-         * @param {null|number} [date] The date of the month.
+         * @param {number|null} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
         setMonth(month, date = null) {
             if (date === null) {
                 date = this.getDate();
 
-                if (this.constructor.clampDates) {
+                if (this.constructor._clampDates) {
                     date = Math.min(
                         date,
                         this.constructor.daysInMonth(
@@ -1666,17 +1656,14 @@
         /**
          * Set the current timeZone.
          * @param {string} timeZone The name of the timeZone.
-         * @param {Boolean} [adjust=false] Whether to adjust the timestamp.
          * @returns {DateTime} The DateTime object.
          */
-        setTimeZone(timeZone, adjust = false) {
+        setTimeZone(timeZone) {
             if (['Z', 'GMT'].includes(timeZone)) {
                 timeZone = 'UTC';
             }
 
             this._dynamicTz = false;
-
-            const offset = this._offset;
 
             const match = timeZone.match(this.constructor._offsetRegExp);
             if (match) {
@@ -1701,14 +1688,6 @@
                 this._checkOffset();
             }
 
-            // compensate for DST transitions
-            if (adjust && offset !== this._offset) {
-                this._utcDate.setTime(
-                    this._utcDate.getTime()
-                    - (offset - this._offset) * 60000
-                );
-            }
-
             return this;
         },
 
@@ -1729,7 +1708,7 @@
         /**
          * Set the local day of the week in current timeZone (and optionally, day of the week).
          * @param {number} week The local week.
-         * @param {null|number} [day] The local day of the week. (1 - 7)
+         * @param {number|null} [day] The local day of the week. (1 - 7)
          * @returns {DateTime} The DateTime object.
          */
         setWeek(week, day = null) {
@@ -1789,8 +1768,8 @@
         /**
          * Set the local day of the week in current timeZone (and optionally, week and day of the week).
          * @param {number} year The local year.
-         * @param {null|number} [week] The local week.
-         * @param {null|number} [day] The local day of the week. (1 - 7)
+         * @param {number|null} [week] The local week.
+         * @param {number|null} [day] The local day of the week. (1 - 7)
          * @returns {DateTime} The DateTime object.
          */
         setWeekYear(year, week = null, day = null) {
@@ -1813,8 +1792,8 @@
         /**
          * Set the year in current timeZone (and optionally, month and date).
          * @param {number} year The year.
-         * @param {null|number} [month] The month. (1, 12)
-         * @param {null|number} [date] The date of the month.
+         * @param {number|null} [month] The month. (1, 12)
+         * @param {number|null} [date] The date of the month.
          * @returns {DateTime} The DateTime object.
          */
         setYear(year, month = null, date = null) {
@@ -1822,7 +1801,7 @@
                 month = this.getMonth();
             }
 
-            if (this.constructor.clampDates && date === null) {
+            if (this.constructor._clampDates && date === null) {
                 date = Math.min(
                     this.getDate(),
                     this.constructor.daysInMonth(
@@ -2058,7 +2037,7 @@
 
         /**
          * Modify the DateTime by setting it to the end of a unit of time.
-         * @param {string} [timeUnit] The unit of time.
+         * @param {string} timeUnit The unit of time.
          * @returns {DateTime} The DateTime object.
          */
         endOf(timeUnit) {
@@ -2094,7 +2073,7 @@
 
         /**
          * Modify the DateTime by setting it to the start of a unit of time.
-         * @param {string} [timeUnit] The unit of time.
+         * @param {string} timeUnit The unit of time.
          * @returns {DateTime} The DateTime object.
          */
         startOf(timeUnit) {
@@ -2242,10 +2221,18 @@
          * @returns {DateTime} A new DateTime object.
          */
         clone() {
-            return this.constructor.fromTimestamp(this.getTimestamp(), {
+            const date = this.constructor.fromTimestamp(this.getTimestamp(), {
                 locale: this.getLocale(),
                 timeZone: this.getTimeZone()
             });
+
+            const milliseconds = this.getMilliseconds();
+
+            if (!milliseconds) {
+                return date;
+            }
+
+            return date.setMilliseconds(milliseconds);
         },
 
         /**
@@ -2544,8 +2531,8 @@
         },
 
         /**
-         * Get the number of weeks in the current ISO year.
-         * @returns {number} The number of weeks in the current ISO year.
+         * Get the number of weeks in the current year.
+         * @returns {number} The number of weeks in the current year.
          */
         weeksInYear() {
             const minimumDays = this.formatter.minimumDays();
@@ -2562,10 +2549,10 @@
 
         /**
          * Create a new DateTime from an array.
-         * @param {number[]} date The date to parse.
+         * @param {number[]} dateArray The date to parse.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromArray(dateArray, options = {}) {
@@ -2590,8 +2577,8 @@
          * Create a new DateTime from a Date.
          * @param {Date} date The date.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromDate(date, options = {}) {
@@ -2604,11 +2591,15 @@
          * @param {string} formatString The format string.
          * @param {string} dateString The date string.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromFormat(formatString, dateString, options = {}) {
+            if (!('locale' in options)) {
+                options.locale = this._defaultLocale;
+            }
+
             const formatter = DateFormatter.load(options.locale),
                 values = [];
 
@@ -2660,7 +2651,7 @@
             }
 
             if (!('timeZone' in options)) {
-                options.timeZone = this.defaultTimeZone;
+                options.timeZone = this._defaultTimeZone;
             }
 
             let timeZone = options.timeZone;
@@ -2728,8 +2719,8 @@
          * Create a new DateTime from an ISO format string.
          * @param {string} dateString The date string.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromISOString(dateString, options = {}) {
@@ -2752,8 +2743,8 @@
          * Create a new DateTime from a timestamp.
          * @param {number} timestamp The timestamp.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         fromTimestamp(timestamp, options = {}) {
@@ -2764,8 +2755,8 @@
         /**
          * Create a new DateTime for the current time.
          * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.locale] The locale to use.
          * @param {string} [options.timeZone] The timeZone to use.
+         * @param {string} [options.locale] The locale to use.
          * @returns {DateTime} A new DateTime object.
          */
         now(options = {}) {
@@ -2963,6 +2954,30 @@
         isLeapYear(year) {
             return new Date(year, 1, 29)
                 .getDate() === 29;
+        },
+
+        /**
+         * Set whether dates will be clamped when changing months.
+         * @param {Boolean} clampDates Whether to clamp dates.
+         */
+        setDateClamping(clampDates) {
+            this._clampDates = clampDates;
+        },
+
+        /**
+         * Set the default locale.
+         * @param {string} locale The locale.
+         */
+        setDefaultLocale(locale) {
+            this._defaultLocale = locale;
+        },
+
+        /**
+         * Set the default timeZone.
+         * @param {string} timeZone The name of the timeZone.
+         */
+        setDefaultTimeZone(timeZone) {
+            this._defaultTimeZone = timeZone;
         }
 
     });
@@ -2972,12 +2987,6 @@
      */
 
     Object.assign(DateTime, {
-
-        // Whether to clamp current date when adjusting month
-        clampDates: true,
-
-        // Default timeZone
-        defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
         // Formats
         formats: {
@@ -2997,6 +3006,15 @@
             time: 'HH:mm:ss xx (VV)',
             w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
         },
+
+        // Whether to clamp current date when adjusting month
+        _clampDates: true,
+
+        // Default locale
+        _defaultLocale: Intl.DateTimeFormat().resolvedOptions().locale,
+
+        // Default timeZone
+        _defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
         // Formatter locale
         _formatterLocale: 'en',

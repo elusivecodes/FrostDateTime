@@ -6,10 +6,10 @@ Object.assign(DateTime, {
 
     /**
      * Create a new DateTime from an array.
-     * @param {number[]} date The date to parse.
+     * @param {number[]} dateArray The date to parse.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     fromArray(dateArray, options = {}) {
@@ -34,8 +34,8 @@ Object.assign(DateTime, {
      * Create a new DateTime from a Date.
      * @param {Date} date The date.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     fromDate(date, options = {}) {
@@ -48,11 +48,15 @@ Object.assign(DateTime, {
      * @param {string} formatString The format string.
      * @param {string} dateString The date string.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     fromFormat(formatString, dateString, options = {}) {
+        if (!('locale' in options)) {
+            options.locale = this._defaultLocale;
+        }
+
         const formatter = DateFormatter.load(options.locale),
             values = [];
 
@@ -104,7 +108,7 @@ Object.assign(DateTime, {
         }
 
         if (!('timeZone' in options)) {
-            options.timeZone = this.defaultTimeZone;
+            options.timeZone = this._defaultTimeZone;
         }
 
         let timeZone = options.timeZone;
@@ -172,8 +176,8 @@ Object.assign(DateTime, {
      * Create a new DateTime from an ISO format string.
      * @param {string} dateString The date string.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     fromISOString(dateString, options = {}) {
@@ -196,8 +200,8 @@ Object.assign(DateTime, {
      * Create a new DateTime from a timestamp.
      * @param {number} timestamp The timestamp.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     fromTimestamp(timestamp, options = {}) {
@@ -208,8 +212,8 @@ Object.assign(DateTime, {
     /**
      * Create a new DateTime for the current time.
      * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.locale] The locale to use.
      * @param {string} [options.timeZone] The timeZone to use.
+     * @param {string} [options.locale] The locale to use.
      * @returns {DateTime} A new DateTime object.
      */
     now(options = {}) {

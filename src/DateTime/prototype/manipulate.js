@@ -16,7 +16,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Modify the DateTime by setting it to the end of a unit of time.
-     * @param {string} [timeUnit] The unit of time.
+     * @param {string} timeUnit The unit of time.
      * @returns {DateTime} The DateTime object.
      */
     endOf(timeUnit) {
@@ -52,7 +52,7 @@ Object.assign(DateTime.prototype, {
 
     /**
      * Modify the DateTime by setting it to the start of a unit of time.
-     * @param {string} [timeUnit] The unit of time.
+     * @param {string} timeUnit The unit of time.
      * @returns {DateTime} The DateTime object.
      */
     startOf(timeUnit) {
