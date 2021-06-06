@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v4.0.0
+ * FrostDateTime v4.0.1
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -2051,7 +2051,6 @@
                 case 'hour':
                     return this.setMinutes(59, 59, 999);
                 case 'day':
-                case 'date':
                     return this.setHours(23, 59, 59, 999);
                 case 'week':
                     return this.setWeekDay(7)
@@ -2087,7 +2086,6 @@
                 case 'hour':
                     return this.setMinutes(0, 0, 0);
                 case 'day':
-                case 'date':
                     return this.setHours(0, 0, 0, 0);
                 case 'week':
                     return this.setWeekDay(1)
