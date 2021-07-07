@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v4.0.3
+ * FrostDateTime v4.0.4
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -284,6 +284,10 @@
          * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
          */
         static loadRelative(locale) {
+            if (!('RelativeTimeFormat') in Intl) {
+                return null;
+            }
+
             if (!(locale in this._relativeFormatters)) {
                 this._relativeFormatters[locale] = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
             }
@@ -2403,6 +2407,10 @@
          * @returns {string} The difference in human readable form.
          */
         humanDiff(other, timeUnit) {
+            if (!this.relativeFormatter) {
+                throw new Error('RelativeTimeFormat not supported');
+            }
+
             if (!other) {
                 other = new this.constructor;
             }

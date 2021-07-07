@@ -193,6 +193,10 @@ Object.assign(DateTime.prototype, {
      * @returns {string} The difference in human readable form.
      */
     humanDiff(other, timeUnit) {
+        if (!this.relativeFormatter) {
+            throw new Error('RelativeTimeFormat not supported');
+        }
+
         if (!other) {
             other = new this.constructor;
         }
