@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v4.0.4
+ * FrostDateTime v4.0.5
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -284,7 +284,7 @@
          * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
          */
         static loadRelative(locale) {
-            if (!('RelativeTimeFormat') in Intl) {
+            if (!('RelativeTimeFormat' in Intl)) {
                 return null;
             }
 

@@ -268,7 +268,7 @@ class DateFormatter {
      * @returns {DateFormatter} The cached Intl.RelativeTimeFormat object.
      */
     static loadRelative(locale) {
-        if (!('RelativeTimeFormat') in Intl) {
+        if (!('RelativeTimeFormat' in Intl)) {
             return null;
         }
 
