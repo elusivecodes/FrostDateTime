@@ -13,7 +13,7 @@ Object.assign(DateFormatter.prototype, {
         return this._getData(
             `periods[${type}]`,
             _ => {
-                const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11', dayPeriod: type })
+                const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11' });
                 return new Array(2)
                     .fill()
                     .map((_, index) =>

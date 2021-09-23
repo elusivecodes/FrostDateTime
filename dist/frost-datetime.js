@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v4.0.5
+ * FrostDateTime v4.0.6
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -990,7 +990,7 @@
             return this._getData(
                 `periods[${type}]`,
                 _ => {
-                    const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11', dayPeriod: type })
+                    const dayPeriodFormatter = this._makeFormatter({ hour: 'numeric', hourCycle: 'h11' });
                     return new Array(2)
                         .fill()
                         .map((_, index) =>
