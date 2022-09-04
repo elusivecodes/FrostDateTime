@@ -136,6 +136,73 @@ describe('DateTimeImmutable #diff', function() {
         )
     });
 
+    it('works with week', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 6, 16]),
+                    'week'
+                ),
+            1
+        )
+    });
+
+    it('works with weeks', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 5, 15]),
+                    'weeks'
+                ),
+            5
+        )
+    });
+
+    it('works with weeks (negative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 5, 15])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 6, 23]),
+                    'weeks'
+                ),
+            -5
+        )
+    });
+
+    it('works with weeks (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1, 8])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 1, 1]),
+                    'weeks'
+                ),
+            1
+        )
+    });
+
+    it('works with weeks (exact)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1, 8])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 1, 2]),
+                    'weeks',
+                    false
+                ),
+            0
+        )
+    });
+
+    it('works with weeks and months', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 8, 23])
+                .diff(
+                    DateTimeImmutable.fromArray([2018, 6, 15]),
+                    'weeks'
+                ),
+            10
+        )
+    });
+
     it('works with day', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 6, 23])

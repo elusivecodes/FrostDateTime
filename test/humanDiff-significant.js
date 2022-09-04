@@ -33,13 +33,23 @@ describe('DateTime #humanDiff Significant Values', function() {
         )
     });
 
-    it('uses relative days when there is relative month difference', function() {
+    it('uses relative weeks when there is relative month difference', function() {
         assert.strictEqual(
             DateTime.fromArray([2018, 2, 1])
                 .humanDiff(
                     DateTime.fromArray([2018, 1, 5])
                 ),
-            'in 27 days'
+            'in 4 weeks'
+        )
+    });
+
+    it('uses relative days when there is relative week difference', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 2, 1])
+                .humanDiff(
+                    DateTime.fromArray([2018, 1, 27])
+                ),
+            'in 5 days'
         )
     });
 
@@ -131,46 +141,6 @@ describe('DateTime #humanDiff Significant Values', function() {
                     DateTime.fromArray([2018, 1, 31])
                 ),
             'next year'
-        );
-    });
-
-    it('uses relative days when relative day difference is less than days in this month', function() {
-        assert.strictEqual(
-            DateTime.fromArray([2019, 2, 27])
-                .humanDiff(
-                    DateTime.fromArray([2019, 1, 31])
-                ),
-            'in 27 days'
-        );
-    });
-
-    it('uses relative days when relative day difference is less than days in other month', function() {
-        assert.strictEqual(
-            DateTime.fromArray([2019, 1, 31])
-                .humanDiff(
-                    DateTime.fromArray([2019, 2, 27])
-                ),
-            '27 days ago'
-        );
-    });
-
-    it('uses relative months when relative day difference is greater than days in month', function() {
-        assert.strictEqual(
-            DateTime.fromArray([2019, 2, 28])
-                .humanDiff(
-                    DateTime.fromArray([2019, 1, 31])
-                ),
-            'next month'
-        );
-    });
-
-    it('uses relative days when relative day difference is greater than days in other month', function() {
-        assert.strictEqual(
-            DateTime.fromArray([2019, 1, 30])
-                .humanDiff(
-                    DateTime.fromArray([2019, 2, 28])
-                ),
-            'last month'
         );
     });
 

@@ -23,13 +23,23 @@ describe('DateTimeImmutable #humanDiff', function() {
         )
     });
 
+    it('returns the difference in human readable form (weeks)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1, 1])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 1, 23])
+                ),
+            '3 weeks ago'
+        )
+    });
+
     it('returns the difference in human readable form (days)', function() {
         assert.strictEqual(
             DateTimeImmutable.fromArray([2018, 1, 1])
                 .humanDiff(
-                    DateTimeImmutable.fromArray([2018, 1, 9])
+                    DateTimeImmutable.fromArray([2018, 1, 4])
                 ),
-            '8 days ago'
+            '3 days ago'
         )
     });
 
@@ -191,6 +201,72 @@ describe('DateTimeImmutable #humanDiff', function() {
                     'months'
                 ),
             'in 27 months'
+        )
+    });
+
+    it('works with week', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 16]),
+                    'week'
+                ),
+            'next week'
+        )
+    });
+
+    it('works with weeks', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 23])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 5, 15]),
+                    'weeks'
+                ),
+            'in 5 weeks'
+        )
+    });
+
+    it('works with week (negative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 6, 16])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 23]),
+                    'week'
+                ),
+            'last week'
+        )
+    });
+
+    it('works with weeks (negative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 5, 15])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 23]),
+                    'weeks'
+                ),
+            '5 weeks ago'
+        )
+    });
+
+    it('works with weeks (relative)', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 1, 8])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 1, 1]),
+                    'weeks'
+                ),
+            'next week'
+        )
+    });
+
+    it('works with weeks and months', function() {
+        assert.strictEqual(
+            DateTimeImmutable.fromArray([2018, 8, 23])
+                .humanDiff(
+                    DateTimeImmutable.fromArray([2018, 6, 15]),
+                    'weeks'
+                ),
+            'in 10 weeks'
         )
     });
 

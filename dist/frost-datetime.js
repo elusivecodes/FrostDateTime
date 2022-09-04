@@ -1,5 +1,5 @@
 /**
- * FrostDateTime v4.0.6
+ * FrostDateTime v4.0.7
  * https://github.com/elusivecodes/FrostDateTime
  */
 (function(global, factory) {
@@ -1908,18 +1908,10 @@
          * @return {array} The biggest difference (amount and time unit).
          */
         _getBiggestDiff(other) {
-            const limits = {
-                month: 12,
-                day: Math.min(this.daysInMonth(), other.daysInMonth()),
-                hour: 24,
-                minute: 60,
-                second: 60
-            };
-
             let lastResult;
-            for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
+            for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
                 const relativeDiff = this.diff(other, timeUnit);
-                if (lastResult && Math.abs(relativeDiff) >= limits[timeUnit]) {
+                if (lastResult && this.constructor.thresholds[timeUnit] && Math.abs(relativeDiff) >= this.constructor.thresholds[timeUnit]) {
                     return lastResult;
                 }
 
@@ -2327,6 +2319,16 @@
                         ),
                         !relative,
                         -1
+                    );
+                case 'week':
+                case 'weeks':
+                    return this._compensateDiff(
+                        (this - other) / 604800000,
+                        other.setWeekYear(
+                            this.getWeekYear(),
+                            this.getWeek()
+                        ),
+                        relative
                     );
                 case 'day':
                 case 'days':
@@ -3011,6 +3013,16 @@
             string: 'eee MMM dd yyyy HH:mm:ss xx (VV)',
             time: 'HH:mm:ss xx (VV)',
             w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
+        },
+
+        // Thresholds
+        thresholds: {
+            month: 12,
+            week: null,
+            day: 7,
+            hour: 24,
+            minute: 60,
+            second: 60
         },
 
         // Whether to clamp current date when adjusting month

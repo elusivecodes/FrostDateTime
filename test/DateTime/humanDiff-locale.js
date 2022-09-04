@@ -23,13 +23,23 @@ describe('DateTime #humanDiff (Locale)', function() {
         )
     });
 
+    it('returns the difference in human readable form (weeks)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 1], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 1, 23])
+                ),
+            '3 недели назад'
+        )
+    });
+
     it('returns the difference in human readable form (days)', function() {
         assert.strictEqual(
             DateTime.fromArray([2018, 1, 1], { locale: 'ru' })
                 .humanDiff(
-                    DateTime.fromArray([2018, 1, 9])
+                    DateTime.fromArray([2018, 1, 4])
                 ),
-            '8 дней назад'
+            '3 дня назад'
         )
     });
 
@@ -191,6 +201,72 @@ describe('DateTime #humanDiff (Locale)', function() {
                     'months'
                 ),
             'через 27 месяцев'
+        )
+    });
+
+    it('works with week', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 6, 16]),
+                    'week'
+                ),
+            'на следующей неделе'
+        )
+    });
+
+    it('works with weeks', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 5, 15]),
+                    'weeks'
+                ),
+            'через 5 недель'
+        )
+    });
+
+    it('works with week (negative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 6, 16], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 6, 23]),
+                    'week'
+                ),
+            'на прошлой неделе'
+        )
+    });
+
+    it('works with weeks (negative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 5, 15], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 6, 23]),
+                    'weeks'
+                ),
+            '5 недель назад'
+        )
+    });
+
+    it('works with weeks (relative)', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 1, 8], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 1, 1]),
+                    'weeks'
+                ),
+            'на следующей неделе'
+        )
+    });
+
+    it('works with weeks and months', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 8, 23], { locale: 'ru' })
+                .humanDiff(
+                    DateTime.fromArray([2018, 6, 15]),
+                    'weeks'
+                ),
+            'через 10 недель'
         )
     });
 

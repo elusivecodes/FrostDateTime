@@ -23,6 +23,16 @@ Object.assign(DateTime, {
         w3c: `yyyy-MM-dd'T'HH:mm:ssxxx`
     },
 
+    // Thresholds
+    thresholds: {
+        month: 12,
+        week: null,
+        day: 7,
+        hour: 24,
+        minute: 60,
+        second: 60
+    },
+
     // Whether to clamp current date when adjusting month
     _clampDates: true,
 

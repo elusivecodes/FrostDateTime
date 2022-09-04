@@ -114,6 +114,16 @@ Object.assign(DateTime.prototype, {
                     !relative,
                     -1
                 );
+            case 'week':
+            case 'weeks':
+                return this._compensateDiff(
+                    (this - other) / 604800000,
+                    other.setWeekYear(
+                        this.getWeekYear(),
+                        this.getWeek()
+                    ),
+                    relative
+                );
             case 'day':
             case 'days':
                 return this._compensateDiff(

@@ -80,18 +80,10 @@ Object.assign(DateTime.prototype, {
      * @return {array} The biggest difference (amount and time unit).
      */
     _getBiggestDiff(other) {
-        const limits = {
-            month: 12,
-            day: Math.min(this.daysInMonth(), other.daysInMonth()),
-            hour: 24,
-            minute: 60,
-            second: 60
-        };
-
         let lastResult;
-        for (const timeUnit of ['year', 'month', 'day', 'hour', 'minute', 'second']) {
+        for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
             const relativeDiff = this.diff(other, timeUnit);
-            if (lastResult && Math.abs(relativeDiff) >= limits[timeUnit]) {
+            if (lastResult && this.constructor.thresholds[timeUnit] && Math.abs(relativeDiff) >= this.constructor.thresholds[timeUnit]) {
                 return lastResult;
             }
 
