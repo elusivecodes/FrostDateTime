@@ -1,6 +1,6 @@
 # FrostDateTime
 
-**FrostDateTime** is a free, open-source date manipulation library for *JavaScript*.
+**FrostDateTime** is a free, open-source immutable date manipulation library for *JavaScript*.
 
 It is a lightweight (~7kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
 
@@ -31,13 +31,13 @@ It is a lightweight (~7kb gzipped) and modern library, and features support for 
 **Using NPM**
 
 ```
-npm i frostdatetime
+npm i @fr0st/datetime
 ```
 
 In Node.js:
 
 ```javascript
-const { DateTime, DateTimeImmutable } = require('frostdatetime');
+import DateTime from '@fr0st/datetime';
 ```
 
 
@@ -49,17 +49,7 @@ const { DateTime, DateTimeImmutable } = require('frostdatetime');
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
-const date = new DateTime(dateString, options);
-```
-
-**Immutable DateTime**
-
-By default, *DateTime* objects are mutable, but if you wish to create an immutable reference you can use the following syntax.
-
-Immutable *DateTime* objects return a new *DateTimeImmutable* whenever they are modified.
-
-```javascript
-const date = new DateTimeImmutable(dateString, options);
+const dateTime = new DateTime(dateString, options);
 ```
 
 **From Array**
@@ -70,7 +60,7 @@ const date = new DateTimeImmutable(dateString, options);
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
-const date = DateTime.fromArray(dateArray, options);
+const dateTime = DateTime.fromArray(dateArray, options);
 ```
 
 The month and date in the `dateArray` will default to 1 if not set. The hours, minutes, seconds and milliseconds will default to 0.
@@ -83,7 +73,7 @@ The month and date in the `dateArray` will default to 1 if not set. The hours, m
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
-const date = DateTime.fromDate(dateObj, options);
+const dateTime = DateTime.fromDate(dateObj, options);
 ```
 
 **From Format**
@@ -101,7 +91,7 @@ The `formatString` supports a subset of the ICU specification described in [Form
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
 ```javascript
-const date = DateTime.fromFormat(formatString, dateString, options);
+const dateTime = DateTime.fromFormat(formatString, dateString, options);
 ```
 
 **From ISO String**
@@ -118,7 +108,7 @@ If the `timeZone` option is also passed, the created *DateTime* will be converte
 The `isValid` property on the created *DateTime* object can be used to determine whether a formatted string was a valid date.
 
 ```javascript
-const date = DateTime.fromISOString(dateString, options);
+const dateTime = DateTime.fromISOString(dateString, options);
 ```
 
 **From Timestamp**
@@ -129,7 +119,7 @@ const date = DateTime.fromISOString(dateString, options);
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
-const date = DateTime.fromTimestamp(timestamp, options);
+const dateTime = DateTime.fromTimestamp(timestamp, options);
 ```
 
 **Now**
@@ -139,7 +129,7 @@ const date = DateTime.fromTimestamp(timestamp, options);
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
 ```javascript
-const date = DateTime.now(options);
+const dateTime = DateTime.now(options);
 ```
 
 
@@ -154,7 +144,7 @@ Once you have created a *DateTime* object, you can get a string representation u
 The `formatString` supports a subset of the ICU specification described in [Formats](Formats.md).
 
 ```javascript
-const dateString = date.format(formatString);
+const dateString = dateTime.format(formatString);
 ```
 
 **To String**
@@ -162,7 +152,7 @@ const dateString = date.format(formatString);
 Format the current date using "*eee MMM dd yyyy HH:mm:ss xx (VV)*".
 
 ```javascript
-const string = date.toString();
+const string = dateTime.toString();
 ```
 
 **To Date String**
@@ -170,7 +160,7 @@ const string = date.toString();
 Format the current date using "*eee MMM dd yyyy*".
 
 ```javascript
-const dateString = date.toDateString();
+const dateString = dateTime.toDateString();
 ```
 
 **To ISO String**
@@ -178,7 +168,7 @@ const dateString = date.toDateString();
 Format the current date using "*yyyy-MM-dd'T'HH:mm:ss.SSSxxx*" (in English and UTC time zone).
 
 ```javascript
-const isoString = date.toISOString();
+const isoString = dateTime.toISOString();
 ```
 
 **To Time String**
@@ -186,7 +176,7 @@ const isoString = date.toISOString();
 Format the current date using "*HH:mm:ss xx (VV)*".
 
 ```javascript
-const timeString = date.toTimeString();
+const timeString = dateTime.toTimeString();
 ```
 
 **To UTC String**
@@ -194,7 +184,7 @@ const timeString = date.toTimeString();
 Format the current date using "*eee MMM dd yyyy HH:mm:ss xx (VV)*" (in UTC time zone).
 
 ```javascript
-const utcString = date.toUTCString();
+const utcString = dateTime.toUTCString();
 ```
 
 
@@ -205,7 +195,7 @@ const utcString = date.toUTCString();
 Get the date in current time zone.
 
 ```javascript
-const date = date.getDate();
+const date = dateTime.getDate();
 ```
 
 **Get Day**
@@ -215,7 +205,7 @@ Get the day of the week in current time zone.
 The `day` returned will be between *0* (Sunday) and *6* (Saturday).
 
 ```javascript
-const day = date.getDay();
+const day = dateTime.getDay();
 ```
 
 **Get Day Of Year**
@@ -225,7 +215,7 @@ Get the day of the year in current time zone.
 The `dayOfYear` returned will be between *0* and *365*.
 
 ```javascript
-const dayOfYear = date.getDayOfYear();
+const dayOfYear = dateTime.getDayOfYear();
 ```
 
 **Get Month**
@@ -235,7 +225,7 @@ Get the month in current time zone.
 The `month` returned will be between *1* (January) and *12* (December).
 
 ```javascript
-const month = date.getMonth();
+const month = dateTime.getMonth();
 ```
 
 **Get Quarter**
@@ -245,7 +235,7 @@ Get the quarter of the year in current time zone.
 The `quarter` returned will be between *1* and *4*.
 
 ```javascript
-const quarter = date.getQuarter();
+const quarter = dateTime.getQuarter();
 ```
 
 **Get Year**
@@ -253,7 +243,7 @@ const quarter = date.getQuarter();
 Get the year in current time zone.
 
 ```javascript
-const year = date.getYear();
+const year = dateTime.getYear();
 ```
 
 **Set Date**
@@ -263,7 +253,7 @@ Set the date in current time zone.
 - `date` is a number representing the date.
 
 ```javascript
-date.setDate(date);
+const newDateTime = dateTime.setDate(date);
 ```
 
 **Set Day**
@@ -273,7 +263,7 @@ Set the day of the week in current time zone.
 - `day` is a number representing the day of the week (between *0* and *6*).
 
 ```javascript
-date.setDay(day);
+const newDateTime = dateTime.setDay(day);
 ```
 
 **Set Day Of Year**
@@ -283,7 +273,7 @@ Set the day of the year in current time zone.
 - `dayOfYear` is a number representing the day of the year (between *0* and *365*).
 
 ```javascript
-date.setDayOfYear(dayOfYear);
+const newDateTime = dateTime.setDayOfYear(dayOfYear);
 ```
 
 **Set Month**
@@ -298,7 +288,7 @@ If the `date` argument is omitted, and the new month contains less days than the
 To disable date clamping, use the method `DateTime.setDateClamping()` using *false* as the argument.
 
 ```javascript
-date.setMonth(month, date);
+const newDateTime = dateTime.setMonth(month, date);
 ```
 
 **Set Quarter**
@@ -308,7 +298,7 @@ Set the quarter of the year in current time zone.
 - `quarter` is a number representing the quarter between *1* and *4*.
 
 ```javascript
-date.setQuarter(quarter);
+const newDateTime = dateTime.setQuarter(quarter);
 ```
 
 **Set Year**
@@ -324,7 +314,7 @@ If the `date` argument is omitted, and the new month contains less days than the
 To disable date clamping, use the method `DateTime.setDateClamping()` using *false* as the argument.
 
 ```javascript
-date.setYear(year, month, date);
+const newDateTime = dateTime.setYear(year, month, date);
 ```
 
 
@@ -337,7 +327,7 @@ Get the week of the year in current time zone.
 The `week` returned will be between *1*  and *53* (week starting on Monday).
 
 ```javascript
-const week = date.getWeek();
+const week = dateTime.getWeek();
 ```
 
 **Get Week Day**
@@ -347,7 +337,7 @@ Get the local day of the week in current time zone.
 The `weekDay` returned will be between *1* and *7*.
 
 ```javascript
-const weekDay = date.getWeekDay();
+const weekDay = dateTime.getWeekDay();
 ```
 
 **Get Week Day In Month**
@@ -357,7 +347,7 @@ Get the day of the week in the month, in current time zone.
 The `weekDayInMonth` returned will be between *1* and *5*.
 
 ```javascript
-const weekDayInMonth = date.getWeekDayInMonth();
+const weekDayInMonth = dateTime.getWeekDayInMonth();
 ```
 
 **Get Week Of Month**
@@ -367,7 +357,7 @@ Get the week of the month in current time zone.
 The `weekOfMonth` returned will be between *1*  and *5*.
 
 ```javascript
-const weekOfMonth = date.getWeekOfMonth();
+const weekOfMonth = dateTime.getWeekOfMonth();
 ```
 
 **Get Week Year**
@@ -377,7 +367,7 @@ Get the week year in current time zone.
 This method is identical to `getYear()` except in cases where the week belongs to the previous or next year, then that value will be used instead.
 
 ```javascript
-const weekYear = date.getWeekYear();
+const weekYear = dateTime.getWeekYear();
 ```
 
 **Set Week**
@@ -388,7 +378,7 @@ Set the week in current time zone.
 - `weekDay` is a number representing the day (between *1* and *7*), and will default to the current value.
 
 ```javascript
-date.setWeek(week, weekDay);
+const newDateTime = dateTime.setWeek(week, weekDay);
 ```
 
 **Set Week Day**
@@ -398,7 +388,7 @@ Set the local day of the week in current time zone.
 - `weekDay` is a number representing the week day (between *1* and *7*).
 
 ```javascript
-date.setWeekDay(weekDay);
+const newDateTime = dateTime.setWeekDay(weekDay);
 ```
 
 **Set Week Day In Month**
@@ -408,7 +398,7 @@ Set the day of the week in the month, in current time zone.
 - `weekDayInMonth` is a number representing the day of the week in month (between *1* and *5*).
 
 ```javascript
-date.setWeekDayInMonth(weekDayInMonth);
+const newDateTime = dateTime.setWeekDayInMonth(weekDayInMonth);
 ```
 
 **Set Week Of Month**
@@ -418,7 +408,7 @@ Set the week of the month in current time zone.
 - `weekOfMonth` is a number representing the week of the month (between *1*  and *5*).
 
 ```javascript
-date.setWeekOfMonth(weekOfMonth);
+const newDateTime = dateTime.setWeekOfMonth(weekOfMonth);
 ```
 
 **Set Week Year**
@@ -430,7 +420,7 @@ Set the week year in current time zone.
 - `weekDay` is a number representing the day (between *1* and *7*), and will default to the current value.
 
 ```javascript
-date.setWeekYear(weekYear, week, weekDay);
+const newDateTime = dateTime.setWeekYear(weekYear, week, weekDay);
 ```
 
 
@@ -443,7 +433,7 @@ Get the hours of the day in current time zone.
 The `hours` returned will be between *0* and *23*.
 
 ```javascript
-const hours = date.getHours();
+const hours = dateTime.getHours();
 ```
 
 **Get Milliseconds**
@@ -453,7 +443,7 @@ Get the milliseconds of the second in current time zone.
 The `milliseconds` returned will be between *0* and *999*.
 
 ```javascript
-const milliseconds = date.getMilliseconds();
+const milliseconds = dateTime.getMilliseconds();
 ```
 
 **Get Minutes**
@@ -463,7 +453,7 @@ Get the minutes of the hour in current time zone.
 The `minutes` returned will be between *0* and *59*.
 
 ```javascript
-const minutes = date.getMinutes();
+const minutes = dateTime.getMinutes();
 ```
 
 **Get Seconds**
@@ -473,7 +463,7 @@ Get the seconds of the minute in current time zone.
 The `seconds` returned will be between *0* and *59*.
 
 ```javascript
-const seconds = date.getSeconds();
+const seconds = dateTime.getSeconds();
 ```
 
 **Set Hours**
@@ -486,7 +476,7 @@ Set the hours of the day in current time zone.
 - `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setHours(hours, minutes, seconds, milliseconds);
+const newDateTime = dateTime.setHours(hours, minutes, seconds, milliseconds);
 ```
 
 **Set Milliseconds**
@@ -496,7 +486,7 @@ Set the milliseconds of the second in current time zone.
 - `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*).
 
 ```javascript
-date.setMilliseconds(milliseconds);
+const newDateTime = dateTime.setMilliseconds(milliseconds);
 ```
 
 **Set Minutes**
@@ -508,7 +498,7 @@ Set the minutes of the hour in current time zone.
 - `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setMinutes(minutes, seconds, milliseconds);
+const newDateTime = dateTime.setMinutes(minutes, seconds, milliseconds);
 ```
 
 **Set Seconds**
@@ -519,7 +509,7 @@ Set the seconds of the minute in current time zone.
 - `milliseconds` is a number representing the milliseconds of the second (between *0* and *999*), and will default to the current value.
 
 ```javascript
-date.setSeconds(seconds, milliseconds);
+const newDateTime = dateTime.setSeconds(seconds, milliseconds);
 ```
 
 
@@ -530,7 +520,7 @@ date.setSeconds(seconds, milliseconds);
 Get the number of milliseconds since the UNIX epoch.
 
 ```javascript
-const time = date.getTime();
+const time = dateTime.getTime();
 ```
 
 **Get Seconds**
@@ -538,7 +528,7 @@ const time = date.getTime();
 Get the number of seconds since the UNIX epoch.
 
 ```javascript
-const timestamp = date.getTimestamp();
+const timestamp = dateTime.getTimestamp();
 ```
 
 **Set Milliseconds**
@@ -546,7 +536,7 @@ const timestamp = date.getTimestamp();
 Set the number of milliseconds since the UNIX epoch.
 
 ```javascript
-date.setTime(time);
+const newDateTime = dateTime.setTime(time);
 ```
 
 **Set Seconds**
@@ -554,7 +544,7 @@ date.setTime(time);
 Set the number of seconds since the UNIX epoch.
 
 ```javascript
-date.setTimestamp(timestamp);
+const newDateTime = dateTime.setTimestamp(timestamp);
 ```
 
 
@@ -565,7 +555,7 @@ date.setTimestamp(timestamp);
 Get the name of the current time zone.
 
 ```javascript
-const timeZone = date.getTimeZone();
+const timeZone = dateTime.getTimeZone();
 ```
 
 **Get Time Zone Offset**
@@ -573,7 +563,7 @@ const timeZone = date.getTimeZone();
 Get the UTC offset (in minutes) of the current time zone.
 
 ```javascript
-const offset = date.getTimeZoneOffset();
+const offset = dateTime.getTimeZoneOffset();
 ```
 
 **Set Time Zone**
@@ -583,7 +573,7 @@ Set the current time zone.
 - `timeZone` is the name of the new time zone, which can be either "*UTC*", a supported value from the [IANA timeZone database](https://www.iana.org/time-zones) or an offset string.
 
 ```javascript
-date.setTimeZone(timeZone);
+const newDateTime = dateTime.setTimeZone(timeZone);
 ```
 
 **Set Time Zone Offset**
@@ -593,7 +583,7 @@ Set the UTC offset (in minutes).
 - `offset` is the UTC offset (in minutes).
 
 ```javascript
-date.setTimeZoneOffset(offset);
+const newDateTime = dateTime.setTimeZoneOffset(offset);
 ```
 
 
@@ -604,7 +594,7 @@ date.setTimeZoneOffset(offset);
 Get the name of the current locale.
 
 ```javascript
-const locale = date.getLocale();
+const locale = dateTime.getLocale();
 ```
 
 **Set Locale**
@@ -614,7 +604,7 @@ Set the current locale.
 - `locale` is the name of the new locale.
 
 ```javascript
-date.setLocale(locale);
+const newDateTime = dateTime.setLocale(locale);
 ```
 
 
@@ -628,7 +618,7 @@ Add a duration to the date.
 - `timeUnit` is a string representing the unit of time to add, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
 ```javascript
-date.add(amount, timeUnit);
+const newDateTime = dateTime.add(amount, timeUnit);
 ```
 
 **End Of**
@@ -638,7 +628,7 @@ Set the date to the end of a unit of time in current time zone.
 - `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-date.endOf(timeUnit);
+const newDateTime = dateTime.endOf(timeUnit);
 ```
 
 **Start Of**
@@ -648,7 +638,7 @@ Set the date to the start of a unit of time in current time zone.
 - `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-date.startOf(timeUnit);
+const newDateTime = dateTime.startOf(timeUnit);
 ```
 
 **Subtract**
@@ -657,19 +647,11 @@ date.startOf(timeUnit);
 - `timeUnit` is a string representing the unit of time to subtract, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
 ```javascript
-date.sub(amount, timeUnit);
+const newDateTime = dateTime.sub(amount, timeUnit);
 ```
 
 
 ## Utility Methods
-
-**Clone**
-
-Create a new *DateTime* using the current date and time zone.
-
-```javascript
-const clone = date.clone();
-```
 
 **Day Name**
 
@@ -678,7 +660,7 @@ Get the name of the day of the week in current time zone and locale.
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
-const dayName = date.dayName(type);
+const dayName = dateTime.dayName(type);
 ```
 
 **Day Period**
@@ -688,7 +670,7 @@ Get the day period in current time zone and locale.
 - `type` can be either "*long*" or "*short*", and will default to "*long*" if it is not set.
 
 ```javascript
-const dayPeriod = date.dayPeriod(type);
+const dayPeriod = dateTime.dayPeriod(type);
 ```
 
 **Days In Month**
@@ -696,7 +678,7 @@ const dayPeriod = date.dayPeriod(type);
 Get the number of days in the current month.
 
 ```javascript
-const daysInMonth = date.daysInMonth();
+const daysInMonth = dateTime.daysInMonth();
 ```
 
 **Days In Year**
@@ -704,7 +686,7 @@ const daysInMonth = date.daysInMonth();
 Get the number of days in the current year.
 
 ```javascript
-const daysInYear = date.daysInYear();
+const daysInYear = dateTime.daysInYear();
 ```
 
 **Difference**
@@ -718,7 +700,7 @@ Get the difference between two Dates.
 If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
 ```javascript
-const diff = date.diff(other, timeUnit, relative);
+const diff = dateTime.diff(other, timeUnit, relative);
 ```
 
 If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
@@ -737,7 +719,7 @@ Get the era in current time zone and locale.
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
-const era = date.era(type);
+const era = dateTime.era(type);
 ```
 
 **Human Difference**
@@ -750,7 +732,7 @@ Get the relative difference between two Dates in a human readable format using t
 If the `timeUnit` is omitted, this method will use the (relative) most significant non-zero value.
 
 ```javascript
-const diff = date.humanDiff(other, timeUnit);
+const diff = dateTime.humanDiff(other, timeUnit);
 ```
 
 The most significant non-zero value is determined where the unit of time has a non-relative difference, or the next relative difference value is greater than or equal to the unit of time.
@@ -772,7 +754,7 @@ Return *true* if the *DateTime* is after another date.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isAfter = date.isAfter(other, granularity);
+const isAfter = dateTime.isAfter(other, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -785,7 +767,7 @@ Return *true* if the *DateTime* is before another date.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBefore = date.isBefore(other, granularity);
+const isBefore = dateTime.isBefore(other, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -799,7 +781,7 @@ Return *true* if the *DateTime* is between two other dates.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBetween = date.isBetween(start, end, granularity);
+const isBetween = dateTime.isBetween(start, end, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -809,7 +791,7 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is in daylight savings.
 
 ```javascript
-const isDST = date.isDST();
+const isDST = dateTime.isDST();
 ```
 
 **Is Leap Year?**
@@ -817,7 +799,7 @@ const isDST = date.isDST();
 Return *true* if the year is a leap year.
 
 ```javascript
-const isLeapYear = date.isLeapYear();
+const isLeapYear = dateTime.isLeapYear();
 ```
 
 **Is Same?**
@@ -828,7 +810,7 @@ Return *true* if the *DateTime* is the same as another date.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSame = date.isSame(other, granularity);
+const isSame = dateTime.isSame(other, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -841,7 +823,7 @@ Return *true* if the *DateTime* is the same or after another date.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrAfter = date.isSameOrAfter(other, granularity);
+const isSameOrAfter = dateTime.isSameOrAfter(other, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -854,7 +836,7 @@ Return *true* if the *DateTime* is the same or before another date.
 - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrBefore = date.isSameOrBefore(other, granularity);
+const isSameOrBefore = dateTime.isSameOrBefore(other, granularity);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -866,7 +848,7 @@ Get the name of the month in current time zone and locale.
 - `type` can be either "*long*", "*short*" or "*narrow*", and will default to "*long*" if it is not set.
 
 ```javascript
-const monthName = date.monthName(type);
+const monthName = dateTime.monthName(type);
 ```
 
 **Time Zone Name**
@@ -876,7 +858,7 @@ Get the name of the current time zone and locale.
 - `type` can be either "*long*" or "*short*", and will default to "*long*" if it is not set.
 
 ```javascript
-const timeZoneName = date.timeZoneName(type);
+const timeZoneName = dateTime.timeZoneName(type);
 ```
 
 **Weeks In Year**
@@ -884,7 +866,7 @@ const timeZoneName = date.timeZoneName(type);
 Get the number of weeks in the current year.
 
 ```javascript
-const weeksInYear = date.weeksInYear();
+const weeksInYear = dateTime.weeksInYear();
 ```
 
 
@@ -921,6 +903,22 @@ Get the number of days in a year.
 
 ```javascript
 const daysInYear = DateTime.daysInYear(year);
+```
+
+**Get Default Locale**
+
+Get the default locale.
+
+```javascript
+locale = DateTime.getDefaultLocale();
+```
+
+**Set Default Time Zone**
+
+Get the default time zone.
+
+```javascript
+timeZone = DateTime.getDefaultTimeZone();
 ```
 
 **Is Leap Year?**

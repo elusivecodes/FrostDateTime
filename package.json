@@ -1,6 +1,6 @@
 {
-    "name": "frostdatetime",
-    "version": "4.0.7",
+    "name": "@fr0st/datetime",
+    "version": "5.0",
     "description": "FrostDateTime is a free, open-source date manipulation library for JavaScript.",
     "keywords": [
         "date",
@@ -18,17 +18,20 @@
         "url": "https://github.com/elusivecodes/FrostDateTime/issues",
         "email": "elusivecodes@gmail.com"
     },
-    "main": "./dist/frost-datetime.js",
+    "main": "src/index.js",
+    "type": "module",
     "files": [
-        "/dist/frost-datetime.js",
         "/LICENSE",
-        "/TODO.md",
-        "/README.md"
+        "/README.md",
+        "src"
     ],
     "scripts": {
-        "build": "node build.js",
+        "build": "npm run js-compile && npm run js-minify",
+        "js-compile": "rollup src/index.js --file dist/frost-datetime.js --format iife --sourcemap --name DateTime",
+        "js-lint": "eslint --ext .js .",
+        "js-minify": "terser --compress passes=2 --mangle --source-map \"content=dist/frost-datetime.js.map\" --output dist/frost-datetime.min.js dist/frost-datetime.js",
         "test": "mocha --recursive",
-        "locales": "php generate-locales.php > src/DateFormatter/locales.js"
+        "locales": "php generate-locales.php > src/formatter/locales.js"
     },
     "repository": {
         "type": "git",
@@ -38,8 +41,11 @@
     "license": "MIT",
     "private": false,
     "devDependencies": {
+        "eslint": "^8.30.0",
+        "eslint-config-google": "^0.14.0",
         "filepath": "^1.1.0",
-        "mocha": "^9.0.0",
-        "terser": "^5.7.0"
+        "mocha": "^10.2.0",
+        "rollup": "^3.7.5",
+        "terser": "^5.16.1"
     }
 }

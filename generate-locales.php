@@ -10,7 +10,7 @@ foreach ($locales AS $locale) {
 }
 
 $firstDays = [];
-$minimumDays = [];
+$minDays = [];
 
 foreach ($prefixes AS $prefix => $locales) {
     $cal = IntlCalendar::createInstance(null, $prefix);
@@ -36,7 +36,7 @@ foreach ($prefixes AS $prefix => $locales) {
             ($locale === $prefix || $minimalDaysInFirstWeek !== $prefixMinimalDaysInFirstWeek) &&
             $minimalDaysInFirstWeek > 1
         ) {
-            $minimumDays[$minimalDaysInFirstWeek][] = $localeKey;
+            $minDays[$minimalDaysInFirstWeek][] = $localeKey;
         }
     }
 
@@ -53,6 +53,6 @@ foreach ($prefixes AS $prefix => $locales) {
     }
 }
 
-echo 'DateFormatter._weekStart = '.json_encode($firstDays, JSON_UNESCAPED_SLASHES).';';
+echo 'export const weekStart = '.json_encode($firstDays, JSON_UNESCAPED_SLASHES).';';
 echo "\n";
-echo 'DateFormatter._minimumDays = '.json_encode($minimumDays, JSON_UNESCAPED_SLASHES).';';
+echo 'export const minDaysInFirstWeek = '.json_encode($minDays, JSON_UNESCAPED_SLASHES).';';

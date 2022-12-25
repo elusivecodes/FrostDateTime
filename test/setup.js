@@ -1,4 +1,4 @@
-const { DateTime } = require('../dist/frost-datetime.min');
+import DateTime from './../src/index.js';
 
 before(async function() {
     DateTime.setDefaultLocale('en');
