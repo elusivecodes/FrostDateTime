@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/datetime",
-    "version": "5.0",
+    "version": "5.0.0",
     "description": "FrostDateTime is a free, open-source date manipulation library for JavaScript.",
     "keywords": [
         "date",
