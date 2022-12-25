@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source immutable date manipulation library for *JavaScript*.
 
-It is a lightweight (~7kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
+It is a lightweight (~6kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
 
 
 ## Table Of Contents
