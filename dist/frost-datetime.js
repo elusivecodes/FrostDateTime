@@ -1,5 +1,8 @@
-var DateTime = (function () {
-    'use strict';
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.DateTime = factory());
+})(this, (function () { 'use strict';
 
     /**
      * DateTime Factory
@@ -2920,5 +2923,5 @@ var DateTime = (function () {
 
     return DateTime;
 
-})();
+}));
 //# sourceMappingURL=frost-datetime.js.map
