@@ -7,12 +7,6 @@ import { formatOffset } from './formatter/format.js';
  * @class
  */
 export default class DateTime {
-    #date;
-    #timeZone;
-    #locale;
-    #offset = 0;
-    #dynamicTz;
-
     /**
      * New DateTime constructor.
      * @param {string|number|null} [date] The date or timestamp to parse.
@@ -46,8 +40,8 @@ export default class DateTime {
             throw new Error('Invalid date supplied');
         }
 
-        this.#date = new Date(timestamp);
-        this.#dynamicTz = false;
+        this._date = new Date(timestamp);
+        this._dynamicTz = false;
         this.isValid = true;
 
         let timeZone = options.timeZone;
@@ -62,37 +56,37 @@ export default class DateTime {
 
         const match = timeZone.match(offsetRegExp);
         if (match) {
-            this.#offset = match[2] * 60 + parseInt(match[4] || 0);
-            if (this.#offset && match[1] === '+') {
-                this.#offset *= -1;
+            this._offset = match[2] * 60 + parseInt(match[4] || 0);
+            if (this._offset && match[1] === '+') {
+                this._offset *= -1;
             }
 
-            if (this.#offset) {
-                this.#timeZone = formatOffset(this.#offset);
+            if (this._offset) {
+                this._timeZone = formatOffset(this._offset);
             } else {
-                this.#dynamicTz = true;
-                this.#timeZone = 'UTC';
+                this._dynamicTz = true;
+                this._timeZone = 'UTC';
             }
         } else {
-            this.#dynamicTz = true;
-            this.#timeZone = timeZone;
+            this._dynamicTz = true;
+            this._timeZone = timeZone;
         }
 
-        if (this.#dynamicTz) {
-            this.#offset = getOffset(this);
+        if (this._dynamicTz) {
+            this._offset = getOffset(this);
         }
 
-        if (adjustOffset && this.#offset) {
-            const oldOffset = this.#offset;
+        if (adjustOffset && this._offset) {
+            const oldOffset = this._offset;
 
-            this.#date.setTime(this.getTime() + this.#offset * 60000);
+            this._date.setTime(this.getTime() + this._offset * 60000);
 
-            if (this.#dynamicTz) {
-                this.#offset = getOffset(this);
+            if (this._dynamicTz) {
+                this._offset = getOffset(this);
 
                 // compensate for DST transitions
-                if (oldOffset !== this.#offset) {
-                    this.#date.setTime(this.getTime() - ((oldOffset - offset) * 60000));
+                if (oldOffset !== this._offset) {
+                    this._date.setTime(this.getTime() - ((oldOffset - offset) * 60000));
                 }
             }
         }
@@ -101,7 +95,7 @@ export default class DateTime {
             options.locale = config.defaultLocale;
         }
 
-        this.#locale = options.locale;
+        this._locale = options.locale;
     }
 
     /**
@@ -109,7 +103,7 @@ export default class DateTime {
      * @return {string} The name of the current locale.
      */
     getLocale() {
-        return this.#locale;
+        return this._locale;
     }
 
     /**
@@ -117,7 +111,7 @@ export default class DateTime {
      * @return {number} The number of milliseconds since the UNIX epoch.
      */
     getTime() {
-        return this.#date.getTime();
+        return this._date.getTime();
     }
 
     /**
@@ -125,7 +119,7 @@ export default class DateTime {
      * @return {string} The name of the current timeZone.
      */
     getTimeZone() {
-        return this.#timeZone;
+        return this._timeZone;
     }
 
     /**
@@ -133,15 +127,7 @@ export default class DateTime {
      * @return {number} The UTC offset (in minutes) of the current timeZone.
      */
     getTimeZoneOffset() {
-        return this.#offset;
-    }
-
-    /**
-     * Determine if the timeZone is dynamic.
-     * @return {Boolean} TRUE if the timeZone is dynamic, otherwise FALSE.
-     */
-    isDynamicTimeZone() {
-        return this.#dynamicTz;
+        return this._offset;
     }
 
     /**
@@ -152,7 +138,7 @@ export default class DateTime {
     setLocale(locale) {
         return new DateTime(this.getTime(), {
             locale,
-            timeZone: this.#timeZone,
+            timeZone: this._timeZone,
         });
     }
 
@@ -163,8 +149,8 @@ export default class DateTime {
      */
     setTime(time) {
         return new DateTime(time, {
-            locale: this.#locale,
-            timeZone: this.#timeZone,
+            locale: this._locale,
+            timeZone: this._timeZone,
         });
     }
 
@@ -175,7 +161,7 @@ export default class DateTime {
      */
     setTimeZone(timeZone) {
         return new DateTime(this.getTime(), {
-            locale: this.#locale,
+            locale: this._locale,
             timeZone,
         });
     }
@@ -187,7 +173,7 @@ export default class DateTime {
      */
     setTimeZoneOffset(offset) {
         return new DateTime(this.getTime(), {
-            locale: this.#locale,
+            locale: this._locale,
             timeZone: formatOffset(offset),
         });
     }

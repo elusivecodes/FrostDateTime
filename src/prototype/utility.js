@@ -261,7 +261,7 @@ export function isBetween(start, end, granularity) {
  * @return {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
  */
 export function isDST() {
-    if (!this.isDynamicTimeZone()) {
+    if (!this._dynamicTz) {
         return false;
     }
 
@@ -331,7 +331,7 @@ export function monthName(type = 'long') {
  * @return {string} The name of the time zone.
  */
 export function timeZoneName(type = 'long') {
-    return this.isDynamicTimeZone() ?
+    return this._dynamicTz ?
         formatTimeZoneName(this.getLocale(), this.getTime(), this.getTimeZone(), type) :
         'GMT' + formatOffset(this.getTimeZoneOffset(), true, type === 'short');
 };
