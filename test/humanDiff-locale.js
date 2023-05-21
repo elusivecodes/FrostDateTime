@@ -87,7 +87,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2017]),
-                    'year',
+                    { timeUnit: 'year' },
                 ),
             'в следующем году',
         );
@@ -98,7 +98,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2016]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             'через 2 года',
         );
@@ -109,7 +109,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2017], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018]),
-                    'year',
+                    { timeUnit: 'year' },
                 ),
             'в прошлом году',
         );
@@ -120,7 +120,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2016], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             '2 года назад',
         );
@@ -131,7 +131,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 1], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2016, 2]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             'через 2 года',
         );
@@ -142,7 +142,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 7], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6]),
-                    'month',
+                    { timeUnit: 'month' },
                 ),
             'в следующем месяце',
         );
@@ -153,7 +153,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 9], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             'через 3 месяца',
         );
@@ -164,7 +164,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 7]),
-                    'month',
+                    { timeUnit: 'month' },
                 ),
             'в прошлом месяце',
         );
@@ -175,7 +175,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 9]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             '3 месяца назад',
         );
@@ -186,7 +186,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 9, 1], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 2]),
-                    'months',
+                    { timeUnit: 'month' },
                 ),
             'через 3 месяца',
         );
@@ -197,7 +197,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 9], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2016, 6]),
-                    'months',
+                    { timeUnit: 'month' },
                 ),
             'через 27 месяцев',
         );
@@ -208,7 +208,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 16]),
-                    'week',
+                    { timeUnit: 'week' },
                 ),
             'на следующей неделе',
         );
@@ -219,7 +219,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 5, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'через 5 недель',
         );
@@ -230,7 +230,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 16], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'week',
+                    { timeUnit: 'week' },
                 ),
             'на прошлой неделе',
         );
@@ -241,7 +241,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 5, 15], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             '5 недель назад',
         );
@@ -252,7 +252,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 1, 8], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 1, 1]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'на следующей неделе',
         );
@@ -263,7 +263,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 8, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'через 10 недель',
         );
@@ -274,7 +274,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 22]),
-                    'day',
+                    { timeUnit: 'day' },
                 ),
             'завтра',
         );
@@ -285,7 +285,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'через 8 дней',
         );
@@ -296,7 +296,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 22], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'day',
+                    { timeUnit: 'day' },
                 ),
             'вчера',
         );
@@ -307,7 +307,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             '8 дней назад',
         );
@@ -318,7 +318,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 23, 0], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 1]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'через 8 дней',
         );
@@ -329,7 +329,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 8, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'через 69 дней',
         );
@@ -340,7 +340,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 22]),
-                    'hour',
+                    { timeUnit: 'hour' },
                 ),
             'через 1 час',
         );
@@ -351,7 +351,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'через 11 часов',
         );
@@ -362,7 +362,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 22], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 23]),
-                    'hour',
+                    { timeUnit: 'hour' },
                 ),
             '1 час назад',
         );
@@ -373,7 +373,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 23]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             '11 часов назад',
         );
@@ -384,7 +384,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 23, 0], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 1]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'через 11 часов',
         );
@@ -395,7 +395,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 18, 23], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'через 83 часа',
         );
@@ -406,7 +406,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 29]),
-                    'minute',
+                    { timeUnit: 'minute' },
                 ),
             'через 1 минуту',
         );
@@ -417,7 +417,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'через 15 минут',
         );
@@ -428,7 +428,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 29], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    'minute',
+                    { timeUnit: 'minute' },
                 ),
             '1 минуту назад',
         );
@@ -439,7 +439,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 15], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             '15 минут назад',
         );
@@ -450,7 +450,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 0], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15, 1]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'через 15 минут',
         );
@@ -461,7 +461,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 16, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'через 255 минут',
         );
@@ -472,7 +472,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 29]),
-                    'second',
+                    { timeUnit: 'second' },
                 ),
             'через 1 секунду',
         );
@@ -483,7 +483,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'через 15 секунд',
         );
@@ -494,7 +494,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 29], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    'second',
+                    { timeUnit: 'second' },
                 ),
             '1 секунду назад',
         );
@@ -505,7 +505,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 15], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             '15 секунд назад',
         );
@@ -516,7 +516,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30, 0], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15, 1]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'через 15 секунд',
         );
@@ -527,7 +527,7 @@ describe('DateTime #humanDiff (Locale)', function() {
             DateTime.fromArray([2018, 6, 15, 12, 50, 30], { locale: 'ru' })
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'через 1 215 секунд',
         );

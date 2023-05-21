@@ -161,12 +161,12 @@
     function getBiggestDiff(date, other) {
         let lastResult;
         for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
-            const relativeDiff = date.diff(other, timeUnit);
+            const relativeDiff = date.diff(other, { timeUnit });
             if (lastResult && thresholds[timeUnit] && Math.abs(relativeDiff) >= thresholds[timeUnit]) {
                 return lastResult;
             }
 
-            const actualDiff = date.diff(other, timeUnit, false);
+            const actualDiff = date.diff(other, { timeUnit, relative: false });
             if (actualDiff) {
                 return [relativeDiff, timeUnit];
             }
@@ -2553,11 +2553,12 @@
     /**
      * Get the difference between this and another Date.
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [timeUnit] The unit of time.
-     * @param {Boolean} [relative=true] Whether to use the relative difference.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.timeUnit] The unit of time.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
      * @return {number} The difference.
      */
-    function diff(other, timeUnit, relative = true) {
+    function diff(other, { timeUnit, relative = true } = {}) {
         if (!other) {
             other = new this.constructor;
         }
@@ -2695,10 +2696,11 @@
     /**
      * Get the difference between this and another Date in human readable form.
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [timeUnit] The unit of time.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.timeUnit] The unit of time.
      * @return {string} The difference in human readable form.
      */
-    function humanDiff(other, timeUnit) {
+    function humanDiff(other, { timeUnit } = {}) {
         const relativeFormatter = getRelativeFormatter(this.getLocale());
 
         if (!relativeFormatter) {
@@ -2711,7 +2713,7 @@
 
         let amount;
         if (timeUnit) {
-            amount = this.diff(other, timeUnit);
+            amount = this.diff(other, { timeUnit });
         } else {
             [amount, timeUnit] = getBiggestDiff(this, other);
         }
@@ -2721,30 +2723,33 @@
     /**
      * Determine whether this DateTime is after another date (optionally to a granularity).
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
      */
-    function isAfter(other, granularity) {
-        return this.diff(other, granularity) > 0;
+    function isAfter(other, { granularity } = {}) {
+        return this.diff(other, { timeUnit: granularity }) > 0;
     }
     /**
      * Determine whether this DateTime is before another date (optionally to a granularity).
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
      */
-    function isBefore(other, granularity) {
-        return this.diff(other, granularity) < 0;
+    function isBefore(other, { granularity } = {}) {
+        return this.diff(other, { timeUnit: granularity }) < 0;
     }
     /**
      * Determine whether this DateTime is between two other dates (optionally to a granularity).
      * @param {DateTime} [start] The first date to compare to.
      * @param {DateTime} [end] The second date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
      */
-    function isBetween(start, end, granularity) {
-        return this.diff(start, granularity) > 0 && this.diff(end, granularity) < 0;
+    function isBetween(start, end, { granularity } = {}) {
+        return this.diff(start, { timeUnit: granularity }) > 0 && this.diff(end, { timeUnit: granularity }) < 0;
     }
     /**
      * Return true if the DateTime is in daylight savings.
@@ -2777,29 +2782,32 @@
     /**
      * Determine whether this DateTime is the same as another date (optionally to a granularity).
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
      */
-    function isSame(other, granularity) {
-        return this.diff(other, granularity) === 0;
+    function isSame(other, { granularity } = {}) {
+        return this.diff(other, { timeUnit: granularity }) === 0;
     }
     /**
      * Determine whether this DateTime is the same or after another date (optionally to a granularity).
      * @param {DateTime} [other] The date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
      */
-    function isSameOrAfter(other, granularity) {
-        return this.diff(other, granularity) >= 0;
+    function isSameOrAfter(other, { granularity } = {}) {
+        return this.diff(other, { timeUnit: granularity }) >= 0;
     }
     /**
      * Determine whether this DateTime is the same or before another date.
      * @param {DateTime} other The date to compare to.
-     * @param {string} [granularity] The level of granularity to use for comparison.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {string} [options.granularity] The level of granularity to use for comparison.
      * @return {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
      */
-    function isSameOrBefore(other, granularity) {
-        return this.diff(other, granularity) <= 0;
+    function isSameOrBefore(other, { granularity } = {}) {
+        return this.diff(other, { timeUnit: granularity }) <= 0;
     }
     /**
      * Get the name of the month in current timeZone.

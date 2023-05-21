@@ -44,7 +44,7 @@ import DateTime from '@fr0st/datetime';
 ## Date Creation
 
 - `dateString` is a string representing the date, and will default to the current timestamp.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -55,7 +55,7 @@ const dateTime = new DateTime(dateString, options);
 **From Array**
 
 - `dateArray` is an array containing the year, month, date, hours, minutes, seconds and milliseconds.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -68,7 +68,7 @@ The month and date in the `dateArray` will default to 1 if not set. The hours, m
 **From Date**
 
 - `dateObj` is a native JS *Date* object.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -82,7 +82,7 @@ If you wish to parse a date string and you know the exact format, you can use th
 
 - `formatString` is a string containing the format you wish to use for parsing.
 - `dateString` is a string representing the date you are parsing.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -97,7 +97,7 @@ const dateTime = DateTime.fromFormat(formatString, dateString, options);
 **From ISO String**
 
 - `dateString` is a string representing the date you are parsing.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to English.
 
@@ -114,7 +114,7 @@ const dateTime = DateTime.fromISOString(dateString, options);
 **From Timestamp**
 
 - `timestamp` is the number of seconds since the UNIX epoch.
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -124,7 +124,7 @@ const dateTime = DateTime.fromTimestamp(timestamp, options);
 
 **Now**
 
-- `options` is an object containing properties to define the new date.
+- `options` is an object containing options for creating the new date.
     - `timeZone` is a string representing the time zone of the date, and will default to the system time zone.
     - `locale` is a string representing the locale of the date, and will default to the system locale.
 
@@ -694,22 +694,23 @@ const daysInYear = dateTime.daysInYear();
 Get the difference between two Dates.
 
 - `other` is the *DateTime* object to compare to.
-- `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
-- `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+- `options` is an object containing options for how to compare the dates.
+    - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
 
 If the `timeUnit` is omitted, this method will return the difference in milliseconds.
 
 ```javascript
-const diff = dateTime.diff(other, timeUnit, relative);
+const diff = dateTime.diff(other, options);
 ```
 
 If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
 
 ```javascript
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), 'years', true); // 1
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), 'years', false); // 0
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), 'years', true); // 2
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), 'years', false); // 1
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), { timeUnit: 'years', relative: true }); // 1
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), { timeUnit: 'years', relative: false }); // 0
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), { timeUnit: 'years', relative: true }); // 2
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), { timeUnit: 'years', relative: false }); // 1
 ```
 
 **Era**
@@ -727,12 +728,13 @@ const era = dateTime.era(type);
 Get the relative difference between two Dates in a human readable format using the current locale.
 
 - `other` is the *DateTime* object to compare to.
-- `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+- `options` is an object containing options for how to compare the dates.
+    - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
 
 If the `timeUnit` is omitted, this method will use the (relative) most significant non-zero value.
 
 ```javascript
-const diff = dateTime.humanDiff(other, timeUnit);
+const diff = dateTime.humanDiff(other, options);
 ```
 
 The most significant non-zero value is determined where the unit of time has a non-relative difference, or the next relative difference value is greater than or equal to the unit of time.
@@ -751,10 +753,11 @@ DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('y
 Return *true* if the *DateTime* is after another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isAfter = dateTime.isAfter(other, granularity);
+const isAfter = dateTime.isAfter(other, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -764,10 +767,11 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is before another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBefore = dateTime.isBefore(other, granularity);
+const isBefore = dateTime.isBefore(other, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -778,10 +782,11 @@ Return *true* if the *DateTime* is between two other dates.
 
 - `start` is the starting *DateTime* object to compare to.
 - `end` is the ending *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isBetween = dateTime.isBetween(start, end, granularity);
+const isBetween = dateTime.isBetween(start, end, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -807,10 +812,11 @@ const isLeapYear = dateTime.isLeapYear();
 Return *true* if the *DateTime* is the same as another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSame = dateTime.isSame(other, granularity);
+const isSame = dateTime.isSame(other, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -820,10 +826,11 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is the same or after another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrAfter = dateTime.isSameOrAfter(other, granularity);
+const isSameOrAfter = dateTime.isSameOrAfter(other, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -833,10 +840,11 @@ If a `granularity` is not specified, this method will compare the dates in milli
 Return *true* if the *DateTime* is the same or before another date.
 
 - `other` is the *DateTime* object to compare to.
-- `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
+- `options` is an object containing options for how to compare the dates.
+    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
 
 ```javascript
-const isSameOrBefore = dateTime.isSameOrBefore(other, granularity);
+const isSameOrBefore = dateTime.isSameOrBefore(other, options);
 ```
 
 If a `granularity` is not specified, this method will compare the dates in milliseconds.
@@ -913,7 +921,7 @@ Get the default locale.
 locale = DateTime.getDefaultLocale();
 ```
 
-**Set Default Time Zone**
+**Get Default Time Zone**
 
 Get the default time zone.
 

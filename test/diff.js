@@ -17,7 +17,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018])
                 .diff(
                     DateTime.fromArray([2017]),
-                    'year',
+                    { timeUnit: 'year' },
                 ),
             1,
         );
@@ -28,7 +28,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018])
                 .diff(
                     DateTime.fromArray([2016]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             2,
         );
@@ -39,7 +39,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2016])
                 .diff(
                     DateTime.fromArray([2018]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             -2,
         );
@@ -50,7 +50,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1])
                 .diff(
                     DateTime.fromArray([2017, 2]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             1,
         );
@@ -61,8 +61,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1])
                 .diff(
                     DateTime.fromArray([2017, 2]),
-                    'years',
-                    false,
+                    { timeUnit: 'years', relative: false },
                 ),
             0,
         );
@@ -73,7 +72,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 9])
                 .diff(
                     DateTime.fromArray([2018, 8]),
-                    'month',
+                    { timeUnit: 'month' },
                 ),
             1,
         );
@@ -84,7 +83,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 9])
                 .diff(
                     DateTime.fromArray([2018, 6]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             3,
         );
@@ -95,7 +94,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6])
                 .diff(
                     DateTime.fromArray([2018, 9]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             -3,
         );
@@ -106,7 +105,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 2, 1])
                 .diff(
                     DateTime.fromArray([2018, 1, 2]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             1,
         );
@@ -117,8 +116,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 2, 1])
                 .diff(
                     DateTime.fromArray([2018, 1, 2]),
-                    'months',
-                    false,
+                    { timeUnit: 'months', relative: false },
                 ),
             0,
         );
@@ -129,7 +127,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 9])
                 .diff(
                     DateTime.fromArray([2016, 6]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             27,
         );
@@ -140,7 +138,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 16]),
-                    'week',
+                    { timeUnit: 'week' },
                 ),
             1,
         );
@@ -151,7 +149,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .diff(
                     DateTime.fromArray([2018, 5, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             5,
         );
@@ -162,7 +160,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 5, 15])
                 .diff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             -5,
         );
@@ -173,7 +171,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 8])
                 .diff(
                     DateTime.fromArray([2018, 1, 1]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             1,
         );
@@ -184,8 +182,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 8])
                 .diff(
                     DateTime.fromArray([2018, 1, 2]),
-                    'weeks',
-                    false,
+                    { timeUnit: 'weeks', relative: false },
                 ),
             0,
         );
@@ -196,7 +193,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 8, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             10,
         );
@@ -207,7 +204,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 22]),
-                    'day',
+                    { timeUnit: 'day' },
                 ),
             1,
         );
@@ -218,7 +215,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             8,
         );
@@ -229,7 +226,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15])
                 .diff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             -8,
         );
@@ -240,7 +237,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 2, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 1]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             1,
         );
@@ -251,8 +248,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 2, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 1]),
-                    'days',
-                    false,
+                    { timeUnit: 'days', relative: false },
                 ),
             0,
         );
@@ -263,7 +259,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 8, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             69,
         );
@@ -274,7 +270,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 22]),
-                    'hour',
+                    { timeUnit: 'hour' },
                 ),
             1,
         );
@@ -285,7 +281,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             11,
         );
@@ -296,7 +292,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 23]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             -11,
         );
@@ -307,7 +303,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 1]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             1,
         );
@@ -318,8 +314,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 1]),
-                    'hours',
-                    false,
+                    { timeUnit: 'hours', relative: false },
                 ),
             0,
         );
@@ -330,7 +325,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 18, 23])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             83,
         );
@@ -341,7 +336,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 29]),
-                    'minute',
+                    { timeUnit: 'minute' },
                 ),
             1,
         );
@@ -352,7 +347,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             15,
         );
@@ -363,7 +358,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 15])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             -15,
         );
@@ -374,7 +369,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 0, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 0, 1]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             1,
         );
@@ -385,8 +380,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 0, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 0, 1]),
-                    'minutes',
-                    false,
+                    { timeUnit: 'minutes', relative: false },
                 ),
             0,
         );
@@ -397,7 +391,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 16, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             255,
         );
@@ -408,7 +402,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 29]),
-                    'second',
+                    { timeUnit: 'second' },
                 ),
             1,
         );
@@ -419,7 +413,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             15,
         );
@@ -430,7 +424,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 15])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             -15,
         );
@@ -441,7 +435,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 0, 0, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 0, 0, 1]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             1,
         );
@@ -452,8 +446,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 1, 1, 0, 0, 1, 0])
                 .diff(
                     DateTime.fromArray([2018, 1, 1, 0, 0, 0, 1]),
-                    'seconds',
-                    false,
+                    { timeUnit: 'seconds', relative: false },
                 ),
             0,
         );
@@ -464,7 +457,7 @@ describe('DateTime #diff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 50, 30])
                 .diff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             1215,
         );

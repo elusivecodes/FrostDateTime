@@ -41,12 +41,12 @@ export function compensateDiff(date, other, amount, compensate = true, compensat
 export function getBiggestDiff(date, other) {
     let lastResult;
     for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
-        const relativeDiff = date.diff(other, timeUnit);
+        const relativeDiff = date.diff(other, { timeUnit });
         if (lastResult && thresholds[timeUnit] && Math.abs(relativeDiff) >= thresholds[timeUnit]) {
             return lastResult;
         }
 
-        const actualDiff = date.diff(other, timeUnit, false);
+        const actualDiff = date.diff(other, { timeUnit, relative: false });
         if (actualDiff) {
             return [relativeDiff, timeUnit];
         }

@@ -25,7 +25,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1]);
             const date2 = DateTime.fromArray([2019, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'year'),
+                date1.isAfter(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -34,7 +34,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'year'),
+                date1.isAfter(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -43,7 +43,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
             const date2 = DateTime.fromArray([2018, 2, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'month'),
+                date1.isAfter(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -52,7 +52,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'month'),
+                date1.isAfter(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -61,7 +61,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 2, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'day'),
+                date1.isAfter(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -70,7 +70,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'day'),
+                date1.isAfter(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -79,7 +79,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'hour'),
+                date1.isAfter(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -88,7 +88,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'hour'),
+                date1.isAfter(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -97,7 +97,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'minute'),
+                date1.isAfter(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -106,7 +106,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'minute'),
+                date1.isAfter(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -115,7 +115,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isAfter(date2, 'second'),
+                date1.isAfter(date2, { granularity: 'second' }),
                 false,
             );
         });
@@ -124,7 +124,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isAfter(date2, 'second'),
+                date1.isAfter(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -153,7 +153,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'year'),
+                date1.isBefore(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -162,7 +162,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1]);
             const date2 = DateTime.fromArray([2019, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'year'),
+                date1.isBefore(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -171,7 +171,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'month'),
+                date1.isBefore(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -180,7 +180,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
             const date2 = DateTime.fromArray([2018, 2, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'month'),
+                date1.isBefore(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -189,7 +189,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'day'),
+                date1.isBefore(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -198,7 +198,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 2, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'day'),
+                date1.isBefore(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -207,7 +207,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'hour'),
+                date1.isBefore(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -216,7 +216,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'hour'),
+                date1.isBefore(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -225,7 +225,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'minute'),
+                date1.isBefore(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -234,7 +234,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'minute'),
+                date1.isBefore(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -243,7 +243,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isBefore(date2, 'second'),
+                date1.isBefore(date2, { granularity: 'second' }),
                 false,
             );
         });
@@ -252,7 +252,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             assert.strictEqual(
-                date1.isBefore(date2, 'second'),
+                date1.isBefore(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -294,7 +294,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018]);
             const date3 = DateTime.fromArray([2020]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'year'),
+                date1.isBetween(date2, date3, { granularity: 'year' }),
                 true,
             );
         });
@@ -304,7 +304,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018]);
             const date3 = DateTime.fromArray([2020]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'year'),
+                date1.isBetween(date2, date3, { granularity: 'year' }),
                 false,
             );
         });
@@ -314,7 +314,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018]);
             const date3 = DateTime.fromArray([2020]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'year'),
+                date1.isBetween(date2, date3, { granularity: 'year' }),
                 false,
             );
         });
@@ -324,7 +324,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 2]);
             const date3 = DateTime.fromArray([2018, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'month'),
+                date1.isBetween(date2, date3, { granularity: 'month' }),
                 true,
             );
         });
@@ -334,7 +334,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 2]);
             const date3 = DateTime.fromArray([2018, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'month'),
+                date1.isBetween(date2, date3, { granularity: 'month' }),
                 false,
             );
         });
@@ -344,7 +344,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 2]);
             const date3 = DateTime.fromArray([2018, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'month'),
+                date1.isBetween(date2, date3, { granularity: 'month' }),
                 false,
             );
         });
@@ -354,7 +354,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'day'),
+                date1.isBetween(date2, date3, { granularity: 'day' }),
                 true,
             );
         });
@@ -364,7 +364,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'day'),
+                date1.isBetween(date2, date3, { granularity: 'day' }),
                 false,
             );
         });
@@ -374,7 +374,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'day'),
+                date1.isBetween(date2, date3, { granularity: 'day' }),
                 false,
             );
         });
@@ -384,7 +384,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'hour'),
+                date1.isBetween(date2, date3, { granularity: 'hour' }),
                 true,
             );
         });
@@ -394,7 +394,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'hour'),
+                date1.isBetween(date2, date3, { granularity: 'hour' }),
                 false,
             );
         });
@@ -404,7 +404,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'hour'),
+                date1.isBetween(date2, date3, { granularity: 'hour' }),
                 false,
             );
         });
@@ -414,7 +414,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'minute'),
+                date1.isBetween(date2, date3, { granularity: 'minute' }),
                 true,
             );
         });
@@ -424,7 +424,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'minute'),
+                date1.isBetween(date2, date3, { granularity: 'minute' }),
                 false,
             );
         });
@@ -434,7 +434,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'minute'),
+                date1.isBetween(date2, date3, { granularity: 'minute' }),
                 false,
             );
         });
@@ -444,7 +444,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'second'),
+                date1.isBetween(date2, date3, { granularity: 'second' }),
                 true,
             );
         });
@@ -454,7 +454,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'second'),
+                date1.isBetween(date2, date3, { granularity: 'second' }),
                 false,
             );
         });
@@ -464,7 +464,7 @@ describe('DateTime Comparisons', function() {
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date3 = DateTime.fromArray([2018, 1, 1, 1, 1, 4]);
             assert.strictEqual(
-                date1.isBetween(date2, date3, 'second'),
+                date1.isBetween(date2, date3, { granularity: 'second' }),
                 false,
             );
         });
@@ -502,7 +502,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'year'),
+                date1.isSame(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -511,7 +511,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2]);
             const date2 = DateTime.fromArray([2019, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'year'),
+                date1.isSame(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -520,7 +520,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2]);
             const date2 = DateTime.fromArray([2017, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'year'),
+                date1.isSame(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -529,7 +529,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'month'),
+                date1.isSame(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -538,7 +538,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 2, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'month'),
+                date1.isSame(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -547,7 +547,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'month'),
+                date1.isSame(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -556,7 +556,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'day'),
+                date1.isSame(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -565,7 +565,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'day'),
+                date1.isSame(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -574,7 +574,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'day'),
+                date1.isSame(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -583,7 +583,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'hour'),
+                date1.isSame(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -592,7 +592,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'hour'),
+                date1.isSame(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -601,7 +601,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'hour'),
+                date1.isSame(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -610,7 +610,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'minute'),
+                date1.isSame(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -619,7 +619,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'minute'),
+                date1.isSame(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -628,7 +628,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'minute'),
+                date1.isSame(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -637,7 +637,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'second'),
+                date1.isSame(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -646,7 +646,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             assert.strictEqual(
-                date1.isSame(date2, 'second'),
+                date1.isSame(date2, { granularity: 'second' }),
                 false,
             );
         });
@@ -655,7 +655,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSame(date2, 'second'),
+                date1.isSame(date2, { granularity: 'second' }),
                 false,
             );
         });
@@ -693,7 +693,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'year'),
+                date1.isSameOrAfter(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -702,7 +702,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'year'),
+                date1.isSameOrAfter(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -711,7 +711,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2020, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'year'),
+                date1.isSameOrAfter(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -720,7 +720,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'month'),
+                date1.isSameOrAfter(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -729,7 +729,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'month'),
+                date1.isSameOrAfter(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -738,7 +738,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'month'),
+                date1.isSameOrAfter(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -747,7 +747,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'day'),
+                date1.isSameOrAfter(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -756,7 +756,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'day'),
+                date1.isSameOrAfter(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -765,7 +765,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'day'),
+                date1.isSameOrAfter(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -774,7 +774,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'hour'),
+                date1.isSameOrAfter(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -783,7 +783,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'hour'),
+                date1.isSameOrAfter(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -792,7 +792,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'hour'),
+                date1.isSameOrAfter(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -801,7 +801,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'minute'),
+                date1.isSameOrAfter(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -810,7 +810,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'minute'),
+                date1.isSameOrAfter(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -819,7 +819,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'minute'),
+                date1.isSameOrAfter(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -828,7 +828,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'second'),
+                date1.isSameOrAfter(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -837,7 +837,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'second'),
+                date1.isSameOrAfter(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -846,7 +846,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             assert.strictEqual(
-                date1.isSameOrAfter(date2, 'second'),
+                date1.isSameOrAfter(date2, { granularity: 'second' }),
                 false,
             );
         });
@@ -884,7 +884,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'year'),
+                date1.isSameOrBefore(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -893,7 +893,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2020, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'year'),
+                date1.isSameOrBefore(date2, { granularity: 'year' }),
                 true,
             );
         });
@@ -902,7 +902,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2019, 2]);
             const date2 = DateTime.fromArray([2018, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'year'),
+                date1.isSameOrBefore(date2, { granularity: 'year' }),
                 false,
             );
         });
@@ -911,7 +911,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'month'),
+                date1.isSameOrBefore(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -920,7 +920,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2]);
             const date2 = DateTime.fromArray([2018, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'month'),
+                date1.isSameOrBefore(date2, { granularity: 'month' }),
                 true,
             );
         });
@@ -929,7 +929,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'month'),
+                date1.isSameOrBefore(date2, { granularity: 'month' }),
                 false,
             );
         });
@@ -938,7 +938,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'day'),
+                date1.isSameOrBefore(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -947,7 +947,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'day'),
+                date1.isSameOrBefore(date2, { granularity: 'day' }),
                 true,
             );
         });
@@ -956,7 +956,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'day'),
+                date1.isSameOrBefore(date2, { granularity: 'day' }),
                 false,
             );
         });
@@ -965,7 +965,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'hour'),
+                date1.isSameOrBefore(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -974,7 +974,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'hour'),
+                date1.isSameOrBefore(date2, { granularity: 'hour' }),
                 true,
             );
         });
@@ -983,7 +983,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'hour'),
+                date1.isSameOrBefore(date2, { granularity: 'hour' }),
                 false,
             );
         });
@@ -992,7 +992,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'minute'),
+                date1.isSameOrBefore(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -1001,7 +1001,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 2, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'minute'),
+                date1.isSameOrBefore(date2, { granularity: 'minute' }),
                 true,
             );
         });
@@ -1010,7 +1010,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 2, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'minute'),
+                date1.isSameOrBefore(date2, { granularity: 'minute' }),
                 false,
             );
         });
@@ -1019,7 +1019,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'second'),
+                date1.isSameOrBefore(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -1028,7 +1028,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'second'),
+                date1.isSameOrBefore(date2, { granularity: 'second' }),
                 true,
             );
         });
@@ -1037,7 +1037,7 @@ describe('DateTime Comparisons', function() {
             const date1 = DateTime.fromArray([2018, 1, 1, 1, 1, 2]);
             const date2 = DateTime.fromArray([2018, 1, 1, 1, 1, 1]);
             assert.strictEqual(
-                date1.isSameOrBefore(date2, 'second'),
+                date1.isSameOrBefore(date2, { granularity: 'second' }),
                 false,
             );
         });

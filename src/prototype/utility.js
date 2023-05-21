@@ -57,11 +57,12 @@ export function daysInYear() {
 /**
  * Get the difference between this and another Date.
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [timeUnit] The unit of time.
- * @param {Boolean} [relative=true] Whether to use the relative difference.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.timeUnit] The unit of time.
+ * @param {Boolean} [options.relative=true] Whether to use the relative difference.
  * @return {number} The difference.
  */
-export function diff(other, timeUnit, relative = true) {
+export function diff(other, { timeUnit, relative = true } = {}) {
     if (!other) {
         other = new this.constructor;
     }
@@ -201,10 +202,11 @@ export function era(type = 'long') {
 /**
  * Get the difference between this and another Date in human readable form.
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [timeUnit] The unit of time.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.timeUnit] The unit of time.
  * @return {string} The difference in human readable form.
  */
-export function humanDiff(other, timeUnit) {
+export function humanDiff(other, { timeUnit } = {}) {
     const relativeFormatter = getRelativeFormatter(this.getLocale());
 
     if (!relativeFormatter) {
@@ -217,7 +219,7 @@ export function humanDiff(other, timeUnit) {
 
     let amount;
     if (timeUnit) {
-        amount = this.diff(other, timeUnit);
+        amount = this.diff(other, { timeUnit });
     } else {
         [amount, timeUnit] = getBiggestDiff(this, other);
     }
@@ -228,32 +230,35 @@ export function humanDiff(other, timeUnit) {
 /**
  * Determine whether this DateTime is after another date (optionally to a granularity).
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
  */
-export function isAfter(other, granularity) {
-    return this.diff(other, granularity) > 0;
+export function isAfter(other, { granularity } = {}) {
+    return this.diff(other, { timeUnit: granularity }) > 0;
 };
 
 /**
  * Determine whether this DateTime is before another date (optionally to a granularity).
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
  */
-export function isBefore(other, granularity) {
-    return this.diff(other, granularity) < 0;
+export function isBefore(other, { granularity } = {}) {
+    return this.diff(other, { timeUnit: granularity }) < 0;
 };
 
 /**
  * Determine whether this DateTime is between two other dates (optionally to a granularity).
  * @param {DateTime} [start] The first date to compare to.
  * @param {DateTime} [end] The second date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
  */
-export function isBetween(start, end, granularity) {
-    return this.diff(start, granularity) > 0 && this.diff(end, granularity) < 0;
+export function isBetween(start, end, { granularity } = {}) {
+    return this.diff(start, { timeUnit: granularity }) > 0 && this.diff(end, { timeUnit: granularity }) < 0;
 };
 
 /**
@@ -289,31 +294,34 @@ export function isLeapYear() {
 /**
  * Determine whether this DateTime is the same as another date (optionally to a granularity).
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
  */
-export function isSame(other, granularity) {
-    return this.diff(other, granularity) === 0;
+export function isSame(other, { granularity } = {}) {
+    return this.diff(other, { timeUnit: granularity }) === 0;
 };
 
 /**
  * Determine whether this DateTime is the same or after another date (optionally to a granularity).
  * @param {DateTime} [other] The date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
  */
-export function isSameOrAfter(other, granularity) {
-    return this.diff(other, granularity) >= 0;
+export function isSameOrAfter(other, { granularity } = {}) {
+    return this.diff(other, { timeUnit: granularity }) >= 0;
 };
 
 /**
  * Determine whether this DateTime is the same or before another date.
  * @param {DateTime} other The date to compare to.
- * @param {string} [granularity] The level of granularity to use for comparison.
+ * @param {object} [options] The options for comparing the dates.
+ * @param {string} [options.granularity] The level of granularity to use for comparison.
  * @return {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
  */
-export function isSameOrBefore(other, granularity) {
-    return this.diff(other, granularity) <= 0;
+export function isSameOrBefore(other, { granularity } = {}) {
+    return this.diff(other, { timeUnit: granularity }) <= 0;
 };
 
 /**

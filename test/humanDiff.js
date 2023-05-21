@@ -87,7 +87,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018])
                 .humanDiff(
                     DateTime.fromArray([2017]),
-                    'year',
+                    { timeUnit: 'year' },
                 ),
             'next year',
         );
@@ -98,7 +98,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018])
                 .humanDiff(
                     DateTime.fromArray([2016]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             'in 2 years',
         );
@@ -109,7 +109,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2017])
                 .humanDiff(
                     DateTime.fromArray([2018]),
-                    'year',
+                    { timeUnit: 'year' },
                 ),
             'last year',
         );
@@ -120,7 +120,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2016])
                 .humanDiff(
                     DateTime.fromArray([2018]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             '2 years ago',
         );
@@ -131,7 +131,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 1])
                 .humanDiff(
                     DateTime.fromArray([2016, 2]),
-                    'years',
+                    { timeUnit: 'years' },
                 ),
             'in 2 years',
         );
@@ -142,7 +142,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 7])
                 .humanDiff(
                     DateTime.fromArray([2018, 6]),
-                    'month',
+                    { timeUnit: 'month' },
                 ),
             'next month',
         );
@@ -153,7 +153,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 9])
                 .humanDiff(
                     DateTime.fromArray([2018, 6]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             'in 3 months',
         );
@@ -164,7 +164,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6])
                 .humanDiff(
                     DateTime.fromArray([2018, 7]),
-                    'month',
+                    { timeUnit: 'month' },
                 ),
             'last month',
         );
@@ -175,7 +175,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6])
                 .humanDiff(
                     DateTime.fromArray([2018, 9]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             '3 months ago',
         );
@@ -186,7 +186,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 9, 1])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 2]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             'in 3 months',
         );
@@ -197,7 +197,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 9])
                 .humanDiff(
                     DateTime.fromArray([2016, 6]),
-                    'months',
+                    { timeUnit: 'months' },
                 ),
             'in 27 months',
         );
@@ -208,7 +208,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 16]),
-                    'week',
+                    { timeUnit: 'week' },
                 ),
             'next week',
         );
@@ -219,7 +219,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 5, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'in 5 weeks',
         );
@@ -230,7 +230,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 16])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'week',
+                    { timeUnit: 'week' },
                 ),
             'last week',
         );
@@ -241,7 +241,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 5, 15])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             '5 weeks ago',
         );
@@ -252,7 +252,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 1, 8])
                 .humanDiff(
                     DateTime.fromArray([2018, 1, 1]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'next week',
         );
@@ -263,7 +263,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 8, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'weeks',
+                    { timeUnit: 'weeks' },
                 ),
             'in 10 weeks',
         );
@@ -274,7 +274,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 22]),
-                    'day',
+                    { timeUnit: 'day' },
                 ),
             'tomorrow',
         );
@@ -285,7 +285,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'in 8 days',
         );
@@ -296,7 +296,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 22])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'day',
+                    { timeUnit: 'day' },
                 ),
             'yesterday',
         );
@@ -307,7 +307,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 23]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             '8 days ago',
         );
@@ -318,7 +318,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 23, 0])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 1]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'in 8 days',
         );
@@ -329,7 +329,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 8, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15]),
-                    'days',
+                    { timeUnit: 'days' },
                 ),
             'in 69 days',
         );
@@ -340,7 +340,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 22]),
-                    'hour',
+                    { timeUnit: 'hour' },
                 ),
             'in 1 hour',
         );
@@ -351,7 +351,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'in 11 hours',
         );
@@ -362,7 +362,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 22])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 23]),
-                    'hour',
+                    { timeUnit: 'hour' },
                 ),
             '1 hour ago',
         );
@@ -373,7 +373,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 23]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             '11 hours ago',
         );
@@ -384,7 +384,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 23, 0])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 1]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'in 11 hours',
         );
@@ -395,7 +395,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 18, 23])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12]),
-                    'hours',
+                    { timeUnit: 'hours' },
                 ),
             'in 83 hours',
         );
@@ -406,7 +406,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 29]),
-                    'minute',
+                    { timeUnit: 'minute' },
                 ),
             'in 1 minute',
         );
@@ -417,7 +417,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'in 15 minutes',
         );
@@ -428,7 +428,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 29])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    'minute',
+                    { timeUnit: 'minute' },
                 ),
             '1 minute ago',
         );
@@ -439,7 +439,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 15])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             '15 minutes ago',
         );
@@ -450,7 +450,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 1])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15, 0]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'in 15 minutes',
         );
@@ -461,7 +461,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 16, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    'minutes',
+                    { timeUnit: 'minutes' },
                 ),
             'in 255 minutes',
         );
@@ -472,7 +472,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 29]),
-                    'second',
+                    { timeUnit: 'second' },
                 ),
             'in 1 second',
         );
@@ -483,7 +483,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'in 15 seconds',
         );
@@ -494,7 +494,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 29])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    'second',
+                    { timeUnit: 'second' },
                 ),
             '1 second ago',
         );
@@ -505,7 +505,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 15])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             '15 seconds ago',
         );
@@ -516,7 +516,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 30, 30, 1])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15, 0]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'in 15 seconds',
         );
@@ -527,7 +527,7 @@ describe('DateTime #humanDiff', function() {
             DateTime.fromArray([2018, 6, 15, 12, 50, 30])
                 .humanDiff(
                     DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    'seconds',
+                    { timeUnit: 'seconds' },
                 ),
             'in 1,215 seconds',
         );
