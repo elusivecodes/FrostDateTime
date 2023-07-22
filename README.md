@@ -918,7 +918,7 @@ const daysInYear = DateTime.daysInYear(year);
 Get the default locale.
 
 ```javascript
-locale = DateTime.getDefaultLocale();
+const locale = DateTime.getDefaultLocale();
 ```
 
 **Get Default Time Zone**
@@ -926,7 +926,7 @@ locale = DateTime.getDefaultLocale();
 Get the default time zone.
 
 ```javascript
-timeZone = DateTime.getDefaultTimeZone();
+const timeZone = DateTime.getDefaultTimeZone();
 ```
 
 **Is Leap Year?**
