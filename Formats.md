@@ -46,7 +46,7 @@
             <td><em>002, 020, 201, 2017</em></td>
         </tr>
         <tr>
-            <td><code>YYYY+</code></td>
+            <td><code>yyyy+</code></td>
             <td><em>0002, 0020, 0201, 2017</em></td>
         </tr>
         <tr>
