@@ -103,18 +103,18 @@ export function modify(date, amount, timeUnit) {
     switch (timeUnit) {
         case 'second':
         case 'seconds':
-            return date.setSeconds(
-                date.getSeconds() + amount,
+            return date.setTime(
+                date.getTime() + (amount * 1000),
             );
         case 'minute':
         case 'minutes':
-            return date.setMinutes(
-                date.getMinutes() + amount,
+            return date.setTime(
+                date.getTime() + (amount * 60000),
             );
         case 'hour':
         case 'hours':
-            return date.setHours(
-                date.getHours() + amount,
+            return date.setTime(
+                date.getTime() + (amount * 3600000),
             );
         case 'week':
         case 'weeks':
@@ -268,5 +268,17 @@ export function parseFactory() {
  * @return {DateTime} The DateTime object.
  */
 export function setOffsetTime(date, time) {
-    return date.setTime(time + (date.getTimeZoneOffset() * 60000));
+    const oldOffset = date.getTimeZoneOffset();
+
+    const newTime = time + (oldOffset * 60000);
+    const newDate = date.setTime(newTime);
+
+    const offset = newDate.getTimeZoneOffset();
+
+    if (oldOffset === offset) {
+        return newDate;
+    }
+
+    // compensate for DST transitions
+    return newDate.setTime(newTime - ((oldOffset - offset) * 60000));
 };
