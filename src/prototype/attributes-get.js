@@ -95,7 +95,7 @@ export function getTimestamp() {
  * @return {number} The local week. (1, 53)
  */
 export function getWeek() {
-    const thisWeek = this.startOf('day').setWeekDay(1);
+    const thisWeek = this.startOfDay().setWeekDay(1);
     const firstWeek = thisWeek.setWeek(1, 1);
 
     return 1 +

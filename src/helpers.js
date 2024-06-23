@@ -1,9 +1,102 @@
 import { getDateFormatter } from './factory.js';
-import { thresholds } from './vars.js';
+import { diffMethods, thresholds } from './vars.js';
 
 /**
  * DateTime Helpers
  */
+
+export function calculateDiff(date, other, timeUnit, relative = true) {
+    other = other.setTimeZone(date.getTimeZone());
+
+    switch (timeUnit) {
+        case 'year':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                ),
+                date.getYear() - other.getYear(),
+                !relative,
+                -1,
+            );
+        case 'month':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                    date.getMonth(),
+                ),
+                (date.getYear() - other.getYear()) * 12 + date.getMonth() - other.getMonth(),
+                !relative,
+                -1,
+            );
+        case 'week':
+            return compensateDiff(
+                date,
+                other.setWeekYear(
+                    date.getWeekYear(),
+                    date.getWeek(),
+                ),
+                (date - other) / 604800000,
+                relative,
+            );
+        case 'day':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                ),
+                (date - other) / 86400000,
+                relative,
+            );
+        case 'hour':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                ).setHours(
+                    date.getHours(),
+                ),
+                (date - other) / 3600000,
+                relative,
+            );
+        case 'minute':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                ).setHours(
+                    date.getHours(),
+                    date.getMinutes(),
+                ),
+                (date - other) / 60000,
+                relative,
+            );
+        case 'second':
+            return compensateDiff(
+                date,
+                other.setYear(
+                    date.getYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                ).setHours(
+                    date.getHours(),
+                    date.getMinutes(),
+                    date.getSeconds(),
+                ),
+                (date - other) / 1000,
+                relative,
+            );
+        default:
+            throw new Error('Invalid time unit supplied');
+    }
+};
 
 /**
  * Compensate the difference between two dates.
@@ -14,7 +107,7 @@ import { thresholds } from './vars.js';
  * @param {number} [compensation=1] The compensation offset.
  * @return {number} The compensated amount.
  */
-export function compensateDiff(date, other, amount, compensate = true, compensation = 1) {
+function compensateDiff(date, other, amount, compensate = true, compensation = 1) {
     if (amount > 0) {
         amount = Math.floor(amount);
 
@@ -40,13 +133,15 @@ export function compensateDiff(date, other, amount, compensate = true, compensat
  */
 export function getBiggestDiff(date, other) {
     let lastResult;
-    for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
-        const relativeDiff = date.diff(other, { timeUnit });
+    for (const [timeUnit, diffMethod] of Object.entries(diffMethods)) {
+        const relativeDiff = date[diffMethod](other);
+
         if (lastResult && thresholds[timeUnit] && Math.abs(relativeDiff) >= thresholds[timeUnit]) {
             return lastResult;
         }
 
-        const actualDiff = date.diff(other, { timeUnit, relative: false });
+        const actualDiff = date[diffMethod](other, { relative: false });
+
         if (actualDiff) {
             return [relativeDiff, timeUnit];
         }
@@ -88,57 +183,6 @@ export function getOffset(date) {
  */
 export function getOffsetTime(date) {
     return date.getTime() - (date.getTimeZoneOffset() * 60000);
-};
-
-/**
- * Modify a DateTime by a duration.
- * @param {DateTime} date The DateTime.
- * @param {number} amount The amount to modify the date by.
- * @param {string} [timeUnit] The unit of time.
- * @return {DateTime} The DateTime object.
- */
-export function modify(date, amount, timeUnit) {
-    timeUnit = timeUnit.toLowerCase();
-
-    switch (timeUnit) {
-        case 'second':
-        case 'seconds':
-            return date.setTime(
-                date.getTime() + (amount * 1000),
-            );
-        case 'minute':
-        case 'minutes':
-            return date.setTime(
-                date.getTime() + (amount * 60000),
-            );
-        case 'hour':
-        case 'hours':
-            return date.setTime(
-                date.getTime() + (amount * 3600000),
-            );
-        case 'week':
-        case 'weeks':
-            return date.setDate(
-                date.getDate() + (amount * 7),
-            );
-        case 'day':
-        case 'days':
-            return date.setDate(
-                date.getDate() + amount,
-            );
-        case 'month':
-        case 'months':
-            return date.setMonth(
-                date.getMonth() + amount,
-            );
-        case 'year':
-        case 'years':
-            return date.setYear(
-                date.getYear() + amount,
-            );
-        default:
-            throw new Error('Invalid time unit supplied');
-    }
 };
 
 /**

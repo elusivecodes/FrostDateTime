@@ -113,6 +113,16 @@
         ['minutes', 'seconds', 'milliseconds'],
     ];
 
+    const diffMethods = {
+        year: 'diffInYears',
+        month: 'diffInMonths',
+        week: 'diffInWeeks',
+        day: 'diffInDays',
+        hour: 'diffInHours',
+        minute: 'diffInMinutes',
+        second: 'diffInSeconds',
+    };
+
     const thresholds = {
         month: 12,
         week: null,
@@ -126,6 +136,98 @@
      * DateTime Helpers
      */
 
+    function calculateDiff(date, other, timeUnit, relative = true) {
+        other = other.setTimeZone(date.getTimeZone());
+
+        switch (timeUnit) {
+            case 'year':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                    ),
+                    date.getYear() - other.getYear(),
+                    !relative,
+                    -1,
+                );
+            case 'month':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                        date.getMonth(),
+                    ),
+                    (date.getYear() - other.getYear()) * 12 + date.getMonth() - other.getMonth(),
+                    !relative,
+                    -1,
+                );
+            case 'week':
+                return compensateDiff(
+                    date,
+                    other.setWeekYear(
+                        date.getWeekYear(),
+                        date.getWeek(),
+                    ),
+                    (date - other) / 604800000,
+                    relative,
+                );
+            case 'day':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                    ),
+                    (date - other) / 86400000,
+                    relative,
+                );
+            case 'hour':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                    ).setHours(
+                        date.getHours(),
+                    ),
+                    (date - other) / 3600000,
+                    relative,
+                );
+            case 'minute':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                    ).setHours(
+                        date.getHours(),
+                        date.getMinutes(),
+                    ),
+                    (date - other) / 60000,
+                    relative,
+                );
+            case 'second':
+                return compensateDiff(
+                    date,
+                    other.setYear(
+                        date.getYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                    ).setHours(
+                        date.getHours(),
+                        date.getMinutes(),
+                        date.getSeconds(),
+                    ),
+                    (date - other) / 1000,
+                    relative,
+                );
+            default:
+                throw new Error('Invalid time unit supplied');
+        }
+    }
     /**
      * Compensate the difference between two dates.
      * @param {DateTime} date The DateTime.
@@ -160,13 +262,15 @@
      */
     function getBiggestDiff(date, other) {
         let lastResult;
-        for (const timeUnit of ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']) {
-            const relativeDiff = date.diff(other, { timeUnit });
+        for (const [timeUnit, diffMethod] of Object.entries(diffMethods)) {
+            const relativeDiff = date[diffMethod](other);
+
             if (lastResult && thresholds[timeUnit] && Math.abs(relativeDiff) >= thresholds[timeUnit]) {
                 return lastResult;
             }
 
-            const actualDiff = date.diff(other, { timeUnit, relative: false });
+            const actualDiff = date[diffMethod](other, { relative: false });
+
             if (actualDiff) {
                 return [relativeDiff, timeUnit];
             }
@@ -206,56 +310,6 @@
      */
     function getOffsetTime(date) {
         return date.getTime() - (date.getTimeZoneOffset() * 60000);
-    }
-    /**
-     * Modify a DateTime by a duration.
-     * @param {DateTime} date The DateTime.
-     * @param {number} amount The amount to modify the date by.
-     * @param {string} [timeUnit] The unit of time.
-     * @return {DateTime} The DateTime object.
-     */
-    function modify(date, amount, timeUnit) {
-        timeUnit = timeUnit.toLowerCase();
-
-        switch (timeUnit) {
-            case 'second':
-            case 'seconds':
-                return date.setTime(
-                    date.getTime() + (amount * 1000),
-                );
-            case 'minute':
-            case 'minutes':
-                return date.setTime(
-                    date.getTime() + (amount * 60000),
-                );
-            case 'hour':
-            case 'hours':
-                return date.setTime(
-                    date.getTime() + (amount * 3600000),
-                );
-            case 'week':
-            case 'weeks':
-                return date.setDate(
-                    date.getDate() + (amount * 7),
-                );
-            case 'day':
-            case 'days':
-                return date.setDate(
-                    date.getDate() + amount,
-                );
-            case 'month':
-            case 'months':
-                return date.setMonth(
-                    date.getMonth() + amount,
-                );
-            case 'year':
-            case 'years':
-                return date.setYear(
-                    date.getYear() + amount,
-                );
-            default:
-                throw new Error('Invalid time unit supplied');
-        }
     }
     /**
      * Compare a literal format string with a date string.
@@ -613,6 +667,22 @@
             '';
 
         return `${sign}${hourString}${colon}${minuteString}`;
+    }
+    /**
+     * Format a relative duration as a locale string.
+     * @param {string} locale The locale.
+     * @param {number} amount The amount of duration.
+     * @param {string} unit The time unit.
+     * @returns {string} The relative duration.
+     */
+    function formatRelative(locale, amount, unit) {
+        const relativeFormatter = getRelativeFormatter(locale);
+
+        if (!relativeFormatter) {
+            throw new Error('RelativeTimeFormat not supported');
+        }
+
+        return relativeFormatter.format(amount, unit);
     }
     /**
      * Format a time zone as a locale string.
@@ -2021,7 +2091,7 @@
      * @return {number} The local week. (1, 53)
      */
     function getWeek() {
-        const thisWeek = this.startOf('day').setWeekDay(1);
+        const thisWeek = this.startOfDay().setWeekDay(1);
         const firstWeek = thisWeek.setWeek(1, 1);
 
         return 1 +
@@ -2345,94 +2415,943 @@
     }
 
     /**
+     * DateTime Comparisons
+     */
+
+    /**
+     * Get the difference between this and another Date in milliseconds.
+     * @param {DateTime} other The date to compare to.
+     * @return {number} The difference.
+     */
+    function diff(other) {
+        return this - other;
+    }
+    /**
+     * Get the difference between this and another Date in days.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInDays(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'day', relative);
+    }
+    /**
+     * Get the difference between this and another Date in hours.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInHours(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'hour', relative);
+    }
+    /**
+     * Get the difference between this and another Date in minutes.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInMinutes(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'minute', relative);
+    }
+    /**
+     * Get the difference between this and another Date in months.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInMonths(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'month', relative);
+    }
+    /**
+     * Get the difference between this and another Date in seconds.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInSeconds(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'second', relative);
+    }
+    /**
+     * Get the difference between this and another Date in weeks.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInWeeks(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'week', relative);
+    }
+    /**
+     * Get the difference between this and another Date in years.
+     * @param {DateTime} other The date to compare to.
+     * @param {object} [options] The options for comparing the dates.
+     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
+     * @return {number} The difference.
+     */
+    function diffInYears(other, { relative = true } = {}) {
+        return calculateDiff(this, other, 'year', relative);
+    }
+    /**
+     * Get the difference between this and another Date in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in human readable form.
+     */
+    function humanDiff(other) {
+        const [amount, unit] = getBiggestDiff(this, other);
+        return formatRelative(this.getLocale(), amount, unit);
+    }
+    /**
+     * Get the difference between this and another Date in days in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in days in human readable form.
+     */
+    function humanDiffInDays(other) {
+        return formatRelative(this.getLocale(), this.diffInDays(other), 'day');
+    }
+    /**
+     * Get the difference between this and another Date in hours in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in hours in human readable form.
+     */
+    function humanDiffInHours(other) {
+        return formatRelative(this.getLocale(), this.diffInHours(other), 'hour');
+    }
+    /**
+     * Get the difference between this and another Date in minutes in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in minutes in human readable form.
+     */
+    function humanDiffInMinutes(other) {
+        return formatRelative(this.getLocale(), this.diffInMinutes(other), 'minute');
+    }
+    /**
+     * Get the difference between this and another Date in months in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in months in human readable form.
+     */
+    function humanDiffInMonths(other) {
+        return formatRelative(this.getLocale(), this.diffInMonths(other), 'month');
+    }
+    /**
+     * Get the difference between this and another Date in seconds in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in seconds in human readable form.
+     */
+    function humanDiffInSeconds(other) {
+        return formatRelative(this.getLocale(), this.diffInSeconds(other), 'second');
+    }
+    /**
+     * Get the difference between this and another Date in weeks in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in weeks in human readable form.
+     */
+    function humanDiffInWeeks(other) {
+        return formatRelative(this.getLocale(), this.diffInWeeks(other), 'week');
+    }
+    /**
+     * Get the difference between this and another Date in years in human readable form.
+     * @param {DateTime} other The date to compare to.
+     * @return {string} The difference in years in human readable form.
+     */
+    function humanDiffInYears(other) {
+        return formatRelative(this.getLocale(), this.diffInYears(other), 'year');
+    }
+    /**
+     * Determine whether this DateTime is after another date.
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
+     */
+    function isAfter(other) {
+        return this.diff(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by day).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by day), otherwise FALSE.
+     */
+    function isAfterDay(other) {
+        return this.diffInDays(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by hour).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by hour), otherwise FALSE.
+     */
+    function isAfterHour(other) {
+        return this.diffInHours(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by minute).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by minute), otherwise FALSE.
+     */
+    function isAfterMinute(other) {
+        return this.diffInMinutes(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by month).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by month), otherwise FALSE.
+     */
+    function isAfterMonth(other) {
+        return this.diffInMonths(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by second).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by second), otherwise FALSE.
+     */
+    function isAfterSecond(other) {
+        return this.diffInSeconds(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by week).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by week), otherwise FALSE.
+     */
+    function isAfterWeek(other) {
+        return this.diffInWeeks(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is after another date (comparing by year).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by year), otherwise FALSE.
+     */
+    function isAfterYear(other) {
+        return this.diffInYears(other) > 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date.
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
+     */
+    function isBefore(other) {
+        return this.diff(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by day).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by day), otherwise FALSE.
+     */
+    function isBeforeDay(other) {
+        return this.diffInDays(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by hour).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by hour), otherwise FALSE.
+     */
+    function isBeforeHour(other) {
+        return this.diffInHours(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by minute).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by minute), otherwise FALSE.
+     */
+    function isBeforeMinute(other) {
+        return this.diffInMinutes(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by month).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by month), otherwise FALSE.
+     */
+    function isBeforeMonth(other) {
+        return this.diffInMonths(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by second).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by second), otherwise FALSE.
+     */
+    function isBeforeSecond(other) {
+        return this.diffInSeconds(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by week).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by week), otherwise FALSE.
+     */
+    function isBeforeWeek(other) {
+        return this.diffInWeeks(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is before another date (comparing by year).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by year), otherwise FALSE.
+     */
+    function isBeforeYear(other) {
+        return this.diffInYears(other) < 0;
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates.
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates, otherwise FALSE.
+     */
+    function isBetween(start, end) {
+        return this.isAfter(start) && this.isBefore(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by day).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by day), otherwise FALSE.
+     */
+    function isBetweenDay(start, end) {
+        return this.isAfterDay(start) && this.isBeforeDay(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by hour).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by hour), otherwise FALSE.
+     */
+    function isBetweenHour(start, end) {
+        return this.isAfterHour(start) && this.isBeforeHour(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by minute).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by minute), otherwise FALSE.
+     */
+    function isBetweenMinute(start, end) {
+        return this.isAfterMinute(start) && this.isBeforeMinute(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by month).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by month), otherwise FALSE.
+     */
+    function isBetweenMonth(start, end) {
+        return this.isAfterMonth(start) && this.isBeforeMonth(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by second).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by second), otherwise FALSE.
+     */
+    function isBetweenSecond(start, end) {
+        return this.isAfterSecond(start) && this.isBeforeSecond(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by week).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by week), otherwise FALSE.
+     */
+    function isBetweenWeek(start, end) {
+        return this.isAfterWeek(start) && this.isBeforeWeek(end);
+    }
+
+    /**
+     * Determine whether this DateTime is between two other dates (comparing by year).
+     * @param {DateTime} start The first date to compare to.
+     * @param {DateTime} end The second date to compare to.
+     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by year), otherwise FALSE.
+     */
+    function isBetweenYear(start, end) {
+        return this.isAfterYear(start) && this.isBeforeYear(end);
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date.
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
+     */
+    function isSame(other) {
+        return this.diff(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by day).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by day), otherwise FALSE.
+     */
+    function isSameDay(other) {
+        return this.diffInDays(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by hour).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by hour), otherwise FALSE.
+     */
+    function isSameHour(other) {
+        return this.diffInHours(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by minute).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by minute), otherwise FALSE.
+     */
+    function isSameMinute(other) {
+        return this.diffInMinutes(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by month).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by month), otherwise FALSE.
+     */
+    function isSameMonth(other) {
+        return this.diffInMonths(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by second).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by second), otherwise FALSE.
+     */
+    function isSameSecond(other) {
+        return this.diffInSeconds(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by week).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by week), otherwise FALSE.
+     */
+    function isSameWeek(other) {
+        return this.diffInWeeks(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as another date (comparing by year).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by year), otherwise FALSE.
+     */
+    function isSameYear(other) {
+        return this.diffInYears(other) === 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date.
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date, otherwise FALSE.
+     */
+    function isSameOrAfter(other) {
+        return this.diff(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by day).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by day), otherwise FALSE.
+     */
+    function isSameOrAfterDay(other) {
+        return this.diffInDays(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by hour).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by hour), otherwise FALSE.
+     */
+    function isSameOrAfterHour(other) {
+        return this.diffInHours(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by minute).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by minute), otherwise FALSE.
+     */
+    function isSameOrAfterMinute(other) {
+        return this.diffInMinutes(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by month).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by month), otherwise FALSE.
+     */
+    function isSameOrAfterMonth(other) {
+        return this.diffInMonths(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by second).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by second), otherwise FALSE.
+     */
+    function isSameOrAfterSecond(other) {
+        return this.diffInSeconds(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by week).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by week), otherwise FALSE.
+     */
+    function isSameOrAfterWeek(other) {
+        return this.diffInWeeks(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or after another date (comparing by year).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by year), otherwise FALSE.
+     */
+    function isSameOrAfterYear(other) {
+        return this.diffInYears(other) >= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date.
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date, otherwise FALSE.
+     */
+    function isSameOrBefore(other) {
+        return this.diff(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by day).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by day), otherwise FALSE.
+     */
+    function isSameOrBeforeDay(other) {
+        return this.diffInDays(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by hour).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by hour), otherwise FALSE.
+     */
+    function isSameOrBeforeHour(other) {
+        return this.diffInHours(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by minute).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by minute), otherwise FALSE.
+     */
+    function isSameOrBeforeMinute(other) {
+        return this.diffInMinutes(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by month).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by month), otherwise FALSE.
+     */
+    function isSameOrBeforeMonth(other) {
+        return this.diffInMonths(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by second).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by second), otherwise FALSE.
+     */
+    function isSameOrBeforeSecond(other) {
+        return this.diffInSeconds(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by week).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by week), otherwise FALSE.
+     */
+    function isSameOrBeforeWeek(other) {
+        return this.diffInWeeks(other) <= 0;
+    }
+
+    /**
+     * Determine whether this DateTime is the same as or before another date (comparing by year).
+     * @param {DateTime} other The date to compare to.
+     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by year), otherwise FALSE.
+     */
+    function isSameOrBeforeYear(other) {
+        return this.diffInYears(other) <= 0;
+    }
+
+    /**
      * DateTime Manipulation
      */
 
     /**
-     * Add a duration to the date.
-     * @param {number} amount The amount to modify the date by.
-     * @param {string} timeUnit The unit of time.
+     * Add a day to the current DateTime.
      * @return {DateTime} The DateTime object.
      */
-    function add(amount, timeUnit) {
-        return modify(this, amount, timeUnit);
+    function addDay() {
+        return this.addDays(1);
     }
     /**
-     * Modify the DateTime by setting it to the end of a unit of time.
-     * @param {string} timeUnit The unit of time.
+     * Add days to the current DateTime.
+     * @param {number} amount The number of days to add.
      * @return {DateTime} The DateTime object.
      */
-    function endOf(timeUnit) {
-        timeUnit = timeUnit.toLowerCase();
+    function addDays(amount) {
+        return this.setDate(
+            this.getDate() + amount,
+        );
+    }
+    /**
+     * Add an hour to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addHour() {
+        return this.addHours(1);
+    }
+    /**
+     * Add hours to the current DateTime.
+     * @param {number} amount The number of hours to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addHours(amount) {
+        return this.setTime(
+            this.getTime() + (amount * 3600000),
+        );
+    }
+    /**
+     * Add a minute to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addMinute() {
+        return this.addMinutes(1);
+    }
+    /**
+     * Add minutes to the current DateTime.
+     * @param {number} amount The number of minutes to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addMinutes(amount) {
+        return this.setTime(
+            this.getTime() + (amount * 60000),
+        );
+    }
+    /**
+     * Add a month to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addMonth() {
+        return this.addMonths(1);
+    }
+    /**
+     * Add months to the current DateTime.
+     * @param {number} amount The number of months to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addMonths(amount) {
+        return this.setMonth(
+            this.getMonth() + amount,
+        );
+    }
+    /**
+     * Add a second to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addSecond() {
+        return this.addSeconds(1);
+    }
+    /**
+     * Add seconds to the current DateTime.
+     * @param {number} amount The number of seconds to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addSeconds(amount) {
+        return this.setTime(
+            this.getTime() + (amount * 1000),
+        );
+    }
+    /**
+     * Add a week to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addWeek() {
+        return this.addWeeks(1);
+    }
+    /**
+     * Add weeks to the current DateTime.
+     * @param {number} amount The number of weeks to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addWeeks(amount) {
+        return this.setDate(
+            this.getDate() + (amount * 7),
+        );
+    }
+    /**
+     * Add a year to the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function addYear() {
+        return this.addYears(1);
+    }
+    /**
+     * Add years to the current DateTime.
+     * @param {number} amount The number of years to add.
+     * @return {DateTime} The DateTime object.
+     */
+    function addYears(amount) {
+        return this.setYear(
+            this.getYear() + amount,
+        );
+    }
+    /**
+     * Set the DateTime to the end of the day.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfDay() {
+        return this.setHours(23, 59, 59, 999);
+    }
+    /**
+     * Set the DateTime to the end of the hour.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfHour() {
+        return this.setMinutes(59, 59, 999);
+    }
+    /**
+     * Set the DateTime to the end of the minute.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfMinute() {
+        return this.setSeconds(59, 999);
+    }
+    /**
+     * Set the DateTime to the end of the month.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfMonth() {
+        return this.setDate(this.daysInMonth())
+            .endOfDay();
+    }
 
-        switch (timeUnit) {
-            case 'second':
-                return this.setMilliseconds(999);
-            case 'minute':
-                return this.setSeconds(59, 999);
-            case 'hour':
-                return this.setMinutes(59, 59, 999);
-            case 'day':
-                return this.setHours(23, 59, 59, 999);
-            case 'week':
-                return this.setWeekDay(7)
-                    .setHours(23, 59, 59, 999);
-            case 'month':
-                return this.setDate(this.daysInMonth())
-                    .setHours(23, 59, 59, 999);
-            case 'quarter':
-                const month = this.getQuarter() * 3;
-                return this.setMonth(month, daysInMonth$1(this.getYear(), month))
-                    .setHours(23, 59, 59, 999);
-            case 'year':
-                return this.setMonth(12, 31)
-                    .setHours(23, 59, 59, 999);
-            default:
-                throw new Error('Invalid time unit supplied');
-        }
-    }
     /**
-     * Modify the DateTime by setting it to the start of a unit of time.
-     * @param {string} timeUnit The unit of time.
+     * Set the DateTime to the end of the quarter.
      * @return {DateTime} The DateTime object.
      */
-    function startOf(timeUnit) {
-        timeUnit = timeUnit.toLowerCase();
+    function endOfQuarter() {
+        const month = this.getQuarter() * 3;
+        return this.setMonth(month, daysInMonth$1(this.getYear(), month))
+            .endOfDay();
+    }
+    /**
+     * Set the DateTime to the end of the second.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfSecond() {
+        return this.setMilliseconds(999);
+    }
+    /**
+     * Set the DateTime to the end of the week.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfWeek() {
+        return this.setWeekDay(7)
+            .endOfDay();
+    }
+    /**
+     * Set the DateTime to the end of the year.
+     * @return {DateTime} The DateTime object.
+     */
+    function endOfYear() {
+        return this.setMonth(12, 31)
+            .endOfDay();
+    }
+    /**
+     * Set the DateTime to the start of the day.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfDay() {
+        return this.setHours(0, 0, 0, 0);
+    }
+    /**
+     * Set the DateTime to the start of the hour.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfHour() {
+        return this.setMinutes(0, 0, 0);
+    }
+    /**
+     * Set the DateTime to the start of the minute.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfMinute() {
+        return this.setSeconds(0, 0);
+    }
+    /**
+     * Set the DateTime to the start of the month.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfMonth() {
+        return this.setDate(1)
+            .startOfDay();
+    }
 
-        switch (timeUnit) {
-            case 'second':
-                return this.setMilliseconds(0);
-            case 'minute':
-                return this.setSeconds(0, 0);
-            case 'hour':
-                return this.setMinutes(0, 0, 0);
-            case 'day':
-                return this.setHours(0, 0, 0, 0);
-            case 'week':
-                return this.setWeekDay(1)
-                    .setHours(0, 0, 0, 0);
-            case 'month':
-                return this.setDate(1)
-                    .setHours(0, 0, 0, 0);
-            case 'quarter':
-                const month = this.getQuarter() * 3 - 2;
-                return this.setMonth(month, 1)
-                    .setHours(0, 0, 0, 0);
-            case 'year':
-                return this.setMonth(1, 1)
-                    .setHours(0, 0, 0, 0);
-            default:
-                throw new Error('Invalid time unit supplied');
-        }
-    }
     /**
-     * Subtract a duration from the date.
-     * @param {number} amount The amount to modify the date by.
-     * @param {string} timeUnit The unit of time.
+     * Set the DateTime to the start of the quarter.
      * @return {DateTime} The DateTime object.
      */
-    function sub(amount, timeUnit) {
-        return modify(this, -amount, timeUnit);
+    function startOfQuarter() {
+        const month = this.getQuarter() * 3 - 2;
+        return this.setMonth(month, 1)
+            .startOfDay();
+    }
+    /**
+     * Set the DateTime to the start of the second.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfSecond() {
+        return this.setMilliseconds(0);
+    }
+    /**
+     * Set the DateTime to the start of the week.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfWeek() {
+        return this.setWeekDay(1)
+            .startOfDay();
+    }
+    /**
+     * Set the DateTime to the start of the year.
+     * @return {DateTime} The DateTime object.
+     */
+    function startOfYear() {
+        return this.setMonth(1, 1)
+            .startOfDay();
+    }
+    /**
+     * Subtract a day from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subDay() {
+        return this.addDays(-1);
+    }
+    /**
+     * Subtract days from the current DateTime.
+     * @param {number} amount The number of days to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subDays(amount) {
+        return this.addDays(-amount);
+    }
+    /**
+     * Subtract an hour from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subHour() {
+        return this.addHours(-1);
+    }
+    /**
+     * Subtract hours from the current DateTime.
+     * @param {number} amount The number of hours to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subHours(amount) {
+        return this.addHours(-amount);
+    }
+    /**
+     * Subtract a minute from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subMinute() {
+        return this.addMinutes(-1);
+    }
+    /**
+     * Subtract minutes from the current DateTime.
+     * @param {number} amount The number of minutes to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subMinutes(amount) {
+        return this.addMinutes(-amount);
+    }
+    /**
+     * Subtract a month from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subMonth() {
+        return this.addMonths(-1);
+    }
+    /**
+     * Subtract months from the current DateTime.
+     * @param {number} amount The number of months to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subMonths(amount) {
+        return this.addMonths(-amount);
+    }
+    /**
+     * Subtract a second from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subSecond() {
+        return this.addSeconds(-1);
+    }
+    /**
+     * Subtract seconds from the current DateTime.
+     * @param {number} amount The number of seconds to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subSeconds(amount) {
+        return this.addSeconds(-amount);
+    }
+    /**
+     * Subtract a week from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subWeek() {
+        return this.addWeeks(-1);
+    }
+    /**
+     * Subtract weeks from the current DateTime.
+     * @param {number} amount The number of weeks to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subWeeks(amount) {
+        return this.addWeeks(-amount);
+    }
+    /**
+     * Subtract a year from the current DateTime.
+     * @return {DateTime} The DateTime object.
+     */
+    function subYear() {
+        return this.addYears(-1);
+    }
+    /**
+     * Subtract years from the current DateTime.
+     * @param {number} amount The number of years to subtract.
+     * @return {DateTime} The DateTime object.
+     */
+    function subYears(amount) {
+        return this.addYears(-amount);
     }
 
     /**
@@ -2563,135 +3482,6 @@
         );
     }
     /**
-     * Get the difference between this and another Date.
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.timeUnit] The unit of time.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diff(other, { timeUnit, relative = true } = {}) {
-        if (!other) {
-            other = new this.constructor;
-        }
-
-        if (!timeUnit) {
-            return this - other;
-        }
-
-        if (timeUnit) {
-            timeUnit = timeUnit.toLowerCase();
-        }
-
-        other = other.setTimeZone(this.getTimeZone());
-
-        switch (timeUnit) {
-            case 'year':
-            case 'years':
-                const yearDiff = this.getYear() - other.getYear();
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                    ),
-                    yearDiff,
-                    !relative,
-                    -1,
-                );
-            case 'month':
-            case 'months':
-                const monthDiff = (this.getYear() - other.getYear()) *
-                    12 +
-                    this.getMonth() -
-                    other.getMonth();
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                        this.getMonth(),
-                    ),
-                    monthDiff,
-                    !relative,
-                    -1,
-                );
-            case 'week':
-            case 'weeks':
-                const weekDiff = (this - other) / 604800000;
-                return compensateDiff(
-                    this,
-                    other.setWeekYear(
-                        this.getWeekYear(),
-                        this.getWeek(),
-                    ),
-                    weekDiff,
-                    relative,
-                );
-            case 'day':
-            case 'days':
-                const dayDiff = (this - other) / 86400000;
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                        this.getMonth(),
-                        this.getDate(),
-                    ),
-                    dayDiff,
-                    relative,
-                );
-            case 'hour':
-            case 'hours':
-                const hourDiff = (this - other) / 3600000;
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                        this.getMonth(),
-                        this.getDate(),
-                    ).setHours(
-                        this.getHours(),
-                    ),
-                    hourDiff,
-                    relative,
-                );
-            case 'minute':
-            case 'minutes':
-                const minuteDiff = (this - other) / 60000;
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                        this.getMonth(),
-                        this.getDate(),
-                    ).setHours(
-                        this.getHours(),
-                        this.getMinutes(),
-                    ),
-                    minuteDiff,
-                    relative,
-                );
-            case 'second':
-            case 'seconds':
-                const secondDiff = (this - other) / 1000;
-                return compensateDiff(
-                    this,
-                    other.setYear(
-                        this.getYear(),
-                        this.getMonth(),
-                        this.getDate(),
-                    ).setHours(
-                        this.getHours(),
-                        this.getMinutes(),
-                        this.getSeconds(),
-                    ),
-                    secondDiff,
-                    relative,
-                );
-            default:
-                throw new Error('Invalid time unit supplied');
-        }
-    }
-    /**
      * Get the era in current timeZone.
      * @param {string} [type=long] The type of era to return.
      * @return {string} The era.
@@ -2704,64 +3494,6 @@
                 1,
             type,
         );
-    }
-    /**
-     * Get the difference between this and another Date in human readable form.
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.timeUnit] The unit of time.
-     * @return {string} The difference in human readable form.
-     */
-    function humanDiff(other, { timeUnit } = {}) {
-        const relativeFormatter = getRelativeFormatter(this.getLocale());
-
-        if (!relativeFormatter) {
-            throw new Error('RelativeTimeFormat not supported');
-        }
-
-        if (!other) {
-            other = new this.constructor;
-        }
-
-        let amount;
-        if (timeUnit) {
-            amount = this.diff(other, { timeUnit });
-        } else {
-            [amount, timeUnit] = getBiggestDiff(this, other);
-        }
-
-        return relativeFormatter.format(amount, timeUnit);
-    }
-    /**
-     * Determine whether this DateTime is after another date (optionally to a granularity).
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
-     */
-    function isAfter(other, { granularity } = {}) {
-        return this.diff(other, { timeUnit: granularity }) > 0;
-    }
-    /**
-     * Determine whether this DateTime is before another date (optionally to a granularity).
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
-     */
-    function isBefore(other, { granularity } = {}) {
-        return this.diff(other, { timeUnit: granularity }) < 0;
-    }
-    /**
-     * Determine whether this DateTime is between two other dates (optionally to a granularity).
-     * @param {DateTime} [start] The first date to compare to.
-     * @param {DateTime} [end] The second date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is between the other dates, otherwise FALSE.
-     */
-    function isBetween(start, end, { granularity } = {}) {
-        return this.diff(start, { timeUnit: granularity }) > 0 && this.diff(end, { timeUnit: granularity }) < 0;
     }
     /**
      * Return true if the DateTime is in daylight savings.
@@ -2790,36 +3522,6 @@
         return isLeapYear$1(
             this.getYear(),
         );
-    }
-    /**
-     * Determine whether this DateTime is the same as another date (optionally to a granularity).
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
-     */
-    function isSame(other, { granularity } = {}) {
-        return this.diff(other, { timeUnit: granularity }) === 0;
-    }
-    /**
-     * Determine whether this DateTime is the same or after another date (optionally to a granularity).
-     * @param {DateTime} [other] The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is the same or after the other date, otherwise FALSE.
-     */
-    function isSameOrAfter(other, { granularity } = {}) {
-        return this.diff(other, { timeUnit: granularity }) >= 0;
-    }
-    /**
-     * Determine whether this DateTime is the same or before another date.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {string} [options.granularity] The level of granularity to use for comparison.
-     * @return {Boolean} TRUE if this DateTime is the same or before the other date, otherwise FALSE.
-     */
-    function isSameOrBefore(other, { granularity } = {}) {
-        return this.diff(other, { timeUnit: granularity }) <= 0;
     }
     /**
      * Get the name of the month in current timeZone.
@@ -2866,13 +3568,40 @@
 
     const proto = DateTime.prototype;
 
-    proto.add = add;
+    proto.addDay = addDay;
+    proto.addDays = addDays;
+    proto.addHour = addHour;
+    proto.addHours = addHours;
+    proto.addMinute = addMinute;
+    proto.addMinutes = addMinutes;
+    proto.addMonth = addMonth;
+    proto.addMonths = addMonths;
+    proto.addSecond = addSecond;
+    proto.addSeconds = addSeconds;
+    proto.addWeek = addWeek;
+    proto.addWeeks = addWeeks;
+    proto.addYear = addYear;
+    proto.addYears = addYears;
     proto.dayName = dayName;
     proto.dayPeriod = dayPeriod;
     proto.daysInMonth = daysInMonth;
     proto.daysInYear = daysInYear;
     proto.diff = diff;
-    proto.endOf = endOf;
+    proto.diffInDays = diffInDays;
+    proto.diffInHours = diffInHours;
+    proto.diffInMinutes = diffInMinutes;
+    proto.diffInMonths = diffInMonths;
+    proto.diffInSeconds = diffInSeconds;
+    proto.diffInWeeks = diffInWeeks;
+    proto.diffInYears = diffInYears;
+    proto.endOfDay = endOfDay;
+    proto.endOfHour = endOfHour;
+    proto.endOfMinute = endOfMinute;
+    proto.endOfMonth = endOfMonth;
+    proto.endOfQuarter = endOfQuarter;
+    proto.endOfSecond = endOfSecond;
+    proto.endOfWeek = endOfWeek;
+    proto.endOfYear = endOfYear;
     proto.era = era;
     proto.format = format;
     proto.getDate = getDate;
@@ -2892,14 +3621,63 @@
     proto.getWeekYear = getWeekYear;
     proto.getYear = getYear;
     proto.humanDiff = humanDiff;
+    proto.humanDiffInDays = humanDiffInDays;
+    proto.humanDiffInHours = humanDiffInHours;
+    proto.humanDiffInMinutes = humanDiffInMinutes;
+    proto.humanDiffInMonths = humanDiffInMonths;
+    proto.humanDiffInSeconds = humanDiffInSeconds;
+    proto.humanDiffInWeeks = humanDiffInWeeks;
+    proto.humanDiffInYears = humanDiffInYears;
     proto.isAfter = isAfter;
+    proto.isAfterDay = isAfterDay;
+    proto.isAfterHour = isAfterHour;
+    proto.isAfterMinute = isAfterMinute;
+    proto.isAfterMonth = isAfterMonth;
+    proto.isAfterSecond = isAfterSecond;
+    proto.isAfterWeek = isAfterWeek;
+    proto.isAfterYear = isAfterYear;
     proto.isBefore = isBefore;
+    proto.isBeforeDay = isBeforeDay;
+    proto.isBeforeHour = isBeforeHour;
+    proto.isBeforeMinute = isBeforeMinute;
+    proto.isBeforeMonth = isBeforeMonth;
+    proto.isBeforeSecond = isBeforeSecond;
+    proto.isBeforeWeek = isBeforeWeek;
+    proto.isBeforeYear = isBeforeYear;
     proto.isBetween = isBetween;
+    proto.isBetweenDay = isBetweenDay;
+    proto.isBetweenHour = isBetweenHour;
+    proto.isBetweenMinute = isBetweenMinute;
+    proto.isBetweenMonth = isBetweenMonth;
+    proto.isBetweenSecond = isBetweenSecond;
+    proto.isBetweenWeek = isBetweenWeek;
+    proto.isBetweenYear = isBetweenYear;
     proto.isDST = isDST;
     proto.isLeapYear = isLeapYear;
     proto.isSame = isSame;
+    proto.isSameDay = isSameDay;
+    proto.isSameHour = isSameHour;
+    proto.isSameMinute = isSameMinute;
+    proto.isSameMonth = isSameMonth;
+    proto.isSameSecond = isSameSecond;
+    proto.isSameWeek = isSameWeek;
+    proto.isSameYear = isSameYear;
     proto.isSameOrAfter = isSameOrAfter;
+    proto.isSameOrAfterDay = isSameOrAfterDay;
+    proto.isSameOrAfterHour = isSameOrAfterHour;
+    proto.isSameOrAfterMinute = isSameOrAfterMinute;
+    proto.isSameOrAfterMonth = isSameOrAfterMonth;
+    proto.isSameOrAfterSecond = isSameOrAfterSecond;
+    proto.isSameOrAfterWeek = isSameOrAfterWeek;
+    proto.isSameOrAfterYear = isSameOrAfterYear;
     proto.isSameOrBefore = isSameOrBefore;
+    proto.isSameOrBeforeDay = isSameOrBeforeDay;
+    proto.isSameOrBeforeHour = isSameOrBeforeHour;
+    proto.isSameOrBeforeMinute = isSameOrBeforeMinute;
+    proto.isSameOrBeforeMonth = isSameOrBeforeMonth;
+    proto.isSameOrBeforeSecond = isSameOrBeforeSecond;
+    proto.isSameOrBeforeWeek = isSameOrBeforeWeek;
+    proto.isSameOrBeforeYear = isSameOrBeforeYear;
     proto.monthName = monthName;
     proto.setDate = setDate;
     proto.setDay = setDay;
@@ -2917,8 +3695,28 @@
     proto.setWeekOfMonth = setWeekOfMonth;
     proto.setWeekYear = setWeekYear;
     proto.setYear = setYear;
-    proto.startOf = startOf;
-    proto.sub = sub;
+    proto.startOfDay = startOfDay;
+    proto.startOfHour = startOfHour;
+    proto.startOfMinute = startOfMinute;
+    proto.startOfMonth = startOfMonth;
+    proto.startOfQuarter = startOfQuarter;
+    proto.startOfSecond = startOfSecond;
+    proto.startOfWeek = startOfWeek;
+    proto.startOfYear = startOfYear;
+    proto.subDay = subDay;
+    proto.subDays = subDays;
+    proto.subHour = subHour;
+    proto.subHours = subHours;
+    proto.subMinute = subMinute;
+    proto.subMinutes = subMinutes;
+    proto.subMonth = subMonth;
+    proto.subMonths = subMonths;
+    proto.subSecond = subSecond;
+    proto.subSeconds = subSeconds;
+    proto.subWeek = subWeek;
+    proto.subWeeks = subWeeks;
+    proto.subYear = subYear;
+    proto.subYears = subYears;
     proto.timeZoneName = timeZoneName;
     proto.toDateString = toDateString;
     proto.toISOString = toISOString;

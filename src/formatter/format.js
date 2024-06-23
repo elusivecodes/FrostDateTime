@@ -1,4 +1,4 @@
-import { makeFormatter } from './../factory.js';
+import { getRelativeFormatter, makeFormatter } from './../factory.js';
 import { getDayPeriods, getDays, getEras, getMonths, getNumbers } from './values.js';
 
 /**
@@ -86,6 +86,23 @@ export function formatOffset(offset, useColon = true, optionalMinutes = false) {
         '';
 
     return `${sign}${hourString}${colon}${minuteString}`;
+};
+
+/**
+ * Format a relative duration as a locale string.
+ * @param {string} locale The locale.
+ * @param {number} amount The amount of duration.
+ * @param {string} unit The time unit.
+ * @returns {string} The relative duration.
+ */
+export function formatRelative(locale, amount, unit) {
+    const relativeFormatter = getRelativeFormatter(locale);
+
+    if (!relativeFormatter) {
+        throw new Error('RelativeTimeFormat not supported');
+    }
+
+    return relativeFormatter.format(amount, unit);
 };
 
 /**

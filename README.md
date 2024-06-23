@@ -2,7 +2,7 @@
 
 **FrostDateTime** is a free, open-source immutable date manipulation library for *JavaScript*.
 
-It is a lightweight (~6kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
+It is a lightweight (~7kb gzipped) and modern library, and features support for ICU formats, time zones and locales.
 
 
 ## Table Of Contents
@@ -15,6 +15,8 @@ It is a lightweight (~6kb gzipped) and modern library, and features support for 
 - [Timestamps](#timestamps)
 - [Time Zones](#time-zones)
 - [Locales](#locales)
+- [Manipulation](#manipulation)
+- [Comparisons](#comparisons)
 - [Utility Methods](#utility-methods)
 - [Static Methods](#static-methods)
 
@@ -610,44 +612,1074 @@ const newDateTime = dateTime.setLocale(locale);
 
 ## Manipulation
 
-**Add**
+**Add Day**
 
-Add a duration to the date.
-
-- `amount` is a number representing the amount of the `timeUnit` to add.
-- `timeUnit` is a string representing the unit of time to add, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+Add a day to the current date.
 
 ```javascript
-const newDateTime = dateTime.add(amount, timeUnit);
+const newDateTime = dateTime.addDay();
 ```
 
-**End Of**
+**Add Days**
 
-Set the date to the end of a unit of time in current time zone.
+Add days to the current date.
 
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*".
+- `amount` is a number representing the amount of days to add.
 
 ```javascript
-const newDateTime = dateTime.endOf(timeUnit);
+const newDateTime = dateTime.addDay(amount);
 ```
 
-**Start Of**
+**Add Hour**
 
-Set the date to the start of a unit of time in current time zone.
-
-- `timeUnit` is a string representing the unit of time to use, and can be one of either "*year*", "*quarter*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*".
+Add a hour to the current date.
 
 ```javascript
-const newDateTime = dateTime.startOf(timeUnit);
+const newDateTime = dateTime.addHour();
 ```
 
-**Subtract**
+**Add Hours**
 
-- `amount` is a number representing the amount of the `timeUnit` to subtract.
-- `timeUnit` is a string representing the unit of time to subtract, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
+Add hours to the current date.
+
+- `amount` is a number representing the amount of hours to add.
 
 ```javascript
-const newDateTime = dateTime.sub(amount, timeUnit);
+const newDateTime = dateTime.addHours(amount);
+```
+
+**Add Minute**
+
+Add a minute to the current date.
+
+```javascript
+const newDateTime = dateTime.addMinute();
+```
+
+**Add Minutes**
+
+Add minutes to the current date.
+
+- `amount` is a number representing the amount of minutes to add.
+
+```javascript
+const newDateTime = dateTime.addMinutes(amount);
+```
+
+**Add Month**
+
+Add a month to the current date.
+
+```javascript
+const newDateTime = dateTime.addMonth();
+```
+
+**Add Months**
+
+Add months to the current date.
+
+- `amount` is a number representing the amount of months to add.
+
+```javascript
+const newDateTime = dateTime.addMonths(amount);
+```
+
+**Add Second**
+
+Add a second to the current date.
+
+```javascript
+const newDateTime = dateTime.addSecond();
+```
+
+**Add Seconds**
+
+Add seconds to the current date.
+
+- `amount` is a number representing the amount of seconds to add.
+
+```javascript
+const newDateTime = dateTime.addSeconds(amount);
+```
+
+**Add Week**
+
+Add a week to the current date.
+
+```javascript
+const newDateTime = dateTime.addWeek();
+```
+
+**Add Weeks**
+
+Add weeks to the current date.
+
+- `amount` is a number representing the amount of weeks to add.
+
+```javascript
+const newDateTime = dateTime.addWeeks(amount);
+```
+
+**Add Year**
+
+Add a year to the current date.
+
+```javascript
+const newDateTime = dateTime.addYear();
+```
+
+**Add Years**
+
+Add years to the current date.
+
+- `amount` is a number representing the amount of years to add.
+
+```javascript
+const newDateTime = dateTime.addYears(amount);
+```
+
+**End Of Day**
+
+Set the date to the end of the day in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfDay();
+```
+
+**End Of Hour**
+
+Set the date to the end of the hour in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfHour();
+```
+
+**End Of Minute**
+
+Set the date to the end of the minute in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfMinute();
+```
+
+**End Of Month**
+
+Set the date to the end of the month in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfMonth();
+```
+
+**End Of Quarter**
+
+Set the date to the end of the quarter in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfQuarter();
+```
+
+**End Of Second**
+
+Set the date to the end of the second in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfSecond();
+```
+
+**End Of Week**
+
+Set the date to the end of the week in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfWeek();
+```
+
+**End Of Year**
+
+Set the date to the end of the year in current time zone.
+
+```javascript
+const newDateTime = dateTime.endOfYear();
+```
+
+**Start Of Day**
+
+Set the date to the start of the day in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfDay();
+```
+
+**Start Of Hour**
+
+Set the date to the start of the hour in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfHour();
+```
+
+**Start Of Minute**
+
+Set the date to the start of the minute in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfMinute();
+```
+
+**Start Of Month**
+
+Set the date to the start of the month in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfMonth();
+```
+
+**Start Of Quarter**
+
+Set the date to the start of the quarter in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfQuarter();
+```
+
+**Start Of Second**
+
+Set the date to the start of the second in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfSecond();
+```
+
+**Start Of Week**
+
+Set the date to the start of the week in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfWeek();
+```
+
+**Start Of Year**
+
+Set the date to the start of the year in current time zone.
+
+```javascript
+const newDateTime = dateTime.startOfYear();
+```
+
+**Subtract Day**
+
+Subtract a day to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractDay();
+```
+
+**Subtract Days**
+
+Subtract days to the current date.
+
+- `amount` is a number representing the amount of days to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractDay(amount);
+```
+
+**Subtract Hour**
+
+Subtract a hour to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractHour();
+```
+
+**Subtract Hours**
+
+Subtract hours to the current date.
+
+- `amount` is a number representing the amount of hours to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractHours(amount);
+```
+
+**Subtract Minute**
+
+Subtract a minute to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractMinute();
+```
+
+**Subtract Minutes**
+
+Subtract minutes to the current date.
+
+- `amount` is a number representing the amount of minutes to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractMinutes(amount);
+```
+
+**Subtract Month**
+
+Subtract a month to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractMonth();
+```
+
+**Subtract Months**
+
+Subtract months to the current date.
+
+- `amount` is a number representing the amount of months to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractMonths(amount);
+```
+
+**Subtract Second**
+
+Subtract a second to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractSecond();
+```
+
+**Subtract Seconds**
+
+Subtract seconds to the current date.
+
+- `amount` is a number representing the amount of seconds to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractSeconds(amount);
+```
+
+**Subtract Week**
+
+Subtract a week to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractWeek();
+```
+
+**Subtract Weeks**
+
+Subtract weeks to the current date.
+
+- `amount` is a number representing the amount of weeks to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractWeeks(amount);
+```
+
+**Subtract Year**
+
+Subtract a year to the current date.
+
+```javascript
+const newDateTime = dateTime.subtractYear();
+```
+
+**Subtract Years**
+
+Subtract years to the current date.
+
+- `amount` is a number representing the amount of years to subtract.
+
+```javascript
+const newDateTime = dateTime.subtractYears(amount);
+```
+
+
+## Comparisons
+
+**Difference**
+
+Get the difference between two dates in milliseconds.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const diff = dateTime.diff(other);
+```
+
+**Difference In Days**
+
+Get the difference between two dates in days.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInDays(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Hours**
+
+Get the difference between two dates in hours.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInHours(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Minutes**
+
+Get the difference between two dates in minutes.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInMinutes(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Months**
+
+Get the difference between two dates in months.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInMonths(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Seconds**
+
+Get the difference between two dates in seconds.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInSeconds(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Weeks**
+
+Get the difference between two dates in weeks.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInWeeks(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Difference In Years**
+
+Get the difference between two dates in years.
+
+- `other` is the *DateTime* object to compare to.
+- `options` is an object containing options for how to compare the dates.
+    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
+
+```javascript
+const diff = dateTime.diffInYears(other, options);
+```
+
+If `relative` is *true* (default) the value returned will be the relative difference, ignoring higher precision properties.
+
+**Human Difference**
+
+Get the relative difference between two Dates in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiff(other);
+```
+
+The most significant non-zero value is determined where the unit of time has a non-relative difference, or the next relative difference value is greater than or equal to the unit of time.
+
+```javascript
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31')); // "tomorrow"
+DateTime.fromFormat('yyyy-MM-dd', '2019-02-27').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "in 27 days"
+DateTime.fromFormat('yyyy-MM-dd', '2019-02-28').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "next month"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-06-01')); // "in 6 months"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-01-31')); // "next year"
+DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31')); // "in 2 years"
+```
+
+**Human Difference In Days**
+
+Get the relative difference between two Dates in days in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInDays(other);
+```
+
+**Human Difference In Hours**
+
+Get the relative difference between two Dates in hours in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInHours(other);
+```
+
+**Human Difference In Minutes**
+
+Get the relative difference between two Dates in minutes in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInMinutes(other);
+```
+
+**Human Difference In Months**
+
+Get the relative difference between two Dates in months in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInMonths(other);
+```
+
+**Human Difference In Seconds**
+
+Get the relative difference between two Dates in seconds in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInSeconds(other);
+```
+
+**Human Difference In Weeks**
+
+Get the relative difference between two Dates in weeks in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInWeeks(other);
+```
+
+**Human Difference In Years**
+
+Get the relative difference between two Dates in years in a human readable format using the current locale.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const humanDiff = dateTime.humanDiffInYears(other);
+```
+
+**Is After?**
+
+Return *true* if the *DateTime* is after another date.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfter(other);
+```
+
+**Is After Day?**
+
+Return *true* if the *DateTime* is after another date (comparing by day).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterDay(other);
+```
+
+**Is After Hour?**
+
+Return *true* if the *DateTime* is after another date (comparing by hour).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterHour(other);
+```
+
+**Is After Minute?**
+
+Return *true* if the *DateTime* is after another date (comparing by minute).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterMinute(other);
+```
+
+**Is After Month?**
+
+Return *true* if the *DateTime* is after another date (comparing by month).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterMonth(other);
+```
+
+**Is After Second?**
+
+Return *true* if the *DateTime* is after another date (comparing by second).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterSecond(other);
+```
+
+**Is After Week?**
+
+Return *true* if the *DateTime* is after another date (comparing by week).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterWeek(other);
+```
+
+**Is After Year?**
+
+Return *true* if the *DateTime* is after another date (comparing by year).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isAfter = dateTime.isAfterYear(other);
+```
+
+**Is Before?**
+
+Return *true* if the *DateTime* is before another date.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBefore(other);
+```
+
+**Is Before Day?**
+
+Return *true* if the *DateTime* is before another date (comparing by day).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeDay(other);
+```
+
+**Is Before Hour?**
+
+Return *true* if the *DateTime* is before another date (comparing by hour).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeHour(other);
+```
+
+**Is Before Minute?**
+
+Return *true* if the *DateTime* is before another date (comparing by minute).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeMinute(other);
+```
+
+**Is Before Month?**
+
+Return *true* if the *DateTime* is before another date (comparing by month).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeMonth(other);
+```
+
+**Is Before Second?**
+
+Return *true* if the *DateTime* is before another date (comparing by second).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeSecond(other);
+```
+
+**Is Before Week?**
+
+Return *true* if the *DateTime* is before another date (comparing by week).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeWeek(other);
+```
+
+**Is Before Year?**
+
+Return *true* if the *DateTime* is before another date (comparing by year).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isBefore = dateTime.isBeforeYear(other);
+```
+
+**Is Between?**
+
+Return *true* if the *DateTime* is between two other dates.
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetween(start, end);
+```
+
+**Is Between Day?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by day).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenDay(start, end);
+```
+
+**Is Between Hour?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by hour).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenHour(start, end);
+```
+
+**Is Between Minute?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by minute).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenMinute(start, end);
+```
+
+**Is Between Month?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by month).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenMonth(start, end);
+```
+
+**Is Between Second?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by second).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenSecond(start, end);
+```
+
+**Is Between Week?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by week).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenWeek(start, end);
+```
+
+**Is Between Year?**
+
+Return *true* if the *DateTime* is between two other dates (comparing by year).
+
+- `start` is the starting *DateTime* object to compare to.
+- `end` is the ending *DateTime* object to compare to.
+
+```javascript
+const isBetween = dateTime.isBetweenYear(start, end);
+```
+
+**Is Same?**
+
+Return *true* if the *DateTime* is the same as another date.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSame(other);
+```
+
+**Is Same Day?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by day).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameDay(other);
+```
+
+**Is Same Hour?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by hour).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameHour(other);
+```
+
+**Is Same Minute?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by minute).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameMinute(other);
+```
+
+**Is Same Month?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by month).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameMonth(other);
+```
+
+**Is Same Second?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by second).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameSecond(other);
+```
+
+**Is Same Week?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by week).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameWeek(other);
+```
+
+**Is Same Year?**
+
+Return *true* if the *DateTime* is the same as another date (comparing by year).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSame = dateTime.isSameYear(other);
+```
+
+**Is Same Or After?**
+
+Return *true* if the *DateTime* is the same as or after another date.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfter(other);
+```
+
+**Is Same Or After Day?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by day).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterDay(other);
+```
+
+**Is Same Or After Hour?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by hour).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterHour(other);
+```
+
+**Is Same Or After Minute?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by minute).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterMinute(other);
+```
+
+**Is Same Or After Month?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by month).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterMonth(other);
+```
+
+**Is Same Or After Second?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by second).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterSecond(other);
+```
+
+**Is Same Or After Week?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by week).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterWeek(other);
+```
+
+**Is Same Or After Year?**
+
+Return *true* if the *DateTime* is the same as or after another date (comparing by year).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrAfter = dateTime.isSameOrAfterYear(other);
+```
+
+**Is Same Or Before?**
+
+Return *true* if the *DateTime* is the same as or before another date.
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBefore(other);
+```
+
+**Is Same Or Before Day?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by day).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeDay(other);
+```
+
+**Is Same Or Before Hour?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by hour).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeHour(other);
+```
+
+**Is Same Or Before Minute?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by minute).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeMinute(other);
+```
+
+**Is Same Or Before Month?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by month).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeMonth(other);
+```
+
+**Is Same Or Before Second?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by second).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeSecond(other);
+```
+
+**Is Same Or Before Week?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by week).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeWeek(other);
+```
+
+**Is Same Or Before Year?**
+
+Return *true* if the *DateTime* is the same as or before another date (comparing by year).
+
+- `other` is the *DateTime* object to compare to.
+
+```javascript
+const isSameOrBefore = dateTime.isSameOrBeforeYear(other);
 ```
 
 
@@ -689,30 +1721,6 @@ Get the number of days in the current year.
 const daysInYear = dateTime.daysInYear();
 ```
 
-**Difference**
-
-Get the difference between two Dates.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
-    - `relative` is a boolean indicating whether to return the relative difference, and will default to *true*.
-
-If the `timeUnit` is omitted, this method will return the difference in milliseconds.
-
-```javascript
-const diff = dateTime.diff(other, options);
-```
-
-If `relative` is *true* (default) the value returned will be the difference in the specified `timeUnit`, ignoring less significant values.
-
-```javascript
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), { timeUnit: 'years', relative: true }); // 1
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31'), { timeUnit: 'years', relative: false }); // 0
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), { timeUnit: 'years', relative: true }); // 2
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').diff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31'), { timeUnit: 'years', relative: false }); // 1
-```
-
 **Era**
 
 Get the era in current time zone and locale.
@@ -722,74 +1730,6 @@ Get the era in current time zone and locale.
 ```javascript
 const era = dateTime.era(type);
 ```
-
-**Human Difference**
-
-Get the relative difference between two Dates in a human readable format using the current locale.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `timeUnit` is a string representing the unit of time to return, and can be one of either "*year*", "*month*", "*week*", "*day*", "*hour*", "*minute*" or "*second*", or their pluralized versions.
-
-If the `timeUnit` is omitted, this method will use the (relative) most significant non-zero value.
-
-```javascript
-const diff = dateTime.humanDiff(other, options);
-```
-
-The most significant non-zero value is determined where the unit of time has a non-relative difference, or the next relative difference value is greater than or equal to the unit of time.
-
-```javascript
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-12-31')); // "tomorrow"
-DateTime.fromFormat('yyyy-MM-dd', '2019-02-27').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "in 27 days"
-DateTime.fromFormat('yyyy-MM-dd', '2019-02-28').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2019-01-31')); // "next month"
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-06-01')); // "in 6 months"
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2018-01-31')); // "next year"
-DateTime.fromFormat('yyyy-MM-dd', '2019-01-01').humanDiff(DateTime.fromFormat('yyyy-MM-dd', '2017-12-31')); // "in 2 years"
-```
-
-**Is After?**
-
-Return *true* if the *DateTime* is after another date.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isAfter = dateTime.isAfter(other, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
-
-**Is Before?**
-
-Return *true* if the *DateTime* is before another date.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isBefore = dateTime.isBefore(other, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
-
-**Is Between?**
-
-Return *true* if the *DateTime* is between two other dates.
-
-- `start` is the starting *DateTime* object to compare to.
-- `end` is the ending *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isBetween = dateTime.isBetween(start, end, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Is DST?**
 
@@ -806,48 +1746,6 @@ Return *true* if the year is a leap year.
 ```javascript
 const isLeapYear = dateTime.isLeapYear();
 ```
-
-**Is Same?**
-
-Return *true* if the *DateTime* is the same as another date.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isSame = dateTime.isSame(other, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
-
-**Is Same Or After?**
-
-Return *true* if the *DateTime* is the same or after another date.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isSameOrAfter = dateTime.isSameOrAfter(other, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
-
-**Is Same Or Before?**
-
-Return *true* if the *DateTime* is the same or before another date.
-
-- `other` is the *DateTime* object to compare to.
-- `options` is an object containing options for how to compare the dates.
-    - `granularity` is a string specifying the level of granularity to use when comparing the dates, and can be one of either "*year*", "*month*", "*day*", "*hour*", "*minute*" or "*second*".
-
-```javascript
-const isSameOrBefore = dateTime.isSameOrBefore(other, options);
-```
-
-If a `granularity` is not specified, this method will compare the dates in milliseconds.
 
 **Month Name**
 

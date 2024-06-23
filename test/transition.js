@@ -183,7 +183,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 10, 1, 3, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.add(1, 'year');
+            const date2 = date1.addYear();
 
             assert.strictEqual(
                 date1.toString(),
@@ -199,7 +199,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 9, 30, 23, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.add(1, 'month');
+            const date2 = date1.addMonth();
 
             assert.strictEqual(
                 date1.toString(),
@@ -215,7 +215,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 9, 30, 23, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.add(1, 'day');
+            const date2 = date1.addDay();
 
             assert.strictEqual(
                 date1.toString(),
@@ -231,7 +231,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 10, 1, 1, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.add(1, 'hour');
+            const date2 = date1.addHour();
 
             assert.strictEqual(
                 date1.toString(),
@@ -247,8 +247,8 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 4, 2, 1, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.add(1, 'hour');
-            const date3 = date2.add(1, 'hour');
+            const date2 = date1.addHour();
+            const date3 = date2.addHour();
 
             assert.strictEqual(
                 date1.toString(),
@@ -334,7 +334,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2024, 10, 1, 3, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.sub(1, 'year');
+            const date2 = date1.subYear();
 
             assert.strictEqual(
                 date1.toString(),
@@ -350,7 +350,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 10, 2, 0, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.sub(1, 'month');
+            const date2 = date1.subMonth();
 
             assert.strictEqual(
                 date1.toString(),
@@ -366,7 +366,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 10, 2, 0, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.sub(1, 'day');
+            const date2 = date1.subDay();
 
             assert.strictEqual(
                 date1.toString(),
@@ -382,7 +382,7 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 10, 1, 3, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.sub(1, 'hour');
+            const date2 = date1.subHour();
 
             assert.strictEqual(
                 date1.toString(),
@@ -398,8 +398,8 @@ describe('DateTime DST Transitions', function() {
             const date1 = DateTime.fromArray([2023, 4, 2, 3, 0, 0, 0], {
                 timeZone: 'Australia/Sydney',
             });
-            const date2 = date1.sub(1, 'hour');
-            const date3 = date2.sub(1, 'hour');
+            const date2 = date1.subHour();
+            const date3 = date2.subHour();
 
             assert.strictEqual(
                 date1.toString(),

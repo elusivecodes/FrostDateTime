@@ -36,6 +36,16 @@ export const parseOrderKeys = [
     ['minutes', 'seconds', 'milliseconds'],
 ];
 
+export const diffMethods = {
+    year: 'diffInYears',
+    month: 'diffInMonths',
+    week: 'diffInWeeks',
+    day: 'diffInDays',
+    hour: 'diffInHours',
+    minute: 'diffInMinutes',
+    second: 'diffInSeconds',
+};
+
 export const thresholds = {
     month: 12,
     week: null,
