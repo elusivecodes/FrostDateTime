@@ -1819,7 +1819,7 @@
 
         let datetime = this.fromTimestamp(0, {
             locale: options.locale,
-        }).setYear(1).setTimeZone(timeZone);
+        }).setTimeZone(timeZone);
 
         const methods = parseFactory();
 

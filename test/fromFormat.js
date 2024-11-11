@@ -1192,6 +1192,14 @@ describe('DateTime #fromFormat', function() {
     //     );
     // });
 
+    it('creates time only dates from January 01 1970', function() {
+        assert.strictEqual(
+            DateTime.fromFormat('hh:mm a', '12:00 PM')
+                .toISOString(),
+            '1970-01-01T12:00:00.000+00:00'
+        );
+    });
+
     it('returns a new DateTime', function() {
         assert.ok(
             DateTime.fromFormat('yyyy', '2018').constructor === DateTime,
