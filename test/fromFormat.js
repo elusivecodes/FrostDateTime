@@ -1196,7 +1196,7 @@ describe('DateTime #fromFormat', function() {
         assert.strictEqual(
             DateTime.fromFormat('hh:mm a', '12:00 PM')
                 .toISOString(),
-            '1970-01-01T12:00:00.000+00:00'
+            '1970-01-01T12:00:00.000+00:00',
         );
     });
 
