@@ -8,6 +8,15 @@ import { diffMethods, thresholds } from './vars.js';
  */
 
 /**
+ * Escapes a string for safe use inside a RegExp source.
+ * @param {string} value The string to escape.
+ * @return {string} The escaped string.
+ */
+function escapeRegExp(value) {
+    return value.replace(/[|\\{}()[\]^$+*?.-]/g, '\\$&');
+}
+
+/**
  * Calculates the difference between two dates in a given time unit.
  * @param {DateTime} date The base DateTime.
  * @param {DateTime} other The DateTime to compare to.
@@ -117,7 +126,7 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
 export function valuesRegExp(values) {
     return values.slice()
         .sort((a, b) => b.length - a.length)
-        .map((value) => RegExp.escape(`${value}`))
+        .map((value) => escapeRegExp(`${value}`))
         .join('|');
 };
 
