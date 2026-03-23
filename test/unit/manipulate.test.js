@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Manipulation', function() {
     describe('#addDay', function() {
@@ -193,6 +194,19 @@ describe('DateTime Manipulation', function() {
             assert.strictEqual(
                 date2.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
+            );
+        });
+
+        it('clamps leap day in non-leap years', function() {
+            const date1 = DateTime.fromArray([2020, 2, 29]);
+            const date2 = date1.addYear();
+            assert.strictEqual(
+                date1.toISOString(),
+                '2020-02-29T00:00:00.000+00:00',
+            );
+            assert.strictEqual(
+                date2.toISOString(),
+                '2021-02-28T00:00:00.000+00:00',
             );
         });
     });

@@ -1,19 +1,20 @@
 import { getData, makeFormatter } from './../factory.js';
+import { valuesRegExp } from './../helpers.js';
 
 /**
- * DateFormatter Values
+ * Formatter value caches.
  */
 
 /**
- * Get cached day period values.
+ * Gets cached localized day-period labels.
  * @param {string} locale The locale.
  * @param {string} [type=long] The formatting type.
- * @return {array} The cached values.
+ * @return {string[]} The localized day-period labels.
  */
 export function getDayPeriods(locale, type = 'long') {
     return getData(
         `periods.${locale}.${type}`,
-        (_) => {
+        () => {
             const dayPeriodFormatter = makeFormatter(locale, { hour: 'numeric', hourCycle: 'h11' });
             return new Array(2)
                 .fill()
@@ -27,16 +28,16 @@ export function getDayPeriods(locale, type = 'long') {
 };
 
 /**
- * Get cached day values.
+ * Gets cached localized weekday labels.
  * @param {string} locale The locale.
  * @param {string} [type=long] The formatting type.
- * @param {Boolean} [standalone=true] Whether the values are standalone.
- * @return {array} The cached values.
+ * @param {boolean} [standalone=true] Whether the values are standalone.
+ * @return {string[]} The localized weekday labels.
  */
 export function getDays(locale, type = 'long', standalone = true) {
     return getData(
         `days.${locale}.${type}.${standalone}`,
-        (_) => {
+        () => {
             if (standalone) {
                 const dayFormatter = makeFormatter(locale, { weekday: type });
                 return new Array(7)
@@ -59,15 +60,15 @@ export function getDays(locale, type = 'long', standalone = true) {
 };
 
 /**
- * Get cached era values.
+ * Gets cached localized era labels.
  * @param {string} locale The locale.
  * @param {string} [type=long] The formatting type.
- * @return {array} The cached values.
+ * @return {string[]} The localized era labels.
  */
 export function getEras(locale, type = 'long') {
     return getData(
         `eras.${locale}.${type}`,
-        (_) => {
+        () => {
             const eraFormatter = makeFormatter(locale, { era: type });
             return new Array(2)
                 .fill()
@@ -81,16 +82,16 @@ export function getEras(locale, type = 'long') {
 };
 
 /**
- * Get cached month values.
+ * Gets cached localized month labels.
  * @param {string} locale The locale.
  * @param {string} [type=long] The formatting type.
- * @param {Boolean} [standalone=true] Whether the values are standalone.
- * @return {array} The cached values.
+ * @param {boolean} [standalone=true] Whether the values are standalone.
+ * @return {string[]} The localized month labels.
  */
 export function getMonths(locale, type = 'long', standalone = true) {
     return getData(
         `months.${locale}.${type}.${standalone}`,
-        (_) => {
+        () => {
             if (standalone) {
                 const monthFormatter = makeFormatter(locale, { month: type });
                 return new Array(12)
@@ -113,14 +114,14 @@ export function getMonths(locale, type = 'long', standalone = true) {
 };
 
 /**
- * Get cached number values.
+ * Gets cached localized digit glyphs.
  * @param {string} locale The locale.
- * @return {array} The cached values.
+ * @return {string[]} The localized digit glyphs.
  */
 export function getNumbers(locale) {
     return getData(
         `numbers.${locale}`,
-        (_) => {
+        () => {
             const numberFormatter = makeFormatter(locale, { minute: 'numeric' });
             return new Array(10)
                 .fill()
@@ -132,11 +133,10 @@ export function getNumbers(locale) {
 };
 
 /**
- * Get the RegExp for the number values.
+ * Gets the RegExp for the number values.
  * @param {string} locale The locale.
  * @return {string} The number values RegExp.
  */
 export function numberRegExp(locale) {
-    const numbers = getNumbers(locale).join('|');
-    return `(?:${numbers})+`;
+    return `(?:${valuesRegExp(getNumbers(locale))})+`;
 };

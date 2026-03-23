@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Attributes Get', function() {
     describe('#getDate', function() {
@@ -155,6 +156,14 @@ describe('DateTime Attributes Get', function() {
             );
         });
 
+        it('works with IANA zones containing GMT offsets', function() {
+            assert.strictEqual(
+                DateTime.now({ timeZone: 'Etc/GMT+10' })
+                    .getTimeZone(),
+                'Etc/GMT+10',
+            );
+        });
+
         it('works with offsets with colon', function() {
             assert.strictEqual(
                 DateTime.now({ timeZone: '+10:00' })
@@ -178,6 +187,14 @@ describe('DateTime Attributes Get', function() {
                 DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .getTimeZoneOffset(),
                 -600,
+            );
+        });
+
+        it('works with IANA zones containing GMT offsets', function() {
+            assert.strictEqual(
+                DateTime.now({ timeZone: 'Etc/GMT+10' })
+                    .getTimeZoneOffset(),
+                600,
             );
         });
     });

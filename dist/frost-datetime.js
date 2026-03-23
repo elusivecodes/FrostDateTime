@@ -8,31 +8,37 @@
      * DateTime Factory
      */
 
-    const data = {};
+    const data = new Map();
 
     /**
-     * Get values from cache (or generate if they don't exist).
-     * @param {string} key The key for the values.
-     * @param {function} callback The callback to generate the values.
-     * @return {array} The cached values.
+     * Clears all cached formatter and locale values.
      */
-    function getData(key, callback) {
-        if (!(key in data)) {
-            data[key] = callback();
-        }
-
-        return data[key];
+    function clearDataCache() {
+        data.clear();
     }
     /**
-     * Create a new date formatter for a timeZone.
-     * @param {string} timeZone The timeZone.
-     * @param {object} options The options for the formatter.
-     * @return {Intl.DateTimeFormat} A new DateTimeFormat object.
+     * Gets a cached value, creating it on first access.
+     * @template T
+     * @param {string} key The key for the values.
+     * @param {() => T} callback The callback to generate the values.
+     * @return {T} The cached value.
+     */
+    function getData(key, callback) {
+        if (!data.has(key)) {
+            data.set(key, callback());
+        }
+
+        return data.get(key);
+    }
+    /**
+     * Creates a date formatter for a time zone.
+     * @param {string} timeZone The time zone.
+     * @return {Intl.DateTimeFormat} The formatter instance.
      */
     function getDateFormatter(timeZone) {
         return getData(
             `dateFormatter.${timeZone}`,
-            (_) => makeFormatter('en', {
+            () => makeFormatter('en', {
                 timeZone,
                 hourCycle: 'h23',
                 year: 'numeric',
@@ -40,14 +46,15 @@
                 day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
+                second: 'numeric',
+                fractionalSecondDigits: 3,
             }),
         );
     }
     /**
-     * Create a new relative formatter for a locale.
+     * Creates a relative-time formatter for a locale.
      * @param {string} locale The locale.
-     * @param {object} options The options for the formatter.
-     * @return {Intl.RelativeTimeFormat} A new RelativeTimeFormat object.
+     * @return {Intl.RelativeTimeFormat|null} The formatter instance, or null when unsupported.
      */
     function getRelativeFormatter(locale) {
         if (!('RelativeTimeFormat' in Intl)) {
@@ -56,17 +63,17 @@
 
         return getData(
             `relativeFormatter.${locale}`,
-            (_) => new Intl.RelativeTimeFormat(locale, {
+            () => new Intl.RelativeTimeFormat(locale, {
                 numeric: 'auto',
                 style: 'long',
             }),
         );
     }
     /**
-     * Create a new formatter for a locale.
+     * Creates a formatter for a locale.
      * @param {string} locale The locale.
-     * @param {object} options The options for the formatter.
-     * @return {Intl.DateTimeFormat} A new DateTimeFormat object.
+     * @param {Intl.DateTimeFormatOptions} options The options for the formatter.
+     * @return {Intl.DateTimeFormat} The formatter instance.
      */
     function makeFormatter(locale, options) {
         return new Intl.DateTimeFormat(locale, {
@@ -79,7 +86,7 @@
      * DateTime Variables
      */
 
-    const resolvedOptions = (new Intl.DateTimeFormat).resolvedOptions();
+    const resolvedOptions = new Intl.DateTimeFormat().resolvedOptions();
 
     const config = {
         clampDates: true,
@@ -87,7 +94,7 @@
         defaultTimeZone: resolvedOptions.timeZone,
     };
 
-    const dateStringTimeZoneRegExp = /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i;
+    const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[\+\-]\d{2}(?::?\d{2})?)\b)/i;
 
     const formats = {
         date: 'eee MMM dd yyyy',
@@ -100,7 +107,7 @@
 
     const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    const offsetRegExp = /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/;
+    const offsetRegExp = /^(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?$/;
 
     const parseOrderKeys = [
         ['year', 'weekYear'],
@@ -132,10 +139,20 @@
         second: 60,
     };
 
+    /** @typedef {import('./date-time.js').default} DateTime */
+
     /**
      * DateTime Helpers
      */
 
+    /**
+     * Calculates the difference between two dates in a given time unit.
+     * @param {DateTime} date The base DateTime.
+     * @param {DateTime} other The DateTime to compare to.
+     * @param {'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'} timeUnit The time unit to compare in.
+     * @param {boolean} [relative=true] Whether to use relative boundaries when calculating the difference.
+     * @return {number} The difference between the dates in the given time unit.
+     */
     function calculateDiff(date, other, timeUnit, relative = true) {
         other = other.setTimeZone(date.getTimeZone());
 
@@ -229,11 +246,23 @@
         }
     }
     /**
-     * Compensate the difference between two dates.
+     * Gets the RegExp for a list of string values.
+     * Longer values are matched first to avoid prefix collisions.
+     * @param {string[]} values The values to include in the RegExp.
+     * @return {string} The values RegExp.
+     */
+    function valuesRegExp(values) {
+        return values.slice()
+            .sort((a, b) => b.length - a.length)
+            .map((value) => RegExp.escape(`${value}`))
+            .join('|');
+    }
+    /**
+     * Compensates the difference between two dates.
      * @param {DateTime} date The DateTime.
      * @param {DateTime} other The DateTime to compare to.
      * @param {number} amount The amount to compensate.
-     * @param {Boolean} [compensate=true] Whether to compensate the amount.
+     * @param {boolean} [compensate=true] Whether to compensate the amount.
      * @param {number} [compensation=1] The compensation offset.
      * @return {number} The compensated amount.
      */
@@ -255,10 +284,10 @@
         return amount;
     }
     /**
-     * Get the biggest difference between two dates.
+     * Gets the biggest difference between two dates.
      * @param {DateTime} date The DateTime.
      * @param {DateTime} [other] The DateTime to compare to.
-     * @return {array} The biggest difference (amount and time unit).
+     * @return {[number, string]} The biggest difference (amount and time unit).
      */
     function getBiggestDiff(date, other) {
         let lastResult;
@@ -287,7 +316,7 @@
             [0, 'second'];
     }
     /**
-     * Get the offset for a DateTime.
+     * Gets the offset for a DateTime.
      * @param {DateTime} date The DateTime.
      * @return {number} The offset.
      */
@@ -298,13 +327,27 @@
             return 0;
         }
 
-        const utcString = getDateFormatter('UTC').format(date);
-        const localString = getDateFormatter(timeZone).format(date);
+        const values = Object.fromEntries(
+            getDateFormatter(timeZone)
+                .formatToParts(date)
+                .filter((part) => part.type !== 'literal')
+                .map(({ type, value }) => [type, value]),
+        );
 
-        return (new Date(utcString) - new Date(localString)) / 60000;
+        const localTime = Date.UTC(
+            parseInt(values.year, 10),
+            parseInt(values.month, 10) - 1,
+            parseInt(values.day, 10),
+            parseInt(values.hour, 10),
+            parseInt(values.minute, 10),
+            parseInt(values.second, 10),
+            parseInt(values.fractionalSecond, 10),
+        );
+
+        return (date.getTime() - localTime) / 60000;
     }
     /**
-     * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * Gets the number of milliseconds since the UNIX epoch (offset to timeZone).
      * @param {DateTime} date The DateTime.
      * @return {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
      */
@@ -312,7 +355,7 @@
         return date.getTime() - (date.getTimeZoneOffset() * 60000);
     }
     /**
-     * Compare a literal format string with a date string.
+     * Compares a literal format string with a date string.
      * @param {string} formatString The literal format string.
      * @param {string} dateString The date string.
      */
@@ -327,8 +370,8 @@
         }
     }
     /**
-     * Generate methods for parsing a date.
-     * @return {object} An object containing date parsing methods.
+     * Generates methods for parsing a date.
+     * @return {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
      */
     function parseFactory() {
         let isPM = false;
@@ -355,7 +398,7 @@
                 set: (datetime, value) => datetime.setDayOfYear(value),
             },
             era: {
-                get: (datetime) => datetime.getYear() < 1 ? 0 : 1,
+                get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
                 set: (datetime, value) => {
                     const offset = value ? 1 : -1;
                     return datetime.setYear(
@@ -430,10 +473,10 @@
         };
     }
     /**
-     * Set the number of milliseconds since the UNIX epoch (offset to timeZone).
+     * Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
      * @param {DateTime} date The DateTime.
      * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
-     * @return {DateTime} The DateTime object.
+     * @return {DateTime} A new DateTime instance.
      */
     function setOffsetTime(date, time) {
         const oldOffset = date.getTimeZoneOffset();
@@ -452,19 +495,19 @@
     }
 
     /**
-     * DateFormatter Values
+     * Formatter value caches.
      */
 
     /**
-     * Get cached day period values.
+     * Gets cached localized day-period labels.
      * @param {string} locale The locale.
      * @param {string} [type=long] The formatting type.
-     * @return {array} The cached values.
+     * @return {string[]} The localized day-period labels.
      */
     function getDayPeriods(locale, type = 'long') {
         return getData(
             `periods.${locale}.${type}`,
-            (_) => {
+            () => {
                 const dayPeriodFormatter = makeFormatter(locale, { hour: 'numeric', hourCycle: 'h11' });
                 return new Array(2)
                     .fill()
@@ -477,16 +520,16 @@
         );
     }
     /**
-     * Get cached day values.
+     * Gets cached localized weekday labels.
      * @param {string} locale The locale.
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the values are standalone.
-     * @return {array} The cached values.
+     * @param {boolean} [standalone=true] Whether the values are standalone.
+     * @return {string[]} The localized weekday labels.
      */
     function getDays(locale, type = 'long', standalone = true) {
         return getData(
             `days.${locale}.${type}.${standalone}`,
-            (_) => {
+            () => {
                 if (standalone) {
                     const dayFormatter = makeFormatter(locale, { weekday: type });
                     return new Array(7)
@@ -508,15 +551,15 @@
         );
     }
     /**
-     * Get cached era values.
+     * Gets cached localized era labels.
      * @param {string} locale The locale.
      * @param {string} [type=long] The formatting type.
-     * @return {array} The cached values.
+     * @return {string[]} The localized era labels.
      */
     function getEras(locale, type = 'long') {
         return getData(
             `eras.${locale}.${type}`,
-            (_) => {
+            () => {
                 const eraFormatter = makeFormatter(locale, { era: type });
                 return new Array(2)
                     .fill()
@@ -529,16 +572,16 @@
         );
     }
     /**
-     * Get cached month values.
+     * Gets cached localized month labels.
      * @param {string} locale The locale.
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the values are standalone.
-     * @return {array} The cached values.
+     * @param {boolean} [standalone=true] Whether the values are standalone.
+     * @return {string[]} The localized month labels.
      */
     function getMonths(locale, type = 'long', standalone = true) {
         return getData(
             `months.${locale}.${type}.${standalone}`,
-            (_) => {
+            () => {
                 if (standalone) {
                     const monthFormatter = makeFormatter(locale, { month: type });
                     return new Array(12)
@@ -560,14 +603,14 @@
         );
     }
     /**
-     * Get cached number values.
+     * Gets cached localized digit glyphs.
      * @param {string} locale The locale.
-     * @return {array} The cached values.
+     * @return {string[]} The localized digit glyphs.
      */
     function getNumbers(locale) {
         return getData(
             `numbers.${locale}`,
-            (_) => {
+            () => {
                 const numberFormatter = makeFormatter(locale, { minute: 'numeric' });
                 return new Array(10)
                     .fill()
@@ -578,30 +621,29 @@
         );
     }
     /**
-     * Get the RegExp for the number values.
+     * Gets the RegExp for the number values.
      * @param {string} locale The locale.
      * @return {string} The number values RegExp.
      */
     function numberRegExp(locale) {
-        const numbers = getNumbers(locale).join('|');
-        return `(?:${numbers})+`;
+        return `(?:${valuesRegExp(getNumbers(locale))})+`;
     }
 
     /**
-     * Format a day as a locale string.
+     * Formats a day as a locale string.
      * @param {string} locale The locale.
      * @param {number} day The day to format (0-6).
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @param {boolean} [standalone=true] Whether the value is standalone.
      * @return {string} The formatted string.
      */
     function formatDay(locale, day, type = 'long', standalone = true) {
         return getDays(locale, type, standalone)[day];
     }
     /**
-     * Format a day period as a locale string.
+     * Formats a day period as a locale string.
      * @param {string} locale The locale.
-     * @param {number} period The period to format (0-1).
+     * @param {number} period The day-period index to format. (0-1)
      * @param {string} [type=long] The formatting type.
      * @return {string} The formatted string.
      */
@@ -609,9 +651,9 @@
         return getDayPeriods(locale, type)[period];
     }
     /**
-     * Format an era as a locale string.
+     * Formats an era as a locale string.
      * @param {string} locale The locale.
-     * @param {number} era The period to format (0-1).
+     * @param {number} era The era index to format. (0-1)
      * @param {string} [type=long] The formatting type.
      * @return {string} The formatted string.
      */
@@ -619,18 +661,18 @@
         return getEras(locale, type)[era];
     }
     /**
-     * Format a month as a locale string.
+     * Formats a month as a locale string.
      * @param {string} locale The locale.
      * @param {number} month The month to format (1-12).
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @param {boolean} [standalone=true] Whether the value is standalone.
      * @return {string} The formatted string.
      */
     function formatMonth(locale, month, type = 'long', standalone = true) {
         return getMonths(locale, type, standalone)[month - 1];
     }
     /**
-     * Format a number as a locale number string.
+     * Formats a number as a locale number string.
      * @param {string} locale The locale.
      * @param {number} number The number to format.
      * @param {number} [padding=0] The amount of padding to use.
@@ -639,14 +681,14 @@
     function formatNumber(locale, number, padding = 0) {
         const numbers = getNumbers(locale);
         return `${number}`
-            .padStart(padding, 0)
+            .padStart(padding, '0')
             .replace(/\d/g, (match) => numbers[match]);
     }
     /**
-     * Format a number to an offset string.
+     * Formats a number to an offset string.
      * @param {number} offset The offset to format.
-     * @param {Boolean} [useColon=true] Whether to use a colon seperator.
-     * @param {Boolean} [optionalMinutes=false] Whether minutes are optional.
+     * @param {boolean} [useColon=true] Whether to use a colon separator.
+     * @param {boolean} [optionalMinutes=false] Whether minutes are optional.
      * @return {string} The formatted offset string.
      */
     function formatOffset(offset, useColon = true, optionalMinutes = false) {
@@ -658,9 +700,9 @@
         const sign = offset > 0 ?
             '-' :
             '+';
-        const hourString = `${hours}`.padStart(2, 0);
+        const hourString = `${hours}`.padStart(2, '0');
         const minuteString = minutes || !optionalMinutes ?
-            `${minutes}`.padStart(2, 0) :
+            `${minutes}`.padStart(2, '0') :
             '';
         const colon = useColon && minuteString ?
             ':' :
@@ -669,11 +711,11 @@
         return `${sign}${hourString}${colon}${minuteString}`;
     }
     /**
-     * Format a relative duration as a locale string.
+     * Formats a relative duration as a locale string.
      * @param {string} locale The locale.
      * @param {number} amount The amount of duration.
      * @param {string} unit The time unit.
-     * @returns {string} The relative duration.
+     * @return {string} The relative duration.
      */
     function formatRelative(locale, amount, unit) {
         const relativeFormatter = getRelativeFormatter(locale);
@@ -685,7 +727,7 @@
         return relativeFormatter.format(amount, unit);
     }
     /**
-     * Format a time zone as a locale string.
+     * Formats a time zone as a locale string.
      * @param {string} locale The locale.
      * @param {number} timestamp The timestamp to use.
      * @param {string} timeZone The time zone to format.
@@ -699,207 +741,11 @@
             .value;
     }
 
-    /**
-     * DateTime class
-     * @class
-     */
-    class DateTime {
-        /**
-         * New DateTime constructor.
-         * @param {string|number|null} [date] The date or timestamp to parse.
-         * @param {object} [options] Options for the new DateTime.
-         * @param {string} [options.timeZone] The timeZone to use.
-         * @param {string} [options.locale] The locale to use.
-         */
-        constructor(date = null, options = {}) {
-            let timestamp;
-            let adjustOffset = false;
-
-            if (date === null) {
-                timestamp = Date.now();
-            } else if (!isNaN(parseInt(date)) && isFinite(date)) {
-                timestamp = date;
-            } else if (date === `${date}`) {
-                timestamp = Date.parse(date);
-
-                if (isNaN(timestamp)) {
-                    throw new Error('Invalid date string supplied');
-                }
-
-                if (!date.match(dateStringTimeZoneRegExp)) {
-                    timestamp -= new Date()
-                        .getTimezoneOffset() *
-                        60000;
-                }
-
-                adjustOffset = true;
-            } else {
-                throw new Error('Invalid date supplied');
-            }
-
-            this._date = new Date(timestamp);
-            this._dynamicTz = false;
-            this.isValid = true;
-
-            let timeZone = options.timeZone;
-
-            if (!timeZone) {
-                timeZone = config.defaultTimeZone;
-            }
-
-            if (['Z', 'GMT'].includes(timeZone)) {
-                timeZone = 'UTC';
-            }
-
-            const match = timeZone.match(offsetRegExp);
-            if (match) {
-                this._offset = match[2] * 60 + parseInt(match[4] || 0);
-                if (this._offset && match[1] === '+') {
-                    this._offset *= -1;
-                }
-
-                if (this._offset) {
-                    this._timeZone = formatOffset(this._offset);
-                } else {
-                    this._dynamicTz = true;
-                    this._timeZone = 'UTC';
-                }
-            } else {
-                this._dynamicTz = true;
-                this._timeZone = timeZone;
-            }
-
-            if (this._dynamicTz) {
-                this._offset = getOffset(this);
-            }
-
-            if (adjustOffset && this._offset) {
-                const oldOffset = this._offset;
-
-                this._date.setTime(this.getTime() + this._offset * 60000);
-
-                if (this._dynamicTz) {
-                    this._offset = getOffset(this);
-
-                    // compensate for DST transitions
-                    if (oldOffset !== this._offset) {
-                        this._date.setTime(this.getTime() - ((oldOffset - offset) * 60000));
-                    }
-                }
-            }
-
-            if (!('locale' in options)) {
-                options.locale = config.defaultLocale;
-            }
-
-            this._locale = options.locale;
-        }
-
-        /**
-         * Get the name of the current locale.
-         * @return {string} The name of the current locale.
-         */
-        getLocale() {
-            return this._locale;
-        }
-
-        /**
-         * Get the number of milliseconds since the UNIX epoch.
-         * @return {number} The number of milliseconds since the UNIX epoch.
-         */
-        getTime() {
-            return this._date.getTime();
-        }
-
-        /**
-         * Get the name of the current timeZone.
-         * @return {string} The name of the current timeZone.
-         */
-        getTimeZone() {
-            return this._timeZone;
-        }
-
-        /**
-         * Get the UTC offset (in minutes) of the current timeZone.
-         * @return {number} The UTC offset (in minutes) of the current timeZone.
-         */
-        getTimeZoneOffset() {
-            return this._offset;
-        }
-
-        /**
-         * Set the current locale.
-         * @param {string} locale The name of the timeZone.
-         * @return {DateTime} The DateTime object.
-         */
-        setLocale(locale) {
-            return new DateTime(this.getTime(), {
-                locale,
-                timeZone: this._timeZone,
-            });
-        }
-
-        /**
-         * Set the number of milliseconds since the UNIX epoch.
-         * @param {number} time The number of milliseconds since the UNIX epoch.
-         * @return {DateTime} The DateTime object.
-         */
-        setTime(time) {
-            return new DateTime(time, {
-                locale: this._locale,
-                timeZone: this._timeZone,
-            });
-        }
-
-        /**
-         * Set the current timeZone.
-         * @param {string} timeZone The name of the timeZone.
-         * @return {DateTime} The DateTime object.
-         */
-        setTimeZone(timeZone) {
-            return new DateTime(this.getTime(), {
-                locale: this._locale,
-                timeZone,
-            });
-        }
-
-        /**
-         * Set the current UTC offset.
-         * @param {number} offset The UTC offset (in minutes).
-         * @return {DateTime} The DateTime object.
-         */
-        setTimeZoneOffset(offset) {
-            return new DateTime(this.getTime(), {
-                locale: this._locale,
-                timeZone: formatOffset(offset),
-            });
-        }
-
-        /**
-         * Get the number of milliseconds since the UNIX epoch.
-         * @return {number} The number of milliseconds since the UNIX epoch.
-         */
-        valueOf() {
-            return this.getTime();
-        }
-
-        /**
-         * Return a primitive value of the DateTime.
-         * @param {string} hint The type hint.
-         * @return {string|number}
-         */
-        [Symbol.toPrimitive](hint) {
-            return hint === 'number' ?
-                this.valueOf() :
-                this.toString();
-        }
-    }
-
-    const weekStart = { '1': ['af', 'am', 'ar-il', 'ar-sa', 'ar-ye', 'as', 'bn', 'bo', 'brx', 'ccp', 'ceb', 'chr', 'dav', 'dz', 'ebu', 'en', 'fil', 'gu', 'guz', 'haw', 'he', 'hi', 'id', 'ii', 'ja', 'jv', 'kam', 'ki', 'kln', 'km', 'kn', 'ko', 'kok', 'ks', 'lkt', 'lo', 'luo', 'luy', 'mas', 'mer', 'mgh', 'ml', 'mr', 'mt', 'my', 'nd', 'ne', 'om', 'or', 'pa', 'ps-pk', 'pt', 'qu', 'saq', 'sd', 'seh', 'sn', 'ta', 'te', 'th', 'ti', 'ug', 'ur', 'xh', 'yue', 'zh', 'zu'], '7': ['ar', 'ckb', 'en-ae', 'en-sd', 'fa', 'kab', 'lrc', 'mzn', 'ps'] };
-    const minDaysInFirstWeek = { '4': ['ast', 'bg', 'br', 'ca', 'ce', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-at', 'en-be', 'en-ch', 'en-de', 'en-dk', 'en-fi', 'en-fj', 'en-gb', 'en-gg', 'en-gi', 'en-ie', 'en-im', 'en-je', 'en-nl', 'en-se', 'es', 'et', 'eu', 'fi', 'fo', 'fr', 'fur', 'fy', 'ga', 'gd', 'gl', 'gsw', 'gv', 'hsb', 'hu', 'is', 'it', 'ksh', 'kw', 'lb', 'lt', 'nb', 'nds', 'nl', 'nn', 'os-ru', 'pl', 'pt-ch', 'pt-lu', 'pt-pt', 'rm', 'ru', 'sah', 'se', 'sk', 'smn', 'sv', 'tt', 'wae'] };
+    const weekStart = { '1': ['af', 'am', 'ar-il', 'ar-sa', 'ar-ye', 'as', 'bn', 'bo', 'brx', 'ccp', 'ceb', 'chr', 'dav', 'doi', 'dz', 'ebu', 'en', 'fil', 'gu', 'guz', 'haw', 'he', 'hi', 'id', 'ii', 'ja', 'jv', 'kam', 'ki', 'kln', 'km', 'kn', 'ko', 'kok', 'ks', 'lkt', 'lo', 'luo', 'luy', 'mai', 'mas', 'mer', 'mgh', 'ml', 'mni', 'mr', 'mt', 'my', 'nd', 'ne', 'om', 'or', 'pa', 'ps-pk', 'pt', 'qu', 'sa', 'saq', 'sat', 'sd', 'seh', 'sn', 'su', 'ta', 'te', 'th', 'ti', 'ug', 'ur', 'xh', 'yue', 'zh', 'zu'], '7': ['ar', 'ckb', 'en-ae', 'en-sd', 'fa', 'kab', 'lrc', 'mzn', 'ps'] };
+    const minDaysInFirstWeek = { '4': ['ast', 'bg', 'br', 'ca', 'ce', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-at', 'en-be', 'en-ch', 'en-de', 'en-dk', 'en-fi', 'en-fj', 'en-gb', 'en-gg', 'en-gi', 'en-ie', 'en-im', 'en-je', 'en-nl', 'en-se', 'es', 'et', 'eu', 'fi', 'fo', 'fr', 'fur', 'fy', 'ga', 'gd', 'gl', 'gsw', 'gv', 'hsb', 'hu', 'is', 'it', 'ksh', 'kw', 'lb', 'lt', 'nb', 'nl', 'nn', 'no', 'os-ru', 'pl', 'pt-ch', 'pt-lu', 'pt-pt', 'rm', 'ru', 'sah', 'sc', 'se', 'sk', 'smn', 'sv', 'tt', 'wae'] };
 
     /**
-     * Get the formatting type from the component token length.
+     * Gets the formatting type from the component token length.
      * @param {number} length The component token length.
      * @return {string} The formatting type.
      */
@@ -914,14 +760,14 @@
         }
     }
     /**
-     * Get the minimum days.
+     * Gets the locale's minimum days in the first week of the year.
      * @param {string} locale The locale.
-     * @return {number} The minimum days.
+     * @return {number} The minimum day count.
      */
     function minimumDays(locale) {
         return getData(
             `minimumDays.${locale}`,
-            (_) => {
+            () => {
                 let minDays = 1;
                 const localeTest = locale.toLowerCase().split('-');
                 while (minDays === 1 && localeTest.length) {
@@ -933,7 +779,7 @@
                         const locales = minDaysInFirstWeek[days];
 
                         if (locales.includes(localeTest.join('-'))) {
-                            minDays = parseInt(days);
+                            minDays = parseInt(days, 10);
                             break;
                         }
                     }
@@ -946,14 +792,14 @@
         );
     }
     /**
-     * Get the week start offset for a locale.
+     * Gets the week start offset for a locale.
      * @param {string} [locale] The locale to load.
      * @return {number} The week start offset.
      */
     function weekStartOffset(locale) {
         return getData(
             `weekStartOffset.${locale}`,
-            (_) => {
+            () => {
                 let weekStarted;
                 const localeTest = locale.toLowerCase().split('-');
                 while (!weekStarted && localeTest.length) {
@@ -965,7 +811,7 @@
                         const locales = weekStart[start];
 
                         if (locales.includes(localeTest.join('-'))) {
-                            weekStarted = parseInt(start);
+                            weekStarted = parseInt(start, 10);
                             break;
                         }
                     }
@@ -980,29 +826,32 @@
         );
     }
     /**
-     * Convert a day of the week to a local format.
+     * Converts a Sunday-based day-of-week value to the locale's week numbering.
      * @param {string} locale The locale.
-     * @param {number} day The day of the week.
+     * @param {number} day The day of the week. (0 = Sunday, 6 = Saturday)
      * @return {number} The local day of the week.
      */
     function weekDay(locale, day) {
-        return (7 + parseInt(day) - weekStartOffset(locale)) % 7 || 7;
+        return (7 + parseInt(day, 10) - weekStartOffset(locale)) % 7 || 7;
     }
 
     /**
-     * Parse a day from a locale string.
+     * Parses a day from a locale string.
      * @param {string} locale The locale.
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the value is standalone.
-     * @return {number} The day number (0-6).
+     * @param {boolean} [standalone=true] Whether the value is standalone.
+     * @return {number} The local day of the week (1-7).
      */
     function parseDay(locale, value, type = 'long', standalone = true) {
-        const day = getDays(locale, type, standalone).indexOf(value) || 7;
+        const day = getDays(locale, type, standalone).indexOf(value);
+        if (day === -1) {
+            throw new Error(`Unmatched day string in DateTime string: ${value}`);
+        }
         return weekDay(locale, day);
     }
     /**
-     * Parse a day period from a locale string.
+     * Parses a day period from a locale string.
      * @param {string} locale The locale.
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
@@ -1012,7 +861,7 @@
         return getDayPeriods(locale, type).indexOf(value);
     }
     /**
-     * Parse an era from a locale string.
+     * Parses an era from a locale string.
      * @param {string} locale The locale.
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
@@ -1022,26 +871,36 @@
         return getEras(locale, type).indexOf(value);
     }
     /**
-     * Parse a month from a locale string.
+     * Parses a month from a locale string.
      * @param {string} locale The locale.
      * @param {string} value The value to parse.
      * @param {string} [type=long] The formatting type.
-     * @param {Boolean} [standalone=true] Whether the value is standalone.
+     * @param {boolean} [standalone=true] Whether the value is standalone.
      * @return {number} The month number (1-12).
      */
     function parseMonth(locale, value, type = 'long', standalone = true) {
         return getMonths(locale, type, standalone).indexOf(value) + 1;
     }
     /**
-     * Parse a number from a locale number string.
+     * Parses locale digits into an ASCII digit string.
+     * @param {string} locale The locale.
+     * @param {string} value The value to parse.
+     * @return {string} The parsed ASCII digit string.
+     */
+    function parseNumberString(locale, value) {
+        const numbers = getNumbers(locale);
+        return `${value}`.replace(/./g, (match) => numbers.indexOf(match));
+    }
+    /**
+     * Parses a number from a locale number string.
      * @param {string} locale The locale.
      * @param {string} value The value to parse.
      * @return {number} The parsed number.
      */
     function parseNumber(locale, value) {
-        const numbers = getNumbers(locale);
         return parseInt(
-            `${value}`.replace(/./g, (match) => numbers.indexOf(match)),
+            parseNumberString(locale, value),
+            10,
         );
     }
 
@@ -1058,7 +917,7 @@
             maxLength: 5,
             regex: (locale, length) => {
                 const type = getType(length);
-                return getEras(locale, type).join('|');
+                return valuesRegExp(getEras(locale, type));
             },
             input: (locale, value, length) => {
                 const type = getType(length);
@@ -1167,7 +1026,7 @@
                     case 4:
                     case 3:
                         const type = getType(length);
-                        return getMonths(locale, type, false).join('|');
+                        return valuesRegExp(getMonths(locale, type, false));
                     default:
                         return numberRegExp(locale);
                 }
@@ -1208,7 +1067,7 @@
                     case 4:
                     case 3:
                         const type = getType(length);
-                        return getMonths(locale, type).join('|');
+                        return valuesRegExp(getMonths(locale, type));
                     default:
                         return numberRegExp(locale);
                 }
@@ -1312,7 +1171,7 @@
             key: 'weekDay',
             regex: (locale, length) => {
                 const type = getType(length);
-                return getDays(locale, type, false).join('|');
+                return valuesRegExp(getDays(locale, type, false));
             },
             input: (locale, value, length) => {
                 if (length === 5) {
@@ -1340,7 +1199,7 @@
                     case 4:
                     case 3:
                         const type = getType(length);
-                        return getDays(locale, type, false).join('|');
+                        return valuesRegExp(getDays(locale, type, false));
                     default:
                         return numberRegExp(locale);
                 }
@@ -1383,7 +1242,7 @@
                     case 4:
                     case 3:
                         const type = getType(length);
-                        return getDays(locale, type).join('|');
+                        return valuesRegExp(getDays(locale, type));
                     default:
                         return numberRegExp(locale);
                 }
@@ -1422,7 +1281,7 @@
             key: 'dayPeriod',
             regex: (locale, length) => {
                 const type = getType(length);
-                return getDayPeriods(locale, type).join('|');
+                return valuesRegExp(getDayPeriods(locale, type));
             },
             input: (locale, value, length) => {
                 const type = getType(length);
@@ -1529,15 +1388,20 @@
         S: {
             key: 'milliseconds',
             regex: (locale) => numberRegExp(locale),
-            input: (_) => 0,
-            output: (datetime, length) =>
-                formatNumber(
-                    datetime.getLocale(),
-                    `${Math.floor(
-                    datetime.getMilliseconds() *
-                    1000,
-                )}`.padEnd(length, '0').slice(0, length),
+            input: (locale, value) =>
+                parseInt(
+                    parseNumberString(locale, value)
+                        .padEnd(3, '0')
+                        .slice(0, 3),
+                    10,
                 ),
+            output: (datetime, length) => {
+                const milliseconds = `${datetime.getMilliseconds()}`.padStart(3, '0');
+                return formatNumber(
+                    datetime.getLocale(),
+                    milliseconds.padEnd(length, '0').slice(0, length),
+                );
+            },
         },
 
         /* TIMEZONE/OFFSET */
@@ -1626,7 +1490,7 @@
 
         V: {
             key: 'timeZone',
-            regex: (_) => '([a-zA-Z_\/]+)',
+            regex: (_) => '([A-Za-z0-9_.+\\-/]+)',
             input: (_, value) => value,
             output: (datetime) => datetime.getTimeZone(),
         },
@@ -1702,2028 +1566,2158 @@
     };
 
     /**
-     * DateTime (Static) Creation
+     * @typedef {{timeZone?: string, locale?: string}} DateTimeOptions
      */
 
     /**
-     * Create a new DateTime from an array.
-     * @param {number[]} dateArray The date to parse.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
+     * An immutable date and time object with locale-aware formatting and time-zone support.
      */
-    function fromArray(dateArray, options = {}) {
-        const dateValues = dateArray.slice(0, 3);
-        const timeValues = dateArray.slice(3);
-
-        if (dateValues.length < 3) {
-            dateValues.push(...new Array(3 - dateValues.length).fill(1));
+    class DateTime {
+        /**
+         * Clears cached formatter and locale data.
+         */
+        static clearDataCache() {
+            clearDataCache();
         }
 
-        if (timeValues.length < 4) {
-            timeValues.push(...new Array(4 - timeValues.length).fill(0));
+        /**
+         * Gets the day of the year for a year, month and date.
+         * @param {number} year The year.
+         * @param {number} month The month. (1-12)
+         * @param {number} date The date.
+         * @return {number} The day of the year. (1-366)
+         */
+        static dayOfYear(year, month, date) {
+            return new Array(month - 1)
+                .fill()
+                .reduce(
+                    (d, _, i) =>
+                        d + this.daysInMonth(year, i + 1),
+                    date,
+                );
         }
 
-        return new DateTime(null, options)
-            .setTimestamp(0)
-            .setYear(...dateValues)
-            .setHours(...timeValues);
-    }
-    /**
-     * Create a new DateTime from a Date.
-     * @param {Date} date The date.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
-     */
-    function fromDate(date, options = {}) {
-        return new DateTime(date.getTime(), options);
-    }
-    /**
-     * Create a new DateTime from a format string.
-     * @param {string} formatString The format string.
-     * @param {string} dateString The date string.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
-     */
-    function fromFormat(formatString, dateString, options = {}) {
-        if (!('locale' in options)) {
-            options.locale = config.defaultLocale;
+        /**
+         * Gets the number of days in a month for a given year.
+         * @param {number} year The year.
+         * @param {number} month The month. (1-12)
+         * @return {number} The number of days in the month.
+         */
+        static daysInMonth(year, month) {
+            const date = new Date(0);
+            date.setUTCFullYear(year, month - 1, 1);
+            month = date.getUTCMonth();
+
+            return monthDays[month] +
+                (
+                    month === 1 && this.isLeapYear(
+                        date.getUTCFullYear(),
+                    ) ?
+                        1 :
+                        0
+                );
         }
 
-        const values = [];
+        /**
+         * Gets the number of days in a given year.
+         * @param {number} year The year.
+         * @return {number} The number of days in the year.
+         */
+        static daysInYear(year) {
+            return !this.isLeapYear(year) ?
+                365 :
+                366;
+        }
 
-        let match;
-        while (formatString && (match = formatString.match(formatTokenRegExp))) {
-            const token = match[1];
-            const position = match.index;
-            const length = match[0].length;
+        /**
+         * Creates a new DateTime from an array. Missing month/date values default to 1.
+         * Missing time values default to 0.
+         * @param {number[]} dateArray The date to parse.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static fromArray(dateArray, options = {}) {
+            const dateValues = dateArray.slice(0, 3);
+            const timeValues = dateArray.slice(3);
 
-            if (position) {
-                const formatTest = formatString.substring(0, position);
-                parseCompare(formatTest, dateString);
+            if (dateValues.length < 3) {
+                dateValues.push(...new Array(3 - dateValues.length).fill(1));
             }
 
-            formatString = formatString.substring(position + length);
-            dateString = dateString.substring(position);
-
-            if (!token) {
-                const literal = match[0].slice(1, -1);
-                parseCompare(literal || `'`, dateString);
-                dateString = dateString.substring(literal.length);
-                continue;
+            if (timeValues.length < 4) {
+                timeValues.push(...new Array(4 - timeValues.length).fill(0));
             }
 
-            if (!(token in tokens)) {
-                throw new Error(`Invalid token in DateTime format: ${token}`);
-            }
-
-            const regExp = tokens[token].regex(options.locale, length);
-            const matchedValue = dateString.match(new RegExp(`^${regExp}`));
-
-            if (!matchedValue) {
-                throw new Error(`Unmatched token in DateTime string: ${token}`);
-            }
-
-            const literal = matchedValue[0];
-            const value = tokens[token].input(options.locale, literal, length);
-
-            if (value !== null) {
-                const key = tokens[token].key;
-                values.push({ key, value, literal, token, length });
-            }
-
-            dateString = dateString.substring(literal.length);
+            return new this(null, options)
+                .setTimestamp(0)
+                .setYear(...dateValues)
+                .setHours(...timeValues);
         }
 
-        if (formatString) {
-            parseCompare(formatString, dateString);
+        /**
+         * Creates a new DateTime from a Date.
+         * @param {Date} date The date.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static fromDate(date, options = {}) {
+            return new this(date.getTime(), options);
         }
 
-        if (!('timeZone' in options)) {
-            options.timeZone = config.defaultTimeZone;
-        }
+        /**
+         * Creates a new DateTime from a format string.
+         * @param {string} formatString The format string.
+         * @param {string} dateString The date string.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @throws {Error} Throws when the format contains unsupported parsing tokens such as
+         * `MMMMM` or `LLLLL`.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static fromFormat(formatString, dateString, options = {}) {
+            const locale = 'locale' in options ?
+                options.locale :
+                config.defaultLocale;
+            const requestedTimeZone = 'timeZone' in options ?
+                options.timeZone :
+                config.defaultTimeZone;
 
-        let timeZone = options.timeZone;
-        for (const { key, value } of values) {
-            if (key !== 'timeZone') {
-                continue;
-            }
+            const values = [];
 
-            timeZone = value;
-        }
+            let match;
+            while (formatString && (match = formatString.match(formatTokenRegExp))) {
+                const token = match[1];
+                const position = match.index;
+                const length = match[0].length;
 
-        let datetime = this.fromTimestamp(0, {
-            locale: options.locale,
-        }).setTimeZone(timeZone);
+                if (position) {
+                    const formatTest = formatString.substring(0, position);
+                    parseCompare(formatTest, dateString);
+                }
 
-        const methods = parseFactory();
+                formatString = formatString.substring(position + length);
+                dateString = dateString.substring(position);
 
-        const testValues = [];
-
-        for (const subKeys of parseOrderKeys) {
-            for (const subKey of subKeys) {
-                if (subKey === 'era' && !values.find((data) => data.key === 'year')) {
+                if (!token) {
+                    const literal = match[0].slice(1, -1);
+                    parseCompare(literal || `'`, dateString);
+                    dateString = dateString.substring(literal.length);
                     continue;
                 }
 
-                for (const data of values) {
-                    const { key, value, literal, token, length } = data;
+                if (!(token in tokens)) {
+                    throw new Error(`Invalid token in DateTime format: ${token}`);
+                }
 
-                    if (key !== subKey) {
+                if (length === 5 && ['M', 'L'].includes(token)) {
+                    throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
+                }
+
+                const regExp = tokens[token].regex(locale, length);
+                const matchedValue = dateString.match(new RegExp(`^${regExp}`));
+
+                if (!matchedValue) {
+                    throw new Error(`Unmatched token in DateTime string: ${token}`);
+                }
+
+                const literal = matchedValue[0];
+                const value = tokens[token].input(locale, literal, length);
+
+                if (value !== null) {
+                    const key = tokens[token].key;
+                    values.push({ key, value, literal, token, length });
+                }
+
+                dateString = dateString.substring(literal.length);
+            }
+
+            if (formatString) {
+                parseCompare(formatString, dateString);
+                dateString = dateString.substring(formatString.length);
+            }
+
+            if (dateString) {
+                throw new Error(`Unmatched trailing characters in DateTime string: ${dateString}`);
+            }
+
+            let timeZone = requestedTimeZone;
+            for (const { key, value } of values) {
+                if (key !== 'timeZone') {
+                    continue;
+                }
+
+                timeZone = value;
+            }
+
+            let datetime = this.fromTimestamp(0, {
+                locale,
+            }).setTimeZone(timeZone);
+
+            const methods = parseFactory();
+
+            const testValues = [];
+
+            for (const subKeys of parseOrderKeys) {
+                for (const subKey of subKeys) {
+                    if (subKey === 'era' && !values.find((data) => data.key === 'year')) {
                         continue;
                     }
 
-                    // skip narrow month and day names if output already matches
-                    if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
-                        const fullToken = token.repeat(length);
-                        if (datetime.format(fullToken) === literal) {
+                    for (const data of values) {
+                        const { key, value, literal, token, length } = data;
+
+                        if (key !== subKey) {
                             continue;
                         }
-                    }
 
-                    datetime = methods[key].set(datetime, value);
-                    testValues.push(data);
+                        // skip narrow weekday names if output already matches
+                        if (length === 5 && ['E', 'e', 'c'].includes(token)) {
+                            const fullToken = token.repeat(length);
+                            if (datetime.format(fullToken) === literal) {
+                                continue;
+                            }
+                        }
+
+                        datetime = methods[key].set(datetime, value);
+                        testValues.push(data);
+                    }
                 }
             }
-        }
 
-        let isValid = true;
-        for (const { key, value } of testValues) {
-            if (key in methods && methods[key].get(datetime) !== value) {
-                isValid = false;
-                break;
+            let isValid = true;
+            for (const { key, value } of testValues) {
+                if (key in methods && methods[key].get(datetime) !== value) {
+                    isValid = false;
+                    break;
+                }
             }
+
+            if (requestedTimeZone !== timeZone) {
+                datetime = datetime.setTimeZone(requestedTimeZone);
+            }
+
+            datetime.isValid = isValid;
+
+            return datetime;
         }
 
-        if (options.timeZone !== timeZone) {
-            datetime = datetime.setTimeZone(options.timeZone);
+        /**
+         * Creates a new DateTime from an ISO format string.
+         * @param {string} dateString The date string.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static fromISOString(dateString, options = {}) {
+            let date = this.fromFormat(formats.rfc3339_extended, dateString, {
+                locale: 'en',
+            });
+
+            if ('timeZone' in options) {
+                date = date.setTimeZone(options.timeZone);
+            }
+
+            if ('locale' in options) {
+                date = date.setLocale(options.locale);
+            }
+
+            return date;
         }
 
-        datetime.isValid = isValid;
-
-        return datetime;
-    }
-    /**
-     * Create a new DateTime from an ISO format string.
-     * @param {string} dateString The date string.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
-     */
-    function fromISOString(dateString, options = {}) {
-        let date = this.fromFormat(formats.rfc3339_extended, dateString, {
-            locale: 'en',
-        });
-
-        if ('timeZone' in options) {
-            date = date.setTimeZone(options.timeZone);
+        /**
+         * Creates a new DateTime from a timestamp.
+         * @param {number} timestamp The number of seconds since the UNIX epoch.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static fromTimestamp(timestamp, options = {}) {
+            return new this(null, options)
+                .setTimestamp(timestamp);
         }
 
-        if ('locale' in options) {
-            date = date.setLocale(options.locale);
+        /**
+         * Gets the default locale.
+         * @return {string} The locale.
+         */
+        static getDefaultLocale() {
+            return config.defaultLocale;
         }
 
-        return date;
-    }
-    /**
-     * Create a new DateTime from a timestamp.
-     * @param {number} timestamp The timestamp.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
-     */
-    function fromTimestamp(timestamp, options = {}) {
-        return new DateTime(null, options)
-            .setTimestamp(timestamp);
-    }
-    /**
-     * Create a new DateTime for the current time.
-     * @param {object} [options] Options for the new DateTime.
-     * @param {string} [options.timeZone] The timeZone to use.
-     * @param {string} [options.locale] The locale to use.
-     * @return {DateTime} A new DateTime object.
-     */
-    function now(options = {}) {
-        return new DateTime(null, options);
-    }
+        /**
+         * Gets the default time zone.
+         * @return {string} The default time zone.
+         */
+        static getDefaultTimeZone() {
+            return config.defaultTimeZone;
+        }
 
-    /**
-     * DateTime (Static) Utility
-     */
+        /**
+         * Checks whether the year is a leap year.
+         * @param {number} year The year.
+         * @return {boolean} Whether the given year is a leap year.
+         */
+        static isLeapYear(year) {
+            const date = new Date(0);
+            date.setUTCFullYear(year, 1, 29);
 
-    /**
-     * Get the day of the year for a year, month and date.
-     * @param {number} year The year.
-     * @param {number} month The month. (1, 12)
-     * @param {number} date The date.
-     * @return {number} The day of the year. (1, 366)
-     */
-    function dayOfYear(year, month, date) {
-        return new Array(month - 1)
-            .fill()
-            .reduce(
-                (d, _, i) =>
-                    d + daysInMonth$1(year, i + 1),
-                date,
+            return date.getUTCDate() === 29;
+        }
+
+        /**
+         * Creates a new DateTime for the current time.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        static now(options = {}) {
+            return new this(null, options);
+        }
+
+        /**
+         * Sets whether dates will be clamped when changing months.
+         * @param {boolean} clampDates Whether to clamp dates.
+         */
+        static setDateClamping(clampDates) {
+            config.clampDates = clampDates;
+        }
+
+        /**
+         * Sets the default locale.
+         * @param {string} locale The locale.
+         */
+        static setDefaultLocale(locale) {
+            config.defaultLocale = locale;
+        }
+
+        /**
+         * Sets the default time zone.
+         * @param {string} timeZone The time zone name.
+         */
+        static setDefaultTimeZone(timeZone) {
+            config.defaultTimeZone = timeZone;
+        }
+
+        /**
+         * Creates a new DateTime from the current time, epoch milliseconds, or a date string.
+         * @param {string|number|null} [date=null] The source date. Numbers are interpreted as milliseconds since the UNIX epoch.
+         * @param {DateTimeOptions} [options={}] Options for the new DateTime.
+         * @param {string} [options.timeZone] The time zone to use.
+         * @param {string} [options.locale] The locale to use.
+         */
+        constructor(date = null, options = {}) {
+            let timestamp;
+            let adjustOffset = false;
+
+            if (date === null) {
+                timestamp = Date.now();
+            } else if (typeof date === 'number' && Number.isFinite(date)) {
+                timestamp = date;
+            } else if (date === `${date}`) {
+                timestamp = Date.parse(date);
+
+                if (isNaN(timestamp)) {
+                    throw new Error('Invalid date string supplied');
+                }
+
+                if (!date.match(dateStringTimeZoneRegExp)) {
+                    timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
+                }
+
+                adjustOffset = true;
+            } else {
+                throw new Error('Invalid date supplied');
+            }
+
+            this._date = new Date(timestamp);
+            this._dynamicTz = false;
+            this.isValid = true;
+
+            let timeZone = options.timeZone;
+
+            if (!timeZone) {
+                timeZone = config.defaultTimeZone;
+            }
+
+            if (['Z', 'GMT'].includes(timeZone)) {
+                timeZone = 'UTC';
+            }
+
+            const match = timeZone.match(offsetRegExp);
+            if (match) {
+                this._offset = match[2] * 60 + parseInt(match[4] || 0, 10);
+                if (this._offset && match[1] === '+') {
+                    this._offset *= -1;
+                }
+
+                if (this._offset) {
+                    this._timeZone = formatOffset(this._offset);
+                } else {
+                    this._dynamicTz = true;
+                    this._timeZone = 'UTC';
+                }
+            } else {
+                this._dynamicTz = true;
+                this._timeZone = timeZone;
+            }
+
+            if (this._dynamicTz) {
+                this._offset = getOffset(this);
+            }
+
+            if (adjustOffset && this._offset) {
+                const oldOffset = this._offset;
+
+                this._date.setTime(this.getTime() + this._offset * 60000);
+
+                if (this._dynamicTz) {
+                    this._offset = getOffset(this);
+
+                    // Compensate for offset changes that happen across DST boundaries.
+                    if (oldOffset !== this._offset) {
+                        this._date.setTime(this.getTime() - ((oldOffset - this._offset) * 60000));
+                    }
+                }
+            }
+
+            this._locale = 'locale' in options ?
+                options.locale :
+                config.defaultLocale;
+        }
+
+        /**
+         * Adds a day to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addDay() {
+            return this.addDays(1);
+        }
+
+        /**
+         * Adds days to the current DateTime.
+         * @param {number} amount The number of days to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addDays(amount) {
+            return this.setDate(
+                this.getDate() + amount,
             );
-    }
-    /**
-     * Get the number of days in a month, from a year and month.
-     * @param {number} year The year.
-     * @param {number} month The month. (1, 12)
-     * @return {number} The number of days in the month.
-     */
-    function daysInMonth$1(year, month) {
-        const date = new Date(Date.UTC(year, month - 1));
-        month = date.getUTCMonth();
+        }
 
-        return monthDays[month] +
-            (
-                month == 1 && isLeapYear$1(
-                    date.getUTCFullYear(),
-                ) ?
-                    1 :
-                    0
+        /**
+         * Adds an hour to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addHour() {
+            return this.addHours(1);
+        }
+
+        /**
+         * Adds hours to the current DateTime.
+         * @param {number} amount The number of hours to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addHours(amount) {
+            return this.setTime(
+                this.getTime() + (amount * 3600000),
             );
-    }
-    /**
-     * Get the number of days in a year.
-     * @param {number} year The year.
-     * @return {number} The number of days in the year.
-     */
-    function daysInYear$1(year) {
-        return !isLeapYear$1(year) ?
-            365 :
-            366;
-    }
-    /**
-     * Get the default locale.
-     * @return {string} The locale.
-     */
-    function getDefaultLocale() {
-        return config.defaultLocale;
-    }
-    /**
-     * Get the default timeZone.
-     * @return {string} The name of the timeZone.
-     */
-    function getDefaultTimeZone() {
-        return config.defaultTimeZone;
-    }
-    /**
-     * Return true if a year is a leap year.
-     * @param {number} year The year.
-     * @return {Boolean} TRUE if the year is a leap year, otherwise FALSE.
-     */
-    function isLeapYear$1(year) {
-        return new Date(year, 1, 29)
-            .getDate() === 29;
-    }
-    /**
-     * Set whether dates will be clamped when changing months.
-     * @param {Boolean} clampDates Whether to clamp dates.
-     */
-    function setDateClamping(clampDates) {
-        config.clampDates = clampDates;
-    }
-    /**
-     * Set the default locale.
-     * @param {string} locale The locale.
-     */
-    function setDefaultLocale(locale) {
-        config.defaultLocale = locale;
-    }
-    /**
-     * Set the default timeZone.
-     * @param {string} timeZone The name of the timeZone.
-     */
-    function setDefaultTimeZone(timeZone) {
-        config.defaultTimeZone = timeZone;
-    }
+        }
 
-    /**
-     * DateTime Attributes (Get)
-     */
+        /**
+         * Adds a minute to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addMinute() {
+            return this.addMinutes(1);
+        }
 
-    /**
-     * Get the date of the month in current timeZone.
-     * @return {number} The date of the month.
-     */
-    function getDate() {
-        return new Date(getOffsetTime(this)).getUTCDate();
-    }
-    /**
-     * Get the day of the week in current timeZone.
-     * @return {number} The day of the week. (0 - Sunday, 6 - Saturday)
-     */
-    function getDay() {
-        return new Date(getOffsetTime(this)).getUTCDay();
-    }
-    /**
-     * Get the day of the year in current timeZone.
-     * @return {number} The day of the year. (1, 366)
-     */
-    function getDayOfYear() {
-        return dayOfYear(
-            this.getYear(),
-            this.getMonth(),
-            this.getDate(),
-        );
-    }
-    /**
-     * Get the hours of the day in current timeZone.
-     * @return {number} The hours of the day. (0, 23)
-     */
-    function getHours() {
-        return new Date(getOffsetTime(this)).getUTCHours();
-    }
-    /**
-     * Get the milliseconds in current timeZone.
-     * @return {number} The milliseconds.
-     */
-    function getMilliseconds() {
-        return new Date(getOffsetTime(this)).getUTCMilliseconds();
-    }
-    /**
-     * Get the minutes in current timeZone.
-     * @return {number} The minutes. (0, 59)
-     */
-    function getMinutes() {
-        return new Date(getOffsetTime(this)).getUTCMinutes();
-    }
-    /**
-     * Get the month in current timeZone.
-     * @return {number} The month. (1, 12)
-     */
-    function getMonth() {
-        return new Date(getOffsetTime(this)).getUTCMonth() + 1;
-    }
-    /**
-     * Get the quarter of the year in current timeZone.
-     * @return {number} The quarter of the year. (1, 4)
-     */
-    function getQuarter() {
-        return Math.ceil(this.getMonth() / 3);
-    }
-    /**
-     * Get the seconds in current timeZone.
-     * @return {number} The seconds. (0, 59)
-     */
-    function getSeconds() {
-        return new Date(getOffsetTime(this)).getUTCSeconds();
-    }
-    /**
-     * Get the number of seconds since the UNIX epoch.
-     * @return {number} The number of seconds since the UNIX epoch.
-     */
-    function getTimestamp() {
-        return Math.floor(this.getTime() / 1000);
-    }
-    /**
-     * Get the local week in current timeZone.
-     * @return {number} The local week. (1, 53)
-     */
-    function getWeek() {
-        const thisWeek = this.startOfDay().setWeekDay(1);
-        const firstWeek = thisWeek.setWeek(1, 1);
+        /**
+         * Adds minutes to the current DateTime.
+         * @param {number} amount The number of minutes to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addMinutes(amount) {
+            return this.setTime(
+                this.getTime() + (amount * 60000),
+            );
+        }
 
-        return 1 +
-            (
+        /**
+         * Adds a month to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addMonth() {
+            return this.addMonths(1);
+        }
+
+        /**
+         * Adds months to the current DateTime.
+         * @param {number} amount The number of months to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addMonths(amount) {
+            return this.setMonth(
+                this.getMonth() + amount,
+            );
+        }
+
+        /**
+         * Adds a second to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addSecond() {
+            return this.addSeconds(1);
+        }
+
+        /**
+         * Adds seconds to the current DateTime.
+         * @param {number} amount The number of seconds to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addSeconds(amount) {
+            return this.setTime(
+                this.getTime() + (amount * 1000),
+            );
+        }
+
+        /**
+         * Adds a week to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addWeek() {
+            return this.addWeeks(1);
+        }
+
+        /**
+         * Adds weeks to the current DateTime.
+         * @param {number} amount The number of weeks to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addWeeks(amount) {
+            return this.setDate(
+                this.getDate() + (amount * 7),
+            );
+        }
+
+        /**
+         * Adds a year to the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addYear() {
+            return this.addYears(1);
+        }
+
+        /**
+         * Adds years to the current DateTime.
+         * @param {number} amount The number of years to add.
+         * @return {DateTime} A new DateTime instance.
+         */
+        addYears(amount) {
+            return this.setYear(
+                this.getYear() + amount,
+            );
+        }
+
+        /**
+         * Gets the localized day name for the current date.
+         * @param {'long'|'short'|'narrow'} [type='long'] The type of day name to return.
+         * @return {string} The localized day name.
+         */
+        dayName(type = 'long') {
+            return formatDay(this.getLocale(), this.getDay(), type);
+        }
+
+        /**
+         * Gets the localized day period for the current time.
+         * @param {'long'|'short'|'narrow'} [type='long'] The type of day period to return.
+         * @return {string} The localized day period.
+         */
+        dayPeriod(type = 'long') {
+            return formatDayPeriod(
+                this.getLocale(),
+                this.getHours() < 12 ?
+                    0 :
+                    1,
+                type,
+            );
+        }
+
+        /**
+         * Gets the number of days in the current month.
+         * @return {number} The number of days in the current month.
+         */
+        daysInMonth() {
+            return this.constructor.daysInMonth(
+                this.getYear(),
+                this.getMonth(),
+            );
+        }
+
+        /**
+         * Gets the number of days in the current year.
+         * @return {number} The number of days in the current year.
+         */
+        daysInYear() {
+            return this.constructor.daysInYear(
+                this.getYear(),
+            );
+        }
+
+        /**
+         * Gets the difference between this and another Date in milliseconds.
+         * @param {DateTime} other The date to compare to.
+         * @return {number} The difference.
+         */
+        diff(other) {
+            return this - other;
+        }
+
+        /**
+         * Gets the difference between this and another Date in days.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInDays(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'day', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in hours.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInHours(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'hour', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in minutes.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInMinutes(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'minute', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in months.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInMonths(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'month', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in seconds.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInSeconds(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'second', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in weeks.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInWeeks(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'week', relative);
+        }
+
+        /**
+         * Gets the difference between this and another Date in years.
+         * @param {DateTime} other The date to compare to.
+         * @param {{relative?: boolean}} [options] Options for comparing the dates.
+         * @return {number} The difference.
+         */
+        diffInYears(other, { relative = true } = {}) {
+            return calculateDiff(this, other, 'year', relative);
+        }
+
+        /**
+         * Sets the DateTime to the end of the day.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfDay() {
+            return this.setHours(23, 59, 59, 999);
+        }
+
+        /**
+         * Sets the DateTime to the end of the hour.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfHour() {
+            return this.setMinutes(59, 59, 999);
+        }
+
+        /**
+         * Sets the DateTime to the end of the minute.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfMinute() {
+            return this.setSeconds(59, 999);
+        }
+
+        /**
+         * Sets the DateTime to the end of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfMonth() {
+            return this.setDate(this.daysInMonth())
+                .endOfDay();
+        }
+
+        /**
+         * Sets the DateTime to the end of the quarter.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfQuarter() {
+            const month = this.getQuarter() * 3;
+            return this.setMonth(month, this.constructor.daysInMonth(this.getYear(), month))
+                .endOfDay();
+        }
+
+        /**
+         * Sets the DateTime to the end of the second.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfSecond() {
+            return this.setMilliseconds(999);
+        }
+
+        /**
+         * Sets the DateTime to the end of the week.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfWeek() {
+            return this.setWeekDay(7)
+                .endOfDay();
+        }
+
+        /**
+         * Sets the DateTime to the end of the year.
+         * @return {DateTime} A new DateTime instance.
+         */
+        endOfYear() {
+            return this.setMonth(12, 31)
+                .endOfDay();
+        }
+
+        /**
+         * Gets the localized era for the current date.
+         * @param {'long'|'short'|'narrow'} [type='long'] The type of era to return.
+         * @return {string} The localized era.
+         */
+        era(type = 'long') {
+            return formatEra(
+                this.getLocale(),
+                this.getYear() < 0 ?
+                    0 :
+                    1,
+                type,
+            );
+        }
+
+        /**
+         * Formats the current date using a format string.
+         * @param {string} formatString The format string.
+         * @return {string} The formatted date string.
+         */
+        format(formatString) {
+            let match;
+            let output = '';
+
+            while (formatString && (match = formatString.match(formatTokenRegExp))) {
+                const token = match[1];
+                const position = match.index;
+                const length = match[0].length;
+
+                if (position) {
+                    output += formatString.substring(0, position);
+                }
+
+                formatString = formatString.substring(position + length);
+
+                if (!token) {
+                    output += match[0].slice(1, -1);
+                    continue;
+                }
+
+                if (!(token in tokens)) {
+                    throw new Error(`Invalid token in DateTime format: ${token}`);
+                }
+
+                output += tokens[token].output(this, length);
+            }
+
+            output += formatString;
+
+            return output;
+        }
+
+        /**
+         * Gets the date of the month in the current time zone.
+         * @return {number} The date of the month.
+         */
+        getDate() {
+            return new Date(getOffsetTime(this)).getUTCDate();
+        }
+
+        /**
+         * Gets the day of the week in the current time zone.
+         * @return {number} The day of the week. (0 = Sunday, 6 = Saturday)
+         */
+        getDay() {
+            return new Date(getOffsetTime(this)).getUTCDay();
+        }
+
+        /**
+         * Gets the day of the year in the current time zone.
+         * @return {number} The day of the year. (1-366)
+         */
+        getDayOfYear() {
+            return this.constructor.dayOfYear(
+                this.getYear(),
+                this.getMonth(),
+                this.getDate(),
+            );
+        }
+
+        /**
+         * Gets the hours of the day in the current time zone.
+         * @return {number} The hours of the day. (0-23)
+         */
+        getHours() {
+            return new Date(getOffsetTime(this)).getUTCHours();
+        }
+
+        /**
+         * Gets the current locale.
+         * @return {string} The locale.
+         */
+        getLocale() {
+            return this._locale;
+        }
+
+        /**
+         * Gets the milliseconds in the current time zone.
+         * @return {number} The milliseconds.
+         */
+        getMilliseconds() {
+            return new Date(getOffsetTime(this)).getUTCMilliseconds();
+        }
+
+        /**
+         * Gets the minutes in the current time zone.
+         * @return {number} The minutes. (0-59)
+         */
+        getMinutes() {
+            return new Date(getOffsetTime(this)).getUTCMinutes();
+        }
+
+        /**
+         * Gets the month in the current time zone.
+         * @return {number} The month. (1-12)
+         */
+        getMonth() {
+            return new Date(getOffsetTime(this)).getUTCMonth() + 1;
+        }
+
+        /**
+         * Gets the quarter of the year in the current time zone.
+         * @return {number} The quarter of the year. (1-4)
+         */
+        getQuarter() {
+            return Math.ceil(this.getMonth() / 3);
+        }
+
+        /**
+         * Gets the seconds in the current time zone.
+         * @return {number} The seconds. (0-59)
+         */
+        getSeconds() {
+            return new Date(getOffsetTime(this)).getUTCSeconds();
+        }
+
+        /**
+         * Gets the number of milliseconds since the UNIX epoch.
+         * @return {number} The number of milliseconds since the UNIX epoch.
+         */
+        getTime() {
+            return this._date.getTime();
+        }
+
+        /**
+         * Gets the number of seconds since the UNIX epoch.
+         * @return {number} The number of seconds since the UNIX epoch.
+         */
+        getTimestamp() {
+            return Math.floor(this.getTime() / 1000);
+        }
+
+        /**
+         * Gets the current time zone.
+         * @return {string} The time zone.
+         */
+        getTimeZone() {
+            return this._timeZone;
+        }
+
+        /**
+         * Gets the current UTC offset in minutes.
+         * @return {number} The UTC offset in minutes.
+         */
+        getTimeZoneOffset() {
+            return this._offset;
+        }
+
+        /**
+         * Gets the local week in the current time zone.
+         * @return {number} The local week. (1-53)
+         */
+        getWeek() {
+            const thisWeek = this.startOfDay().setWeekDay(1);
+            const firstWeek = thisWeek.setWeek(1, 1);
+
+            return 1 +
                 (
-                    (thisWeek - firstWeek) /
-                    604800000
-                ) | 0
-            );
-    }
-    /**
-     * Get the local day of the week in current timeZone.
-     * @return {number} The local day of the week. (1 - 7)
-     */
-    function getWeekDay() {
-        return weekDay(
-            this.getLocale(),
-            this.getDay(),
-        );
-    }
-    /**
-     * Get the week day in month in current timeZone.
-     * @return {number} The week day in month.
-     */
-    function getWeekDayInMonth() {
-        const thisWeek = this.getWeek();
-        const first = this.setDate(1);
-        const firstWeek = first.getWeek();
-        const offset = first.getWeekDay() > this.getWeekDay() ?
-            0 : 1;
-        return firstWeek > thisWeek ?
-            thisWeek + offset :
-            thisWeek - firstWeek + offset;
-    }
-    /**
-     * Get the week of month in current timeZone.
-     * @return {number} The week of month.
-     */
-    function getWeekOfMonth() {
-        const thisWeek = this.getWeek();
-        const firstWeek = this.setDate(1).getWeek();
-        return firstWeek > thisWeek ?
-            thisWeek + 1 :
-            thisWeek - firstWeek + 1;
-    }
-    /**
-     * Get the week year in current timeZone.
-     * @return {number} The week year.
-     */
-    function getWeekYear() {
-        const minDays = minimumDays(this.getLocale());
-        return this.setWeekDay(7 - minDays + 1).getYear();
-    }
-    /**
-     * Get the year in current timeZone.
-     * @return {number} The year.
-     */
-    function getYear() {
-        return new Date(getOffsetTime(this)).getUTCFullYear();
-    }
-
-    /**
-     * DateTime Attributes (Set)
-     */
-
-    /**
-     * Set the date of the month in current timeZone.
-     * @param {number} date The date of the month.
-     * @return {DateTime} The DateTime object.
-     */
-    function setDate(date) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCDate(date),
-        );
-    }
-    /**
-     * Set the day of the week in current timeZone.
-     * @param {number} day The day of the week. (0 - Sunday, 6 - Saturday)
-     * @return {DateTime} The DateTime object.
-     */
-    function setDay(day) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCDate(
-                this.getDate() -
-                this.getDay() +
-                parseInt(day),
-            ),
-        );
-    }
-    /**
-     * Set the day of the year in current timeZone.
-     * @param {number} day The day of the year. (1, 366)
-     * @return {DateTime} The DateTime object.
-     */
-    function setDayOfYear(day) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCMonth(
-                0,
-                day,
-            ),
-        );
-    }
-    /**
-     * Set the hours in current timeZone (and optionally, minutes, seconds and milliseconds).
-     * @param {number} hours The hours. (0, 23)
-     * @param {number} [minutes] The minutes. (0, 59)
-     * @param {number} [seconds] The seconds. (0, 59)
-     * @param {number} [milliseconds] The milliseconds.
-     * @return {DateTime} The DateTime object.
-     */
-    function setHours(...args) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCHours(...args),
-        );
-    }
-    /**
-     * Set the milliseconds in current timeZone.
-     * @param {number} milliseconds The milliseconds.
-     * @return {DateTime} The DateTime object.
-     */
-    function setMilliseconds(milliseconds) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCMilliseconds(milliseconds),
-        );
-    }
-    /**
-     * Set the minutes in current timeZone (and optionally, seconds and milliseconds).
-     * @param {number} minutes The minutes. (0, 59)
-     * @param {number} [seconds] The seconds. (0, 59)
-     * @param {number} [milliseconds] The milliseconds.
-     * @return {DateTime} The DateTime object.
-     */
-    function setMinutes(...args) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCMinutes(...args),
-        );
-    }
-    /**
-     * Set the month in current timeZone (and optionally, date).
-     * @param {number} month The month. (1, 12)
-     * @param {number|null} [date] The date of the month.
-     * @return {DateTime} The DateTime object.
-     */
-    function setMonth(month, date = null) {
-        if (date === null) {
-            date = this.getDate();
-
-            if (config.clampDates) {
-                date = Math.min(
-                    date,
-                    daysInMonth$1(
-                        this.getYear(),
-                        month,
-                    ),
+                    (
+                        (thisWeek - firstWeek) /
+                        604800000
+                    ) | 0
                 );
-            }
         }
 
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCMonth(
-                month - 1,
-                date,
-            ),
-        );
-    }
-    /**
-     * Set the quarter of the year in current timeZone.
-     * @param {number} quarter The quarter of the year. (1, 4)
-     * @return {DateTime} The DateTime object.
-     */
-    function setQuarter(quarter) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCMonth(
-                quarter * 3 -
-                3,
-            ),
-        );
-    }
-    /**
-     * Set the seconds in current timeZone (and optionally, milliseconds).
-     * @param {number} seconds The seconds. (0, 59)
-     * @param {number} [milliseconds] The milliseconds.
-     * @return {DateTime} The DateTime object.
-     */
-    function setSeconds(...args) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCSeconds(...args),
-        );
-    }
-    /**
-     * Set the number of seconds since the UNIX epoch.
-     * @param {number} timestamp The number of seconds since the UNIX epoch.
-     * @return {DateTime} The DateTime object.
-     */
-    function setTimestamp(timestamp) {
-        return this.setTime(timestamp * 1000);
-    }
-    /**
-     * Set the local day of the week in current timeZone (and optionally, day of the week).
-     * @param {number} week The local week.
-     * @param {number|null} [day] The local day of the week. (1 - 7)
-     * @return {DateTime} The DateTime object.
-     */
-    function setWeek(week, day = null) {
-        if (day === null) {
-            day = this.getWeekDay();
-        }
-
-        const minDays = minimumDays(this.getLocale());
-        return this.setYear(this.getWeekYear(), 1, minDays + ((week - 1) * 7)).setWeekDay(day);
-    }
-    /**
-     * Set the local day of the week in current timeZone.
-     * @param {number} day The local day of the week. (1 - 7)
-     * @return {DateTime} The DateTime object.
-     */
-    function setWeekDay(day) {
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCDate(
-                this.getDate() -
-                this.getWeekDay() +
-                parseInt(day),
-            ),
-        );
-    }
-    /**
-     * Set the week day in month in current timeZone.
-     * @param {number} week The week day in month.
-     * @return {DateTime} The DateTime object.
-     */
-    function setWeekDayInMonth(week) {
-        return this.setDate(
-            this.getDate() +
-            (
-                week -
-                this.getWeekDayInMonth()
-            ) * 7,
-        );
-    }
-    /**
-     * Set the week of month in current timeZone.
-     * @param {number} week The week of month.
-     * @return {DateTime} The DateTime object.
-     */
-    function setWeekOfMonth(week) {
-        return this.setDate(
-            this.getDate() +
-            (
-                week -
-                this.getWeekOfMonth()
-            ) * 7,
-        );
-    }
-    /**
-     * Set the local day of the week in current timeZone (and optionally, week and day of the week).
-     * @param {number} year The local year.
-     * @param {number|null} [week] The local week.
-     * @param {number|null} [day] The local day of the week. (1 - 7)
-     * @return {DateTime} The DateTime object.
-     */
-    function setWeekYear(year, week = null, day = null) {
-        const minDays = minimumDays(this.getLocale());
-
-        if (week === null) {
-            week = Math.min(
-                this.getWeek(),
-                DateTime.fromArray([year, 1, minDays]).weeksInYear(),
+        /**
+         * Gets the local day of the week in the current time zone.
+         * @return {number} The local day of the week. (1-7)
+         */
+        getWeekDay() {
+            return weekDay(
+                this.getLocale(),
+                this.getDay(),
             );
         }
 
-        if (day === null) {
-            day = this.getWeekDay();
+        /**
+         * Gets the week day in month in the current time zone.
+         * @return {number} The week day in month.
+         */
+        getWeekDayInMonth() {
+            const thisWeek = this.getWeek();
+            const first = this.setDate(1);
+            const firstWeek = first.getWeek();
+            const offset = first.getWeekDay() > this.getWeekDay() ?
+                0 : 1;
+            return firstWeek > thisWeek ?
+                thisWeek + offset :
+                thisWeek - firstWeek + offset;
         }
 
-        return this.setYear(year, 1, minDays + ((week - 1) * 7)).setWeekDay(day);
-    }
-    /**
-     * Set the year in current timeZone (and optionally, month and date).
-     * @param {number} year The year.
-     * @param {number|null} [month] The month. (1, 12)
-     * @param {number|null} [date] The date of the month.
-     * @return {DateTime} The DateTime object.
-     */
-    function setYear(year, month = null, date = null) {
-        if (month === null) {
-            month = this.getMonth();
+        /**
+         * Gets the week of month in the current time zone.
+         * @return {number} The week of month.
+         */
+        getWeekOfMonth() {
+            const thisWeek = this.getWeek();
+            const firstWeek = this.setDate(1).getWeek();
+            return firstWeek > thisWeek ?
+                thisWeek + 1 :
+                thisWeek - firstWeek + 1;
         }
 
-        if (date === null) {
-            date = this.getDate();
+        /**
+         * Gets the week year in the current time zone.
+         * @return {number} The week year.
+         */
+        getWeekYear() {
+            const minDays = minimumDays(this.getLocale());
+            return this.setWeekDay(7 - minDays + 1).getYear();
+        }
 
-            if (config.clampDates) {
-                date = Math.min(
+        /**
+         * Gets the year in the current time zone.
+         * @return {number} The year.
+         */
+        getYear() {
+            return new Date(getOffsetTime(this)).getUTCFullYear();
+        }
+
+        /**
+         * Gets the difference between this and another Date in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in human readable form.
+         */
+        humanDiff(other) {
+            const [amount, unit] = getBiggestDiff(this, other);
+            return formatRelative(this.getLocale(), amount, unit);
+        }
+
+        /**
+         * Gets the difference between this and another Date in days in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in days in human readable form.
+         */
+        humanDiffInDays(other) {
+            return formatRelative(this.getLocale(), this.diffInDays(other), 'day');
+        }
+
+        /**
+         * Gets the difference between this and another Date in hours in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in hours in human readable form.
+         */
+        humanDiffInHours(other) {
+            return formatRelative(this.getLocale(), this.diffInHours(other), 'hour');
+        }
+
+        /**
+         * Gets the difference between this and another Date in minutes in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in minutes in human readable form.
+         */
+        humanDiffInMinutes(other) {
+            return formatRelative(this.getLocale(), this.diffInMinutes(other), 'minute');
+        }
+
+        /**
+         * Gets the difference between this and another Date in months in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in months in human readable form.
+         */
+        humanDiffInMonths(other) {
+            return formatRelative(this.getLocale(), this.diffInMonths(other), 'month');
+        }
+
+        /**
+         * Gets the difference between this and another Date in seconds in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in seconds in human readable form.
+         */
+        humanDiffInSeconds(other) {
+            return formatRelative(this.getLocale(), this.diffInSeconds(other), 'second');
+        }
+
+        /**
+         * Gets the difference between this and another Date in weeks in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in weeks in human readable form.
+         */
+        humanDiffInWeeks(other) {
+            return formatRelative(this.getLocale(), this.diffInWeeks(other), 'week');
+        }
+
+        /**
+         * Gets the difference between this and another Date in years in human readable form.
+         * @param {DateTime} other The date to compare to.
+         * @return {string} The difference in years in human readable form.
+         */
+        humanDiffInYears(other) {
+            return formatRelative(this.getLocale(), this.diffInYears(other), 'year');
+        }
+
+        /**
+         * Checks whether this DateTime is after another date.
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date.
+         */
+        isAfter(other) {
+            return this.diff(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by day).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by day).
+         */
+        isAfterDay(other) {
+            return this.diffInDays(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by hour).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by hour).
+         */
+        isAfterHour(other) {
+            return this.diffInHours(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by minute).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by minute).
+         */
+        isAfterMinute(other) {
+            return this.diffInMinutes(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by month).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by month).
+         */
+        isAfterMonth(other) {
+            return this.diffInMonths(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by second).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by second).
+         */
+        isAfterSecond(other) {
+            return this.diffInSeconds(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by week).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by week).
+         */
+        isAfterWeek(other) {
+            return this.diffInWeeks(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is after another date (comparing by year).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is after the other date (comparing by year).
+         */
+        isAfterYear(other) {
+            return this.diffInYears(other) > 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date.
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date.
+         */
+        isBefore(other) {
+            return this.diff(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by day).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by day).
+         */
+        isBeforeDay(other) {
+            return this.diffInDays(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by hour).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by hour).
+         */
+        isBeforeHour(other) {
+            return this.diffInHours(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by minute).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by minute).
+         */
+        isBeforeMinute(other) {
+            return this.diffInMinutes(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by month).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by month).
+         */
+        isBeforeMonth(other) {
+            return this.diffInMonths(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by second).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by second).
+         */
+        isBeforeSecond(other) {
+            return this.diffInSeconds(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by week).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by week).
+         */
+        isBeforeWeek(other) {
+            return this.diffInWeeks(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is before another date (comparing by year).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is before the other date (comparing by year).
+         */
+        isBeforeYear(other) {
+            return this.diffInYears(other) < 0;
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates.
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates.
+         */
+        isBetween(start, end) {
+            return this.isAfter(start) && this.isBefore(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by day).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by day).
+         */
+        isBetweenDay(start, end) {
+            return this.isAfterDay(start) && this.isBeforeDay(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by hour).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by hour).
+         */
+        isBetweenHour(start, end) {
+            return this.isAfterHour(start) && this.isBeforeHour(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by minute).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by minute).
+         */
+        isBetweenMinute(start, end) {
+            return this.isAfterMinute(start) && this.isBeforeMinute(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by month).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by month).
+         */
+        isBetweenMonth(start, end) {
+            return this.isAfterMonth(start) && this.isBeforeMonth(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by second).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by second).
+         */
+        isBetweenSecond(start, end) {
+            return this.isAfterSecond(start) && this.isBeforeSecond(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by week).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by week).
+         */
+        isBetweenWeek(start, end) {
+            return this.isAfterWeek(start) && this.isBeforeWeek(end);
+        }
+
+        /**
+         * Checks whether this DateTime is between two other dates (comparing by year).
+         * @param {DateTime} start The first date to compare to.
+         * @param {DateTime} end The second date to compare to.
+         * @return {boolean} Whether this DateTime is between two other dates (comparing by year).
+         */
+        isBetweenYear(start, end) {
+            return this.isAfterYear(start) && this.isBeforeYear(end);
+        }
+
+        /**
+         * Checks whether the DateTime is in daylight saving time.
+         * @return {boolean} Whether the current time is in daylight saving time.
+         */
+        isDst() {
+            if (!this._dynamicTz) {
+                return false;
+            }
+
+            const year = this.getYear();
+            const dateA = this.constructor.fromArray([year, 1, 1], {
+                timeZone: this.getTimeZone(),
+            });
+            const dateB = this.constructor.fromArray([year, 6, 1], {
+                timeZone: this.getTimeZone(),
+            });
+
+            return this.getTimeZoneOffset() < Math.max(dateA.getTimeZoneOffset(), dateB.getTimeZoneOffset());
+        }
+
+        /**
+         * Checks whether the year is a leap year.
+         * @return {boolean} Whether the current year is a leap year.
+         */
+        isLeapYear() {
+            return this.constructor.isLeapYear(
+                this.getYear(),
+            );
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date.
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date.
+         */
+        isSame(other) {
+            return this.diff(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by day).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by day).
+         */
+        isSameDay(other) {
+            return this.diffInDays(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by hour).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by hour).
+         */
+        isSameHour(other) {
+            return this.diffInHours(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by minute).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by minute).
+         */
+        isSameMinute(other) {
+            return this.diffInMinutes(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by month).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by month).
+         */
+        isSameMonth(other) {
+            return this.diffInMonths(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date.
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date.
+         */
+        isSameOrAfter(other) {
+            return this.diff(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by day).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by day).
+         */
+        isSameOrAfterDay(other) {
+            return this.diffInDays(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by hour).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by hour).
+         */
+        isSameOrAfterHour(other) {
+            return this.diffInHours(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by minute).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by minute).
+         */
+        isSameOrAfterMinute(other) {
+            return this.diffInMinutes(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by month).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by month).
+         */
+        isSameOrAfterMonth(other) {
+            return this.diffInMonths(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by second).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by second).
+         */
+        isSameOrAfterSecond(other) {
+            return this.diffInSeconds(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by week).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by week).
+         */
+        isSameOrAfterWeek(other) {
+            return this.diffInWeeks(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or after another date (comparing by year).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or after the other date (comparing by year).
+         */
+        isSameOrAfterYear(other) {
+            return this.diffInYears(other) >= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date.
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date.
+         */
+        isSameOrBefore(other) {
+            return this.diff(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by day).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by day).
+         */
+        isSameOrBeforeDay(other) {
+            return this.diffInDays(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by hour).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by hour).
+         */
+        isSameOrBeforeHour(other) {
+            return this.diffInHours(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by minute).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by minute).
+         */
+        isSameOrBeforeMinute(other) {
+            return this.diffInMinutes(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by month).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by month).
+         */
+        isSameOrBeforeMonth(other) {
+            return this.diffInMonths(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by second).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by second).
+         */
+        isSameOrBeforeSecond(other) {
+            return this.diffInSeconds(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by week).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by week).
+         */
+        isSameOrBeforeWeek(other) {
+            return this.diffInWeeks(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as or before another date (comparing by year).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as or before the other date (comparing by year).
+         */
+        isSameOrBeforeYear(other) {
+            return this.diffInYears(other) <= 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by second).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by second).
+         */
+        isSameSecond(other) {
+            return this.diffInSeconds(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by week).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by week).
+         */
+        isSameWeek(other) {
+            return this.diffInWeeks(other) === 0;
+        }
+
+        /**
+         * Checks whether this DateTime is the same as another date (comparing by year).
+         * @param {DateTime} other The date to compare to.
+         * @return {boolean} Whether this DateTime is the same as the other date (comparing by year).
+         */
+        isSameYear(other) {
+            return this.diffInYears(other) === 0;
+        }
+
+        /**
+         * Gets the localized month name for the current date.
+         * @param {'long'|'short'|'narrow'} [type='long'] The type of month name to return.
+         * @return {string} The localized month name.
+         */
+        monthName(type = 'long') {
+            return formatMonth(this.getLocale(), this.getMonth(), type);
+        }
+
+        /**
+         * Sets the date of the month in the current time zone.
+         * @param {number} date The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setDate(date) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(date),
+            );
+        }
+
+        /**
+         * Sets the day of the week in the current time zone.
+         * @param {number} day The day of the week. (0 = Sunday, 6 = Saturday)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setDay(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(
+                    this.getDate() -
+                    this.getDay() +
+                    parseInt(day, 10),
+                ),
+            );
+        }
+
+        /**
+         * Sets the day of the year in the current time zone.
+         * @param {number} day The day of the year. (1-366)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setDayOfYear(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    0,
+                    day,
+                ),
+            );
+        }
+
+        /**
+         * Sets the hours in the current time zone (and optionally, minutes, seconds and milliseconds).
+         * @param {number} hours The hours. (0-23)
+         * @param {number} [minutes] The minutes. (0-59)
+         * @param {number} [seconds] The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setHours(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCHours(...args),
+            );
+        }
+
+        /**
+         * Returns a copy with a different locale.
+         * @param {string} locale The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setLocale(locale) {
+            return new this.constructor(this.getTime(), {
+                locale,
+                timeZone: this._timeZone,
+            });
+        }
+
+        /**
+         * Sets the milliseconds in the current time zone.
+         * @param {number} milliseconds The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setMilliseconds(milliseconds) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMilliseconds(milliseconds),
+            );
+        }
+
+        /**
+         * Sets the minutes in the current time zone (and optionally, seconds and milliseconds).
+         * @param {number} minutes The minutes. (0-59)
+         * @param {number} [seconds] The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setMinutes(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMinutes(...args),
+            );
+        }
+
+        /**
+         * Sets the month in the current time zone (and optionally, date).
+         * @param {number} month The month. (1-12)
+         * @param {number|null} [date] The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setMonth(month, date = null) {
+            if (date === null) {
+                date = this.getDate();
+
+                if (config.clampDates) {
+                    date = Math.min(
+                        date,
+                        this.constructor.daysInMonth(
+                            this.getYear(),
+                            month,
+                        ),
+                    );
+                }
+            }
+
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    month - 1,
                     date,
-                    daysInMonth$1(
-                        this.getYear(),
-                        month,
-                    ),
+                ),
+            );
+        }
+
+        /**
+         * Sets the quarter of the year in the current time zone.
+         * @param {number} quarter The quarter of the year. (1-4)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setQuarter(quarter) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    quarter * 3 -
+                    3,
+                ),
+            );
+        }
+
+        /**
+         * Sets the seconds in the current time zone (and optionally, milliseconds).
+         * @param {number} seconds The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setSeconds(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCSeconds(...args),
+            );
+        }
+
+        /**
+         * Returns a copy with a different epoch-millisecond value.
+         * @param {number} time The number of milliseconds since the UNIX epoch.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setTime(time) {
+            return new this.constructor(time, {
+                locale: this._locale,
+                timeZone: this._timeZone,
+            });
+        }
+
+        /**
+         * Sets the number of seconds since the UNIX epoch.
+         * @param {number} timestamp The number of seconds since the UNIX epoch.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setTimestamp(timestamp) {
+            return this.setTime(timestamp * 1000);
+        }
+
+        /**
+         * Returns a copy in a different time zone.
+         * @param {string} timeZone The time zone to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setTimeZone(timeZone) {
+            return new this.constructor(this.getTime(), {
+                locale: this._locale,
+                timeZone,
+            });
+        }
+
+        /**
+         * Returns a copy with a fixed numeric UTC offset.
+         * @param {number} offset The UTC offset in minutes.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setTimeZoneOffset(offset) {
+            return new this.constructor(this.getTime(), {
+                locale: this._locale,
+                timeZone: formatOffset(offset),
+            });
+        }
+
+        /**
+         * Sets the local week in the current time zone (and optionally, local day of the week).
+         * @param {number} week The local week.
+         * @param {number|null} [day] The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setWeek(week, day = null) {
+            if (day === null) {
+                day = this.getWeekDay();
+            }
+
+            const minDays = minimumDays(this.getLocale());
+            return this.setYear(this.getWeekYear(), 1, minDays + ((week - 1) * 7)).setWeekDay(day);
+        }
+
+        /**
+         * Sets the local day of the week in the current time zone.
+         * @param {number} day The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setWeekDay(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(
+                    this.getDate() -
+                    this.getWeekDay() +
+                    parseInt(day, 10),
+                ),
+            );
+        }
+
+        /**
+         * Sets the week day in month in the current time zone.
+         * @param {number} week The week day in month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setWeekDayInMonth(week) {
+            return this.setDate(
+                this.getDate() +
+                (
+                    week -
+                    this.getWeekDayInMonth()
+                ) * 7,
+            );
+        }
+
+        /**
+         * Sets the week of month in the current time zone.
+         * @param {number} week The week of month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setWeekOfMonth(week) {
+            return this.setDate(
+                this.getDate() +
+                (
+                    week -
+                    this.getWeekOfMonth()
+                ) * 7,
+            );
+        }
+
+        /**
+         * Sets the local week year in the current time zone (and optionally, local week and day of the week).
+         * @param {number} year The local week year.
+         * @param {number|null} [week] The local week.
+         * @param {number|null} [day] The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        setWeekYear(year, week = null, day = null) {
+            const minDays = minimumDays(this.getLocale());
+            const Constructor = this.constructor;
+
+            if (week === null) {
+                week = Math.min(
+                    this.getWeek(),
+                    Constructor.fromArray([year, 1, minDays], {
+                        locale: this.getLocale(),
+                        timeZone: this.getTimeZone(),
+                    }).weeksInYear(),
                 );
             }
-        }
 
-        return setOffsetTime(
-            this,
-            new Date(getOffsetTime(this)).setUTCFullYear(
-                year,
-                month - 1,
-                date,
-            ),
-        );
-    }
-
-    /**
-     * DateTime Comparisons
-     */
-
-    /**
-     * Get the difference between this and another Date in milliseconds.
-     * @param {DateTime} other The date to compare to.
-     * @return {number} The difference.
-     */
-    function diff(other) {
-        return this - other;
-    }
-    /**
-     * Get the difference between this and another Date in days.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInDays(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'day', relative);
-    }
-    /**
-     * Get the difference between this and another Date in hours.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInHours(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'hour', relative);
-    }
-    /**
-     * Get the difference between this and another Date in minutes.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInMinutes(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'minute', relative);
-    }
-    /**
-     * Get the difference between this and another Date in months.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInMonths(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'month', relative);
-    }
-    /**
-     * Get the difference between this and another Date in seconds.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInSeconds(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'second', relative);
-    }
-    /**
-     * Get the difference between this and another Date in weeks.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInWeeks(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'week', relative);
-    }
-    /**
-     * Get the difference between this and another Date in years.
-     * @param {DateTime} other The date to compare to.
-     * @param {object} [options] The options for comparing the dates.
-     * @param {Boolean} [options.relative=true] Whether to use the relative difference.
-     * @return {number} The difference.
-     */
-    function diffInYears(other, { relative = true } = {}) {
-        return calculateDiff(this, other, 'year', relative);
-    }
-    /**
-     * Get the difference between this and another Date in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in human readable form.
-     */
-    function humanDiff(other) {
-        const [amount, unit] = getBiggestDiff(this, other);
-        return formatRelative(this.getLocale(), amount, unit);
-    }
-    /**
-     * Get the difference between this and another Date in days in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in days in human readable form.
-     */
-    function humanDiffInDays(other) {
-        return formatRelative(this.getLocale(), this.diffInDays(other), 'day');
-    }
-    /**
-     * Get the difference between this and another Date in hours in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in hours in human readable form.
-     */
-    function humanDiffInHours(other) {
-        return formatRelative(this.getLocale(), this.diffInHours(other), 'hour');
-    }
-    /**
-     * Get the difference between this and another Date in minutes in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in minutes in human readable form.
-     */
-    function humanDiffInMinutes(other) {
-        return formatRelative(this.getLocale(), this.diffInMinutes(other), 'minute');
-    }
-    /**
-     * Get the difference between this and another Date in months in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in months in human readable form.
-     */
-    function humanDiffInMonths(other) {
-        return formatRelative(this.getLocale(), this.diffInMonths(other), 'month');
-    }
-    /**
-     * Get the difference between this and another Date in seconds in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in seconds in human readable form.
-     */
-    function humanDiffInSeconds(other) {
-        return formatRelative(this.getLocale(), this.diffInSeconds(other), 'second');
-    }
-    /**
-     * Get the difference between this and another Date in weeks in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in weeks in human readable form.
-     */
-    function humanDiffInWeeks(other) {
-        return formatRelative(this.getLocale(), this.diffInWeeks(other), 'week');
-    }
-    /**
-     * Get the difference between this and another Date in years in human readable form.
-     * @param {DateTime} other The date to compare to.
-     * @return {string} The difference in years in human readable form.
-     */
-    function humanDiffInYears(other) {
-        return formatRelative(this.getLocale(), this.diffInYears(other), 'year');
-    }
-    /**
-     * Determine whether this DateTime is after another date.
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date, otherwise FALSE.
-     */
-    function isAfter(other) {
-        return this.diff(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by day).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by day), otherwise FALSE.
-     */
-    function isAfterDay(other) {
-        return this.diffInDays(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by hour).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by hour), otherwise FALSE.
-     */
-    function isAfterHour(other) {
-        return this.diffInHours(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by minute).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by minute), otherwise FALSE.
-     */
-    function isAfterMinute(other) {
-        return this.diffInMinutes(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by month).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by month), otherwise FALSE.
-     */
-    function isAfterMonth(other) {
-        return this.diffInMonths(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by second).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by second), otherwise FALSE.
-     */
-    function isAfterSecond(other) {
-        return this.diffInSeconds(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by week).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by week), otherwise FALSE.
-     */
-    function isAfterWeek(other) {
-        return this.diffInWeeks(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is after another date (comparing by year).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is after the other date (comparing by year), otherwise FALSE.
-     */
-    function isAfterYear(other) {
-        return this.diffInYears(other) > 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date.
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date, otherwise FALSE.
-     */
-    function isBefore(other) {
-        return this.diff(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by day).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by day), otherwise FALSE.
-     */
-    function isBeforeDay(other) {
-        return this.diffInDays(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by hour).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by hour), otherwise FALSE.
-     */
-    function isBeforeHour(other) {
-        return this.diffInHours(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by minute).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by minute), otherwise FALSE.
-     */
-    function isBeforeMinute(other) {
-        return this.diffInMinutes(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by month).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by month), otherwise FALSE.
-     */
-    function isBeforeMonth(other) {
-        return this.diffInMonths(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by second).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by second), otherwise FALSE.
-     */
-    function isBeforeSecond(other) {
-        return this.diffInSeconds(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by week).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by week), otherwise FALSE.
-     */
-    function isBeforeWeek(other) {
-        return this.diffInWeeks(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is before another date (comparing by year).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is before the other date (comparing by year), otherwise FALSE.
-     */
-    function isBeforeYear(other) {
-        return this.diffInYears(other) < 0;
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates.
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates, otherwise FALSE.
-     */
-    function isBetween(start, end) {
-        return this.isAfter(start) && this.isBefore(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by day).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by day), otherwise FALSE.
-     */
-    function isBetweenDay(start, end) {
-        return this.isAfterDay(start) && this.isBeforeDay(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by hour).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by hour), otherwise FALSE.
-     */
-    function isBetweenHour(start, end) {
-        return this.isAfterHour(start) && this.isBeforeHour(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by minute).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by minute), otherwise FALSE.
-     */
-    function isBetweenMinute(start, end) {
-        return this.isAfterMinute(start) && this.isBeforeMinute(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by month).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by month), otherwise FALSE.
-     */
-    function isBetweenMonth(start, end) {
-        return this.isAfterMonth(start) && this.isBeforeMonth(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by second).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by second), otherwise FALSE.
-     */
-    function isBetweenSecond(start, end) {
-        return this.isAfterSecond(start) && this.isBeforeSecond(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by week).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by week), otherwise FALSE.
-     */
-    function isBetweenWeek(start, end) {
-        return this.isAfterWeek(start) && this.isBeforeWeek(end);
-    }
-
-    /**
-     * Determine whether this DateTime is between two other dates (comparing by year).
-     * @param {DateTime} start The first date to compare to.
-     * @param {DateTime} end The second date to compare to.
-     * @return {Boolean} TRUE if this DateTime is between two other dates (comparing by year), otherwise FALSE.
-     */
-    function isBetweenYear(start, end) {
-        return this.isAfterYear(start) && this.isBeforeYear(end);
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date.
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date, otherwise FALSE.
-     */
-    function isSame(other) {
-        return this.diff(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by day).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by day), otherwise FALSE.
-     */
-    function isSameDay(other) {
-        return this.diffInDays(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by hour).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by hour), otherwise FALSE.
-     */
-    function isSameHour(other) {
-        return this.diffInHours(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by minute).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by minute), otherwise FALSE.
-     */
-    function isSameMinute(other) {
-        return this.diffInMinutes(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by month).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by month), otherwise FALSE.
-     */
-    function isSameMonth(other) {
-        return this.diffInMonths(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by second).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by second), otherwise FALSE.
-     */
-    function isSameSecond(other) {
-        return this.diffInSeconds(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by week).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by week), otherwise FALSE.
-     */
-    function isSameWeek(other) {
-        return this.diffInWeeks(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as another date (comparing by year).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as the other date (comparing by year), otherwise FALSE.
-     */
-    function isSameYear(other) {
-        return this.diffInYears(other) === 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date.
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date, otherwise FALSE.
-     */
-    function isSameOrAfter(other) {
-        return this.diff(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by day).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by day), otherwise FALSE.
-     */
-    function isSameOrAfterDay(other) {
-        return this.diffInDays(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by hour).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by hour), otherwise FALSE.
-     */
-    function isSameOrAfterHour(other) {
-        return this.diffInHours(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by minute).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by minute), otherwise FALSE.
-     */
-    function isSameOrAfterMinute(other) {
-        return this.diffInMinutes(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by month).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by month), otherwise FALSE.
-     */
-    function isSameOrAfterMonth(other) {
-        return this.diffInMonths(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by second).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by second), otherwise FALSE.
-     */
-    function isSameOrAfterSecond(other) {
-        return this.diffInSeconds(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by week).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by week), otherwise FALSE.
-     */
-    function isSameOrAfterWeek(other) {
-        return this.diffInWeeks(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or after another date (comparing by year).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or after the other date (comparing by year), otherwise FALSE.
-     */
-    function isSameOrAfterYear(other) {
-        return this.diffInYears(other) >= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date.
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date, otherwise FALSE.
-     */
-    function isSameOrBefore(other) {
-        return this.diff(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by day).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by day), otherwise FALSE.
-     */
-    function isSameOrBeforeDay(other) {
-        return this.diffInDays(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by hour).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by hour), otherwise FALSE.
-     */
-    function isSameOrBeforeHour(other) {
-        return this.diffInHours(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by minute).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by minute), otherwise FALSE.
-     */
-    function isSameOrBeforeMinute(other) {
-        return this.diffInMinutes(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by month).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by month), otherwise FALSE.
-     */
-    function isSameOrBeforeMonth(other) {
-        return this.diffInMonths(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by second).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by second), otherwise FALSE.
-     */
-    function isSameOrBeforeSecond(other) {
-        return this.diffInSeconds(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by week).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by week), otherwise FALSE.
-     */
-    function isSameOrBeforeWeek(other) {
-        return this.diffInWeeks(other) <= 0;
-    }
-
-    /**
-     * Determine whether this DateTime is the same as or before another date (comparing by year).
-     * @param {DateTime} other The date to compare to.
-     * @return {Boolean} TRUE if this DateTime is the same as or before the other date (comparing by year), otherwise FALSE.
-     */
-    function isSameOrBeforeYear(other) {
-        return this.diffInYears(other) <= 0;
-    }
-
-    /**
-     * DateTime Manipulation
-     */
-
-    /**
-     * Add a day to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addDay() {
-        return this.addDays(1);
-    }
-    /**
-     * Add days to the current DateTime.
-     * @param {number} amount The number of days to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addDays(amount) {
-        return this.setDate(
-            this.getDate() + amount,
-        );
-    }
-    /**
-     * Add an hour to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addHour() {
-        return this.addHours(1);
-    }
-    /**
-     * Add hours to the current DateTime.
-     * @param {number} amount The number of hours to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addHours(amount) {
-        return this.setTime(
-            this.getTime() + (amount * 3600000),
-        );
-    }
-    /**
-     * Add a minute to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addMinute() {
-        return this.addMinutes(1);
-    }
-    /**
-     * Add minutes to the current DateTime.
-     * @param {number} amount The number of minutes to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addMinutes(amount) {
-        return this.setTime(
-            this.getTime() + (amount * 60000),
-        );
-    }
-    /**
-     * Add a month to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addMonth() {
-        return this.addMonths(1);
-    }
-    /**
-     * Add months to the current DateTime.
-     * @param {number} amount The number of months to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addMonths(amount) {
-        return this.setMonth(
-            this.getMonth() + amount,
-        );
-    }
-    /**
-     * Add a second to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addSecond() {
-        return this.addSeconds(1);
-    }
-    /**
-     * Add seconds to the current DateTime.
-     * @param {number} amount The number of seconds to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addSeconds(amount) {
-        return this.setTime(
-            this.getTime() + (amount * 1000),
-        );
-    }
-    /**
-     * Add a week to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addWeek() {
-        return this.addWeeks(1);
-    }
-    /**
-     * Add weeks to the current DateTime.
-     * @param {number} amount The number of weeks to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addWeeks(amount) {
-        return this.setDate(
-            this.getDate() + (amount * 7),
-        );
-    }
-    /**
-     * Add a year to the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function addYear() {
-        return this.addYears(1);
-    }
-    /**
-     * Add years to the current DateTime.
-     * @param {number} amount The number of years to add.
-     * @return {DateTime} The DateTime object.
-     */
-    function addYears(amount) {
-        return this.setYear(
-            this.getYear() + amount,
-        );
-    }
-    /**
-     * Set the DateTime to the end of the day.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfDay() {
-        return this.setHours(23, 59, 59, 999);
-    }
-    /**
-     * Set the DateTime to the end of the hour.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfHour() {
-        return this.setMinutes(59, 59, 999);
-    }
-    /**
-     * Set the DateTime to the end of the minute.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfMinute() {
-        return this.setSeconds(59, 999);
-    }
-    /**
-     * Set the DateTime to the end of the month.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfMonth() {
-        return this.setDate(this.daysInMonth())
-            .endOfDay();
-    }
-
-    /**
-     * Set the DateTime to the end of the quarter.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfQuarter() {
-        const month = this.getQuarter() * 3;
-        return this.setMonth(month, daysInMonth$1(this.getYear(), month))
-            .endOfDay();
-    }
-    /**
-     * Set the DateTime to the end of the second.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfSecond() {
-        return this.setMilliseconds(999);
-    }
-    /**
-     * Set the DateTime to the end of the week.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfWeek() {
-        return this.setWeekDay(7)
-            .endOfDay();
-    }
-    /**
-     * Set the DateTime to the end of the year.
-     * @return {DateTime} The DateTime object.
-     */
-    function endOfYear() {
-        return this.setMonth(12, 31)
-            .endOfDay();
-    }
-    /**
-     * Set the DateTime to the start of the day.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfDay() {
-        return this.setHours(0, 0, 0, 0);
-    }
-    /**
-     * Set the DateTime to the start of the hour.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfHour() {
-        return this.setMinutes(0, 0, 0);
-    }
-    /**
-     * Set the DateTime to the start of the minute.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfMinute() {
-        return this.setSeconds(0, 0);
-    }
-    /**
-     * Set the DateTime to the start of the month.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfMonth() {
-        return this.setDate(1)
-            .startOfDay();
-    }
-
-    /**
-     * Set the DateTime to the start of the quarter.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfQuarter() {
-        const month = this.getQuarter() * 3 - 2;
-        return this.setMonth(month, 1)
-            .startOfDay();
-    }
-    /**
-     * Set the DateTime to the start of the second.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfSecond() {
-        return this.setMilliseconds(0);
-    }
-    /**
-     * Set the DateTime to the start of the week.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfWeek() {
-        return this.setWeekDay(1)
-            .startOfDay();
-    }
-    /**
-     * Set the DateTime to the start of the year.
-     * @return {DateTime} The DateTime object.
-     */
-    function startOfYear() {
-        return this.setMonth(1, 1)
-            .startOfDay();
-    }
-    /**
-     * Subtract a day from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subDay() {
-        return this.addDays(-1);
-    }
-    /**
-     * Subtract days from the current DateTime.
-     * @param {number} amount The number of days to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subDays(amount) {
-        return this.addDays(-amount);
-    }
-    /**
-     * Subtract an hour from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subHour() {
-        return this.addHours(-1);
-    }
-    /**
-     * Subtract hours from the current DateTime.
-     * @param {number} amount The number of hours to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subHours(amount) {
-        return this.addHours(-amount);
-    }
-    /**
-     * Subtract a minute from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subMinute() {
-        return this.addMinutes(-1);
-    }
-    /**
-     * Subtract minutes from the current DateTime.
-     * @param {number} amount The number of minutes to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subMinutes(amount) {
-        return this.addMinutes(-amount);
-    }
-    /**
-     * Subtract a month from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subMonth() {
-        return this.addMonths(-1);
-    }
-    /**
-     * Subtract months from the current DateTime.
-     * @param {number} amount The number of months to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subMonths(amount) {
-        return this.addMonths(-amount);
-    }
-    /**
-     * Subtract a second from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subSecond() {
-        return this.addSeconds(-1);
-    }
-    /**
-     * Subtract seconds from the current DateTime.
-     * @param {number} amount The number of seconds to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subSeconds(amount) {
-        return this.addSeconds(-amount);
-    }
-    /**
-     * Subtract a week from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subWeek() {
-        return this.addWeeks(-1);
-    }
-    /**
-     * Subtract weeks from the current DateTime.
-     * @param {number} amount The number of weeks to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subWeeks(amount) {
-        return this.addWeeks(-amount);
-    }
-    /**
-     * Subtract a year from the current DateTime.
-     * @return {DateTime} The DateTime object.
-     */
-    function subYear() {
-        return this.addYears(-1);
-    }
-    /**
-     * Subtract years from the current DateTime.
-     * @param {number} amount The number of years to subtract.
-     * @return {DateTime} The DateTime object.
-     */
-    function subYears(amount) {
-        return this.addYears(-amount);
-    }
-
-    /**
-     * DateTime Output
-     */
-
-    /**
-     * Format the current date using a format string.
-     * @param {string} formatString The format string.
-     * @return {string} The formatted date string.
-     */
-    function format(formatString) {
-        let match;
-        let output = '';
-
-        while (formatString && (match = formatString.match(formatTokenRegExp))) {
-            const token = match[1];
-            const position = match.index;
-            const length = match[0].length;
-
-            if (position) {
-                output += formatString.substring(0, position);
+            if (day === null) {
+                day = this.getWeekDay();
             }
 
-            formatString = formatString.substring(position + length);
-
-            if (!token) {
-                output += match[0].slice(1, -1);
-                continue;
-            }
-
-            if (!(token in tokens)) {
-                throw new Error(`Invalid token in DateTime format: ${token}`);
-            }
-
-            output += tokens[token].output(this, length);
+            return this.setYear(year, 1, minDays + ((week - 1) * 7)).setWeekDay(day);
         }
 
-        output += formatString;
+        /**
+         * Sets the year in the current time zone (and optionally, month and date).
+         * @param {number} year The year.
+         * @param {number|null} [month] The month. (1-12)
+         * @param {number|null} [date] The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        setYear(year, month = null, date = null) {
+            if (month === null) {
+                month = this.getMonth();
+            }
 
-        return output;
-    }
-    /**
-     * Format the current date using "eee MMM dd yyyy".
-     * @return {string} The formatted date string.
-     */
-    function toDateString() {
-        return this.format(formats.date);
-    }
-    /**
-     * Format the current date using "yyyy-MM-dd'THH:mm:ss.SSSSSSxxx".
-     * @return {string} The formatted date string.
-     */
-    function toISOString() {
-        return this
-            .setLocale('en')
-            .setTimeZone('UTC')
-            .format(formats.rfc3339_extended);
-    }
-    /**
-     * Format the current date using "eee MMM dd yyyy HH:mm:ss xx (VV)".
-     * @return {string} The formatted date string.
-     */
-    function toString() {
-        return this.format(formats.string);
-    }
-    /**
-     * Format the current date using "HH:mm:ss xx (VV)".
-     * @return {string} The formatted date string.
-     */
-    function toTimeString() {
-        return this.format(formats.time);
-    }
-    /**
-     * Format the current date in UTC timeZone using "eee MMM dd yyyy HH:mm:ss xx (VV)".
-     * @return {string} The formatted date string.
-     */
-    function toUTCString() {
-        return this
-            .setLocale('en')
-            .setTimeZone('UTC')
-            .toString();
-    }
+            if (date === null) {
+                date = this.getDate();
 
-    /**
-     * DateTime Utility
-     */
+                if (config.clampDates) {
+                    date = Math.min(
+                        date,
+                        this.constructor.daysInMonth(
+                            year,
+                            month,
+                        ),
+                    );
+                }
+            }
 
-    /**
-     * Get the name of the day of the week in current timeZone.
-     * @param {string} [type=long] The type of day name to return.
-     * @return {string} The name of the day of the week.
-     */
-    function dayName(type = 'long') {
-        return formatDay(this.getLocale(), this.getDay(), type);
-    }
-    /**
-     * Get the day period in current timeZone.
-     * @param {string} [type=long] The type of day period to return.
-     * @return {string} The day period.
-     */
-    function dayPeriod(type = 'long') {
-        return formatDayPeriod(
-            this.getLocale(),
-            this.getHours() < 12 ?
-                0 :
-                1,
-            type,
-        );
-    }
-    /**
-     * Get the number of days in the current month.
-     * @return {number} The number of days in the current month.
-     */
-    function daysInMonth() {
-        return daysInMonth$1(
-            this.getYear(),
-            this.getMonth(),
-        );
-    }
-    /**
-     * Get the number of days in the current year.
-     * @return {number} The number of days in the current year.
-     */
-    function daysInYear() {
-        return daysInYear$1(
-            this.getYear(),
-        );
-    }
-    /**
-     * Get the era in current timeZone.
-     * @param {string} [type=long] The type of era to return.
-     * @return {string} The era.
-     */
-    function era(type = 'long') {
-        return formatEra(
-            this.getLocale(),
-            this.getYear() < 0 ?
-                0 :
-                1,
-            type,
-        );
-    }
-    /**
-     * Return true if the DateTime is in daylight savings.
-     * @return {Boolean} TRUE if the current time is in daylight savings, otherwise FALSE.
-     */
-    function isDST() {
-        if (!this._dynamicTz) {
-            return false;
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCFullYear(
+                    year,
+                    month - 1,
+                    date,
+                ),
+            );
         }
 
-        const year = this.getYear();
-        const dateA = DateTime.fromArray([year, 1, 1], {
-            timeZone: this.getTimeZone(),
-        });
-        const dateB = DateTime.fromArray([year, 6, 1], {
-            timeZone: this.getTimeZone(),
-        });
+        /**
+         * Sets the DateTime to the start of the day.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfDay() {
+            return this.setHours(0, 0, 0, 0);
+        }
 
-        return this.getTimeZoneOffset() < Math.max(dateA.getTimeZoneOffset(), dateB.getTimeZoneOffset());
-    }
-    /**
-     * Return true if the year is a leap year.
-     * @return {Boolean} TRUE if the current year is a leap year, otherwise FALSE.
-     */
-    function isLeapYear() {
-        return isLeapYear$1(
-            this.getYear(),
-        );
-    }
-    /**
-     * Get the name of the month in current timeZone.
-     * @param {string} [type=long] The type of month name to return.
-     * @return {string} The name of the month.
-     */
-    function monthName(type = 'long') {
-        return formatMonth(this.getLocale(), this.getMonth(), type);
-    }
-    /**
-     * Get the name of the current timeZone.
-     * @param {string} [type=long] The formatting type.
-     * @return {string} The name of the time zone.
-     */
-    function timeZoneName(type = 'long') {
-        return this._dynamicTz ?
-            formatTimeZoneName(this.getLocale(), this.getTime(), this.getTimeZone(), type) :
-            'GMT' + formatOffset(this.getTimeZoneOffset(), true, type === 'short');
-    }
-    /**
-     * Get the number of weeks in the current year.
-     * @return {number} The number of weeks in the current year.
-     */
-    function weeksInYear() {
-        const minDays = minimumDays(this.getLocale());
-        return this.setMonth(12, 24 + minDays).getWeek();
-    }
+        /**
+         * Sets the DateTime to the start of the hour.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfHour() {
+            return this.setMinutes(0, 0, 0);
+        }
 
-    DateTime.dayOfYear = dayOfYear;
-    DateTime.daysInMonth = daysInMonth$1;
-    DateTime.daysInYear = daysInYear$1;
-    DateTime.fromArray = fromArray;
-    DateTime.fromDate = fromDate;
-    DateTime.fromFormat = fromFormat;
-    DateTime.fromISOString = fromISOString;
-    DateTime.fromTimestamp = fromTimestamp;
-    DateTime.getDefaultLocale = getDefaultLocale;
-    DateTime.getDefaultTimeZone = getDefaultTimeZone;
-    DateTime.isLeapYear = isLeapYear$1;
-    DateTime.now = now;
-    DateTime.setDateClamping = setDateClamping;
-    DateTime.setDefaultLocale = setDefaultLocale;
-    DateTime.setDefaultTimeZone = setDefaultTimeZone;
+        /**
+         * Sets the DateTime to the start of the minute.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfMinute() {
+            return this.setSeconds(0, 0);
+        }
 
-    const proto = DateTime.prototype;
+        /**
+         * Sets the DateTime to the start of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfMonth() {
+            return this.setDate(1)
+                .startOfDay();
+        }
 
-    proto.addDay = addDay;
-    proto.addDays = addDays;
-    proto.addHour = addHour;
-    proto.addHours = addHours;
-    proto.addMinute = addMinute;
-    proto.addMinutes = addMinutes;
-    proto.addMonth = addMonth;
-    proto.addMonths = addMonths;
-    proto.addSecond = addSecond;
-    proto.addSeconds = addSeconds;
-    proto.addWeek = addWeek;
-    proto.addWeeks = addWeeks;
-    proto.addYear = addYear;
-    proto.addYears = addYears;
-    proto.dayName = dayName;
-    proto.dayPeriod = dayPeriod;
-    proto.daysInMonth = daysInMonth;
-    proto.daysInYear = daysInYear;
-    proto.diff = diff;
-    proto.diffInDays = diffInDays;
-    proto.diffInHours = diffInHours;
-    proto.diffInMinutes = diffInMinutes;
-    proto.diffInMonths = diffInMonths;
-    proto.diffInSeconds = diffInSeconds;
-    proto.diffInWeeks = diffInWeeks;
-    proto.diffInYears = diffInYears;
-    proto.endOfDay = endOfDay;
-    proto.endOfHour = endOfHour;
-    proto.endOfMinute = endOfMinute;
-    proto.endOfMonth = endOfMonth;
-    proto.endOfQuarter = endOfQuarter;
-    proto.endOfSecond = endOfSecond;
-    proto.endOfWeek = endOfWeek;
-    proto.endOfYear = endOfYear;
-    proto.era = era;
-    proto.format = format;
-    proto.getDate = getDate;
-    proto.getDay = getDay;
-    proto.getDayOfYear = getDayOfYear;
-    proto.getHours = getHours;
-    proto.getMilliseconds = getMilliseconds;
-    proto.getMinutes = getMinutes;
-    proto.getMonth = getMonth;
-    proto.getQuarter = getQuarter;
-    proto.getSeconds = getSeconds;
-    proto.getTimestamp = getTimestamp;
-    proto.getWeek = getWeek;
-    proto.getWeekDay = getWeekDay;
-    proto.getWeekDayInMonth = getWeekDayInMonth;
-    proto.getWeekOfMonth = getWeekOfMonth;
-    proto.getWeekYear = getWeekYear;
-    proto.getYear = getYear;
-    proto.humanDiff = humanDiff;
-    proto.humanDiffInDays = humanDiffInDays;
-    proto.humanDiffInHours = humanDiffInHours;
-    proto.humanDiffInMinutes = humanDiffInMinutes;
-    proto.humanDiffInMonths = humanDiffInMonths;
-    proto.humanDiffInSeconds = humanDiffInSeconds;
-    proto.humanDiffInWeeks = humanDiffInWeeks;
-    proto.humanDiffInYears = humanDiffInYears;
-    proto.isAfter = isAfter;
-    proto.isAfterDay = isAfterDay;
-    proto.isAfterHour = isAfterHour;
-    proto.isAfterMinute = isAfterMinute;
-    proto.isAfterMonth = isAfterMonth;
-    proto.isAfterSecond = isAfterSecond;
-    proto.isAfterWeek = isAfterWeek;
-    proto.isAfterYear = isAfterYear;
-    proto.isBefore = isBefore;
-    proto.isBeforeDay = isBeforeDay;
-    proto.isBeforeHour = isBeforeHour;
-    proto.isBeforeMinute = isBeforeMinute;
-    proto.isBeforeMonth = isBeforeMonth;
-    proto.isBeforeSecond = isBeforeSecond;
-    proto.isBeforeWeek = isBeforeWeek;
-    proto.isBeforeYear = isBeforeYear;
-    proto.isBetween = isBetween;
-    proto.isBetweenDay = isBetweenDay;
-    proto.isBetweenHour = isBetweenHour;
-    proto.isBetweenMinute = isBetweenMinute;
-    proto.isBetweenMonth = isBetweenMonth;
-    proto.isBetweenSecond = isBetweenSecond;
-    proto.isBetweenWeek = isBetweenWeek;
-    proto.isBetweenYear = isBetweenYear;
-    proto.isDST = isDST;
-    proto.isLeapYear = isLeapYear;
-    proto.isSame = isSame;
-    proto.isSameDay = isSameDay;
-    proto.isSameHour = isSameHour;
-    proto.isSameMinute = isSameMinute;
-    proto.isSameMonth = isSameMonth;
-    proto.isSameSecond = isSameSecond;
-    proto.isSameWeek = isSameWeek;
-    proto.isSameYear = isSameYear;
-    proto.isSameOrAfter = isSameOrAfter;
-    proto.isSameOrAfterDay = isSameOrAfterDay;
-    proto.isSameOrAfterHour = isSameOrAfterHour;
-    proto.isSameOrAfterMinute = isSameOrAfterMinute;
-    proto.isSameOrAfterMonth = isSameOrAfterMonth;
-    proto.isSameOrAfterSecond = isSameOrAfterSecond;
-    proto.isSameOrAfterWeek = isSameOrAfterWeek;
-    proto.isSameOrAfterYear = isSameOrAfterYear;
-    proto.isSameOrBefore = isSameOrBefore;
-    proto.isSameOrBeforeDay = isSameOrBeforeDay;
-    proto.isSameOrBeforeHour = isSameOrBeforeHour;
-    proto.isSameOrBeforeMinute = isSameOrBeforeMinute;
-    proto.isSameOrBeforeMonth = isSameOrBeforeMonth;
-    proto.isSameOrBeforeSecond = isSameOrBeforeSecond;
-    proto.isSameOrBeforeWeek = isSameOrBeforeWeek;
-    proto.isSameOrBeforeYear = isSameOrBeforeYear;
-    proto.monthName = monthName;
-    proto.setDate = setDate;
-    proto.setDay = setDay;
-    proto.setDayOfYear = setDayOfYear;
-    proto.setHours = setHours;
-    proto.setMilliseconds = setMilliseconds;
-    proto.setMinutes = setMinutes;
-    proto.setMonth = setMonth;
-    proto.setQuarter = setQuarter;
-    proto.setSeconds = setSeconds;
-    proto.setTimestamp = setTimestamp;
-    proto.setWeek = setWeek;
-    proto.setWeekDay = setWeekDay;
-    proto.setWeekDayInMonth = setWeekDayInMonth;
-    proto.setWeekOfMonth = setWeekOfMonth;
-    proto.setWeekYear = setWeekYear;
-    proto.setYear = setYear;
-    proto.startOfDay = startOfDay;
-    proto.startOfHour = startOfHour;
-    proto.startOfMinute = startOfMinute;
-    proto.startOfMonth = startOfMonth;
-    proto.startOfQuarter = startOfQuarter;
-    proto.startOfSecond = startOfSecond;
-    proto.startOfWeek = startOfWeek;
-    proto.startOfYear = startOfYear;
-    proto.subDay = subDay;
-    proto.subDays = subDays;
-    proto.subHour = subHour;
-    proto.subHours = subHours;
-    proto.subMinute = subMinute;
-    proto.subMinutes = subMinutes;
-    proto.subMonth = subMonth;
-    proto.subMonths = subMonths;
-    proto.subSecond = subSecond;
-    proto.subSeconds = subSeconds;
-    proto.subWeek = subWeek;
-    proto.subWeeks = subWeeks;
-    proto.subYear = subYear;
-    proto.subYears = subYears;
-    proto.timeZoneName = timeZoneName;
-    proto.toDateString = toDateString;
-    proto.toISOString = toISOString;
-    proto.toString = toString;
-    proto.toTimeString = toTimeString;
-    proto.toUTCString = toUTCString;
-    proto.weeksInYear = weeksInYear;
+        /**
+         * Sets the DateTime to the start of the quarter.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfQuarter() {
+            const month = this.getQuarter() * 3 - 2;
+            return this.setMonth(month, 1)
+                .startOfDay();
+        }
+
+        /**
+         * Sets the DateTime to the start of the second.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfSecond() {
+            return this.setMilliseconds(0);
+        }
+
+        /**
+         * Sets the DateTime to the start of the week.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfWeek() {
+            return this.setWeekDay(1)
+                .startOfDay();
+        }
+
+        /**
+         * Sets the DateTime to the start of the year.
+         * @return {DateTime} A new DateTime instance.
+         */
+        startOfYear() {
+            return this.setMonth(1, 1)
+                .startOfDay();
+        }
+
+        /**
+         * Subtracts a day from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subDay() {
+            return this.addDays(-1);
+        }
+
+        /**
+         * Subtracts days from the current DateTime.
+         * @param {number} amount The number of days to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subDays(amount) {
+            return this.addDays(-amount);
+        }
+
+        /**
+         * Subtracts an hour from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subHour() {
+            return this.addHours(-1);
+        }
+
+        /**
+         * Subtracts hours from the current DateTime.
+         * @param {number} amount The number of hours to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subHours(amount) {
+            return this.addHours(-amount);
+        }
+
+        /**
+         * Subtracts a minute from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subMinute() {
+            return this.addMinutes(-1);
+        }
+
+        /**
+         * Subtracts minutes from the current DateTime.
+         * @param {number} amount The number of minutes to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subMinutes(amount) {
+            return this.addMinutes(-amount);
+        }
+
+        /**
+         * Subtracts a month from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subMonth() {
+            return this.addMonths(-1);
+        }
+
+        /**
+         * Subtracts months from the current DateTime.
+         * @param {number} amount The number of months to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subMonths(amount) {
+            return this.addMonths(-amount);
+        }
+
+        /**
+         * Subtracts a second from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subSecond() {
+            return this.addSeconds(-1);
+        }
+
+        /**
+         * Subtracts seconds from the current DateTime.
+         * @param {number} amount The number of seconds to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subSeconds(amount) {
+            return this.addSeconds(-amount);
+        }
+
+        /**
+         * Subtracts a week from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subWeek() {
+            return this.addWeeks(-1);
+        }
+
+        /**
+         * Subtracts weeks from the current DateTime.
+         * @param {number} amount The number of weeks to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subWeeks(amount) {
+            return this.addWeeks(-amount);
+        }
+
+        /**
+         * Subtracts a year from the current DateTime.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subYear() {
+            return this.addYears(-1);
+        }
+
+        /**
+         * Subtracts years from the current DateTime.
+         * @param {number} amount The number of years to subtract.
+         * @return {DateTime} A new DateTime instance.
+         */
+        subYears(amount) {
+            return this.addYears(-amount);
+        }
+
+        /**
+         * Returns the primitive representation of the DateTime.
+         * @param {'default'|'number'|'string'} hint The conversion hint.
+         * @return {string|number} A string for default/string coercion or epoch milliseconds for numeric coercion.
+         */
+        [Symbol.toPrimitive](hint) {
+            return hint === 'number' ?
+                this.valueOf() :
+                this.toString();
+        }
+
+        /**
+         * Gets the name of the current time zone.
+         * @param {'long'|'short'} [type='long'] The formatting type.
+         * @return {string} The name of the time zone.
+         */
+        timeZoneName(type = 'long') {
+            return this._dynamicTz ?
+                formatTimeZoneName(this.getLocale(), this.getTime(), this.getTimeZone(), type) :
+                'GMT' + formatOffset(this.getTimeZoneOffset(), true, type === 'short');
+        }
+
+        /**
+         * Formats the current date using "eee MMM dd yyyy".
+         * @return {string} The formatted date string.
+         */
+        toDateString() {
+            return this.format(formats.date);
+        }
+
+        /**
+         * Formats the current date using "yyyy-MM-dd'T'HH:mm:ss.SSSxxx".
+         * @return {string} The formatted date string.
+         */
+        toISOString() {
+            return this
+                .setLocale('en')
+                .setTimeZone('UTC')
+                .format(formats.rfc3339_extended);
+        }
+
+        /**
+         * Returns the JSON representation of the current date.
+         * @return {string|null} The ISO string for valid dates or null for invalid dates.
+         */
+        toJSON() {
+            return this.isValid ?
+                this.toISOString() :
+                null;
+        }
+
+        /**
+         * Formats the current date using "eee MMM dd yyyy HH:mm:ss xx (VV)".
+         * @return {string} The formatted date string.
+         */
+        toString() {
+            return this.format(formats.string);
+        }
+
+        /**
+         * Formats the current date using "HH:mm:ss xx (VV)".
+         * @return {string} The formatted date string.
+         */
+        toTimeString() {
+            return this.format(formats.time);
+        }
+
+        /**
+         * Formats the current date in the UTC time zone using "eee MMM dd yyyy HH:mm:ss xx (VV)".
+         * @return {string} The formatted date string.
+         */
+        toUTCString() {
+            return this
+                .setLocale('en')
+                .setTimeZone('UTC')
+                .toString();
+        }
+
+        /**
+         * Returns the number of milliseconds since the UNIX epoch.
+         * @return {number} The number of milliseconds since the UNIX epoch.
+         */
+        valueOf() {
+            return this.getTime();
+        }
+
+        /**
+         * Gets the number of weeks in the current year.
+         * @return {number} The number of weeks in the current year.
+         */
+        weeksInYear() {
+            const minDays = minimumDays(this.getLocale());
+            return this.setMonth(12, 24 + minDays).getWeek();
+        }
+    }
 
     return DateTime;
 

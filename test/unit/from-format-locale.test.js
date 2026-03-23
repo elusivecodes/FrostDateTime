@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat (Locale)', function() {
     /**
@@ -21,6 +22,12 @@ describe('DateTime #fromFormat (Locale)', function() {
                     .getYear(),
                 -1970,
             );
+        });
+
+        it('throws on malformed eras with punctuation', function() {
+            assert.throws((_) => {
+                DateTime.fromFormat('yyyy GGG', '1970 нx эx', { locale: 'ru' });
+            });
         });
     });
 
@@ -304,6 +311,12 @@ describe('DateTime #fromFormat (Locale)', function() {
                 10,
             );
         });
+
+        it('throws on malformed month names with punctuation', function() {
+            assert.throws((_) => {
+                DateTime.fromFormat('MMM', 'октя', { locale: 'ru' });
+            });
+        });
     });
 
     describe('MMMM - Month Name (Long)', function() {
@@ -316,15 +329,13 @@ describe('DateTime #fromFormat (Locale)', function() {
         });
     });
 
-    // describe('MMMMM - Month Name (Narrow)', function() {
-    //     it('parses month name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('MMMMM', 'О', { locale: 'ru' })
-    //                 .getMonth(),
-    //             10
-    //         );
-    //     });
-    // });
+    describe('MMMMM - Month Name (Narrow)', function() {
+        it('throws because narrow month parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('MMMMM', 'О', { locale: 'ru' });
+            }, /Unsupported parsing token in DateTime format: MMMMM/);
+        });
+    });
 
     describe('L - Month (1-digit)', function() {
         it('parses month', function() {
@@ -382,15 +393,13 @@ describe('DateTime #fromFormat (Locale)', function() {
         });
     });
 
-    // describe('LLLLL - Month Name (Narrow)', function() {
-    //     it('parses month name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('LLLLL', 'О', { locale: 'ru' })
-    //                 .getMonth(),
-    //             10
-    //         );
-    //     });
-    // });
+    describe('LLLLL - Month Name (Narrow)', function() {
+        it('throws because narrow standalone month parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('LLLLL', 'О', { locale: 'ru' });
+            }, /Unsupported parsing token in DateTime format: LLLLL/);
+        });
+    });
 
     /**
      * Week
@@ -949,11 +958,19 @@ describe('DateTime #fromFormat (Locale)', function() {
     });
 
     describe('S - Fractional Second', function() {
+        it('parses a single fractional digit', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('S', '١', { locale: 'ar-eg' })
+                    .getMilliseconds(),
+                100,
+            );
+        });
+
         it('parses the fractional second', function() {
             assert.strictEqual(
                 DateTime.fromFormat('SSS', '١٢٣', { locale: 'ar-eg' })
                     .getMilliseconds(),
-                0,
+                123,
             );
         });
     });

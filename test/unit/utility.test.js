@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Utility', function() {
     describe('#dayName', function() {
@@ -93,6 +94,14 @@ describe('DateTime Utility', function() {
                 29,
             );
         });
+
+        it('matches php for year zero', function() {
+            assert.strictEqual(
+                DateTime.fromArray([0, 2, 1])
+                    .daysInMonth(),
+                29,
+            );
+        });
     });
 
     describe('#daysInYear', function() {
@@ -107,6 +116,14 @@ describe('DateTime Utility', function() {
         it('works with leap years', function() {
             assert.strictEqual(
                 DateTime.fromArray([2020, 1, 1])
+                    .daysInYear(),
+                366,
+            );
+        });
+
+        it('matches php for year zero', function() {
+            assert.strictEqual(
+                DateTime.fromArray([0, 1, 1])
                     .daysInYear(),
                 366,
             );
@@ -127,6 +144,14 @@ describe('DateTime Utility', function() {
                 DateTime.fromArray([-5])
                     .era(),
                 'Before Christ',
+            );
+        });
+
+        it('treats year zero as ad to match php numbering', function() {
+            assert.strictEqual(
+                DateTime.fromArray([0])
+                    .era(),
+                'Anno Domini',
             );
         });
 
@@ -163,11 +188,11 @@ describe('DateTime Utility', function() {
         });
     });
 
-    describe('#isDST', function() {
+    describe('#isDst', function() {
         it('returns false if the date is not DST', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 1, 1])
-                    .isDST(),
+                    .isDst(),
                 false,
             );
         });
@@ -175,7 +200,7 @@ describe('DateTime Utility', function() {
         it('returns true if the date is DST', function() {
             assert.strictEqual(
                 DateTime.fromArray([2018, 6, 1], { timeZone: 'America/New_York' })
-                    .isDST(),
+                    .isDst(),
                 true,
             );
         });
@@ -193,6 +218,14 @@ describe('DateTime Utility', function() {
         it('returns true if the year is a leap year', function() {
             assert.strictEqual(
                 DateTime.fromArray([2016])
+                    .isLeapYear(),
+                true,
+            );
+        });
+
+        it('matches php for year zero', function() {
+            assert.strictEqual(
+                DateTime.fromArray([0, 2, 29])
                     .isLeapYear(),
                 true,
             );

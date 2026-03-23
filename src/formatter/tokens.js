@@ -1,5 +1,6 @@
+import { valuesRegExp } from './../helpers.js';
 import { formatDay, formatMonth, formatNumber, formatOffset } from './format.js';
-import { parseDay, parseDayPeriod, parseEra, parseMonth, parseNumber } from './parse.js';
+import { parseDay, parseDayPeriod, parseEra, parseMonth, parseNumber, parseNumberString } from './parse.js';
 import { getType } from './utility.js';
 import { getDayPeriods, getDays, getEras, getMonths, numberRegExp } from './values.js';
 
@@ -16,7 +17,7 @@ export default {
         maxLength: 5,
         regex: (locale, length) => {
             const type = getType(length);
-            return getEras(locale, type).join('|');
+            return valuesRegExp(getEras(locale, type));
         },
         input: (locale, value, length) => {
             const type = getType(length);
@@ -125,7 +126,7 @@ export default {
                 case 4:
                 case 3:
                     const type = getType(length);
-                    return getMonths(locale, type, false).join('|');
+                    return valuesRegExp(getMonths(locale, type, false));
                 default:
                     return numberRegExp(locale);
             }
@@ -166,7 +167,7 @@ export default {
                 case 4:
                 case 3:
                     const type = getType(length);
-                    return getMonths(locale, type).join('|');
+                    return valuesRegExp(getMonths(locale, type));
                 default:
                     return numberRegExp(locale);
             }
@@ -270,7 +271,7 @@ export default {
         key: 'weekDay',
         regex: (locale, length) => {
             const type = getType(length);
-            return getDays(locale, type, false).join('|');
+            return valuesRegExp(getDays(locale, type, false));
         },
         input: (locale, value, length) => {
             if (length === 5) {
@@ -298,7 +299,7 @@ export default {
                 case 4:
                 case 3:
                     const type = getType(length);
-                    return getDays(locale, type, false).join('|');
+                    return valuesRegExp(getDays(locale, type, false));
                 default:
                     return numberRegExp(locale);
             }
@@ -341,7 +342,7 @@ export default {
                 case 4:
                 case 3:
                     const type = getType(length);
-                    return getDays(locale, type).join('|');
+                    return valuesRegExp(getDays(locale, type));
                 default:
                     return numberRegExp(locale);
             }
@@ -380,7 +381,7 @@ export default {
         key: 'dayPeriod',
         regex: (locale, length) => {
             const type = getType(length);
-            return getDayPeriods(locale, type).join('|');
+            return valuesRegExp(getDayPeriods(locale, type));
         },
         input: (locale, value, length) => {
             const type = getType(length);
@@ -487,15 +488,20 @@ export default {
     S: {
         key: 'milliseconds',
         regex: (locale) => numberRegExp(locale),
-        input: (_) => 0,
-        output: (datetime, length) =>
-            formatNumber(
-                datetime.getLocale(),
-                `${Math.floor(
-                    datetime.getMilliseconds() *
-                    1000,
-                )}`.padEnd(length, '0').slice(0, length),
+        input: (locale, value) =>
+            parseInt(
+                parseNumberString(locale, value)
+                    .padEnd(3, '0')
+                    .slice(0, 3),
+                10,
             ),
+        output: (datetime, length) => {
+            const milliseconds = `${datetime.getMilliseconds()}`.padStart(3, '0');
+            return formatNumber(
+                datetime.getLocale(),
+                milliseconds.padEnd(length, '0').slice(0, length),
+            );
+        },
     },
 
     /* TIMEZONE/OFFSET */
@@ -584,7 +590,7 @@ export default {
 
     V: {
         key: 'timeZone',
-        regex: (_) => '([a-zA-Z_\/]+)',
+        regex: (_) => '([A-Za-z0-9_.+\\-/]+)',
         input: (_, value) => value,
         output: (datetime) => datetime.getTimeZone(),
     },

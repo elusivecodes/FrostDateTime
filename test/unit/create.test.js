@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Creation', function() {
     describe('#constructor', function() {
@@ -23,6 +24,22 @@ describe('DateTime Creation', function() {
                 new DateTime('2019-01-01T00:00:00')
                     .toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
+            );
+        });
+
+        it('works with ISO string with Z', function() {
+            assert.strictEqual(
+                new DateTime('2019-01-01T00:00:00Z')
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00',
+            );
+        });
+
+        it('works with ISO string with offset', function() {
+            assert.strictEqual(
+                new DateTime('2019-01-01T00:00:00+10:00')
+                    .toISOString(),
+                '2018-12-31T14:00:00.000+00:00',
             );
         });
 
@@ -63,6 +80,25 @@ describe('DateTime Creation', function() {
                 new DateTime('January 1, 2019 00:00:00', { locale: 'ar-eg' })
                     .toString(),
                 'الثلاثاء يناير ٠١ ٢٠١٩ ٠٠:٠٠:٠٠ +0000 (UTC)',
+            );
+        });
+
+        it('works with minute-offset time zones', function() {
+            assert.strictEqual(
+                new DateTime('January 1, 2019 00:00:00', { timeZone: 'Asia/Kathmandu' })
+                    .toISOString(),
+                '2018-12-31T18:15:00.000+00:00',
+            );
+        });
+
+        it('does not mutate options', function() {
+            const options = { timeZone: 'Australia/Brisbane' };
+
+            new DateTime('January 1, 2019 00:00:00', options);
+
+            assert.deepStrictEqual(
+                options,
+                { timeZone: 'Australia/Brisbane' },
             );
         });
 
@@ -138,7 +174,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1])
                     .toISOString(),
-                '2019-01-01T00:00:00.100+00:00',
+                '2019-01-01T00:00:00.001+00:00',
             );
         });
 
@@ -210,6 +246,14 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('works with milliseconds', function() {
+            assert.strictEqual(
+                DateTime.fromISOString('2019-01-01T00:00:00.123+00:00')
+                    .toISOString(),
+                '2019-01-01T00:00:00.123+00:00',
+            );
+        });
+
         it('works with time zone', function() {
             assert.strictEqual(
                 DateTime.fromISOString('2019-01-01T00:00:00.000+00:00', { timeZone: 'Australia/Brisbane' })
@@ -230,6 +274,12 @@ describe('DateTime Creation', function() {
             assert.ok(
                 DateTime.fromISOString('2019-01-01T00:00:00.000+00:00').constructor === DateTime,
             );
+        });
+
+        it('throws on trailing characters', function() {
+            assert.throws((_) => {
+                DateTime.fromISOString('2019-01-01T00:00:00.000+00:00abc');
+            });
         });
     });
 

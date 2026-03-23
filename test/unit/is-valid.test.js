@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Is Valid', function() {
     describe('Era', function() {
@@ -14,6 +15,20 @@ describe('DateTime Is Valid', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGG', '1970 BC').isValid,
                 true,
+            );
+        });
+
+        it('treats year zero as AD to match php numbering', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('yyyy GGG', '0000 AD').isValid,
+                true,
+            );
+        });
+
+        it('invalidates year zero BC', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('yyyy GGG', '0000 BC').isValid,
+                false,
             );
         });
 

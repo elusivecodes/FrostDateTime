@@ -2,32 +2,39 @@
  * DateTime Factory
  */
 
-const data = {};
+const data = new Map();
 
 /**
- * Get values from cache (or generate if they don't exist).
- * @param {string} key The key for the values.
- * @param {function} callback The callback to generate the values.
- * @return {array} The cached values.
+ * Clears all cached formatter and locale values.
  */
-export function getData(key, callback) {
-    if (!(key in data)) {
-        data[key] = callback();
-    }
-
-    return data[key];
+export function clearDataCache() {
+    data.clear();
 };
 
 /**
- * Create a new date formatter for a timeZone.
- * @param {string} timeZone The timeZone.
- * @param {object} options The options for the formatter.
- * @return {Intl.DateTimeFormat} A new DateTimeFormat object.
+ * Gets a cached value, creating it on first access.
+ * @template T
+ * @param {string} key The key for the values.
+ * @param {() => T} callback The callback to generate the values.
+ * @return {T} The cached value.
+ */
+export function getData(key, callback) {
+    if (!data.has(key)) {
+        data.set(key, callback());
+    }
+
+    return data.get(key);
+};
+
+/**
+ * Creates a date formatter for a time zone.
+ * @param {string} timeZone The time zone.
+ * @return {Intl.DateTimeFormat} The formatter instance.
  */
 export function getDateFormatter(timeZone) {
     return getData(
         `dateFormatter.${timeZone}`,
-        (_) => makeFormatter('en', {
+        () => makeFormatter('en', {
             timeZone,
             hourCycle: 'h23',
             year: 'numeric',
@@ -35,15 +42,16 @@ export function getDateFormatter(timeZone) {
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
+            second: 'numeric',
+            fractionalSecondDigits: 3,
         }),
     );
 };
 
 /**
- * Create a new relative formatter for a locale.
+ * Creates a relative-time formatter for a locale.
  * @param {string} locale The locale.
- * @param {object} options The options for the formatter.
- * @return {Intl.RelativeTimeFormat} A new RelativeTimeFormat object.
+ * @return {Intl.RelativeTimeFormat|null} The formatter instance, or null when unsupported.
  */
 export function getRelativeFormatter(locale) {
     if (!('RelativeTimeFormat' in Intl)) {
@@ -52,7 +60,7 @@ export function getRelativeFormatter(locale) {
 
     return getData(
         `relativeFormatter.${locale}`,
-        (_) => new Intl.RelativeTimeFormat(locale, {
+        () => new Intl.RelativeTimeFormat(locale, {
             numeric: 'auto',
             style: 'long',
         }),
@@ -60,10 +68,10 @@ export function getRelativeFormatter(locale) {
 };
 
 /**
- * Create a new formatter for a locale.
+ * Creates a formatter for a locale.
  * @param {string} locale The locale.
- * @param {object} options The options for the formatter.
- * @return {Intl.DateTimeFormat} A new DateTimeFormat object.
+ * @param {Intl.DateTimeFormatOptions} options The options for the formatter.
+ * @return {Intl.DateTimeFormat} The formatter instance.
  */
 export function makeFormatter(locale, options) {
     return new Intl.DateTimeFormat(locale, {

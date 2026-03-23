@@ -119,7 +119,7 @@
         <tr>
             <td><code>MMMMM</code></td>
             <td><em>S</em></td>
-            <td>Month name (narrow)</td>
+            <td>Month name (narrow, output only)</td>
         </tr>
         <tr>
             <td><code>L</code></td>
@@ -144,7 +144,7 @@
         <tr>
             <td><code>LLLLL</code></td>
             <td><em>S</em></td>
-            <td><strong>Standalone</strong> Month name (narrow)</td>
+            <td><strong>Standalone</strong> Month name (narrow, output only)</td>
         </tr>
         <tr>
             <td colspan="3"><strong>Week</strong></td>
@@ -263,12 +263,12 @@
         </tr>
         <tr>
             <td><code>a..aaa</code></td>
-            <td><em>am</em></td>
+            <td><em>AM</em></td>
             <td>Day period (short)</td>
         </tr>
         <tr>
             <td><code>aaaa</code></td>
-            <td><em>am</em></td>
+            <td><em>AM</em></td>
             <td>Day period (long)</td>
         </tr>
         <!-- <tr>
@@ -373,22 +373,22 @@
         </tr>
         <tr>
             <td><code>ZZZZ</code></td>
-            <td><em>GMT-8:00</em></td>
+            <td><em>GMT-08:00</em></td>
             <td>Long localized GMT format</td>
         </tr>
         <tr>
             <td><code>ZZZZZ</code></td>
-            <td><em>-8:00</em></td>
+            <td><em>-08:00</em></td>
             <td>ISO8601 extended format</td>
         </tr>
         <tr>
             <td><code>O</code></td>
-            <td><em>GMT-8</em></td>
+            <td><em>GMT-08</em></td>
             <td>Short localized GMT format</td>
         </tr>
         <tr>
             <td><code>OOOO</code></td>
-            <td><em>GMT-8:00</em></td>
+            <td><em>GMT-08:00</em></td>
             <td>Long localized GMT format</td>
         </tr>
         <tr>
@@ -429,4 +429,5 @@
     </tbody>
 </table>
 <p><em>* Output only</em></p>
-<p><strong>Characters wrapped in <code>'</code> quotes will not be parsed.</strong></p>
+<p><strong><code>MMMMM</code> and <code>LLLLL</code> are not supported by <code>fromFormat()</code> and will throw if used for parsing.</strong></p>
+<p><strong>Characters wrapped in <code>'</code> quotes are treated as literal text.</strong></p>

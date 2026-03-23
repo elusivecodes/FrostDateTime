@@ -1,7 +1,8 @@
 {
     "name": "@fr0st/datetime",
-    "version": "6.1.1",
-    "description": "FrostDateTime is a free, open-source date manipulation library for JavaScript.",
+    "version": "7.0.0",
+    "private": false,
+    "description": "Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones.",
     "keywords": [
         "date",
         "time",
@@ -18,8 +19,20 @@
         "url": "https://github.com/elusivecodes/FrostDateTime/issues",
         "email": "elusivecodes@gmail.com"
     },
-    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/elusivecodes/FrostDateTime.git"
+    },
+    "license": "MIT",
+    "author": "Elusive <elusivecodes@gmail.com>",
+    "sideEffects": false,
     "type": "module",
+    "exports": {
+        ".": "./src/index.js"
+    },
+    "main": "src/index.js",
+    "jsdelivr": "dist/frost-datetime.min.js",
+    "unpkg": "dist/frost-datetime.min.js",
     "files": [
         "dist",
         "LICENSE",
@@ -31,21 +44,20 @@
         "js-compile": "rollup --config",
         "js-lint": "eslint",
         "js-minify": "terser --compress passes=2 --mangle --source-map \"content=dist/frost-datetime.js.map\" --output dist/frost-datetime.min.js dist/frost-datetime.js",
-        "test": "mocha --recursive",
-        "locales": "php generate-locales.php > src/formatter/locales.js"
+        "locales": "php generate-locales.php > src/formatter/locales.js",
+        "test": "mocha --file test/setup.js \"test/unit/**/*.test.js\""
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/elusivecodes/FrostDateTime.git"
-    },
-    "author": "Elusive <elusivecodes@gmail.com>",
-    "license": "MIT",
-    "private": false,
     "devDependencies": {
-        "@fr0st/eslint-config": "^1.0.3",
-        "eslint": "^9.26.0",
-        "mocha": "^11.2.2",
-        "rollup": "^4.40.2",
-        "terser": "^5.39.0"
+        "@fr0st/eslint-config": "^3.0.1",
+        "eslint": "^10.1.0",
+        "mocha": "^11.7.5",
+        "rollup": "^4.60.0",
+        "terser": "^5.46.1"
+    },
+    "engines": {
+        "node": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }

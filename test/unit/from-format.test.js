@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat', function() {
     /**
@@ -316,15 +317,13 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // describe('MMMMM - Month Name (Narrow)', function() {
-    //     it('parses month name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('MMMMM', 'O')
-    //                 .getMonth(),
-    //             10
-    //         );
-    //     });
-    // });
+    describe('MMMMM - Month Name (Narrow)', function() {
+        it('throws because narrow month parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('MMMMM', 'O');
+            }, /Unsupported parsing token in DateTime format: MMMMM/);
+        });
+    });
 
     describe('L - Month (1-digit)', function() {
         it('parses month', function() {
@@ -382,15 +381,13 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // describe('LLLLL - Month Name (Narrow)', function() {
-    //     it('parses month name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('LLLLL', 'O')
-    //                 .getMonth(),
-    //             10
-    //         );
-    //     });
-    // });
+    describe('LLLLL - Month Name (Narrow)', function() {
+        it('throws because narrow standalone month parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('LLLLL', 'O');
+            }, /Unsupported parsing token in DateTime format: LLLLL/);
+        });
+    });
 
     /**
      * Week
@@ -949,11 +946,35 @@ describe('DateTime #fromFormat', function() {
     });
 
     describe('S - Fractional Second', function() {
+        it('parses a single fractional digit', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('S', '1')
+                    .getMilliseconds(),
+                100,
+            );
+        });
+
+        it('parses two fractional digits', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('SS', '12')
+                    .getMilliseconds(),
+                120,
+            );
+        });
+
         it('parses the fractional second', function() {
             assert.strictEqual(
                 DateTime.fromFormat('SSS', '123')
                     .getMilliseconds(),
-                0,
+                123,
+            );
+        });
+
+        it('truncates fractional precision beyond milliseconds', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('SSSSSS', '123987')
+                    .getMilliseconds(),
+                123,
             );
         });
     });
@@ -1066,6 +1087,26 @@ describe('DateTime #fromFormat', function() {
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 Australia/Brisbane')
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00',
+            );
+        });
+
+        it('works with time zones containing hyphens', function() {
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 US/East-Indiana', {
+                timeZone: 'US/East-Indiana',
+            });
+            assert.strictEqual(
+                date.toString(),
+                'Tue Jan 01 2019 00:00:00 -0500 (US/East-Indiana)',
+            );
+        });
+
+        it('works with time zones containing plus signs and digits', function() {
+            const date = DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 Etc/GMT+1', {
+                timeZone: 'Etc/GMT+1',
+            });
+            assert.strictEqual(
+                date.toString(),
+                'Tue Jan 01 2019 00:00:00 -0100 (Etc/GMT+1)',
             );
         });
     });
@@ -1200,9 +1241,26 @@ describe('DateTime #fromFormat', function() {
         );
     });
 
+    it('throws on trailing characters', function() {
+        assert.throws((_) => {
+            DateTime.fromFormat('yyyy-MM-dd', '2019-01-01abc');
+        });
+    });
+
     it('returns a new DateTime', function() {
         assert.ok(
             DateTime.fromFormat('yyyy', '2018').constructor === DateTime,
+        );
+    });
+
+    it('does not mutate options', function() {
+        const options = {};
+
+        DateTime.fromFormat('yyyy-MM-dd', '2019-01-01', options);
+
+        assert.deepStrictEqual(
+            options,
+            {},
         );
     });
 });

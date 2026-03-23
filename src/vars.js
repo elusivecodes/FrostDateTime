@@ -2,7 +2,7 @@
  * DateTime Variables
  */
 
-const resolvedOptions = (new Intl.DateTimeFormat).resolvedOptions();
+const resolvedOptions = new Intl.DateTimeFormat().resolvedOptions();
 
 export const config = {
     clampDates: true,
@@ -10,7 +10,7 @@ export const config = {
     defaultTimeZone: resolvedOptions.timeZone,
 };
 
-export const dateStringTimeZoneRegExp = /\s(?:UTC|GMT|Z|[\+\-]\d)|\d{4}\-\d{2}\-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}[\+\-]\d{2}\:\d{2}/i;
+export const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[\+\-]\d{2}(?::?\d{2})?)\b)/i;
 
 export const formats = {
     date: 'eee MMM dd yyyy',
@@ -23,7 +23,7 @@ export const formatTokenRegExp = /([a-z])\1*|'[^']*'/i;
 
 export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-export const offsetRegExp = /(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?/;
+export const offsetRegExp = /^(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?$/;
 
 export const parseOrderKeys = [
     ['year', 'weekYear'],

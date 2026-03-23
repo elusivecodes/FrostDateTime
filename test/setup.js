@@ -1,6 +1,8 @@
-import DateTime from './../src/index.js';
+import { beforeEach } from 'mocha';
+import DateTime from '../src/index.js';
 
-before(async function() {
+beforeEach(function() {
+    DateTime.setDateClamping(true);
     DateTime.setDefaultLocale('en');
     DateTime.setDefaultTimeZone('UTC');
 });

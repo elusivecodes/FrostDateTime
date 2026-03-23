@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime #format (Locale)', function() {
     /**
@@ -997,6 +998,14 @@ describe('DateTime #format (Locale)', function() {
     });
 
     describe('S - Fractional Second', function() {
+        it('zero pads milliseconds to 3 digits', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1], { locale: 'ar-eg' })
+                    .format('SSS'),
+                '٠٠١',
+            );
+        });
+
         it('outputs the fractional second', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0, 123], { locale: 'ar-eg' })

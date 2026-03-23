@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import DateTime from './../src/index.js';
+import { describe, it } from 'mocha';
+import DateTime from '../../src/index.js';
 
 describe('DateTime Attributes Set', function() {
     describe('#setDate', function() {
@@ -721,6 +722,19 @@ describe('DateTime Attributes Set', function() {
                 '2018-01-05T00:00:00.000+00:00',
             );
         });
+
+        it('uses the instance locale when clamping week counts', function() {
+            const date1 = DateTime.fromArray([2015, 1, 1], { locale: 'en-GB' });
+            const date2 = date1.setWeekYear(2014);
+            assert.strictEqual(
+                date1.toISOString(),
+                '2015-01-01T00:00:00.000+00:00',
+            );
+            assert.strictEqual(
+                date2.toISOString(),
+                '2015-01-01T00:00:00.000+00:00',
+            );
+        });
     });
 
     describe('#setYear', function() {
@@ -760,6 +774,19 @@ describe('DateTime Attributes Set', function() {
             assert.strictEqual(
                 date2.toISOString(),
                 '2018-01-16T00:00:00.000+00:00',
+            );
+        });
+
+        it('clamps leap day against the destination year', function() {
+            const date1 = DateTime.fromArray([2020, 2, 29]);
+            const date2 = date1.setYear(2021);
+            assert.strictEqual(
+                date1.toISOString(),
+                '2020-02-29T00:00:00.000+00:00',
+            );
+            assert.strictEqual(
+                date2.toISOString(),
+                '2021-02-28T00:00:00.000+00:00',
             );
         });
     });

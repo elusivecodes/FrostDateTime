@@ -1,10 +1,20 @@
 import { getDateFormatter } from './factory.js';
 import { diffMethods, thresholds } from './vars.js';
 
+/** @typedef {import('./date-time.js').default} DateTime */
+
 /**
  * DateTime Helpers
  */
 
+/**
+ * Calculates the difference between two dates in a given time unit.
+ * @param {DateTime} date The base DateTime.
+ * @param {DateTime} other The DateTime to compare to.
+ * @param {'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'} timeUnit The time unit to compare in.
+ * @param {boolean} [relative=true] Whether to use relative boundaries when calculating the difference.
+ * @return {number} The difference between the dates in the given time unit.
+ */
 export function calculateDiff(date, other, timeUnit, relative = true) {
     other = other.setTimeZone(date.getTimeZone());
 
@@ -99,11 +109,24 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
 };
 
 /**
- * Compensate the difference between two dates.
+ * Gets the RegExp for a list of string values.
+ * Longer values are matched first to avoid prefix collisions.
+ * @param {string[]} values The values to include in the RegExp.
+ * @return {string} The values RegExp.
+ */
+export function valuesRegExp(values) {
+    return values.slice()
+        .sort((a, b) => b.length - a.length)
+        .map((value) => RegExp.escape(`${value}`))
+        .join('|');
+};
+
+/**
+ * Compensates the difference between two dates.
  * @param {DateTime} date The DateTime.
  * @param {DateTime} other The DateTime to compare to.
  * @param {number} amount The amount to compensate.
- * @param {Boolean} [compensate=true] Whether to compensate the amount.
+ * @param {boolean} [compensate=true] Whether to compensate the amount.
  * @param {number} [compensation=1] The compensation offset.
  * @return {number} The compensated amount.
  */
@@ -126,10 +149,10 @@ function compensateDiff(date, other, amount, compensate = true, compensation = 1
 };
 
 /**
- * Get the biggest difference between two dates.
+ * Gets the biggest difference between two dates.
  * @param {DateTime} date The DateTime.
  * @param {DateTime} [other] The DateTime to compare to.
- * @return {array} The biggest difference (amount and time unit).
+ * @return {[number, string]} The biggest difference (amount and time unit).
  */
 export function getBiggestDiff(date, other) {
     let lastResult;
@@ -159,7 +182,7 @@ export function getBiggestDiff(date, other) {
 };
 
 /**
- * Get the offset for a DateTime.
+ * Gets the offset for a DateTime.
  * @param {DateTime} date The DateTime.
  * @return {number} The offset.
  */
@@ -170,14 +193,28 @@ export function getOffset(date) {
         return 0;
     }
 
-    const utcString = getDateFormatter('UTC').format(date);
-    const localString = getDateFormatter(timeZone).format(date);
+    const values = Object.fromEntries(
+        getDateFormatter(timeZone)
+            .formatToParts(date)
+            .filter((part) => part.type !== 'literal')
+            .map(({ type, value }) => [type, value]),
+    );
 
-    return (new Date(utcString) - new Date(localString)) / 60000;
+    const localTime = Date.UTC(
+        parseInt(values.year, 10),
+        parseInt(values.month, 10) - 1,
+        parseInt(values.day, 10),
+        parseInt(values.hour, 10),
+        parseInt(values.minute, 10),
+        parseInt(values.second, 10),
+        parseInt(values.fractionalSecond, 10),
+    );
+
+    return (date.getTime() - localTime) / 60000;
 };
 
 /**
- * Get the number of milliseconds since the UNIX epoch (offset to timeZone).
+ * Gets the number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {DateTime} date The DateTime.
  * @return {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
  */
@@ -186,7 +223,7 @@ export function getOffsetTime(date) {
 };
 
 /**
- * Compare a literal format string with a date string.
+ * Compares a literal format string with a date string.
  * @param {string} formatString The literal format string.
  * @param {string} dateString The date string.
  */
@@ -202,8 +239,8 @@ export function parseCompare(formatString, dateString) {
 };
 
 /**
- * Generate methods for parsing a date.
- * @return {object} An object containing date parsing methods.
+ * Generates methods for parsing a date.
+ * @return {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
  */
 export function parseFactory() {
     let isPM = false;
@@ -230,7 +267,7 @@ export function parseFactory() {
             set: (datetime, value) => datetime.setDayOfYear(value),
         },
         era: {
-            get: (datetime) => datetime.getYear() < 1 ? 0 : 1,
+            get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
             set: (datetime, value) => {
                 const offset = value ? 1 : -1;
                 return datetime.setYear(
@@ -306,10 +343,10 @@ export function parseFactory() {
 };
 
 /**
- * Set the number of milliseconds since the UNIX epoch (offset to timeZone).
+ * Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {DateTime} date The DateTime.
  * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
- * @return {DateTime} The DateTime object.
+ * @return {DateTime} A new DateTime instance.
  */
 export function setOffsetTime(date, time) {
     const oldOffset = date.getTimeZoneOffset();
