@@ -62,7 +62,7 @@ const nextWeek = meeting.addWeeks(1);
 nextWeek.toString();
 // Mon Mar 30 2026 09:30:00 +1000 (Australia/Brisbane)
 
-nextWeek.withTimeZone('UTC').toISOString();
+nextWeek.toISOString();
 // 2026-03-29T23:30:00.000+00:00
 
 nextWeek.monthName();
@@ -188,8 +188,8 @@ const brisbane = DateTime.fromArray([2026, 3, 23, 9, 30], {
     timeZone: 'Australia/Brisbane',
 });
 
-brisbane.withTimeZone('UTC').toISOString();
-// 2026-03-22T23:30:00.000+00:00
+brisbane.withTimeZone('UTC').toString();
+// Sun Mar 22 2026 23:30:00 +0000 (UTC)
 
 DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 ```
@@ -359,6 +359,7 @@ DateTime.clearDataCache();
 - Constructor-based parsing throws on invalid strings or unsupported time zones.
 - `fromFormat()` rejects trailing characters and marks impossible parsed dates as `isValid === false`.
 - `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toISOString()`.
+- `toISOString()` always returns a UTC string regardless of the instance time zone.
 - `toJSON()` returns the same value as `toISOString()` for valid dates and `null` for invalid dates.
 - `withTimeZone()` keeps the same instant and changes representation.
 - `withTimeZoneOffset()` returns a fixed-offset view of the same instant.
