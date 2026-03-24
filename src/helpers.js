@@ -25,13 +25,13 @@ function escapeRegExp(value) {
  * @return {number} The difference between the dates in the given time unit.
  */
 export function calculateDiff(date, other, timeUnit, relative = true) {
-    other = other.setTimeZone(date.getTimeZone());
+    other = other.withTimeZone(date.getTimeZone());
 
     switch (timeUnit) {
         case 'year':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                 ),
                 date.getYear() - other.getYear(),
@@ -41,7 +41,7 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'month':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                     date.getMonth(),
                 ),
@@ -52,7 +52,7 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'week':
             return compensateDiff(
                 date,
-                other.setWeekYear(
+                other.withWeekYear(
                     date.getWeekYear(),
                     date.getWeek(),
                 ),
@@ -62,7 +62,7 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'day':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                     date.getMonth(),
                     date.getDate(),
@@ -73,11 +73,11 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'hour':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                     date.getMonth(),
                     date.getDate(),
-                ).setHours(
+                ).withHours(
                     date.getHours(),
                 ),
                 (date - other) / 3600000,
@@ -86,11 +86,11 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'minute':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                     date.getMonth(),
                     date.getDate(),
-                ).setHours(
+                ).withHours(
                     date.getHours(),
                     date.getMinutes(),
                 ),
@@ -100,11 +100,11 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
         case 'second':
             return compensateDiff(
                 date,
-                other.setYear(
+                other.withYear(
                     date.getYear(),
                     date.getMonth(),
                     date.getDate(),
-                ).setHours(
+                ).withHours(
                     date.getHours(),
                     date.getMinutes(),
                     date.getSeconds(),
@@ -258,7 +258,7 @@ export function parseFactory() {
     return {
         date: {
             get: (datetime) => datetime.getDate(),
-            set: (datetime, value) => datetime.setDate(value),
+            set: (datetime, value) => datetime.withDate(value),
         },
         dayPeriod: {
             get: (datetime) => datetime.getHours() < 12 ? 0 : 1,
@@ -268,18 +268,18 @@ export function parseFactory() {
                 if (lastAM) {
                     hours += datetime.getHours();
                 }
-                return datetime.setHours(hours);
+                return datetime.withHours(hours);
             },
         },
         dayOfYear: {
             get: (datetime) => datetime.getDayOfYear(),
-            set: (datetime, value) => datetime.setDayOfYear(value),
+            set: (datetime, value) => datetime.withDayOfYear(value),
         },
         era: {
             get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
             set: (datetime, value) => {
                 const offset = value ? 1 : -1;
-                return datetime.setYear(
+                return datetime.withYear(
                     datetime.getYear() * offset,
                 );
             },
@@ -291,62 +291,62 @@ export function parseFactory() {
                     value += 12;
                 }
                 lastAM = true;
-                return datetime.setHours(value);
+                return datetime.withHours(value);
             },
         },
         hours24: {
             get: (datetime) => datetime.getHours(),
             set: (datetime, value) => {
                 lastAM = false;
-                return datetime.setHours(value);
+                return datetime.withHours(value);
             },
         },
         milliseconds: {
             get: (datetime) => datetime.getMilliseconds(),
-            set: (datetime, value) => datetime.setMilliseconds(value),
+            set: (datetime, value) => datetime.withMilliseconds(value),
         },
         minutes: {
             get: (datetime) => datetime.getMinutes(),
-            set: (datetime, value) => datetime.setMinutes(value),
+            set: (datetime, value) => datetime.withMinutes(value),
         },
         month: {
             get: (datetime) => datetime.getMonth(),
-            set: (datetime, value) => datetime.setMonth(value),
+            set: (datetime, value) => datetime.withMonth(value),
         },
         quarter: {
             get: (datetime) => datetime.getQuarter(),
-            set: (datetime, value) => datetime.setQuarter(value),
+            set: (datetime, value) => datetime.withQuarter(value),
         },
         seconds: {
             get: (datetime) => datetime.getSeconds(),
-            set: (datetime, value) => datetime.setSeconds(value),
+            set: (datetime, value) => datetime.withSeconds(value),
         },
         week: {
             get: (datetime) => datetime.getWeek(),
-            set: (datetime, value) => datetime.setWeek(value),
+            set: (datetime, value) => datetime.withWeek(value),
         },
         weekDay: {
             get: (datetime) => datetime.getWeekDay(),
-            set: (datetime, value) => datetime.setWeekDay(value),
+            set: (datetime, value) => datetime.withWeekDay(value),
         },
         weekDayInMonth: {
             get: (datetime) => datetime.getWeekDayInMonth(),
-            set: (datetime, value) => datetime.setWeekDayInMonth(value),
+            set: (datetime, value) => datetime.withWeekDayInMonth(value),
         },
         weekOfMonth: {
             get: (datetime) => datetime.getWeekOfMonth(),
-            set: (datetime, value) => datetime.setWeekOfMonth(value),
+            set: (datetime, value) => datetime.withWeekOfMonth(value),
         },
         weekYear: {
             get: (datetime) => datetime.getWeekYear(),
-            set: (datetime, value) => datetime.setWeekYear(value),
+            set: (datetime, value) => datetime.withWeekYear(value),
         },
         year: {
             get: (datetime) => {
                 const year = datetime.getYear();
                 return Math.abs(year);
             },
-            set: (datetime, value) => datetime.setYear(value),
+            set: (datetime, value) => datetime.withYear(value),
         },
     };
 };
@@ -361,7 +361,7 @@ export function setOffsetTime(date, time) {
     const oldOffset = date.getTimeZoneOffset();
 
     const newTime = time + (oldOffset * 60000);
-    const newDate = date.setTime(newTime);
+    const newDate = date.withTime(newTime);
 
     const offset = newDate.getTimeZoneOffset();
 
@@ -370,5 +370,5 @@ export function setOffsetTime(date, time) {
     }
 
     // compensate for DST transitions
-    return newDate.setTime(newTime - ((oldOffset - offset) * 60000));
+    return newDate.withTime(newTime - ((oldOffset - offset) * 60000));
 };

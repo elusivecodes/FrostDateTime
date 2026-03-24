@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'mocha';
 import DateTime from '../../src/index.js';
 
-describe('DateTime Attributes Set', function() {
-    describe('#setDate', function() {
+describe('DateTime Attributes With', function() {
+    describe('#withDate', function() {
         it('sets the date of the month', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDate(15);
+            const date2 = date1.withDate(15);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -19,7 +19,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next month', function() {
             const date1 = DateTime.fromArray([2019, 6, 1]);
-            const date2 = date1.setDate(31);
+            const date2 = date1.withDate(31);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-01T00:00:00.000+00:00',
@@ -31,10 +31,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setDay', function() {
+    describe('#withDay', function() {
         it('sets the day of the week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDay(5);
+            const date2 = date1.withDay(5);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -47,7 +47,7 @@ describe('DateTime Attributes Set', function() {
 
         it('sets to Monday for 1', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDay(1);
+            const date2 = date1.withDay(1);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -60,7 +60,7 @@ describe('DateTime Attributes Set', function() {
 
         it('sets to Sunday for 0', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDay(0);
+            const date2 = date1.withDay(0);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -73,7 +73,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDay(12);
+            const date2 = date1.withDay(12);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -85,10 +85,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setDayOfYear', function() {
+    describe('#withDayOfYear', function() {
         it('sets the day of the year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDayOfYear(235);
+            const date2 = date1.withDayOfYear(235);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -101,7 +101,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setDayOfYear(500);
+            const date2 = date1.withDayOfYear(500);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -113,10 +113,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setHours', function() {
+    describe('#withHours', function() {
         it('sets the hours of the day', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(9);
+            const date2 = date1.withHours(9);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -129,7 +129,7 @@ describe('DateTime Attributes Set', function() {
 
         it('uses 24 hour time', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(13);
+            const date2 = date1.withHours(13);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -142,7 +142,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with minutes argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(0, 33);
+            const date2 = date1.withHours(0, 33);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -155,7 +155,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with seconds argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(0, 0, 23);
+            const date2 = date1.withHours(0, 0, 23);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -168,7 +168,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with milliseconds argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(0, 0, 0, 303);
+            const date2 = date1.withHours(0, 0, 0, 303);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -181,7 +181,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next day', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setHours(30);
+            const date2 = date1.withHours(30);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -193,10 +193,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setMilliseconds', function() {
+    describe('#withMilliseconds', function() {
         it('sets the milliseconds of the second', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMilliseconds(220);
+            const date2 = date1.withMilliseconds(220);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -209,7 +209,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next second', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMilliseconds(1220);
+            const date2 = date1.withMilliseconds(1220);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -221,10 +221,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setMinutes', function() {
+    describe('#withMinutes', function() {
         it('sets the minutes of the hour', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMinutes(15);
+            const date2 = date1.withMinutes(15);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -237,7 +237,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with seconds argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMinutes(0, 32);
+            const date2 = date1.withMinutes(0, 32);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -250,7 +250,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with milliseconds argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMinutes(0, 0, 320);
+            const date2 = date1.withMinutes(0, 0, 320);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -263,7 +263,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next hour', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMinutes(75);
+            const date2 = date1.withMinutes(75);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -275,10 +275,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setMonth', function() {
+    describe('#withMonth', function() {
         it('sets the month of the year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMonth(9);
+            const date2 = date1.withMonth(9);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -291,7 +291,7 @@ describe('DateTime Attributes Set', function() {
 
         it('clamps current date', function() {
             const date1 = DateTime.fromArray([2019, 1, 31]);
-            const date2 = date1.setMonth(2);
+            const date2 = date1.withMonth(2);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-31T00:00:00.000+00:00',
@@ -304,7 +304,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with date argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMonth(1, 23);
+            const date2 = date1.withMonth(1, 23);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -317,7 +317,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setMonth(15);
+            const date2 = date1.withMonth(15);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -331,7 +331,7 @@ describe('DateTime Attributes Set', function() {
         it('works with clampDates false', function() {
             DateTime.setDateClamping(false);
             const date1 = DateTime.fromArray([2019, 1, 31]);
-            const date2 = date1.setMonth(2);
+            const date2 = date1.withMonth(2);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-31T00:00:00.000+00:00',
@@ -344,10 +344,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setQuarter', function() {
+    describe('#withQuarter', function() {
         it('sets the quarter of the year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setQuarter(2);
+            const date2 = date1.withQuarter(2);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -360,7 +360,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setQuarter(6);
+            const date2 = date1.withQuarter(6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -372,10 +372,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setSeconds', function() {
+    describe('#withSeconds', function() {
         it('sets the seconds of the minute', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setSeconds(42);
+            const date2 = date1.withSeconds(42);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -388,7 +388,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with milliseconds argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setSeconds(0, 550);
+            const date2 = date1.withSeconds(0, 550);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -401,7 +401,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next minute', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setSeconds(105);
+            const date2 = date1.withSeconds(105);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -413,10 +413,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setTime', function() {
+    describe('#withTime', function() {
         it('sets the time', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTime(1546300800000);
+            const date2 = date1.withTime(1546300800000);
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.000+00:00',
@@ -428,10 +428,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setTimestamp', function() {
+    describe('#withTimestamp', function() {
         it('sets the timestamp', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTimestamp(1546300800);
+            const date2 = date1.withTimestamp(1546300800);
             assert.strictEqual(
                 date1.toISOString(),
                 '2018-01-01T00:00:00.000+00:00',
@@ -443,10 +443,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setTimeZone', function() {
+    describe('#withTimeZone', function() {
         it('sets the timezone', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTimeZone('Australia/Brisbane');
+            const date2 = date1.withTimeZone('Australia/Brisbane');
             assert.strictEqual(
                 date1.getTimeZone(),
                 'UTC',
@@ -459,7 +459,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with offsets with colon', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTimeZone('+10:00');
+            const date2 = date1.withTimeZone('+10:00');
             assert.strictEqual(
                 date1.getTimeZoneOffset(),
                 0,
@@ -472,7 +472,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with offsets without colon', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTimeZone('+1000');
+            const date2 = date1.withTimeZone('+1000');
             assert.strictEqual(
                 date1.getTimeZoneOffset(),
                 0,
@@ -486,15 +486,15 @@ describe('DateTime Attributes Set', function() {
         it('throws error with invalid timezone', function() {
             const date = new DateTime();
             assert.throws((_) => {
-                date.setTimeZone('INVALID');
+                date.withTimeZone('INVALID');
             });
         });
     });
 
-    describe('#setTimeZoneOffset', function() {
+    describe('#withTimeZoneOffset', function() {
         it('sets the offset', function() {
             const date1 = DateTime.fromArray([2018, 1, 1]);
-            const date2 = date1.setTimeZoneOffset(600);
+            const date2 = date1.withTimeZoneOffset(600);
             assert.strictEqual(
                 date1.getTimeZoneOffset(),
                 0,
@@ -506,10 +506,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setWeek', function() {
+    describe('#withWeek', function() {
         it('sets the week of the year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeek(23);
+            const date2 = date1.withWeek(23);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -522,7 +522,7 @@ describe('DateTime Attributes Set', function() {
 
         it('uses the week year', function() {
             const date1 = DateTime.fromArray([2019, 12, 30]);
-            const date2 = date1.setWeek(23);
+            const date2 = date1.withWeek(23);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-12-30T00:00:00.000+00:00',
@@ -535,7 +535,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with day argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeek(1, 6);
+            const date2 = date1.withWeek(1, 6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -548,7 +548,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeek(77);
+            const date2 = date1.withWeek(77);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -560,10 +560,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setWeekDay', function() {
+    describe('#withWeekDay', function() {
         it('sets the day of the week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(6);
+            const date2 = date1.withWeekDay(6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -576,7 +576,7 @@ describe('DateTime Attributes Set', function() {
 
         it('sets to Monday for 2', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(2);
+            const date2 = date1.withWeekDay(2);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -589,7 +589,7 @@ describe('DateTime Attributes Set', function() {
 
         it('sets to Sunday for 1', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(1);
+            const date2 = date1.withWeekDay(1);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -602,7 +602,7 @@ describe('DateTime Attributes Set', function() {
 
         it('wraps around to next week', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekDay(14);
+            const date2 = date1.withWeekDay(14);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -614,10 +614,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setWeekDayInMonth', function() {
+    describe('#withWeekDayInMonth', function() {
         it('sets the week day in month', function() {
             const date1 = DateTime.fromArray([2019, 6, 1]);
-            const date2 = date1.setWeekDayInMonth(4);
+            const date2 = date1.withWeekDayInMonth(4);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-01T00:00:00.000+00:00',
@@ -630,7 +630,7 @@ describe('DateTime Attributes Set', function() {
 
         it('uses the local week', function() {
             const date1 = DateTime.fromArray([2019, 6, 28]);
-            const date2 = date1.setWeekDayInMonth(1);
+            const date2 = date1.withWeekDayInMonth(1);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-28T00:00:00.000+00:00',
@@ -642,10 +642,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setWeekOfMonth', function() {
+    describe('#withWeekOfMonth', function() {
         it('sets the week of the month', function() {
             const date1 = DateTime.fromArray([2019, 6, 1]);
-            const date2 = date1.setWeekOfMonth(4);
+            const date2 = date1.withWeekOfMonth(4);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-01T00:00:00.000+00:00',
@@ -658,7 +658,7 @@ describe('DateTime Attributes Set', function() {
 
         it('uses the local week', function() {
             const date1 = DateTime.fromArray([2019, 6, 28]);
-            const date2 = date1.setWeekOfMonth(1);
+            const date2 = date1.withWeekOfMonth(1);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-28T00:00:00.000+00:00',
@@ -670,10 +670,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setWeekYear', function() {
+    describe('#withWeekYear', function() {
         it('sets the week year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekYear(2018);
+            const date2 = date1.withWeekYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -686,7 +686,7 @@ describe('DateTime Attributes Set', function() {
 
         it('keeps the week', function() {
             const date1 = DateTime.fromArray([2019, 6, 1]);
-            const date2 = date1.setWeekYear(2018);
+            const date2 = date1.withWeekYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-06-01T00:00:00.000+00:00',
@@ -699,7 +699,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with week argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekYear(2018, 14);
+            const date2 = date1.withWeekYear(2018, 14);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -712,7 +712,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with day argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setWeekYear(2018, 1, 6);
+            const date2 = date1.withWeekYear(2018, 1, 6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -725,7 +725,7 @@ describe('DateTime Attributes Set', function() {
 
         it('uses the instance locale when clamping week counts', function() {
             const date1 = DateTime.fromArray([2015, 1, 1], { locale: 'en-GB' });
-            const date2 = date1.setWeekYear(2014);
+            const date2 = date1.withWeekYear(2014);
             assert.strictEqual(
                 date1.toISOString(),
                 '2015-01-01T00:00:00.000+00:00',
@@ -737,10 +737,10 @@ describe('DateTime Attributes Set', function() {
         });
     });
 
-    describe('#setYear', function() {
+    describe('#withYear', function() {
         it('sets the year', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setYear(2018);
+            const date2 = date1.withYear(2018);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -753,7 +753,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with months argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setYear(2018, 6);
+            const date2 = date1.withYear(2018, 6);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -766,7 +766,7 @@ describe('DateTime Attributes Set', function() {
 
         it('works with date argument', function() {
             const date1 = DateTime.fromArray([2019, 1, 1]);
-            const date2 = date1.setYear(2018, 1, 16);
+            const date2 = date1.withYear(2018, 1, 16);
             assert.strictEqual(
                 date1.toISOString(),
                 '2019-01-01T00:00:00.000+00:00',
@@ -779,7 +779,7 @@ describe('DateTime Attributes Set', function() {
 
         it('clamps leap day against the destination year', function() {
             const date1 = DateTime.fromArray([2020, 2, 29]);
-            const date2 = date1.setYear(2021);
+            const date2 = date1.withYear(2021);
             assert.strictEqual(
                 date1.toISOString(),
                 '2020-02-29T00:00:00.000+00:00',

@@ -9,7 +9,7 @@ describe('DateTime Utility', function() {
             for (const [i, day] of dayNames.entries()) {
                 assert.strictEqual(
                     DateTime.fromArray([2019, 1, 1])
-                        .setDay(i)
+                        .withDay(i)
                         .dayName(),
                     day,
                 );
@@ -21,7 +21,7 @@ describe('DateTime Utility', function() {
             for (const [i, day] of dayNames.entries()) {
                 assert.strictEqual(
                     DateTime.fromArray([2019, 1, 1])
-                        .setDay(i)
+                        .withDay(i)
                         .dayName('short'),
                     day,
                 );
@@ -33,7 +33,7 @@ describe('DateTime Utility', function() {
             for (const [i, day] of dayNames.entries()) {
                 assert.strictEqual(
                     DateTime.fromArray([2019, 1, 1])
-                        .setDay(i)
+                        .withDay(i)
                         .dayName('narrow'),
                     day,
                 );

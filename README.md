@@ -62,7 +62,7 @@ const nextWeek = meeting.addWeeks(1);
 nextWeek.toString();
 // Mon Mar 30 2026 09:30:00 +1000 (Australia/Brisbane)
 
-nextWeek.setTimeZone('UTC').toISOString();
+nextWeek.withTimeZone('UTC').toISOString();
 // 2026-03-29T23:30:00.000+00:00
 
 nextWeek.monthName();
@@ -77,9 +77,9 @@ FrostDateTime revolves around an immutable `DateTime` class and a small set of p
 
 - Every setter and manipulation method returns a new instance
 - Constructor numbers are milliseconds since the UNIX epoch
-- `fromTimestamp()` and `setTimestamp()` use seconds since the UNIX epoch
+- `fromTimestamp()` and `withTimestamp()` use seconds since the UNIX epoch
 - Strings without a zone designator are interpreted in the requested or default time zone
-- Week calculations such as `getWeek()`, `getWeekYear()`, `setWeekYear()`, and `weeksInYear()` use the active locale's week rules
+- Week calculations such as `getWeek()`, `getWeekYear()`, `withWeekYear()`, and `weeksInYear()` use the active locale's week rules
 
 ```js
 const a = DateTime.fromArray([2026, 3, 23]);
@@ -166,11 +166,11 @@ Supported format tokens are listed in [Formats.md](./Formats.md).
 Relevant instance methods:
 
 - `getLocale()`
-- `setLocale(locale)`
+- `withLocale(locale)`
 - `getTimeZone()`
 - `getTimeZoneOffset()`
-- `setTimeZone(timeZone)`
-- `setTimeZoneOffset(offsetMinutes)`
+- `withTimeZone(timeZone)`
+- `withTimeZoneOffset(offsetMinutes)`
 - `dayName(type?)`
 - `dayPeriod(type?)`
 - `monthName(type?)`
@@ -188,45 +188,45 @@ const brisbane = DateTime.fromArray([2026, 3, 23, 9, 30], {
     timeZone: 'Australia/Brisbane',
 });
 
-brisbane.setTimeZone('UTC').toISOString();
+brisbane.withTimeZone('UTC').toISOString();
 // 2026-03-22T23:30:00.000+00:00
 
 DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 ```
 
-### Getters and setters
+### Getters and copy methods
 
 #### Calendar fields
 
-| Value | Getter | Setter |
+| Value | Getter | With |
 | --- | --- | --- |
-| day of month | `getDate()` | `setDate(date)` |
-| day of week (`0-6`, Sunday-based) | `getDay()` | `setDay(day)` |
-| day of year | `getDayOfYear()` | `setDayOfYear(dayOfYear)` |
-| month (`1-12`) | `getMonth()` | `setMonth(month, date?)` |
-| quarter (`1-4`) | `getQuarter()` | `setQuarter(quarter)` |
-| year | `getYear()` | `setYear(year, month?, date?)` |
+| day of month | `getDate()` | `withDate(date)` |
+| day of week (`0-6`, Sunday-based) | `getDay()` | `withDay(day)` |
+| day of year | `getDayOfYear()` | `withDayOfYear(dayOfYear)` |
+| month (`1-12`) | `getMonth()` | `withMonth(month, date?)` |
+| quarter (`1-4`) | `getQuarter()` | `withQuarter(quarter)` |
+| year | `getYear()` | `withYear(year, month?, date?)` |
 
 #### Week fields
 
-| Value | Getter | Setter |
+| Value | Getter | With |
 | --- | --- | --- |
-| locale-aware week of year | `getWeek()` | `setWeek(week, day?)` |
-| locale-aware day of week (`1-7`) | `getWeekDay()` | `setWeekDay(day)` |
-| week day in month | `getWeekDayInMonth()` | `setWeekDayInMonth(week)` |
-| week of month | `getWeekOfMonth()` | `setWeekOfMonth(week)` |
-| locale-aware week year | `getWeekYear()` | `setWeekYear(year, week?, day?)` |
+| locale-aware week of year | `getWeek()` | `withWeek(week, day?)` |
+| locale-aware day of week (`1-7`) | `getWeekDay()` | `withWeekDay(day)` |
+| week day in month | `getWeekDayInMonth()` | `withWeekDayInMonth(week)` |
+| week of month | `getWeekOfMonth()` | `withWeekOfMonth(week)` |
+| locale-aware week year | `getWeekYear()` | `withWeekYear(year, week?, day?)` |
 
 #### Time fields
 
-| Value | Getter | Setter |
+| Value | Getter | With |
 | --- | --- | --- |
-| hour | `getHours()` | `setHours(hours, minutes?, seconds?, milliseconds?)` |
-| minute | `getMinutes()` | `setMinutes(minutes, seconds?, milliseconds?)` |
-| second | `getSeconds()` | `setSeconds(seconds, milliseconds?)` |
-| millisecond | `getMilliseconds()` | `setMilliseconds(milliseconds)` |
-| seconds since UNIX epoch | `getTimestamp()` | `setTimestamp(timestamp)` |
-| milliseconds since UNIX epoch | `getTime()` | `setTime(time)` |
+| hour | `getHours()` | `withHours(hours, minutes?, seconds?, milliseconds?)` |
+| minute | `getMinutes()` | `withMinutes(minutes, seconds?, milliseconds?)` |
+| second | `getSeconds()` | `withSeconds(seconds, milliseconds?)` |
+| millisecond | `getMilliseconds()` | `withMilliseconds(milliseconds)` |
+| seconds since UNIX epoch | `getTimestamp()` | `withTimestamp(timestamp)` |
+| milliseconds since UNIX epoch | `getTime()` | `withTime(time)` |
 
 ### Manipulation
 
@@ -360,8 +360,8 @@ DateTime.clearDataCache();
 - `fromFormat()` rejects trailing characters and marks impossible parsed dates as `isValid === false`.
 - `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toISOString()`.
 - `toJSON()` returns the same value as `toISOString()` for valid dates and `null` for invalid dates.
-- `setTimeZone()` keeps the same instant and changes representation.
-- `setTimeZoneOffset()` returns a fixed-offset view of the same instant.
+- `withTimeZone()` keeps the same instant and changes representation.
+- `withTimeZoneOffset()` returns a fixed-offset view of the same instant.
 - Date clamping controls whether month and year changes clamp invalid dates.
 - `DateTime.clearDataCache()` clears cached formatter and locale data, which is mainly useful in tests and long-lived processes.
 

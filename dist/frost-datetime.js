@@ -163,13 +163,13 @@
      * @return {number} The difference between the dates in the given time unit.
      */
     function calculateDiff(date, other, timeUnit, relative = true) {
-        other = other.setTimeZone(date.getTimeZone());
+        other = other.withTimeZone(date.getTimeZone());
 
         switch (timeUnit) {
             case 'year':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                     ),
                     date.getYear() - other.getYear(),
@@ -179,7 +179,7 @@
             case 'month':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                         date.getMonth(),
                     ),
@@ -190,7 +190,7 @@
             case 'week':
                 return compensateDiff(
                     date,
-                    other.setWeekYear(
+                    other.withWeekYear(
                         date.getWeekYear(),
                         date.getWeek(),
                     ),
@@ -200,7 +200,7 @@
             case 'day':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                         date.getMonth(),
                         date.getDate(),
@@ -211,11 +211,11 @@
             case 'hour':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                         date.getMonth(),
                         date.getDate(),
-                    ).setHours(
+                    ).withHours(
                         date.getHours(),
                     ),
                     (date - other) / 3600000,
@@ -224,11 +224,11 @@
             case 'minute':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                         date.getMonth(),
                         date.getDate(),
-                    ).setHours(
+                    ).withHours(
                         date.getHours(),
                         date.getMinutes(),
                     ),
@@ -238,11 +238,11 @@
             case 'second':
                 return compensateDiff(
                     date,
-                    other.setYear(
+                    other.withYear(
                         date.getYear(),
                         date.getMonth(),
                         date.getDate(),
-                    ).setHours(
+                    ).withHours(
                         date.getHours(),
                         date.getMinutes(),
                         date.getSeconds(),
@@ -389,7 +389,7 @@
         return {
             date: {
                 get: (datetime) => datetime.getDate(),
-                set: (datetime, value) => datetime.setDate(value),
+                set: (datetime, value) => datetime.withDate(value),
             },
             dayPeriod: {
                 get: (datetime) => datetime.getHours() < 12 ? 0 : 1,
@@ -399,18 +399,18 @@
                     if (lastAM) {
                         hours += datetime.getHours();
                     }
-                    return datetime.setHours(hours);
+                    return datetime.withHours(hours);
                 },
             },
             dayOfYear: {
                 get: (datetime) => datetime.getDayOfYear(),
-                set: (datetime, value) => datetime.setDayOfYear(value),
+                set: (datetime, value) => datetime.withDayOfYear(value),
             },
             era: {
                 get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
                 set: (datetime, value) => {
                     const offset = value ? 1 : -1;
-                    return datetime.setYear(
+                    return datetime.withYear(
                         datetime.getYear() * offset,
                     );
                 },
@@ -422,62 +422,62 @@
                         value += 12;
                     }
                     lastAM = true;
-                    return datetime.setHours(value);
+                    return datetime.withHours(value);
                 },
             },
             hours24: {
                 get: (datetime) => datetime.getHours(),
                 set: (datetime, value) => {
                     lastAM = false;
-                    return datetime.setHours(value);
+                    return datetime.withHours(value);
                 },
             },
             milliseconds: {
                 get: (datetime) => datetime.getMilliseconds(),
-                set: (datetime, value) => datetime.setMilliseconds(value),
+                set: (datetime, value) => datetime.withMilliseconds(value),
             },
             minutes: {
                 get: (datetime) => datetime.getMinutes(),
-                set: (datetime, value) => datetime.setMinutes(value),
+                set: (datetime, value) => datetime.withMinutes(value),
             },
             month: {
                 get: (datetime) => datetime.getMonth(),
-                set: (datetime, value) => datetime.setMonth(value),
+                set: (datetime, value) => datetime.withMonth(value),
             },
             quarter: {
                 get: (datetime) => datetime.getQuarter(),
-                set: (datetime, value) => datetime.setQuarter(value),
+                set: (datetime, value) => datetime.withQuarter(value),
             },
             seconds: {
                 get: (datetime) => datetime.getSeconds(),
-                set: (datetime, value) => datetime.setSeconds(value),
+                set: (datetime, value) => datetime.withSeconds(value),
             },
             week: {
                 get: (datetime) => datetime.getWeek(),
-                set: (datetime, value) => datetime.setWeek(value),
+                set: (datetime, value) => datetime.withWeek(value),
             },
             weekDay: {
                 get: (datetime) => datetime.getWeekDay(),
-                set: (datetime, value) => datetime.setWeekDay(value),
+                set: (datetime, value) => datetime.withWeekDay(value),
             },
             weekDayInMonth: {
                 get: (datetime) => datetime.getWeekDayInMonth(),
-                set: (datetime, value) => datetime.setWeekDayInMonth(value),
+                set: (datetime, value) => datetime.withWeekDayInMonth(value),
             },
             weekOfMonth: {
                 get: (datetime) => datetime.getWeekOfMonth(),
-                set: (datetime, value) => datetime.setWeekOfMonth(value),
+                set: (datetime, value) => datetime.withWeekOfMonth(value),
             },
             weekYear: {
                 get: (datetime) => datetime.getWeekYear(),
-                set: (datetime, value) => datetime.setWeekYear(value),
+                set: (datetime, value) => datetime.withWeekYear(value),
             },
             year: {
                 get: (datetime) => {
                     const year = datetime.getYear();
                     return Math.abs(year);
                 },
-                set: (datetime, value) => datetime.setYear(value),
+                set: (datetime, value) => datetime.withYear(value),
             },
         };
     }
@@ -491,7 +491,7 @@
         const oldOffset = date.getTimeZoneOffset();
 
         const newTime = time + (oldOffset * 60000);
-        const newDate = date.setTime(newTime);
+        const newDate = date.withTime(newTime);
 
         const offset = newDate.getTimeZoneOffset();
 
@@ -500,7 +500,7 @@
         }
 
         // compensate for DST transitions
-        return newDate.setTime(newTime - ((oldOffset - offset) * 60000));
+        return newDate.withTime(newTime - ((oldOffset - offset) * 60000));
     }
 
     /**
@@ -1660,9 +1660,9 @@
             }
 
             return new this(null, options)
-                .setTimestamp(0)
-                .setYear(...dateValues)
-                .setHours(...timeValues);
+                .withTimestamp(0)
+                .withYear(...dateValues)
+                .withHours(...timeValues);
         }
 
         /**
@@ -1765,7 +1765,7 @@
 
             let datetime = this.fromTimestamp(0, {
                 locale,
-            }).setTimeZone(timeZone);
+            }).withTimeZone(timeZone);
 
             const methods = parseFactory();
 
@@ -1807,7 +1807,7 @@
             }
 
             if (requestedTimeZone !== timeZone) {
-                datetime = datetime.setTimeZone(requestedTimeZone);
+                datetime = datetime.withTimeZone(requestedTimeZone);
             }
 
             datetime.isValid = isValid;
@@ -1829,11 +1829,11 @@
             });
 
             if ('timeZone' in options) {
-                date = date.setTimeZone(options.timeZone);
+                date = date.withTimeZone(options.timeZone);
             }
 
             if ('locale' in options) {
-                date = date.setLocale(options.locale);
+                date = date.withLocale(options.locale);
             }
 
             return date;
@@ -1849,7 +1849,7 @@
          */
         static fromTimestamp(timestamp, options = {}) {
             return new this(null, options)
-                .setTimestamp(timestamp);
+                .withTimestamp(timestamp);
         }
 
         /**
@@ -2016,7 +2016,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addDays(amount) {
-            return this.setDate(
+            return this.withDate(
                 this.getDate() + amount,
             );
         }
@@ -2035,7 +2035,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addHours(amount) {
-            return this.setTime(
+            return this.withTime(
                 this.getTime() + (amount * 3600000),
             );
         }
@@ -2054,7 +2054,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addMinutes(amount) {
-            return this.setTime(
+            return this.withTime(
                 this.getTime() + (amount * 60000),
             );
         }
@@ -2073,7 +2073,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addMonths(amount) {
-            return this.setMonth(
+            return this.withMonth(
                 this.getMonth() + amount,
             );
         }
@@ -2092,7 +2092,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addSeconds(amount) {
-            return this.setTime(
+            return this.withTime(
                 this.getTime() + (amount * 1000),
             );
         }
@@ -2111,7 +2111,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addWeeks(amount) {
-            return this.setDate(
+            return this.withDate(
                 this.getDate() + (amount * 7),
             );
         }
@@ -2130,7 +2130,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         addYears(amount) {
-            return this.setYear(
+            return this.withYear(
                 this.getYear() + amount,
             );
         }
@@ -2264,7 +2264,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfDay() {
-            return this.setHours(23, 59, 59, 999);
+            return this.withHours(23, 59, 59, 999);
         }
 
         /**
@@ -2272,7 +2272,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfHour() {
-            return this.setMinutes(59, 59, 999);
+            return this.withMinutes(59, 59, 999);
         }
 
         /**
@@ -2280,7 +2280,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfMinute() {
-            return this.setSeconds(59, 999);
+            return this.withSeconds(59, 999);
         }
 
         /**
@@ -2288,7 +2288,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfMonth() {
-            return this.setDate(this.daysInMonth())
+            return this.withDate(this.daysInMonth())
                 .endOfDay();
         }
 
@@ -2298,7 +2298,7 @@
          */
         endOfQuarter() {
             const month = this.getQuarter() * 3;
-            return this.setMonth(month, this.constructor.daysInMonth(this.getYear(), month))
+            return this.withMonth(month, this.constructor.daysInMonth(this.getYear(), month))
                 .endOfDay();
         }
 
@@ -2307,7 +2307,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfSecond() {
-            return this.setMilliseconds(999);
+            return this.withMilliseconds(999);
         }
 
         /**
@@ -2315,7 +2315,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfWeek() {
-            return this.setWeekDay(7)
+            return this.withWeekDay(7)
                 .endOfDay();
         }
 
@@ -2324,7 +2324,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         endOfYear() {
-            return this.setMonth(12, 31)
+            return this.withMonth(12, 31)
                 .endOfDay();
         }
 
@@ -2501,8 +2501,8 @@
          * @return {number} The local week. (1-53)
          */
         getWeek() {
-            const thisWeek = this.startOfDay().setWeekDay(1);
-            const firstWeek = thisWeek.setWeek(1, 1);
+            const thisWeek = this.startOfDay().withWeekDay(1);
+            const firstWeek = thisWeek.withWeek(1, 1);
 
             return 1 +
                 (
@@ -2530,7 +2530,7 @@
          */
         getWeekDayInMonth() {
             const thisWeek = this.getWeek();
-            const first = this.setDate(1);
+            const first = this.withDate(1);
             const firstWeek = first.getWeek();
             const offset = first.getWeekDay() > this.getWeekDay() ?
                 0 : 1;
@@ -2545,7 +2545,7 @@
          */
         getWeekOfMonth() {
             const thisWeek = this.getWeek();
-            const firstWeek = this.setDate(1).getWeek();
+            const firstWeek = this.withDate(1).getWeek();
             return firstWeek > thisWeek ?
                 thisWeek + 1 :
                 thisWeek - firstWeek + 1;
@@ -2557,7 +2557,7 @@
          */
         getWeekYear() {
             const minDays = minimumDays(this.getLocale());
-            return this.setWeekDay(7 - minDays + 1).getYear();
+            return this.withWeekDay(7 - minDays + 1).getYear();
         }
 
         /**
@@ -3121,335 +3121,11 @@
         }
 
         /**
-         * Sets the date of the month in the current time zone.
-         * @param {number} date The date of the month.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setDate(date) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCDate(date),
-            );
-        }
-
-        /**
-         * Sets the day of the week in the current time zone.
-         * @param {number} day The day of the week. (0 = Sunday, 6 = Saturday)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setDay(day) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCDate(
-                    this.getDate() -
-                    this.getDay() +
-                    parseInt(day, 10),
-                ),
-            );
-        }
-
-        /**
-         * Sets the day of the year in the current time zone.
-         * @param {number} day The day of the year. (1-366)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setDayOfYear(day) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCMonth(
-                    0,
-                    day,
-                ),
-            );
-        }
-
-        /**
-         * Sets the hours in the current time zone (and optionally, minutes, seconds and milliseconds).
-         * @param {number} hours The hours. (0-23)
-         * @param {number} [minutes] The minutes. (0-59)
-         * @param {number} [seconds] The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setHours(...args) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCHours(...args),
-            );
-        }
-
-        /**
-         * Returns a copy with a different locale.
-         * @param {string} locale The locale to use.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setLocale(locale) {
-            return new this.constructor(this.getTime(), {
-                locale,
-                timeZone: this._timeZone,
-            });
-        }
-
-        /**
-         * Sets the milliseconds in the current time zone.
-         * @param {number} milliseconds The milliseconds.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setMilliseconds(milliseconds) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCMilliseconds(milliseconds),
-            );
-        }
-
-        /**
-         * Sets the minutes in the current time zone (and optionally, seconds and milliseconds).
-         * @param {number} minutes The minutes. (0-59)
-         * @param {number} [seconds] The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setMinutes(...args) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCMinutes(...args),
-            );
-        }
-
-        /**
-         * Sets the month in the current time zone (and optionally, date).
-         * @param {number} month The month. (1-12)
-         * @param {number|null} [date] The date of the month.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setMonth(month, date = null) {
-            if (date === null) {
-                date = this.getDate();
-
-                if (config.clampDates) {
-                    date = Math.min(
-                        date,
-                        this.constructor.daysInMonth(
-                            this.getYear(),
-                            month,
-                        ),
-                    );
-                }
-            }
-
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCMonth(
-                    month - 1,
-                    date,
-                ),
-            );
-        }
-
-        /**
-         * Sets the quarter of the year in the current time zone.
-         * @param {number} quarter The quarter of the year. (1-4)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setQuarter(quarter) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCMonth(
-                    quarter * 3 -
-                    3,
-                ),
-            );
-        }
-
-        /**
-         * Sets the seconds in the current time zone (and optionally, milliseconds).
-         * @param {number} seconds The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setSeconds(...args) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCSeconds(...args),
-            );
-        }
-
-        /**
-         * Returns a copy with a different epoch-millisecond value.
-         * @param {number} time The number of milliseconds since the UNIX epoch.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setTime(time) {
-            return new this.constructor(time, {
-                locale: this._locale,
-                timeZone: this._timeZone,
-            });
-        }
-
-        /**
-         * Sets the number of seconds since the UNIX epoch.
-         * @param {number} timestamp The number of seconds since the UNIX epoch.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setTimestamp(timestamp) {
-            return this.setTime(timestamp * 1000);
-        }
-
-        /**
-         * Returns a copy in a different time zone.
-         * @param {string} timeZone The time zone to use.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setTimeZone(timeZone) {
-            return new this.constructor(this.getTime(), {
-                locale: this._locale,
-                timeZone,
-            });
-        }
-
-        /**
-         * Returns a copy with a fixed numeric UTC offset.
-         * @param {number} offset The UTC offset in minutes.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setTimeZoneOffset(offset) {
-            return new this.constructor(this.getTime(), {
-                locale: this._locale,
-                timeZone: formatOffset(offset),
-            });
-        }
-
-        /**
-         * Sets the local week in the current time zone (and optionally, local day of the week).
-         * @param {number} week The local week.
-         * @param {number|null} [day] The local day of the week. (1-7)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setWeek(week, day = null) {
-            if (day === null) {
-                day = this.getWeekDay();
-            }
-
-            const minDays = minimumDays(this.getLocale());
-            return this.setYear(this.getWeekYear(), 1, minDays + ((week - 1) * 7)).setWeekDay(day);
-        }
-
-        /**
-         * Sets the local day of the week in the current time zone.
-         * @param {number} day The local day of the week. (1-7)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setWeekDay(day) {
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCDate(
-                    this.getDate() -
-                    this.getWeekDay() +
-                    parseInt(day, 10),
-                ),
-            );
-        }
-
-        /**
-         * Sets the week day in month in the current time zone.
-         * @param {number} week The week day in month.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setWeekDayInMonth(week) {
-            return this.setDate(
-                this.getDate() +
-                (
-                    week -
-                    this.getWeekDayInMonth()
-                ) * 7,
-            );
-        }
-
-        /**
-         * Sets the week of month in the current time zone.
-         * @param {number} week The week of month.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setWeekOfMonth(week) {
-            return this.setDate(
-                this.getDate() +
-                (
-                    week -
-                    this.getWeekOfMonth()
-                ) * 7,
-            );
-        }
-
-        /**
-         * Sets the local week year in the current time zone (and optionally, local week and day of the week).
-         * @param {number} year The local week year.
-         * @param {number|null} [week] The local week.
-         * @param {number|null} [day] The local day of the week. (1-7)
-         * @return {DateTime} A new DateTime instance.
-         */
-        setWeekYear(year, week = null, day = null) {
-            const minDays = minimumDays(this.getLocale());
-            const Constructor = this.constructor;
-
-            if (week === null) {
-                week = Math.min(
-                    this.getWeek(),
-                    Constructor.fromArray([year, 1, minDays], {
-                        locale: this.getLocale(),
-                        timeZone: this.getTimeZone(),
-                    }).weeksInYear(),
-                );
-            }
-
-            if (day === null) {
-                day = this.getWeekDay();
-            }
-
-            return this.setYear(year, 1, minDays + ((week - 1) * 7)).setWeekDay(day);
-        }
-
-        /**
-         * Sets the year in the current time zone (and optionally, month and date).
-         * @param {number} year The year.
-         * @param {number|null} [month] The month. (1-12)
-         * @param {number|null} [date] The date of the month.
-         * @return {DateTime} A new DateTime instance.
-         */
-        setYear(year, month = null, date = null) {
-            if (month === null) {
-                month = this.getMonth();
-            }
-
-            if (date === null) {
-                date = this.getDate();
-
-                if (config.clampDates) {
-                    date = Math.min(
-                        date,
-                        this.constructor.daysInMonth(
-                            year,
-                            month,
-                        ),
-                    );
-                }
-            }
-
-            return setOffsetTime(
-                this,
-                new Date(getOffsetTime(this)).setUTCFullYear(
-                    year,
-                    month - 1,
-                    date,
-                ),
-            );
-        }
-
-        /**
          * Sets the DateTime to the start of the day.
          * @return {DateTime} A new DateTime instance.
          */
         startOfDay() {
-            return this.setHours(0, 0, 0, 0);
+            return this.withHours(0, 0, 0, 0);
         }
 
         /**
@@ -3457,7 +3133,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfHour() {
-            return this.setMinutes(0, 0, 0);
+            return this.withMinutes(0, 0, 0);
         }
 
         /**
@@ -3465,7 +3141,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfMinute() {
-            return this.setSeconds(0, 0);
+            return this.withSeconds(0, 0);
         }
 
         /**
@@ -3473,7 +3149,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfMonth() {
-            return this.setDate(1)
+            return this.withDate(1)
                 .startOfDay();
         }
 
@@ -3483,7 +3159,7 @@
          */
         startOfQuarter() {
             const month = this.getQuarter() * 3 - 2;
-            return this.setMonth(month, 1)
+            return this.withMonth(month, 1)
                 .startOfDay();
         }
 
@@ -3492,7 +3168,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfSecond() {
-            return this.setMilliseconds(0);
+            return this.withMilliseconds(0);
         }
 
         /**
@@ -3500,7 +3176,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfWeek() {
-            return this.setWeekDay(1)
+            return this.withWeekDay(1)
                 .startOfDay();
         }
 
@@ -3509,7 +3185,7 @@
          * @return {DateTime} A new DateTime instance.
          */
         startOfYear() {
-            return this.setMonth(1, 1)
+            return this.withMonth(1, 1)
                 .startOfDay();
         }
 
@@ -3668,8 +3344,8 @@
          */
         toISOString() {
             return this
-                .setLocale('en')
-                .setTimeZone('UTC')
+                .withLocale('en')
+                .withTimeZone('UTC')
                 .format(formats.rfc3339_extended);
         }
 
@@ -3705,8 +3381,8 @@
          */
         toUTCString() {
             return this
-                .setLocale('en')
-                .setTimeZone('UTC')
+                .withLocale('en')
+                .withTimeZone('UTC')
                 .toString();
         }
 
@@ -3724,7 +3400,331 @@
          */
         weeksInYear() {
             const minDays = minimumDays(this.getLocale());
-            return this.setMonth(12, 24 + minDays).getWeek();
+            return this.withMonth(12, 24 + minDays).getWeek();
+        }
+
+        /**
+         * Returns a copy with the date of the month changed in the current time zone.
+         * @param {number} date The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withDate(date) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(date),
+            );
+        }
+
+        /**
+         * Returns a copy with the day of the week changed in the current time zone.
+         * @param {number} day The day of the week. (0 = Sunday, 6 = Saturday)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withDay(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(
+                    this.getDate() -
+                    this.getDay() +
+                    parseInt(day, 10),
+                ),
+            );
+        }
+
+        /**
+         * Returns a copy with the day of the year changed in the current time zone.
+         * @param {number} day The day of the year. (1-366)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withDayOfYear(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    0,
+                    day,
+                ),
+            );
+        }
+
+        /**
+         * Returns a copy with the hours changed in the current time zone.
+         * @param {number} hours The hours. (0-23)
+         * @param {number} [minutes] The minutes. (0-59)
+         * @param {number} [seconds] The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withHours(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCHours(...args),
+            );
+        }
+
+        /**
+         * Returns a copy with a different locale.
+         * @param {string} locale The locale to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withLocale(locale) {
+            return new this.constructor(this.getTime(), {
+                locale,
+                timeZone: this._timeZone,
+            });
+        }
+
+        /**
+         * Returns a copy with the milliseconds changed in the current time zone.
+         * @param {number} milliseconds The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withMilliseconds(milliseconds) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMilliseconds(milliseconds),
+            );
+        }
+
+        /**
+         * Returns a copy with the minutes changed in the current time zone.
+         * @param {number} minutes The minutes. (0-59)
+         * @param {number} [seconds] The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withMinutes(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMinutes(...args),
+            );
+        }
+
+        /**
+         * Returns a copy with the month changed in the current time zone.
+         * @param {number} month The month. (1-12)
+         * @param {number|null} [date] The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withMonth(month, date = null) {
+            if (date === null) {
+                date = this.getDate();
+
+                if (config.clampDates) {
+                    date = Math.min(
+                        date,
+                        this.constructor.daysInMonth(
+                            this.getYear(),
+                            month,
+                        ),
+                    );
+                }
+            }
+
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    month - 1,
+                    date,
+                ),
+            );
+        }
+
+        /**
+         * Returns a copy with the quarter of the year changed in the current time zone.
+         * @param {number} quarter The quarter of the year. (1-4)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withQuarter(quarter) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCMonth(
+                    quarter * 3 -
+                    3,
+                ),
+            );
+        }
+
+        /**
+         * Returns a copy with the seconds changed in the current time zone.
+         * @param {number} seconds The seconds. (0-59)
+         * @param {number} [milliseconds] The milliseconds.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withSeconds(...args) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCSeconds(...args),
+            );
+        }
+
+        /**
+         * Returns a copy with a different epoch-millisecond value.
+         * @param {number} time The number of milliseconds since the UNIX epoch.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withTime(time) {
+            return new this.constructor(time, {
+                locale: this._locale,
+                timeZone: this._timeZone,
+            });
+        }
+
+        /**
+         * Returns a copy with a different number of seconds since the UNIX epoch.
+         * @param {number} timestamp The number of seconds since the UNIX epoch.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withTimestamp(timestamp) {
+            return this.withTime(timestamp * 1000);
+        }
+
+        /**
+         * Returns a copy in a different time zone.
+         * @param {string} timeZone The time zone to use.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withTimeZone(timeZone) {
+            return new this.constructor(this.getTime(), {
+                locale: this._locale,
+                timeZone,
+            });
+        }
+
+        /**
+         * Returns a copy with a fixed numeric UTC offset.
+         * @param {number} offset The UTC offset in minutes.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withTimeZoneOffset(offset) {
+            return new this.constructor(this.getTime(), {
+                locale: this._locale,
+                timeZone: formatOffset(offset),
+            });
+        }
+
+        /**
+         * Returns a copy with the local week changed in the current time zone.
+         * @param {number} week The local week.
+         * @param {number|null} [day] The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withWeek(week, day = null) {
+            if (day === null) {
+                day = this.getWeekDay();
+            }
+
+            const minDays = minimumDays(this.getLocale());
+            return this.withYear(this.getWeekYear(), 1, minDays + ((week - 1) * 7)).withWeekDay(day);
+        }
+
+        /**
+         * Returns a copy with the local day of the week changed in the current time zone.
+         * @param {number} day The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withWeekDay(day) {
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(
+                    this.getDate() -
+                    this.getWeekDay() +
+                    parseInt(day, 10),
+                ),
+            );
+        }
+
+        /**
+         * Returns a copy with the week day in month changed in the current time zone.
+         * @param {number} week The week day in month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withWeekDayInMonth(week) {
+            return this.withDate(
+                this.getDate() +
+                (
+                    week -
+                    this.getWeekDayInMonth()
+                ) * 7,
+            );
+        }
+
+        /**
+         * Returns a copy with the week of month changed in the current time zone.
+         * @param {number} week The week of month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withWeekOfMonth(week) {
+            return this.withDate(
+                this.getDate() +
+                (
+                    week -
+                    this.getWeekOfMonth()
+                ) * 7,
+            );
+        }
+
+        /**
+         * Returns a copy with the local week year changed in the current time zone.
+         * @param {number} year The local week year.
+         * @param {number|null} [week] The local week.
+         * @param {number|null} [day] The local day of the week. (1-7)
+         * @return {DateTime} A new DateTime instance.
+         */
+        withWeekYear(year, week = null, day = null) {
+            const minDays = minimumDays(this.getLocale());
+            const Constructor = this.constructor;
+
+            if (week === null) {
+                week = Math.min(
+                    this.getWeek(),
+                    Constructor.fromArray([year, 1, minDays], {
+                        locale: this.getLocale(),
+                        timeZone: this.getTimeZone(),
+                    }).weeksInYear(),
+                );
+            }
+
+            if (day === null) {
+                day = this.getWeekDay();
+            }
+
+            return this.withYear(year, 1, minDays + ((week - 1) * 7)).withWeekDay(day);
+        }
+
+        /**
+         * Returns a copy with the year changed in the current time zone.
+         * @param {number} year The year.
+         * @param {number|null} [month] The month. (1-12)
+         * @param {number|null} [date] The date of the month.
+         * @return {DateTime} A new DateTime instance.
+         */
+        withYear(year, month = null, date = null) {
+            if (month === null) {
+                month = this.getMonth();
+            }
+
+            if (date === null) {
+                date = this.getDate();
+
+                if (config.clampDates) {
+                    date = Math.min(
+                        date,
+                        this.constructor.daysInMonth(
+                            year,
+                            month,
+                        ),
+                    );
+                }
+            }
+
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCFullYear(
+                    year,
+                    month - 1,
+                    date,
+                ),
+            );
         }
     }
 
