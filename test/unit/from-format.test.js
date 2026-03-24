@@ -1219,20 +1219,6 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // it('works with narrow month names when month is specified prior', function() {
-    //     assert.strictEqual(
-    //         DateTime.fromFormat('yyyy-MM MMMMM', '2019-06 J').isValid,
-    //         true
-    //     );
-    // });
-
-    // it('works with narrow day names when date is specified prior', function() {
-    //     assert.strictEqual(
-    //         DateTime.fromFormat('yyyy-MM-dd EEEEE', '2019-01-03 T').isValid,
-    //         true
-    //     );
-    // });
-
     it('creates time only dates from January 01 1970', function() {
         assert.strictEqual(
             DateTime.fromFormat('hh:mm a', '12:00 PM')
