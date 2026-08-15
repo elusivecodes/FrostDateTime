@@ -9,7 +9,7 @@ import {
     formatTimeZoneName,
 } from './formatter/format.js';
 import tokens from './formatter/tokens.js';
-import { minimumDays, weekDay } from './formatter/utility.js';
+import { decodeLiteral, minimumDays, weekDay } from './formatter/utility.js';
 import {
     calculateDiff,
     getBiggestDiff,
@@ -169,8 +169,8 @@ export default class DateTime {
             dateString = dateString.substring(position);
 
             if (!token) {
-                const literal = match[0].slice(1, -1);
-                parseCompare(literal || `'`, dateString);
+                const literal = decodeLiteral(match[0]);
+                parseCompare(literal, dateString);
                 dateString = dateString.substring(literal.length);
                 continue;
             }
@@ -830,7 +830,7 @@ export default class DateTime {
             formatString = formatString.substring(position + length);
 
             if (!token) {
-                output += match[0].slice(1, -1);
+                output += decodeLiteral(match[0]);
                 continue;
             }
 

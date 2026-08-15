@@ -2,6 +2,17 @@ import { getData } from './../factory.js';
 import { minDaysInFirstWeek, weekStart } from './locales.js';
 
 /**
+ * Decodes a quoted ICU format literal.
+ * @param {string} literal The literal to decode.
+ * @return {string} The decoded literal.
+ */
+export function decodeLiteral(literal) {
+    return literal === `''` ?
+        `'` :
+        literal.slice(1, -1).replace(/''/g, `'`);
+};
+
+/**
  * Gets the formatting type from the component token length.
  * @param {number} length The component token length.
  * @return {string} The formatting type.

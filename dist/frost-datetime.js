@@ -105,7 +105,7 @@
         time: 'HH:mm:ss xx (VV)',
     };
 
-    const formatTokenRegExp = /([a-z])\1*|'[^']*'/i;
+    const formatTokenRegExp = /([a-z])\1*|''|'(?:[^']|'')*'/i;
 
     const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -828,6 +828,16 @@
     const weekStart = { '1': ['af', 'am', 'ar-il', 'ar-sa', 'ar-ye', 'as', 'bn', 'bo', 'brx', 'ccp', 'ceb', 'chr', 'dav', 'doi', 'dz', 'ebu', 'en', 'fil', 'gu', 'guz', 'haw', 'he', 'hi', 'id', 'ii', 'ja', 'jv', 'kam', 'ki', 'kln', 'km', 'kn', 'ko', 'kok', 'ks', 'lkt', 'lo', 'luo', 'luy', 'mai', 'mas', 'mer', 'mgh', 'ml', 'mni', 'mr', 'mt', 'my', 'nd', 'ne', 'om', 'or', 'pa', 'ps-pk', 'pt', 'qu', 'sa', 'saq', 'sat', 'sd', 'seh', 'sn', 'su', 'ta', 'te', 'th', 'ti', 'ug', 'ur', 'xh', 'yue', 'zh', 'zu'], '7': ['ar', 'ckb', 'en-ae', 'en-sd', 'fa', 'kab', 'lrc', 'mzn', 'ps'] };
     const minDaysInFirstWeek = { '4': ['ast', 'bg', 'br', 'ca', 'ce', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-at', 'en-be', 'en-ch', 'en-de', 'en-dk', 'en-fi', 'en-fj', 'en-gb', 'en-gg', 'en-gi', 'en-ie', 'en-im', 'en-je', 'en-nl', 'en-se', 'es', 'et', 'eu', 'fi', 'fo', 'fr', 'fur', 'fy', 'ga', 'gd', 'gl', 'gsw', 'gv', 'hsb', 'hu', 'is', 'it', 'ksh', 'kw', 'lb', 'lt', 'nb', 'nl', 'nn', 'no', 'os-ru', 'pl', 'pt-ch', 'pt-lu', 'pt-pt', 'rm', 'ru', 'sah', 'sc', 'se', 'sk', 'smn', 'sv', 'tt', 'wae'] };
 
+    /**
+     * Decodes a quoted ICU format literal.
+     * @param {string} literal The literal to decode.
+     * @return {string} The decoded literal.
+     */
+    function decodeLiteral(literal) {
+        return literal === `''` ?
+            `'` :
+            literal.slice(1, -1).replace(/''/g, `'`);
+    }
     /**
      * Gets the formatting type from the component token length.
      * @param {number} length The component token length.
@@ -1806,8 +1816,8 @@
                 dateString = dateString.substring(position);
 
                 if (!token) {
-                    const literal = match[0].slice(1, -1);
-                    parseCompare(literal || `'`, dateString);
+                    const literal = decodeLiteral(match[0]);
+                    parseCompare(literal, dateString);
                     dateString = dateString.substring(literal.length);
                     continue;
                 }
@@ -2467,7 +2477,7 @@
                 formatString = formatString.substring(position + length);
 
                 if (!token) {
-                    output += match[0].slice(1, -1);
+                    output += decodeLiteral(match[0]);
                     continue;
                 }
 

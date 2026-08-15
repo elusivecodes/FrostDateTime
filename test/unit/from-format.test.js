@@ -3,6 +3,32 @@ import { describe, it } from 'mocha';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat', function() {
+    describe('Literals', function() {
+        it('parses ordinary quoted text', function() {
+            assert.strictEqual(
+                DateTime.fromFormat(`yyyy 'year'`, '2019 year')
+                    .getYear(),
+                2019,
+            );
+        });
+
+        it('parses an escaped apostrophe', function() {
+            assert.strictEqual(
+                DateTime.fromFormat(`yyyy''`, `2019'`)
+                    .getYear(),
+                2019,
+            );
+        });
+
+        it('parses an escaped apostrophe inside quoted text', function() {
+            assert.strictEqual(
+                DateTime.fromFormat(`yyyy 'o''clock'`, `2019 o'clock`)
+                    .getYear(),
+                2019,
+            );
+        });
+    });
+
     /**
      * Era
      */

@@ -19,7 +19,7 @@ export const formats = {
     time: 'HH:mm:ss xx (VV)',
 };
 
-export const formatTokenRegExp = /([a-z])\1*|'[^']*'/i;
+export const formatTokenRegExp = /([a-z])\1*|''|'(?:[^']|'')*'/i;
 
 export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
