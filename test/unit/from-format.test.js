@@ -1227,6 +1227,22 @@ describe('DateTime #fromFormat', function() {
         );
     });
 
+    it('creates time only dates from January 01 1970 in western time zones', function() {
+        assert.strictEqual(
+            DateTime.fromFormat('HH:mm', '12:00', { timeZone: 'America/New_York' })
+                .format('yyyy-MM-dd HH:mm'),
+            '1970-01-01 12:00',
+        );
+    });
+
+    it('creates time only dates from January 01 1970 in eastern time zones', function() {
+        assert.strictEqual(
+            DateTime.fromFormat('HH:mm', '12:00', { timeZone: 'Australia/Brisbane' })
+                .format('yyyy-MM-dd HH:mm'),
+            '1970-01-01 12:00',
+        );
+    });
+
     it('throws on trailing characters', function() {
         assert.throws((_) => {
             DateTime.fromFormat('yyyy-MM-dd', '2019-01-01abc');

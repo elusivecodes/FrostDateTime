@@ -1816,9 +1816,10 @@
                 timeZone = value;
             }
 
-            let datetime = this.fromTimestamp(0, {
+            let datetime = this.fromArray([1970, 1, 1], {
                 locale,
-            }).withTimeZone(timeZone);
+                timeZone,
+            });
 
             const methods = parseFactory();
 
