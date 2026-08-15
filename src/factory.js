@@ -37,6 +37,7 @@ export function getDateFormatter(timeZone) {
         () => makeFormatter('en', {
             timeZone,
             hourCycle: 'h23',
+            era: 'short',
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',

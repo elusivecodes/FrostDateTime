@@ -27,26 +27,68 @@ describe('DateTime Creation', function() {
             );
         });
 
-        it('interprets unzoned ISO strings as local wall time', function() {
-            const values = [
-                ['0099-01-01', '0099-01-01 00:00:00.000'],
-                ['2019', '2019-01-01 00:00:00.000'],
-                ['2019-02', '2019-02-01 00:00:00.000'],
-                ['2019-02-03', '2019-02-03 00:00:00.000'],
-                ['2019-02-03 04:05', '2019-02-03 04:05:00.000'],
-                ['2019-02-03 04:05:06.7891', '2019-02-03 04:05:06.789'],
-                ['2019-02-03T04:05', '2019-02-03 04:05:00.000'],
-                ['2019-02-03T04:05:06.7891', '2019-02-03 04:05:06.789'],
-            ];
+        it('works with early ISO dates', function() {
+            assert.strictEqual(
+                new DateTime('0099-01-01', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '0099-01-01 00:00:00.000',
+            );
+        });
 
-            for (const [date, expected] of values) {
-                assert.strictEqual(
-                    new DateTime(date, { timeZone: 'Australia/Brisbane' })
-                        .format('yyyy-MM-dd HH:mm:ss.SSS'),
-                    expected,
-                    date,
-                );
-            }
+        it('works with ISO year string', function() {
+            assert.strictEqual(
+                new DateTime('2019', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-01-01 00:00:00.000',
+            );
+        });
+
+        it('works with ISO year and month string', function() {
+            assert.strictEqual(
+                new DateTime('2019-02', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-01 00:00:00.000',
+            );
+        });
+
+        it('works with ISO date string in a time zone', function() {
+            assert.strictEqual(
+                new DateTime('2019-02-03', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-03 00:00:00.000',
+            );
+        });
+
+        it('works with space-separated ISO string without seconds', function() {
+            assert.strictEqual(
+                new DateTime('2019-02-03 04:05', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-03 04:05:00.000',
+            );
+        });
+
+        it('works with space-separated ISO string with fractional seconds', function() {
+            assert.strictEqual(
+                new DateTime('2019-02-03 04:05:06.7891', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-03 04:05:06.789',
+            );
+        });
+
+        it('works with ISO string without seconds', function() {
+            assert.strictEqual(
+                new DateTime('2019-02-03T04:05', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-03 04:05:00.000',
+            );
+        });
+
+        it('works with ISO string with fractional seconds', function() {
+            assert.strictEqual(
+                new DateTime('2019-02-03T04:05:06.7891', { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                '2019-02-03 04:05:06.789',
+            );
         });
 
         it('works with ISO string with Z', function() {
@@ -221,6 +263,62 @@ describe('DateTime Creation', function() {
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0], { timeZone: 'Australia/Brisbane' })
                     .toString(),
                 'Tue Jan 01 2019 00:00:00 +1000 (Australia/Brisbane)',
+            );
+        });
+
+        it('works with year 1 in an IANA time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([1, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0001-06-01 12:00 AD',
+            );
+        });
+
+        it('works with year zero in an IANA time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([0, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0000-06-01 12:00 AD',
+            );
+        });
+
+        it('works with year 99 in an IANA time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([99, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0099-06-01 12:00 AD',
+            );
+        });
+
+        it('works with year 100 in an IANA time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([100, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0100-06-01 12:00 AD',
+            );
+        });
+
+        it('works with BC years in an IANA time zone', function() {
+            assert.strictEqual(
+                DateTime.fromArray([-1, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0001-06-01 12:00 BC',
+            );
+        });
+
+        it('works with early years in UTC', function() {
+            assert.strictEqual(
+                DateTime.fromArray([1, 6, 1, 12], { timeZone: 'UTC' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0001-06-01 12:00 AD',
+            );
+        });
+
+        it('works with early years in fixed offset time zones', function() {
+            assert.strictEqual(
+                DateTime.fromArray([1, 6, 1, 12], { timeZone: '+10:00' })
+                    .format('yyyy-MM-dd HH:mm G'),
+                '0001-06-01 12:00 AD',
             );
         });
 

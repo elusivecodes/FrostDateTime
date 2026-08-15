@@ -209,10 +209,18 @@ export function getOffset(date) {
             .map(({ type, value }) => [type, value]),
     );
 
-    const localTime = Date.UTC(
-        parseInt(values.year, 10),
+    let year = parseInt(values.year, 10);
+    if (values.era === 'BC') {
+        year = 1 - year;
+    }
+
+    const localDate = new Date(0);
+    localDate.setUTCFullYear(
+        year,
         parseInt(values.month, 10) - 1,
         parseInt(values.day, 10),
+    );
+    const localTime = localDate.setUTCHours(
         parseInt(values.hour, 10),
         parseInt(values.minute, 10),
         parseInt(values.second, 10),
