@@ -379,6 +379,36 @@
         }
     }
     /**
+     * Parses a supported unzoned ISO string as a neutral wall-clock timestamp.
+     * @param {string} dateString The date string to parse.
+     * @return {number|null} The timestamp, or null if the shape is not supported.
+     */
+    function parseLocalTimestamp(dateString) {
+        const match =
+            dateString.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/) ||
+            dateString.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?$/);
+
+        if (!match) {
+            return null;
+        }
+
+        const [
+            , year,
+            month = 1,
+            day = 1,
+            hours = 0,
+            minutes = 0,
+            seconds = 0,
+            fraction = '',
+        ] = match;
+        const date = new Date(0);
+
+        date.setUTCFullYear(year, month - 1, day);
+        date.setUTCHours(hours, minutes, seconds, fraction.padEnd(3, '0').substring(0, 3));
+
+        return date.getTime();
+    }
+    /**
      * Generates methods for parsing a date.
      * @return {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
      */
@@ -1954,7 +1984,13 @@
                 adjustOffset = !dateStringTimeZoneRegExp.test(date);
 
                 if (adjustOffset) {
-                    timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
+                    const localTimestamp = parseLocalTimestamp(date);
+
+                    if (localTimestamp === null) {
+                        timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
+                    } else {
+                        timestamp = localTimestamp;
+                    }
                 }
             } else {
                 throw new Error('Invalid date supplied');

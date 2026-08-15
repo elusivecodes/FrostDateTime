@@ -27,6 +27,28 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('interprets unzoned ISO strings as local wall time', function() {
+            const values = [
+                ['0099-01-01', '0099-01-01 00:00:00.000'],
+                ['2019', '2019-01-01 00:00:00.000'],
+                ['2019-02', '2019-02-01 00:00:00.000'],
+                ['2019-02-03', '2019-02-03 00:00:00.000'],
+                ['2019-02-03 04:05', '2019-02-03 04:05:00.000'],
+                ['2019-02-03 04:05:06.7891', '2019-02-03 04:05:06.789'],
+                ['2019-02-03T04:05', '2019-02-03 04:05:00.000'],
+                ['2019-02-03T04:05:06.7891', '2019-02-03 04:05:06.789'],
+            ];
+
+            for (const [date, expected] of values) {
+                assert.strictEqual(
+                    new DateTime(date, { timeZone: 'Australia/Brisbane' })
+                        .format('yyyy-MM-dd HH:mm:ss.SSS'),
+                    expected,
+                    date,
+                );
+            }
+        });
+
         it('works with ISO string with Z', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00Z')

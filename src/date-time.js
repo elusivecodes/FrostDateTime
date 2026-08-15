@@ -17,6 +17,7 @@ import {
     getOffsetTime,
     parseCompare,
     parseFactory,
+    parseLocalTimestamp,
     setOffsetTime,
 } from './helpers.js';
 import {
@@ -395,7 +396,13 @@ export default class DateTime {
             adjustOffset = !dateStringTimeZoneRegExp.test(date);
 
             if (adjustOffset) {
-                timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
+                const localTimestamp = parseLocalTimestamp(date);
+
+                if (localTimestamp === null) {
+                    timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
+                } else {
+                    timestamp = localTimestamp;
+                }
             }
         } else {
             throw new Error('Invalid date supplied');
