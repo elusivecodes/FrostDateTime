@@ -2564,13 +2564,10 @@
             const thisWeek = this.startOfDay().withWeekDay(1);
             const firstWeek = thisWeek.withWeek(1, 1);
 
-            return 1 +
-                (
-                    (
-                        (thisWeek - firstWeek) /
-                        604800000
-                    ) | 0
-                );
+            return 1 + Math.floor(
+                (getOffsetTime(thisWeek) - getOffsetTime(firstWeek)) /
+                604800000,
+            );
         }
 
         /**

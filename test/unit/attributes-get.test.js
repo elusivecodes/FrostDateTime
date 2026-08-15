@@ -215,6 +215,54 @@ describe('DateTime Attributes Get', function() {
                 1,
             );
         });
+
+        it('works before a spring DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 3, 3], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                10,
+            );
+        });
+
+        it('works during a spring DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 3, 10], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                11,
+            );
+        });
+
+        it('works after a spring DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 3, 17], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                12,
+            );
+        });
+
+        it('works before an autumn DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 10, 27], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                44,
+            );
+        });
+
+        it('works during an autumn DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 11, 3], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                45,
+            );
+        });
+
+        it('works after an autumn DST transition', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2024, 11, 10], { timeZone: 'America/New_York' })
+                    .getWeek(),
+                46,
+            );
+        });
     });
 
     describe('#getWeekDay', function() {
