@@ -43,6 +43,22 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('works with ISO string with negative offset', function() {
+            assert.strictEqual(
+                new DateTime('2019-01-01T00:00:00-05:30')
+                    .toISOString(),
+                '2019-01-01T05:30:00.000+00:00',
+            );
+        });
+
+        it('does not reinterpret explicit offsets in the requested time zone', function() {
+            assert.strictEqual(
+                new DateTime('2019-01-01T00:00:00+00:00', { timeZone: 'America/New_York' })
+                    .toISOString(),
+                '2019-01-01T00:00:00.000+00:00',
+            );
+        });
+
         it('works with partial string', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019')

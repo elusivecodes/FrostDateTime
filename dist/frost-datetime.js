@@ -1951,11 +1951,11 @@
                     throw new Error('Invalid date string supplied');
                 }
 
-                if (!date.match(dateStringTimeZoneRegExp)) {
+                adjustOffset = !dateStringTimeZoneRegExp.test(date);
+
+                if (adjustOffset) {
                     timestamp -= new Date(timestamp).getTimezoneOffset() * 60000;
                 }
-
-                adjustOffset = true;
             } else {
                 throw new Error('Invalid date supplied');
             }
