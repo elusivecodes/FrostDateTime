@@ -1853,7 +1853,7 @@
                     throw new Error(`Invalid token in DateTime format: ${token}`);
                 }
 
-                if (length === 5 && ['M', 'L'].includes(token)) {
+                if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
                     throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
                 }
 
@@ -1927,18 +1927,10 @@
                     }
 
                     for (const data of values) {
-                        const { key, value, literal, token, length } = data;
+                        const { key, value } = data;
 
                         if (key !== subKey) {
                             continue;
-                        }
-
-                        // skip narrow weekday names if output already matches
-                        if (length === 5 && ['E', 'e', 'c'].includes(token)) {
-                            const fullToken = token.repeat(length);
-                            if (datetime.format(fullToken) === literal) {
-                                continue;
-                            }
                         }
 
                         datetime = methods[key].set(datetime, value);

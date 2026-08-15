@@ -579,15 +579,13 @@ describe('DateTime #fromFormat (Locale)', function() {
         });
     });
 
-    // describe('EEEEE - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('EEEEE', 'П', { locale: 'ru' })
-    //                 .getWeekDay(),
-    //             1
-    //         );
-    //     });
-    // });
+    describe('EEEEE - Week Day (Narrow)', function() {
+        it('throws because narrow weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('EEEEE', 'П', { locale: 'ru' });
+            }, /Unsupported parsing token in DateTime format: EEEEE/);
+        });
+    });
 
     describe('e - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -629,15 +627,13 @@ describe('DateTime #fromFormat (Locale)', function() {
         });
     });
 
-    // describe('eeeee - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('eeeee', 'П', { locale: 'ru' })
-    //                 .getWeekDay(),
-    //             1
-    //         );
-    //     });
-    // });
+    describe('eeeee - Week Day (Narrow)', function() {
+        it('throws because narrow weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('eeeee', 'П', { locale: 'ru' });
+            }, /Unsupported parsing token in DateTime format: eeeee/);
+        });
+    });
 
     describe('c - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -679,15 +675,13 @@ describe('DateTime #fromFormat (Locale)', function() {
         });
     });
 
-    // describe('ccccc - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('ccccc', 'П', { locale: 'ru' })
-    //                 .getWeekDay(),
-    //             1
-    //         );
-    //     });
-    // });
+    describe('ccccc - Week Day (Narrow)', function() {
+        it('throws because narrow standalone weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('ccccc', 'П', { locale: 'ru' });
+            }, /Unsupported parsing token in DateTime format: ccccc/);
+        });
+    });
 
     /**
      * Day Period

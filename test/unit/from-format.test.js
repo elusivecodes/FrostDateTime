@@ -617,15 +617,13 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // describe('EEEEE - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('EEEEE', 'F')
-    //                 .getWeekDay(),
-    //             6
-    //         );
-    //     });
-    // });
+    describe('EEEEE - Week Day (Narrow)', function() {
+        it('throws because narrow weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('EEEEE', 'F');
+            }, /Unsupported parsing token in DateTime format: EEEEE/);
+        });
+    });
 
     describe('e - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -667,15 +665,13 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // describe('eeeee - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('eeeee', 'F')
-    //                 .getWeekDay(),
-    //             6
-    //         );
-    //     });
-    // });
+    describe('eeeee - Week Day (Narrow)', function() {
+        it('throws because narrow weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('eeeee', 'F');
+            }, /Unsupported parsing token in DateTime format: eeeee/);
+        });
+    });
 
     describe('c - Week Day (1-digit)', function() {
         it('parses day', function() {
@@ -717,15 +713,13 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
-    // describe('ccccc - Week Day (Narrow)', function() {
-    //     it('parses day name', function() {
-    //         assert.strictEqual(
-    //             DateTime.fromFormat('ccccc', 'F')
-    //                 .getWeekDay(),
-    //             6
-    //         );
-    //     });
-    // });
+    describe('ccccc - Week Day (Narrow)', function() {
+        it('throws because narrow standalone weekday parsing is unsupported', function() {
+            assert.throws(() => {
+                DateTime.fromFormat('ccccc', 'F');
+            }, /Unsupported parsing token in DateTime format: ccccc/);
+        });
+    });
 
     /**
      * Day Period
