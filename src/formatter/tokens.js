@@ -124,9 +124,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return valuesRegExp(getMonths(locale, type, false));
+                }
                 default:
                     return numberRegExp(locale);
             }
@@ -136,9 +137,10 @@ export default {
                 case 5:
                     return null;
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return parseMonth(locale, value, type, false);
+                }
                 default:
                     return parseNumber(locale, value);
             }
@@ -149,9 +151,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return formatMonth(locale, month, type, false);
+                }
                 default:
                     return formatNumber(locale, month, length);
             }
@@ -165,9 +168,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return valuesRegExp(getMonths(locale, type));
+                }
                 default:
                     return numberRegExp(locale);
             }
@@ -177,9 +181,10 @@ export default {
                 case 5:
                     return null;
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return parseMonth(locale, value, type);
+                }
                 default:
                     return parseNumber(locale, value);
             }
@@ -190,9 +195,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return formatMonth(locale, month, type);
+                }
                 default:
                     return formatNumber(locale, month, length);
             }
@@ -297,9 +303,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return valuesRegExp(getDays(locale, type, false));
+                }
                 default:
                     return numberRegExp(locale);
             }
@@ -309,9 +316,10 @@ export default {
                 case 5:
                     return null;
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return parseDay(locale, value, type, false);
+                }
                 default:
                     return parseNumber(locale, value);
             }
@@ -321,13 +329,15 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     const day = datetime.getDay();
                     return formatDay(locale, day, type, false);
-                default:
+                }
+                default: {
                     const weekDay = datetime.getWeekDay();
                     return formatNumber(locale, weekDay, length);
+                }
             }
         },
     },
@@ -340,9 +350,10 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return valuesRegExp(getDays(locale, type));
+                }
                 default:
                     return numberRegExp(locale);
             }
@@ -352,9 +363,10 @@ export default {
                 case 5:
                     return null;
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     return parseDay(locale, value, type);
+                }
                 default:
                     return parseNumber(locale, value);
             }
@@ -364,13 +376,15 @@ export default {
             switch (length) {
                 case 5:
                 case 4:
-                case 3:
+                case 3: {
                     const type = getType(length);
                     const day = datetime.getDay();
                     return formatDay(locale, day, type);
-                default:
+                }
+                default: {
                     const weekDay = datetime.getWeekDay();
                     return formatNumber(locale, weekDay);
+                }
             }
         },
     },

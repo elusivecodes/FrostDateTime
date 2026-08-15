@@ -94,7 +94,7 @@
         defaultTimeZone: resolvedOptions.timeZone,
     };
 
-    const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[\+\-]\d{2}(?::?\d{2})?)\b)/i;
+    const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[+-]\d{2}(?::?\d{2})?)\b)/i;
 
     const formats = {
         date: 'eee MMM dd yyyy',
@@ -107,7 +107,7 @@
 
     const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    const offsetRegExp = /^(?:GMT)?([\+\-])(\d{2})(\:?)(\d{2})?$/;
+    const offsetRegExp = /^(?:GMT)?([+-])(\d{2})(:?)(\d{2})?$/;
 
     const parseOrderKeys = [
         ['year', 'weekYear'],
@@ -1033,9 +1033,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return valuesRegExp(getMonths(locale, type, false));
+                    }
                     default:
                         return numberRegExp(locale);
                 }
@@ -1045,9 +1046,10 @@
                     case 5:
                         return null;
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return parseMonth(locale, value, type, false);
+                    }
                     default:
                         return parseNumber(locale, value);
                 }
@@ -1058,9 +1060,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return formatMonth(locale, month, type, false);
+                    }
                     default:
                         return formatNumber(locale, month, length);
                 }
@@ -1074,9 +1077,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return valuesRegExp(getMonths(locale, type));
+                    }
                     default:
                         return numberRegExp(locale);
                 }
@@ -1086,9 +1090,10 @@
                     case 5:
                         return null;
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return parseMonth(locale, value, type);
+                    }
                     default:
                         return parseNumber(locale, value);
                 }
@@ -1099,9 +1104,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return formatMonth(locale, month, type);
+                    }
                     default:
                         return formatNumber(locale, month, length);
                 }
@@ -1206,9 +1212,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return valuesRegExp(getDays(locale, type, false));
+                    }
                     default:
                         return numberRegExp(locale);
                 }
@@ -1218,9 +1225,10 @@
                     case 5:
                         return null;
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return parseDay(locale, value, type, false);
+                    }
                     default:
                         return parseNumber(locale, value);
                 }
@@ -1230,13 +1238,15 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         const day = datetime.getDay();
                         return formatDay(locale, day, type, false);
-                    default:
+                    }
+                    default: {
                         const weekDay = datetime.getWeekDay();
                         return formatNumber(locale, weekDay, length);
+                    }
                 }
             },
         },
@@ -1249,9 +1259,10 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return valuesRegExp(getDays(locale, type));
+                    }
                     default:
                         return numberRegExp(locale);
                 }
@@ -1261,9 +1272,10 @@
                     case 5:
                         return null;
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         return parseDay(locale, value, type);
+                    }
                     default:
                         return parseNumber(locale, value);
                 }
@@ -1273,13 +1285,15 @@
                 switch (length) {
                     case 5:
                     case 4:
-                    case 3:
+                    case 3: {
                         const type = getType(length);
                         const day = datetime.getDay();
                         return formatDay(locale, day, type);
-                    default:
+                    }
+                    default: {
                         const weekDay = datetime.getWeekDay();
                         return formatNumber(locale, weekDay);
+                    }
                 }
             },
         },
