@@ -155,6 +155,22 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('works with second-precision offsets with colons', function() {
+            assert.strictEqual(
+                new DateTime('January 1, 2019 00:00:00', { timeZone: '+00:09:21' })
+                    .toISOString(),
+                '2018-12-31T23:50:39.000+00:00',
+            );
+        });
+
+        it('works with compact second-precision offsets', function() {
+            assert.strictEqual(
+                new DateTime('January 1, 2019 00:00:00', { timeZone: '+000921' })
+                    .toISOString(),
+                '2018-12-31T23:50:39.000+00:00',
+            );
+        });
+
         it('works with locale', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { locale: 'ar-eg' })
@@ -198,6 +214,12 @@ describe('DateTime Creation', function() {
             assert.throws((_) => {
                 new DateTime(Date.now(), { timeZone: 'INVALID' });
             });
+        });
+
+        it('throws error with offsets of 24 hours', function() {
+            assert.throws((_) => {
+                new DateTime(Date.now(), { timeZone: '+24:00' });
+            }, /Invalid time zone specified: \+24:00/);
         });
     });
 

@@ -1035,6 +1035,14 @@ describe('DateTime #fromFormat', function() {
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
+
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:09:21')
+                    .toISOString(),
+                '2018-12-31T23:50:39.000+00:00',
+            );
+        });
     });
 
     describe('O - Time Zone (Short localized GMT format)', function() {
@@ -1161,6 +1169,34 @@ describe('DateTime #fromFormat', function() {
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 +10:00')
                     .toISOString(),
                 '2018-12-31T14:00:00.000+00:00',
+            );
+        });
+    });
+
+    describe('XXXX - Time Zone (ISO8601 basic format with Z)', function() {
+        it('works without offset seconds', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXX', '01/01/2019 00:00:00 +1000')
+                    .toISOString(),
+                '2018-12-31T14:00:00.000+00:00',
+            );
+        });
+
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXX', '01/01/2019 00:00:00 +000921')
+                    .toISOString(),
+                '2018-12-31T23:50:39.000+00:00',
+            );
+        });
+    });
+
+    describe('XXXXX - Time Zone (ISO8601 extended format with Z)', function() {
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXXX', '01/01/2019 00:00:00 +00:09:21')
+                    .toISOString(),
+                '2018-12-31T23:50:39.000+00:00',
             );
         });
     });

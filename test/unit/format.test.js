@@ -1187,6 +1187,14 @@ describe('DateTime #format', function() {
                 '+10:00',
             );
         });
+
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.now({ timeZone: '+00:09:21' })
+                    .format('ZZZZZ'),
+                '+00:09:21',
+            );
+        });
     });
 
     describe('O - Time Zone (Short localized GMT format)', function() {
@@ -1293,6 +1301,26 @@ describe('DateTime #format', function() {
                 DateTime.now({ timeZone: 'Australia/Brisbane' })
                     .format('XXX'),
                 '+10:00',
+            );
+        });
+    });
+
+    describe('XXXX - Time Zone (ISO8601 basic format with Z)', function() {
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.now({ timeZone: '+00:09:21' })
+                    .format('XXXX'),
+                '+000921',
+            );
+        });
+    });
+
+    describe('XXXXX - Time Zone (ISO8601 extended format with Z)', function() {
+        it('works with second-precision offsets', function() {
+            assert.strictEqual(
+                DateTime.now({ timeZone: '+00:09:21' })
+                    .format('XXXXX'),
+                '+00:09:21',
             );
         });
     });

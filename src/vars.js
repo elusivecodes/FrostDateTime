@@ -23,7 +23,7 @@ export const formatTokenRegExp = /([a-z])\1*|'[^']*'/i;
 
 export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-export const offsetRegExp = /^(?:GMT)?([+-])(\d{2})(:?)(\d{2})?$/;
+export const offsetRegExp = /^(?:GMT)?([+-])([01]\d|2[0-3])(?:(:?)([0-5]\d)(?:\3([0-5]\d))?)?$/;
 
 export const parseOrderKeys = [
     ['year', 'weekYear'],

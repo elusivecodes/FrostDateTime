@@ -504,6 +504,29 @@ describe('DateTime Attributes With', function() {
                 600,
             );
         });
+
+        it('works with historical second-precision offsets', function() {
+            const date1 = DateTime.fromArray([1800, 1, 1], { timeZone: 'Europe/Paris' });
+            const date2 = date1.withTimeZoneOffset(date1.getTimeZoneOffset());
+            assert.strictEqual(
+                date2.getTimeZone(),
+                '+00:09:21',
+            );
+        });
+
+        it('allows whole-second offsets with floating-point rounding', function() {
+            const date = DateTime.now().withTimeZoneOffset(31 / 60);
+            assert.strictEqual(
+                date.getTimeZone(),
+                '-00:00:31',
+            );
+        });
+
+        it('throws error with subsecond offsets', function() {
+            assert.throws((_) => {
+                DateTime.now().withTimeZoneOffset(0.001);
+            }, /Invalid time zone offset supplied/);
+        });
     });
 
     describe('#withWeek', function() {

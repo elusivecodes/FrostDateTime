@@ -425,7 +425,10 @@ export default class DateTime {
 
         const match = timeZone.match(offsetRegExp);
         if (match) {
-            this._offset = match[2] * 60 + parseInt(match[4] || 0, 10);
+            this._offset =
+                match[2] * 60 +
+                parseInt(match[4] || 0, 10) +
+                parseInt(match[5] || 0, 10) / 60;
             if (this._offset && match[1] === '+') {
                 this._offset *= -1;
             }

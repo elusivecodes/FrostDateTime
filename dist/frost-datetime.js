@@ -109,7 +109,7 @@
 
     const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    const offsetRegExp = /^(?:GMT)?([+-])(\d{2})(:?)(\d{2})?$/;
+    const offsetRegExp = /^(?:GMT)?([+-])([01]\d|2[0-3])(?:(:?)([0-5]\d)(?:\3([0-5]\d))?)?$/;
 
     const parseOrderKeys = [
         ['year', 'weekYear'],
@@ -764,26 +764,35 @@
      * @param {number} offset The offset to format.
      * @param {boolean} [useColon=true] Whether to use a colon separator.
      * @param {boolean} [optionalMinutes=false] Whether minutes are optional.
+     * @param {boolean} [includeSeconds=true] Whether seconds are included.
      * @return {string} The formatted offset string.
      */
-    function formatOffset(offset, useColon = true, optionalMinutes = false) {
-        const hours = Math.abs(
-            (offset / 60) | 0,
-        );
-        const minutes = Math.abs(offset % 60);
+    function formatOffset(offset, useColon = true, optionalMinutes = false, includeSeconds = true) {
+        const absoluteSeconds = Math.abs(offset * 60);
+        const totalSeconds = Math.round(absoluteSeconds);
+        const precision = Number.EPSILON * Math.max(1, absoluteSeconds);
+        const roundingError = Math.abs(absoluteSeconds - totalSeconds);
+        if (!Number.isFinite(absoluteSeconds) || roundingError > precision || totalSeconds >= 86400) {
+            throw new Error('Invalid time zone offset supplied');
+        }
 
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor(totalSeconds % 3600 / 60);
+        const seconds = totalSeconds % 60;
         const sign = offset > 0 ?
             '-' :
             '+';
-        const hourString = `${hours}`.padStart(2, '0');
-        const minuteString = minutes || !optionalMinutes ?
-            `${minutes}`.padStart(2, '0') :
-            '';
-        const colon = useColon && minuteString ?
-            ':' :
-            '';
+        const parts = [`${hours}`.padStart(2, '0')];
 
-        return `${sign}${hourString}${colon}${minuteString}`;
+        if (!optionalMinutes || minutes || seconds) {
+            parts.push(`${minutes}`.padStart(2, '0'));
+        }
+
+        if (includeSeconds && seconds) {
+            parts.push(`${seconds}`.padStart(2, '0'));
+        }
+
+        return sign + parts.join(useColon ? ':' : '');
     }
     /**
      * Formats a relative duration as a locale string.
@@ -1510,7 +1519,7 @@
             regex: (_, length) => {
                 switch (length) {
                     case 5:
-                        return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
+                        return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
                     case 4:
                         return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
                     default:
@@ -1542,7 +1551,7 @@
                         break;
                 }
 
-                return prefix + formatOffset(offset, useColon);
+                return prefix + formatOffset(offset, useColon, false, length === 5);
             },
         },
 
@@ -1589,9 +1598,11 @@
             regex: (_, length) => {
                 switch (length) {
                     case 5:
+                        return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
+                    case 4:
+                        return `[\\+\\-]\\d{4}(?:\\d{2})?|Z`;
                     case 3:
                         return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
-                    case 4:
                     case 2:
                         return `[\\+\\-]\\d{4}|Z`;
                     default:
@@ -1617,7 +1628,7 @@
                         break;
                 }
 
-                return formatOffset(offset, useColon, length === 1);
+                return formatOffset(offset, useColon, length === 1, length >= 4);
             },
         },
 
@@ -1626,9 +1637,11 @@
             regex: (_, length) => {
                 switch (length) {
                     case 5:
+                        return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?`;
+                    case 4:
+                        return `[\\+\\-]\\d{4}(?:\\d{2})?`;
                     case 3:
                         return `[\\+\\-]\\d{2}\\:\\d{2}`;
-                    case 4:
                     case 2:
                         return `[\\+\\-]\\d{4}`;
                     default:
@@ -1648,7 +1661,7 @@
                         break;
                 }
 
-                return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1);
+                return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1, length >= 4);
             },
         },
 
@@ -2049,7 +2062,10 @@
 
             const match = timeZone.match(offsetRegExp);
             if (match) {
-                this._offset = match[2] * 60 + parseInt(match[4] || 0, 10);
+                this._offset =
+                    match[2] * 60 +
+                    parseInt(match[4] || 0, 10) +
+                    parseInt(match[5] || 0, 10) / 60;
                 if (this._offset && match[1] === '+') {
                     this._offset *= -1;
                 }

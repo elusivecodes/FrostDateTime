@@ -535,7 +535,7 @@ export default {
         regex: (_, length) => {
             switch (length) {
                 case 5:
-                    return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
+                    return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
                 case 4:
                     return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
                 default:
@@ -567,7 +567,7 @@ export default {
                     break;
             }
 
-            return prefix + formatOffset(offset, useColon);
+            return prefix + formatOffset(offset, useColon, false, length === 5);
         },
     },
 
@@ -614,9 +614,11 @@ export default {
         regex: (_, length) => {
             switch (length) {
                 case 5:
+                    return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
+                case 4:
+                    return `[\\+\\-]\\d{4}(?:\\d{2})?|Z`;
                 case 3:
                     return `[\\+\\-]\\d{2}\\:\\d{2}|Z`;
-                case 4:
                 case 2:
                     return `[\\+\\-]\\d{4}|Z`;
                 default:
@@ -642,7 +644,7 @@ export default {
                     break;
             }
 
-            return formatOffset(offset, useColon, length === 1);
+            return formatOffset(offset, useColon, length === 1, length >= 4);
         },
     },
 
@@ -651,9 +653,11 @@ export default {
         regex: (_, length) => {
             switch (length) {
                 case 5:
+                    return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?`;
+                case 4:
+                    return `[\\+\\-]\\d{4}(?:\\d{2})?`;
                 case 3:
                     return `[\\+\\-]\\d{2}\\:\\d{2}`;
-                case 4:
                 case 2:
                     return `[\\+\\-]\\d{4}`;
                 default:
@@ -673,7 +677,7 @@ export default {
                     break;
             }
 
-            return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1);
+            return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1, length >= 4);
         },
     },
 
