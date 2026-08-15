@@ -115,6 +115,74 @@ describe('DateTime DST Transitions', function() {
         });
     });
 
+    describe('Wall Time Resolution', function() {
+        it('moves forward through a skipped hour', function() {
+            const date = DateTime.fromArray([2024, 3, 10, 2, 30], {
+                timeZone: 'America/New_York',
+            });
+
+            assert.strictEqual(
+                date.toString(),
+                'Sun Mar 10 2024 03:30:00 -0400 (America/New_York)',
+            );
+        });
+
+        it('uses the later occurrence of a repeated hour', function() {
+            const date = DateTime.fromArray([2024, 11, 3, 1, 30], {
+                timeZone: 'America/New_York',
+            });
+
+            assert.strictEqual(
+                date.toString(),
+                'Sun Nov 03 2024 01:30:00 -0500 (America/New_York)',
+            );
+        });
+
+        it('moves construction forward through a deleted day', function() {
+            const date = DateTime.fromArray([2011, 12, 30, 12], {
+                timeZone: 'Pacific/Apia',
+            });
+
+            assert.strictEqual(
+                date.toString(),
+                'Sat Dec 31 2011 12:00:00 +1400 (Pacific/Apia)',
+            );
+        });
+
+        it('moves addition forward through a deleted day', function() {
+            const date = DateTime.fromArray([2011, 12, 29, 12], {
+                timeZone: 'Pacific/Apia',
+            }).addDay();
+
+            assert.strictEqual(
+                date.toString(),
+                'Sat Dec 31 2011 12:00:00 +1400 (Pacific/Apia)',
+            );
+        });
+
+        it('moves subtraction backward through a deleted day', function() {
+            const date = DateTime.fromArray([2011, 12, 31, 12], {
+                timeZone: 'Pacific/Apia',
+            }).subDay();
+
+            assert.strictEqual(
+                date.toString(),
+                'Thu Dec 29 2011 12:00:00 -1000 (Pacific/Apia)',
+            );
+        });
+
+        it('preserves a non-transition wall time', function() {
+            const date = DateTime.fromArray([2024, 2, 15, 12, 30], {
+                timeZone: 'America/New_York',
+            });
+
+            assert.strictEqual(
+                date.toString(),
+                'Thu Feb 15 2024 12:30:00 -0500 (America/New_York)',
+            );
+        });
+    });
+
     describe('DST Transition To', function() {
         it('creates correct date (set year)', function() {
             const date1 = DateTime.fromArray([2023, 10, 1, 3, 0, 0, 0], {

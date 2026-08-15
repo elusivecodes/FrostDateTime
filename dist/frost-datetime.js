@@ -551,22 +551,37 @@
      * Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
      * @param {DateTime} date The DateTime.
      * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
+     * @param {number} [direction=1] The direction to resolve a gap.
      * @return {DateTime} A new DateTime instance.
      */
-    function setOffsetTime(date, time) {
-        const oldOffset = date.getTimeZoneOffset();
+    function setOffsetTime(date, time, direction = 1) {
+        const newDate = date.withTime(
+            time + (date.getTimeZoneOffset() * 60000),
+        );
+        const newOffsetTime = getOffsetTime(newDate);
 
-        const newTime = time + (oldOffset * 60000);
-        const newDate = date.withTime(newTime);
-
-        const offset = newDate.getTimeZoneOffset();
-
-        if (oldOffset === offset) {
+        if (newOffsetTime === time) {
             return newDate;
         }
 
-        // compensate for DST transitions
-        return newDate.withTime(newTime - ((oldOffset - offset) * 60000));
+        const adjustedDate = date.withTime(
+            time + (newDate.getTimeZoneOffset() * 60000),
+        );
+        const adjustedOffsetTime = getOffsetTime(adjustedDate);
+
+        if (adjustedOffsetTime === time) {
+            return adjustedDate;
+        }
+
+        if (direction < 0) {
+            return newOffsetTime < adjustedOffsetTime ?
+                newDate :
+                adjustedDate;
+        }
+
+        return newOffsetTime > adjustedOffsetTime ?
+            newDate :
+            adjustedDate;
     }
 
     /**
@@ -2128,28 +2143,19 @@
                 this._timeZone = timeZone;
             }
 
+            this._locale = 'locale' in options ?
+                options.locale :
+                config.defaultLocale;
+
             if (this._dynamicTz) {
                 this._offset = getOffset(this);
             }
 
             if (adjustOffset && this._offset) {
-                const oldOffset = this._offset;
-
-                this._date.setTime(this.getTime() + this._offset * 60000);
-
-                if (this._dynamicTz) {
-                    this._offset = getOffset(this);
-
-                    // Compensate for offset changes that happen across DST boundaries.
-                    if (oldOffset !== this._offset) {
-                        this._date.setTime(this.getTime() - ((oldOffset - this._offset) * 60000));
-                    }
-                }
+                const resolvedDate = setOffsetTime(this, timestamp);
+                this._date.setTime(resolvedDate.getTime());
+                this._offset = resolvedDate.getTimeZoneOffset();
             }
-
-            this._locale = 'locale' in options ?
-                options.locale :
-                config.defaultLocale;
         }
 
         /**
@@ -2166,8 +2172,12 @@
          * @return {DateTime} A new DateTime instance.
          */
         addDays(amount) {
-            return this.withDate(
-                this.getDate() + amount,
+            return setOffsetTime(
+                this,
+                new Date(getOffsetTime(this)).setUTCDate(
+                    this.getDate() + amount,
+                ),
+                amount,
             );
         }
 

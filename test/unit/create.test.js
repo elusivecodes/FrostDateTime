@@ -91,6 +91,14 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it('moves forward through a deleted calendar day', function() {
+            assert.strictEqual(
+                new DateTime('2011-12-30T12:00', { timeZone: 'Pacific/Apia' })
+                    .toString(),
+                'Sat Dec 31 2011 12:00:00 +1400 (Pacific/Apia)',
+            );
+        });
+
         it('works with ISO string with Z', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00Z')

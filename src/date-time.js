@@ -456,28 +456,19 @@ export default class DateTime {
             this._timeZone = timeZone;
         }
 
+        this._locale = 'locale' in options ?
+            options.locale :
+            config.defaultLocale;
+
         if (this._dynamicTz) {
             this._offset = getOffset(this);
         }
 
         if (adjustOffset && this._offset) {
-            const oldOffset = this._offset;
-
-            this._date.setTime(this.getTime() + this._offset * 60000);
-
-            if (this._dynamicTz) {
-                this._offset = getOffset(this);
-
-                // Compensate for offset changes that happen across DST boundaries.
-                if (oldOffset !== this._offset) {
-                    this._date.setTime(this.getTime() - ((oldOffset - this._offset) * 60000));
-                }
-            }
+            const resolvedDate = setOffsetTime(this, timestamp);
+            this._date.setTime(resolvedDate.getTime());
+            this._offset = resolvedDate.getTimeZoneOffset();
         }
-
-        this._locale = 'locale' in options ?
-            options.locale :
-            config.defaultLocale;
     }
 
     /**
@@ -494,8 +485,12 @@ export default class DateTime {
      * @return {DateTime} A new DateTime instance.
      */
     addDays(amount) {
-        return this.withDate(
-            this.getDate() + amount,
+        return setOffsetTime(
+            this,
+            new Date(getOffsetTime(this)).setUTCDate(
+                this.getDate() + amount,
+            ),
+            amount,
         );
     }
 

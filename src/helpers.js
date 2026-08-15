@@ -420,20 +420,35 @@ export function parseFactory() {
  * Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {DateTime} date The DateTime.
  * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
+ * @param {number} [direction=1] The direction to resolve a gap.
  * @return {DateTime} A new DateTime instance.
  */
-export function setOffsetTime(date, time) {
-    const oldOffset = date.getTimeZoneOffset();
+export function setOffsetTime(date, time, direction = 1) {
+    const newDate = date.withTime(
+        time + (date.getTimeZoneOffset() * 60000),
+    );
+    const newOffsetTime = getOffsetTime(newDate);
 
-    const newTime = time + (oldOffset * 60000);
-    const newDate = date.withTime(newTime);
-
-    const offset = newDate.getTimeZoneOffset();
-
-    if (oldOffset === offset) {
+    if (newOffsetTime === time) {
         return newDate;
     }
 
-    // compensate for DST transitions
-    return newDate.withTime(newTime - ((oldOffset - offset) * 60000));
+    const adjustedDate = date.withTime(
+        time + (newDate.getTimeZoneOffset() * 60000),
+    );
+    const adjustedOffsetTime = getOffsetTime(adjustedDate);
+
+    if (adjustedOffsetTime === time) {
+        return adjustedDate;
+    }
+
+    if (direction < 0) {
+        return newOffsetTime < adjustedOffsetTime ?
+            newDate :
+            adjustedDate;
+    }
+
+    return newOffsetTime > adjustedOffsetTime ?
+        newDate :
+        adjustedDate;
 };
