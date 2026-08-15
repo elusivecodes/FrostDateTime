@@ -29,6 +29,30 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
+    describe('Compact numeric patterns', function() {
+        it('parses adjacent fixed-width tokens', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('yyyyMMddHHmmss', '20190102123456')
+                    .toISOString(),
+                '2019-01-02T12:34:56.000+00:00',
+            );
+        });
+
+        it('does not limit standalone numeric tokens', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('yyyy', '20190')
+                    .getYear(),
+                20190,
+            );
+        });
+
+        it('rejects trailing input in ambiguous patterns', function() {
+            assert.throws((_) => {
+                DateTime.fromFormat('Md', '123');
+            }, /Unmatched trailing characters in DateTime string: 3/);
+        });
+    });
+
     /**
      * Era
      */

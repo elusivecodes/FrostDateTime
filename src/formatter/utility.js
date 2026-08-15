@@ -1,5 +1,6 @@
 import { getData } from './../factory.js';
 import { minDaysInFirstWeek, weekStart } from './locales.js';
+import { numberRegExp } from './values.js';
 
 /**
  * Decodes a quoted ICU format literal.
@@ -26,6 +27,28 @@ export function getType(length) {
         default:
             return 'short';
     }
+};
+
+/**
+ * Gets the parsing RegExp data for a format token.
+ * @param {string} source The token RegExp.
+ * @param {string|null} nextSource The next token RegExp.
+ * @param {number} length The token length.
+ * @param {string} locale The parsing locale.
+ * @param {boolean} previousNumeric Whether the previous token was an adjacent numeric token.
+ * @return {{numeric: boolean, source: string}} The token RegExp data.
+ */
+export function getTokenRegExp(source, nextSource, length, locale, previousNumeric) {
+    const numberSource = numberRegExp(locale);
+    let numeric = true;
+
+    if (source !== numberSource) {
+        numeric = false;
+    } else if (previousNumeric || nextSource === numberSource) {
+        source = numberRegExp(locale, length);
+    }
+
+    return { numeric, source };
 };
 
 /**

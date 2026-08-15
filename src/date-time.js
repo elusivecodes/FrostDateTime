@@ -9,7 +9,7 @@ import {
     formatTimeZoneName,
 } from './formatter/format.js';
 import tokens from './formatter/tokens.js';
-import { decodeLiteral, minimumDays, weekDay } from './formatter/utility.js';
+import { decodeLiteral, getTokenRegExp, minimumDays, weekDay } from './formatter/utility.js';
 import {
     calculateDiff,
     getBiggestDiff,
@@ -155,6 +155,7 @@ export default class DateTime {
         const values = [];
 
         let match;
+        let previousTokenNumeric = false;
         while (formatString && (match = formatString.match(formatTokenRegExp))) {
             const token = match[1];
             const position = match.index;
@@ -172,6 +173,7 @@ export default class DateTime {
                 const literal = decodeLiteral(match[0]);
                 parseCompare(literal, dateString);
                 dateString = dateString.substring(literal.length);
+                previousTokenNumeric = false;
                 continue;
             }
 
@@ -183,8 +185,25 @@ export default class DateTime {
                 throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
             }
 
-            const regExp = tokens[token].regex(locale, length);
-            const matchedValue = dateString.match(new RegExp(`^${regExp}`));
+            const previousNumeric = previousTokenNumeric && !position;
+            let nextSource = null;
+
+            if (!previousNumeric) {
+                const nextToken = formatString[0];
+                if (nextToken && nextToken in tokens) {
+                    const nextLength = formatString.match(/^(.)\1*/)[0].length;
+                    nextSource = tokens[nextToken].regex(locale, nextLength);
+                }
+            }
+
+            const { numeric, source } = getTokenRegExp(
+                tokens[token].regex(locale, length),
+                nextSource,
+                length,
+                locale,
+                previousNumeric,
+            );
+            const matchedValue = dateString.match(new RegExp(`^${source}`));
 
             if (!matchedValue) {
                 throw new Error(`Unmatched token in DateTime string: ${token}`);
@@ -199,6 +218,7 @@ export default class DateTime {
             }
 
             dateString = dateString.substring(literal.length);
+            previousTokenNumeric = numeric;
         }
 
         if (formatString) {

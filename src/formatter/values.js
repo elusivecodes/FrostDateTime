@@ -135,8 +135,12 @@ export function getNumbers(locale) {
 /**
  * Gets the RegExp for the number values.
  * @param {string} locale The locale.
+ * @param {number|null} [length=null] The exact number of digits to match.
  * @return {string} The number values RegExp.
  */
-export function numberRegExp(locale) {
-    return `(?:${valuesRegExp(getNumbers(locale))})+`;
+export function numberRegExp(locale, length = null) {
+    const quantifier = length === null ?
+        '+' :
+        `{${length}}`;
+    return `(?:${valuesRegExp(getNumbers(locale))})${quantifier}`;
 };

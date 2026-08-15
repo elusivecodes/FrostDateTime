@@ -698,10 +698,14 @@
     /**
      * Gets the RegExp for the number values.
      * @param {string} locale The locale.
+     * @param {number|null} [length=null] The exact number of digits to match.
      * @return {string} The number values RegExp.
      */
-    function numberRegExp(locale) {
-        return `(?:${valuesRegExp(getNumbers(locale))})+`;
+    function numberRegExp(locale, length = null) {
+        const quantifier = length === null ?
+            '+' :
+            `{${length}}`;
+        return `(?:${valuesRegExp(getNumbers(locale))})${quantifier}`;
     }
 
     /**
@@ -852,6 +856,27 @@
             default:
                 return 'short';
         }
+    }
+    /**
+     * Gets the parsing RegExp data for a format token.
+     * @param {string} source The token RegExp.
+     * @param {string|null} nextSource The next token RegExp.
+     * @param {number} length The token length.
+     * @param {string} locale The parsing locale.
+     * @param {boolean} previousNumeric Whether the previous token was an adjacent numeric token.
+     * @return {{numeric: boolean, source: string}} The token RegExp data.
+     */
+    function getTokenRegExp(source, nextSource, length, locale, previousNumeric) {
+        const numberSource = numberRegExp(locale);
+        let numeric = true;
+
+        if (source !== numberSource) {
+            numeric = false;
+        } else if (previousNumeric || nextSource === numberSource) {
+            source = numberRegExp(locale, length);
+        }
+
+        return { numeric, source };
     }
     /**
      * Gets the locale's minimum days in the first week of the year.
@@ -1802,6 +1827,7 @@
             const values = [];
 
             let match;
+            let previousTokenNumeric = false;
             while (formatString && (match = formatString.match(formatTokenRegExp))) {
                 const token = match[1];
                 const position = match.index;
@@ -1819,6 +1845,7 @@
                     const literal = decodeLiteral(match[0]);
                     parseCompare(literal, dateString);
                     dateString = dateString.substring(literal.length);
+                    previousTokenNumeric = false;
                     continue;
                 }
 
@@ -1830,8 +1857,25 @@
                     throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
                 }
 
-                const regExp = tokens[token].regex(locale, length);
-                const matchedValue = dateString.match(new RegExp(`^${regExp}`));
+                const previousNumeric = previousTokenNumeric && !position;
+                let nextSource = null;
+
+                if (!previousNumeric) {
+                    const nextToken = formatString[0];
+                    if (nextToken && nextToken in tokens) {
+                        const nextLength = formatString.match(/^(.)\1*/)[0].length;
+                        nextSource = tokens[nextToken].regex(locale, nextLength);
+                    }
+                }
+
+                const { numeric, source } = getTokenRegExp(
+                    tokens[token].regex(locale, length),
+                    nextSource,
+                    length,
+                    locale,
+                    previousNumeric,
+                );
+                const matchedValue = dateString.match(new RegExp(`^${source}`));
 
                 if (!matchedValue) {
                     throw new Error(`Unmatched token in DateTime string: ${token}`);
@@ -1846,6 +1890,7 @@
                 }
 
                 dateString = dateString.substring(literal.length);
+                previousTokenNumeric = numeric;
             }
 
             if (formatString) {
