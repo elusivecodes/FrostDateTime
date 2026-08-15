@@ -17,6 +17,18 @@ function escapeRegExp(value) {
 }
 
 /**
+ * Gets a stable day number from a DateTime's local calendar fields.
+ * @param {DateTime} date The DateTime.
+ * @return {number} The local calendar day number.
+ */
+function calendarDay(date) {
+    const calendarDate = new Date(0);
+    calendarDate.setUTCFullYear(date.getYear(), date.getMonth() - 1, date.getDate());
+
+    return calendarDate.getTime() / 86400000;
+}
+
+/**
  * Calculates the difference between two dates in a given time unit.
  * @param {DateTime} date The base DateTime.
  * @param {DateTime} other The DateTime to compare to.
@@ -50,6 +62,16 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                 -1,
             );
         case 'week':
+            if (relative) {
+                const dateWeek = date.startOfWeek();
+                const otherWeek = other.withLocale(date.getLocale()).startOfWeek();
+
+                return (
+                    calendarDay(dateWeek) -
+                    calendarDay(otherWeek)
+                ) / 7;
+            }
+
             return compensateDiff(
                 date,
                 other.withWeekYear(
@@ -60,6 +82,10 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                 relative,
             );
         case 'day':
+            if (relative) {
+                return calendarDay(date) - calendarDay(other);
+            }
+
             return compensateDiff(
                 date,
                 other.withYear(

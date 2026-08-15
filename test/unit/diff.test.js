@@ -76,6 +76,26 @@ describe('DateTime Differences', function() {
                 69,
             );
         });
+
+        it('uses calendar days across DST transitions', function() {
+            const before = DateTime.fromArray([2024, 3, 3, 12], { timeZone: 'America/New_York' });
+            const after = DateTime.fromArray([2024, 3, 10, 12], { timeZone: 'America/New_York' });
+
+            assert.strictEqual(
+                after.diffInDays(before),
+                7,
+            );
+        });
+
+        it('uses elapsed days across DST transitions when exact', function() {
+            const before = DateTime.fromArray([2024, 3, 3, 12], { timeZone: 'America/New_York' });
+            const after = DateTime.fromArray([2024, 3, 10, 12], { timeZone: 'America/New_York' });
+
+            assert.strictEqual(
+                after.diffInDays(before, { relative: false }),
+                6,
+            );
+        });
     });
 
     describe('#diffInHours', function() {
@@ -390,6 +410,26 @@ describe('DateTime Differences', function() {
                         DateTime.fromArray([2018, 6, 15]),
                     ),
                 10,
+            );
+        });
+
+        it('uses calendar weeks across DST transitions', function() {
+            const before = DateTime.fromArray([2024, 3, 3, 12], { timeZone: 'America/New_York' });
+            const after = DateTime.fromArray([2024, 3, 10, 12], { timeZone: 'America/New_York' });
+
+            assert.strictEqual(
+                after.diffInWeeks(before),
+                1,
+            );
+        });
+
+        it('uses elapsed weeks across DST transitions when exact', function() {
+            const before = DateTime.fromArray([2024, 3, 3, 12], { timeZone: 'America/New_York' });
+            const after = DateTime.fromArray([2024, 3, 10, 12], { timeZone: 'America/New_York' });
+
+            assert.strictEqual(
+                after.diffInWeeks(before, { relative: false }),
+                0,
             );
         });
     });
