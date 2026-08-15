@@ -3,6 +3,14 @@ import { describe, it } from 'mocha';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #format (Locale)', function() {
+    it('uses the Gregorian calendar', function() {
+        assert.strictEqual(
+            DateTime.fromArray([2018, 2, 1], { locale: 'fa-IR' })
+                .format('MMMM yyyy GGGG'),
+            'فوریهٔ ۲۰۱۸ میلادی',
+        );
+    });
+
     /**
      * Era
      */

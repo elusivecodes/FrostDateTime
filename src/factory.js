@@ -78,5 +78,6 @@ export function makeFormatter(locale, options) {
     return new Intl.DateTimeFormat(locale, {
         timeZone: 'UTC',
         ...options,
+        calendar: 'gregory',
     });
 };

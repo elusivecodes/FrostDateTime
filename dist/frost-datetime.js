@@ -80,6 +80,7 @@
         return new Intl.DateTimeFormat(locale, {
             timeZone: 'UTC',
             ...options,
+            calendar: 'gregory',
         });
     }
 
