@@ -263,6 +263,57 @@ describe('DateTime Attributes Get', function() {
                 46,
             );
         });
+
+        it('preserves the region in language-script-region locales', function() {
+            const date = DateTime.fromArray([2021, 1, 1], { locale: 'en-Latn-GB' });
+
+            assert.deepStrictEqual(
+                [date.getWeek(), date.getWeekYear()],
+                [53, 2020],
+            );
+        });
+
+        it('uses regional overrides of the language minimum days', function() {
+            const date = DateTime.fromArray([2022, 1, 1], { locale: 'da-GL' });
+
+            assert.deepStrictEqual(
+                [date.getWeek(), date.getWeekYear()],
+                [1, 2022],
+            );
+        });
+
+        it('uses a US Unicode region override', function() {
+            const date = DateTime.fromArray([2021, 1, 1], {
+                locale: 'en-GB-u-rg-uszzzz',
+            });
+
+            assert.deepStrictEqual(
+                [date.getWeek(), date.getWeekYear()],
+                [1, 2021],
+            );
+        });
+
+        it('uses a UK Unicode region override', function() {
+            const date = DateTime.fromArray([2021, 1, 1], {
+                locale: 'en-US-u-rg-gbzzzz',
+            });
+
+            assert.deepStrictEqual(
+                [date.getWeek(), date.getWeekYear()],
+                [53, 2020],
+            );
+        });
+
+        it('ignores region overrides in private-use subtags', function() {
+            const date = DateTime.fromArray([2021, 1, 1], {
+                locale: 'en-US-x-u-rg-gbzzzz',
+            });
+
+            assert.deepStrictEqual(
+                [date.getWeek(), date.getWeekYear()],
+                [1, 2021],
+            );
+        });
     });
 
     describe('#getWeekDay', function() {

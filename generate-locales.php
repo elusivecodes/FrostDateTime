@@ -2,10 +2,9 @@
 
 $locales = ResourceBundle::getLocales('');
 $prefixes = [];
-$prefixTest = [];
 
 foreach ($locales AS $locale) {
-    $prefix = strtok($locale,'_');
+    $prefix = strtok($locale, '_');
     $prefixes[$prefix][] = $locale;
 }
 
@@ -17,38 +16,30 @@ foreach ($prefixes AS $prefix => $locales) {
     $prefixFirstDayOfWeek = $cal->getFirstDayOfWeek();
     $prefixMinimalDaysInFirstWeek = $cal->getMinimalDaysInFirstWeek();
 
-    $firstDaysTemp = [];
+    if ($prefixFirstDayOfWeek !== 2) {
+        $firstDays[$prefixFirstDayOfWeek][] = $prefix;
+    }
+
+    if ($prefixMinimalDaysInFirstWeek !== 1) {
+        $minDays[$prefixMinimalDaysInFirstWeek][] = $prefix;
+    }
 
     foreach ($locales AS $locale) {
+        if ($locale === $prefix) {
+            continue;
+        }
+
         $cal = IntlCalendar::createInstance(null, $locale);
         $firstDayOfWeek = $cal->getFirstDayOfWeek();
         $minimalDaysInFirstWeek = $cal->getMinimalDaysInFirstWeek();
         $localeKey = str_replace('_', '-', strtolower($locale));
 
-        if (
-            ($locale === $prefix || $firstDayOfWeek !== $prefixFirstDayOfWeek) &&
-            ($firstDayOfWeek !== 2 && $prefixFirstDayOfWeek !== 2)
-        ) {
-            $firstDaysTemp[$firstDayOfWeek][] = $localeKey;
+        if ($firstDayOfWeek !== $prefixFirstDayOfWeek) {
+            $firstDays[$firstDayOfWeek][] = $localeKey;
         }
 
-        if (
-            ($locale === $prefix || $minimalDaysInFirstWeek !== $prefixMinimalDaysInFirstWeek) &&
-            $minimalDaysInFirstWeek > 1
-        ) {
+        if ($minimalDaysInFirstWeek !== $prefixMinimalDaysInFirstWeek) {
             $minDays[$minimalDaysInFirstWeek][] = $localeKey;
-        }
-    }
-
-    foreach ($firstDaysTemp AS $day => $locales) {
-        $firstDays[$day] ??= [];
-
-        if (count($firstDaysTemp) === 1) {
-            if ($day != 2) {
-                $firstDays[$day][] = $prefix;
-            }
-        } else {
-            $firstDays[$day] = array_merge($firstDays[$day], $locales);
         }
     }
 }

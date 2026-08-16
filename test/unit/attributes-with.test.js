@@ -747,15 +747,15 @@ describe('DateTime Attributes With', function() {
         });
 
         it('uses the instance locale when clamping week counts', function() {
-            const date1 = DateTime.fromArray([2015, 1, 1], { locale: 'en-GB' });
-            const date2 = date1.withWeekYear(2014);
+            const date1 = DateTime.fromArray([2015, 12, 31], { locale: 'en-GB' });
+            const date2 = date1.withWeekYear(2020);
             assert.strictEqual(
                 date1.toISOString(),
-                '2015-01-01T00:00:00.000+00:00',
+                '2015-12-31T00:00:00.000+00:00',
             );
             assert.strictEqual(
                 date2.toISOString(),
-                '2015-01-01T00:00:00.000+00:00',
+                '2020-12-31T00:00:00.000+00:00',
             );
         });
     });

@@ -844,8 +844,86 @@
             .value;
     }
 
-    const weekStart = { '1': ['af', 'am', 'ar-il', 'ar-sa', 'ar-ye', 'as', 'bn', 'bo', 'brx', 'ccp', 'ceb', 'chr', 'dav', 'doi', 'dz', 'ebu', 'en', 'fil', 'gu', 'guz', 'haw', 'he', 'hi', 'id', 'ii', 'ja', 'jv', 'kam', 'ki', 'kln', 'km', 'kn', 'ko', 'kok', 'ks', 'lkt', 'lo', 'luo', 'luy', 'mai', 'mas', 'mer', 'mgh', 'ml', 'mni', 'mr', 'mt', 'my', 'nd', 'ne', 'om', 'or', 'pa', 'ps-pk', 'pt', 'qu', 'sa', 'saq', 'sat', 'sd', 'seh', 'sn', 'su', 'ta', 'te', 'th', 'ti', 'ug', 'ur', 'xh', 'yue', 'zh', 'zu'], '7': ['ar', 'ckb', 'en-ae', 'en-sd', 'fa', 'kab', 'lrc', 'mzn', 'ps'] };
-    const minDaysInFirstWeek = { '4': ['ast', 'bg', 'br', 'ca', 'ce', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-at', 'en-be', 'en-ch', 'en-de', 'en-dk', 'en-fi', 'en-fj', 'en-gb', 'en-gg', 'en-gi', 'en-ie', 'en-im', 'en-je', 'en-nl', 'en-se', 'es', 'et', 'eu', 'fi', 'fo', 'fr', 'fur', 'fy', 'ga', 'gd', 'gl', 'gsw', 'gv', 'hsb', 'hu', 'is', 'it', 'ksh', 'kw', 'lb', 'lt', 'nb', 'nl', 'nn', 'no', 'os-ru', 'pl', 'pt-ch', 'pt-lu', 'pt-pt', 'rm', 'ru', 'sah', 'sc', 'se', 'sk', 'smn', 'sv', 'tt', 'wae'] };
+    const weekStart = { '1': ['af', 'am', 'ar-il', 'ar-sa', 'ar-ye', 'as', 'bn', 'bo', 'brx', 'ccp', 'ceb', 'chr', 'dav', 'doi', 'dz', 'ebu', 'en', 'es-br', 'es-bz', 'es-co', 'es-do', 'es-gt', 'es-hn', 'es-mx', 'es-ni', 'es-pa', 'es-pe', 'es-ph', 'es-pr', 'es-py', 'es-sv', 'es-us', 'es-ve', 'fil', 'fr-ca', 'gu', 'guz', 'haw', 'he', 'hi', 'id', 'ii', 'ja', 'jv', 'kam', 'ki', 'kln', 'km', 'kn', 'ko', 'kok', 'ks', 'lkt', 'lo', 'luo', 'luy', 'mai', 'mas', 'mer', 'mgh', 'ml', 'mni', 'mr', 'ms-id', 'ms-sg', 'mt', 'my', 'nd', 'ne', 'om', 'or', 'pa', 'ps-pk', 'pt', 'qu', 'sa', 'saq', 'sat', 'sd', 'seh', 'sn', 'so-et', 'so-ke', 'su', 'sw-ke', 'ta', 'te', 'teo-ke', 'th', 'ti', 'ug', 'ur', 'xh', 'yue', 'zh', 'zu'], '2': ['af-na', 'ar-001', 'ar-eh', 'ar-er', 'ar-km', 'ar-lb', 'ar-ma', 'ar-mr', 'ar-ps', 'ar-so', 'ar-ss', 'ar-td', 'ar-tn', 'en-001', 'en-150', 'en-ai', 'en-at', 'en-au', 'en-bb', 'en-be', 'en-bi', 'en-bm', 'en-cc', 'en-ch', 'en-ck', 'en-cm', 'en-cx', 'en-cy', 'en-de', 'en-dg', 'en-dk', 'en-er', 'en-fi', 'en-fj', 'en-fk', 'en-fm', 'en-gb', 'en-gd', 'en-gg', 'en-gh', 'en-gi', 'en-gm', 'en-gy', 'en-ie', 'en-im', 'en-io', 'en-je', 'en-ki', 'en-kn', 'en-ky', 'en-lc', 'en-lr', 'en-ls', 'en-mg', 'en-mp', 'en-ms', 'en-mu', 'en-mw', 'en-my', 'en-na', 'en-nf', 'en-ng', 'en-nl', 'en-nr', 'en-nu', 'en-nz', 'en-pg', 'en-pn', 'en-pw', 'en-rw', 'en-sb', 'en-sc', 'en-se', 'en-sh', 'en-si', 'en-sl', 'en-ss', 'en-sx', 'en-sz', 'en-tc', 'en-tk', 'en-to', 'en-tv', 'en-tz', 'en-ug', 'en-vc', 'en-vg', 'en-vu', 'en-zm', 'ko-kp', 'mas-tz', 'pt-ao', 'pt-ch', 'pt-cv', 'pt-gq', 'pt-gw', 'pt-lu', 'pt-st', 'pt-tl', 'qu-bo', 'qu-ec', 'ta-lk', 'ta-my', 'ti-er'], '7': ['ar', 'ckb', 'en-ae', 'en-sd', 'fa', 'fr-dj', 'fr-dz', 'fr-sy', 'kab', 'lrc', 'mzn', 'ps', 'so-dj', 'uz-arab', 'uz-arab-af'] };
+    const minDaysInFirstWeek = { '4': ['ast', 'bg', 'br', 'ca', 'ce', 'cs', 'cy', 'da', 'de', 'dsb', 'el', 'en-at', 'en-be', 'en-ch', 'en-de', 'en-dk', 'en-fi', 'en-fj', 'en-gb', 'en-gg', 'en-gi', 'en-ie', 'en-im', 'en-je', 'en-nl', 'en-se', 'es', 'et', 'eu', 'fi', 'fo', 'fr', 'fur', 'fy', 'ga', 'gd', 'gl', 'gsw', 'gv', 'hsb', 'hu', 'is', 'it', 'ksh', 'kw', 'lb', 'lt', 'nb', 'nl', 'nn', 'no', 'os-ru', 'pl', 'pt-ch', 'pt-lu', 'pt-pt', 'rm', 'ru', 'sah', 'sc', 'se', 'sk', 'smn', 'sv', 'tt', 'wae'], '1': ['da-gl', 'el-cy', 'es-419', 'es-ar', 'es-bo', 'es-br', 'es-bz', 'es-cl', 'es-co', 'es-cr', 'es-cu', 'es-do', 'es-ea', 'es-ec', 'es-gq', 'es-gt', 'es-hn', 'es-ic', 'es-mx', 'es-ni', 'es-pa', 'es-pe', 'es-ph', 'es-pr', 'es-py', 'es-sv', 'es-us', 'es-uy', 'es-ve', 'fr-bf', 'fr-bi', 'fr-bj', 'fr-bl', 'fr-ca', 'fr-cd', 'fr-cf', 'fr-cg', 'fr-ci', 'fr-cm', 'fr-dj', 'fr-dz', 'fr-ga', 'fr-gn', 'fr-gq', 'fr-ht', 'fr-km', 'fr-ma', 'fr-mf', 'fr-mg', 'fr-ml', 'fr-mr', 'fr-mu', 'fr-nc', 'fr-ne', 'fr-pf', 'fr-pm', 'fr-rw', 'fr-sc', 'fr-sn', 'fr-sy', 'fr-td', 'fr-tg', 'fr-tn', 'fr-vu', 'fr-wf', 'fr-yt', 'nl-aw', 'nl-bq', 'nl-cw', 'nl-sr', 'nl-sx', 'ru-by', 'ru-kg', 'ru-kz', 'ru-md', 'ru-ua'] };
+
+    /**
+     * Gets a locale value from generated data.
+     * @param {object} data The generated locale data.
+     * @param {string[]} candidates The locale candidates.
+     * @param {number} fallback The fallback value.
+     * @return {number} The locale value.
+     */
+    function generatedValue(data, candidates, fallback) {
+        for (const candidate of candidates) {
+            for (const [value, valueLocales] of Object.entries(data)) {
+                if (valueLocales.includes(candidate)) {
+                    return parseInt(value, 10);
+                }
+            }
+        }
+
+        return fallback;
+    }
+
+    /**
+     * Gets generated-data candidates for a locale.
+     * @param {Intl.Locale} locale The locale.
+     * @return {string[]} The locale candidates.
+     */
+    function localeCandidates(locale) {
+        const localeName = locale.toString().split('-x-', 1)[0];
+        const regionOverride = localeName.match(
+            /-u-(?:[a-z0-9]{2,8}-)*rg-([a-z]{2}|\d{3})zzzz(?:-|$)/i,
+        );
+        const region = regionOverride?.[1] || locale.region;
+
+        return [
+            [locale.language, locale.script, region],
+            [locale.language, region],
+            [locale.language, locale.script],
+            [locale.language],
+        ].map((parts) =>
+            parts
+                .filter((part) => !!part)
+                .join('-')
+                .toLowerCase(),
+        );
+    }
+
+    /**
+     * Gets week information for a locale.
+     * @param {string} locale The locale.
+     * @return {{firstDay: number, minimalDays: number}} The week information.
+     */
+    function getWeekInfo(locale) {
+        return getData(
+            `weekInfo.${locale}`,
+            () => {
+                const localeData = new Intl.Locale(locale);
+                const runtimeInfo = localeData.getWeekInfo?.() || localeData.weekInfo || {};
+
+                let { firstDay = null, minimalDays = null } = runtimeInfo;
+
+                const candidates = firstDay && minimalDays ?
+                    [] :
+                    localeCandidates(localeData);
+
+                if (!firstDay) {
+                    const phpFirstDay = generatedValue(weekStart, candidates, 2);
+
+                    // IntlCalendar numbers Sunday as 1; Intl.Locale numbers it as 7.
+                    firstDay = phpFirstDay === 1 ? 7 : phpFirstDay - 1;
+                }
+
+                if (!minimalDays) {
+                    minimalDays = generatedValue(minDaysInFirstWeek, candidates, 1);
+                }
+
+                return { firstDay, minimalDays };
+            },
+        );
+    }
 
     /**
      * Decodes a quoted ICU format literal.
@@ -899,65 +977,7 @@
      * @return {number} The minimum day count.
      */
     function minimumDays(locale) {
-        return getData(
-            `minimumDays.${locale}`,
-            () => {
-                let minDays = 1;
-                const localeTest = locale.toLowerCase().split('-');
-                while (minDays === 1 && localeTest.length) {
-                    for (const days in minDaysInFirstWeek) {
-                        if (!{}.hasOwnProperty.call(minDaysInFirstWeek, days)) {
-                            continue;
-                        }
-
-                        const locales = minDaysInFirstWeek[days];
-
-                        if (locales.includes(localeTest.join('-'))) {
-                            minDays = parseInt(days, 10);
-                            break;
-                        }
-                    }
-
-                    localeTest.pop();
-                }
-
-                return minDays;
-            },
-        );
-    }
-    /**
-     * Gets the week start offset for a locale.
-     * @param {string} [locale] The locale to load.
-     * @return {number} The week start offset.
-     */
-    function weekStartOffset(locale) {
-        return getData(
-            `weekStartOffset.${locale}`,
-            () => {
-                let weekStarted;
-                const localeTest = locale.toLowerCase().split('-');
-                while (!weekStarted && localeTest.length) {
-                    for (const start in weekStart) {
-                        if (!{}.hasOwnProperty.call(weekStart, start)) {
-                            continue;
-                        }
-
-                        const locales = weekStart[start];
-
-                        if (locales.includes(localeTest.join('-'))) {
-                            weekStarted = parseInt(start, 10);
-                            break;
-                        }
-                    }
-
-                    localeTest.pop();
-                }
-
-                return weekStarted ?
-                    weekStarted - 2 :
-                    0;
-            },
-        );
+        return getWeekInfo(locale).minimalDays;
     }
     /**
      * Converts a Sunday-based day-of-week value to the locale's week numbering.
@@ -966,7 +986,7 @@
      * @return {number} The local day of the week.
      */
     function weekDay(locale, day) {
-        return (7 + parseInt(day, 10) - weekStartOffset(locale)) % 7 || 7;
+        return (7 + parseInt(day, 10) - (getWeekInfo(locale).firstDay % 7)) % 7 + 1;
     }
 
     /**
