@@ -43,9 +43,9 @@
         "build": "npm run js-compile && npm run js-minify",
         "js-compile": "rollup --config",
         "js-lint": "eslint",
-        "js-minify": "terser --compress passes=2 --mangle --source-map \"content=dist/frost-datetime.js.map\" --output dist/frost-datetime.min.js dist/frost-datetime.js",
+        "js-minify": "terser --compress passes=2 --mangle --source-map \"content=dist/frost-datetime.js.map,url=frost-datetime.min.js.map\" --output dist/frost-datetime.min.js dist/frost-datetime.js",
         "locales": "php generate-locales.php > src/formatter/locales.js",
-        "test": "mocha --file test/setup.js \"test/unit/**/*.test.js\""
+        "test": "mocha --forbid-only --file test/setup.js \"test/unit/**/*.test.js\""
     },
     "devDependencies": {
         "@fr0st/eslint-config": "^4.0.0",
