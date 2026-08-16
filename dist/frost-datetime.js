@@ -1043,7 +1043,7 @@
      */
     function parseNumberString(locale, value) {
         const numbers = getNumbers(locale);
-        return `${value}`.replace(/./g, (match) => numbers.indexOf(match));
+        return Array.from(value, (digit) => numbers.indexOf(digit)).join('');
     }
     /**
      * Parses a number from a locale number string.

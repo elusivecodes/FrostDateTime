@@ -3,6 +3,19 @@ import { describe, it } from 'mocha';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat (Locale)', function() {
+    it('parses astral numbering-system digits', function() {
+        const locale = 'en-u-nu-mathbold';
+        if (new Intl.NumberFormat(locale).resolvedOptions().numberingSystem !== 'mathbold') {
+            this.skip();
+        }
+
+        assert.strictEqual(
+            DateTime.fromFormat('yyyy-MM-dd', '𝟐𝟎𝟏𝟖-𝟎𝟔-𝟎𝟏', { locale })
+                .toISOString(),
+            '2018-06-01T00:00:00.000+00:00',
+        );
+    });
+
     /**
      * Era
      */
