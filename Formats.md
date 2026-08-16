@@ -240,8 +240,8 @@
         </tr>
         <tr>
             <td><code>cc</code></td>
-            <td><em>02</em></td>
-            <td><strong>Standalone</strong> Day of week number (2-digits)</td>
+            <td><em>2</em></td>
+            <td><strong>Standalone</strong> Day of week number (same output as <code>c</code>)</td>
         </tr>
         <tr>
             <td><code>ccc</code></td>
@@ -347,10 +347,10 @@
         </tr>
         <tr>
             <td><code>S+</code></td>
-            <td><em>3456</em></td>
+            <td><em>3, 34, 345, 3450</em></td>
             <td>
-                Fractional second<br />
-                Truncated to pattern length.
+                Fractional second with millisecond precision.<br />
+                Formatting truncates widths 1–3 and pads wider patterns with trailing zeroes; parsing ignores precision beyond milliseconds.
             </td>
         </tr>
         <tr>
@@ -378,8 +378,8 @@
         </tr>
         <tr>
             <td><code>ZZZZZ</code></td>
-            <td><em>-08:00</em></td>
-            <td>ISO8601 extended format</td>
+            <td><em>-08:00, +00:09:21, Z</em></td>
+            <td>ISO8601 extended format (optional seconds)</td>
         </tr>
         <tr>
             <td><code>O</code></td>
@@ -412,6 +412,16 @@
             <td>ISO8601 extended format with Z</td>
         </tr>
         <tr>
+            <td><code>XXXX</code></td>
+            <td><em>-0800, +000921, Z</em></td>
+            <td>ISO8601 basic format with Z (optional seconds)</td>
+        </tr>
+        <tr>
+            <td><code>XXXXX</code></td>
+            <td><em>-08:00, +00:09:21, Z</em></td>
+            <td>ISO8601 extended format with Z (optional seconds)</td>
+        </tr>
+        <tr>
             <td><code>x</code></td>
             <td><em>-08, +0530, +00</em></td>
             <td>ISO8601 basic format (optional minutes)</td>
@@ -426,11 +436,22 @@
             <td><em>-08:00, +00:00</em></td>
             <td>ISO8601 extended format</td>
         </tr>
+        <tr>
+            <td><code>xxxx</code></td>
+            <td><em>-0800, +000921, +0000</em></td>
+            <td>ISO8601 basic format (optional seconds)</td>
+        </tr>
+        <tr>
+            <td><code>xxxxx</code></td>
+            <td><em>-08:00, +00:09:21, +00:00</em></td>
+            <td>ISO8601 extended format (optional seconds)</td>
+        </tr>
     </tbody>
 </table>
 <p><em>* Output only</em></p>
 <p><strong>Narrow month and weekday names are output only. See the compatibility matrix below for intentionally unsupported widths.</strong></p>
-<p><strong>Characters wrapped in <code>'</code> quotes are treated as literal text.</strong></p>
+<p><strong>Characters wrapped in <code>'</code> quotes are treated as literal text. A doubled apostrophe (<code>''</code>) represents one literal apostrophe during formatting and parsing, including inside quoted text: <code>yyyy 'o''clock'</code> → <code>2019 o'clock</code>.</strong></p>
+<p><strong>Numeric date and time fields use the active locale's numbering system during formatting and parsing, including non-BMP digits when supported by the runtime.</strong></p>
 
 ## PHP `IntlDateFormatter` token-width compatibility
 

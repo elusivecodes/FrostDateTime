@@ -79,10 +79,12 @@ FrostDateTime revolves around an immutable `DateTime` class and a small set of p
 - Constructor numbers are milliseconds since the UNIX epoch
 - `fromTimestamp()` and `withTimestamp()` use seconds since the UNIX epoch
 - Strings without a zone designator are interpreted in the requested or default time zone
-- Week calculations such as `getWeek()`, `getWeekYear()`, `withWeekYear()`, and `weeksInYear()` use the active locale's week rules
+- Strings with an explicit zone or offset define an instant; `options.timeZone` only changes its representation
+- Calendar fields and localized date names use the Gregorian calendar
+- Week calculations such as `getWeek()`, `getWeekYear()`, `withWeekYear()`, and `weeksInYear()` use the active locale's week rules, including Unicode `rg` region overrides
 
 ```js
-const a = DateTime.fromArray([2026, 3, 23]);
+const a = DateTime.fromArray([2026, 3, 23], { timeZone: 'UTC' });
 const b = a.addDays(1);
 
 a.toISOString(); // 2026-03-23T00:00:00.000+00:00
@@ -116,6 +118,16 @@ All creation methods accept an optional options object:
 - `DateTime.fromTimestamp(timestamp, options?)`: create from seconds since the UNIX epoch
 - `DateTime.now(options?)`: create the current time
 
+For constructor strings, an explicit `Z` or numeric offset defines the instant. Passing a different `options.timeZone` changes only how that instant is represented. Supported unzoned ISO forms are interpreted as wall time in the requested or default time zone:
+
+- `yyyy`
+- `yyyy-MM`
+- `yyyy-MM-dd`
+- `yyyy-MM-dd HH:mm[:ss[.fraction]]`
+- `yyyy-MM-ddTHH:mm[:ss[.fraction]]`
+
+Omitted month and day fields default to `1`, and omitted time fields default to local midnight. Other accepted string shapes are parsed through `Date.parse()`; unzoned results are likewise interpreted as local wall time in the requested or default time zone.
+
 ```js
 const now = new DateTime();
 const fromMillis = new DateTime(1711152000000);
@@ -136,6 +148,12 @@ const invalid = DateTime.fromFormat('yyyy-MM-dd', '2019-02-31');
 invalid.isValid; // false
 ```
 
+A time-only `fromFormat()` pattern starts from January 1, 1970 in the requested local time zone. Directly adjacent numeric tokens consume their pattern widths exactly, so compact fixed-width patterns can be parsed; standalone numeric tokens are not capped at the pattern width:
+
+```js
+DateTime.fromFormat('yyyyMMddHHmmss', '20190102123456');
+```
+
 `fromFormat()` rejects output-only or intentionally unsupported token widths. The compatibility matrix in [Formats.md](./Formats.md#php-intldateformatter-token-width-compatibility) records the supported PHP behavior and known differences.
 
 Format tokens are documented in [Formats.md](./Formats.md).
@@ -152,6 +170,7 @@ Format tokens are documented in [Formats.md](./Formats.md).
 
 ```js
 const date = DateTime.fromArray([2026, 3, 23, 9, 30, 15], {
+    locale: 'en',
     timeZone: 'Australia/Brisbane',
 });
 
@@ -180,8 +199,10 @@ Relevant instance methods:
 Accepted time-zone formats:
 
 - IANA names such as `UTC`, `Europe/London`, and `America/New_York`
-- Numeric offsets such as `+10:00`, `+1000`, and `-05:30`
-- GMT offsets such as `GMT+10:00`
+- Numeric offsets in `±HH`, `±HHMM`, `±HH:MM`, `±HHMMSS`, or `±HH:MM:SS` form
+- The same numeric forms prefixed with `GMT`, such as `GMT+10:00`
+
+The absolute fixed offset must be less than 24 hours and have whole-second precision. `getTimeZoneOffset()` and `withTimeZoneOffset()` use the native `Date#getTimezoneOffset()` sign convention: a `UTC-10:00` zone reports `600`, while `UTC+10:00` reports `-600`. Fractional minutes can represent whole seconds, such as `31 / 60` for 31 seconds.
 
 ```js
 const brisbane = DateTime.fromArray([2026, 3, 23, 9, 30], {
@@ -268,7 +289,7 @@ DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 - `diffInMinutes(other, options?)`
 - `diffInSeconds(other, options?)`
 
-`options.relative` defaults to `true` for unit-based differences.
+`options.relative` defaults to `true` for unit-based differences and compares calendar boundaries. For days and weeks, this uses local calendar dates and locale-aware week starts rather than elapsed 24-hour periods. Set `relative: false` to count completed elapsed units instead.
 
 ```js
 const a = DateTime.fromArray([2026, 3, 23]);
@@ -289,8 +310,13 @@ a.diffInDays(b); // -7
 - `humanDiffInSeconds(other)`
 
 ```js
-DateTime.fromArray([2026, 3, 30]).humanDiff(DateTime.fromArray([2026, 3, 23]));
-// "in 7 days"
+const earlier = DateTime.fromArray([2026, 3, 23], {
+    locale: 'en',
+    timeZone: 'UTC',
+});
+
+earlier.addWeeks(1).humanDiff(earlier);
+// "next week"
 ```
 
 #### Boolean comparisons
@@ -363,6 +389,8 @@ DateTime.clearDataCache();
 - `toJSON()` returns the same value as `toISOString()` for valid dates and `null` for invalid dates.
 - `withTimeZone()` keeps the same instant and changes representation.
 - `withTimeZoneOffset()` returns a fixed-offset view of the same instant.
+- A nonexistent local wall time moves forward to the next valid time, while a repeated wall time uses the later occurrence.
+- Calendar addition and subtraction across a fully deleted day follow the operation direction.
 - Date clamping controls whether month and year changes clamp invalid dates.
 - `DateTime.clearDataCache()` clears cached formatter and locale data, which is mainly useful in tests and long-lived processes.
 
