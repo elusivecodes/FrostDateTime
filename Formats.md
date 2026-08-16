@@ -429,5 +429,26 @@
     </tbody>
 </table>
 <p><em>* Output only</em></p>
-<p><strong><code>MMMMM</code> and <code>LLLLL</code> are not supported by <code>fromFormat()</code> and will throw if used for parsing.</strong></p>
+<p><strong>Narrow month and weekday names are output only. See the compatibility matrix below for intentionally unsupported widths.</strong></p>
 <p><strong>Characters wrapped in <code>'</code> quotes are treated as literal text.</strong></p>
+
+## PHP `IntlDateFormatter` token-width compatibility
+
+The expected PHP behavior was recorded with PHP 8.5.9 and ICU 70.1 using the Gregorian calendar. “Equivalent” describes the pattern-width behavior; localized names can still vary with the ICU data installed in each runtime.
+
+| Tokens | Supported widths | Status and PHP behavior |
+|---|---|---|
+| `G` | All | Equivalent: widths 1–3 and 6+ are abbreviated, 4 is long, and 5 is narrow. |
+| `y`, `Y` | All | Equivalent: `yy` uses the two low-order digits; other widths set minimum numeric padding, such as `yyyyy` → `02018`. |
+| `Q`, `q` | 1–2 and 5+ | Equivalent numeric and narrow/fallback forms. Widths 3–4 are intentionally unsupported because PHP uses localized quarter forms such as `Q2` and `2nd quarter`, which JavaScript `Intl` does not expose. |
+| `M`, `L` | All for formatting; all except 5 for parsing | Equivalent: widths 3–5 are abbreviated, long, and narrow names; widths 6+ return to padded numbers, such as `MMMMMM` → `000006`. Narrow names are output only because they are not reliably unique. |
+| `w`, `W`, `d`, `D`, `F` | All | Equivalent numeric padding, such as `www` → `022` and `dddd` → `0001`. |
+| `E`, `e`, `c` | All except 6; width 5 is output only | Widths 1–5 and 7+ are equivalent. Width 6 is intentionally unsupported because PHP uses a distinct short form such as `EEEEEE` → `Fr`, which JavaScript `Intl` does not expose. Narrow names are output only because they are not reliably unique. |
+| `a` | 1–4 | Equivalent for abbreviated and long day periods. Widths 5+ are intentionally unsupported because PHP uses narrow values such as `p`, which JavaScript `Intl` does not reliably expose. |
+| `h`, `H`, `K`, `k`, `m`, `s` | All | Equivalent numeric padding. |
+| `S` | All | Supported with millisecond precision: formatting pads beyond three digits with zeroes and parsing truncates additional precision. |
+| `z` | All, output only | Equivalent width selection: widths 1–3 are short and 4+ are long. The exact name depends on runtime ICU data. |
+| `Z` | All | Equivalent: widths 1–3 are basic offsets, 4 and 6+ are localized GMT, and 5 is an extended ISO offset. |
+| `O` | 1 and 4 | Width 4 is equivalent. Width 1 uses a two-digit hour (`GMT-04`) instead of PHP’s `GMT-4`; other widths are intentionally unsupported. |
+| `V` | 2 | Equivalent IANA time-zone ID. PHP’s short ID, exemplar city, and generic location widths are intentionally unsupported. |
+| `X`, `x` | 1–5 | Equivalent ISO offset widths. Widths 6+ are intentionally unsupported. |

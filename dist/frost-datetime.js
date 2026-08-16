@@ -1068,7 +1068,6 @@
 
         G: {
             key: 'era',
-            maxLength: 5,
             regex: (locale, length) => {
                 const type = getType(length);
                 return valuesRegExp(getEras(locale, type));
@@ -1146,26 +1145,28 @@
         // quarter
         Q: {
             key: 'quarter',
+            supportsLength: (length) => length !== 3 && length !== 4,
             regex: (locale) => numberRegExp(locale),
             input: (locale, value) => parseNumber(locale, value),
             output: (datetime, length) =>
                 formatNumber(
                     datetime.getLocale(),
                     datetime.getQuarter(),
-                    length,
+                    length < 3 ? length : 0,
                 ),
         },
 
         // quarter (standalone)
         q: {
             key: 'quarter',
+            supportsLength: (length) => length !== 3 && length !== 4,
             regex: (locale) => numberRegExp(locale),
             input: (locale, value) => parseNumber(locale, value),
             output: (datetime, length) =>
                 formatNumber(
                     datetime.getLocale(),
                     datetime.getQuarter(),
-                    length,
+                    length < 3 ? length : 0,
                 ),
         },
 
@@ -1174,6 +1175,7 @@
         // month
         M: {
             key: 'month',
+            supportsLength: (length, parsing) => !parsing || length !== 5,
             regex: (locale, length) => {
                 switch (length) {
                     case 5:
@@ -1188,8 +1190,6 @@
             },
             input: (locale, value, length) => {
                 switch (length) {
-                    case 5:
-                        return null;
                     case 4:
                     case 3: {
                         const type = getType(length);
@@ -1218,6 +1218,7 @@
         // month (standalone)
         L: {
             key: 'month',
+            supportsLength: (length, parsing) => !parsing || length !== 5,
             regex: (locale, length) => {
                 switch (length) {
                     case 5:
@@ -1232,8 +1233,6 @@
             },
             input: (locale, value, length) => {
                 switch (length) {
-                    case 5:
-                        return null;
                     case 4:
                     case 3: {
                         const type = getType(length);
@@ -1279,10 +1278,11 @@
             key: 'weekOfMonth',
             regex: (locale) => numberRegExp(locale),
             input: (locale, value) => parseNumber(locale, value),
-            output: (datetime) =>
+            output: (datetime, length) =>
                 formatNumber(
                     datetime.getLocale(),
                     datetime.getWeekOfMonth(),
+                    length,
                 ),
         },
 
@@ -1319,25 +1319,24 @@
             key: 'weekDayInMonth',
             regex: (locale) => numberRegExp(locale),
             input: (locale, value) => parseNumber(locale, value),
-            output: (datetime) =>
+            output: (datetime, length) =>
                 formatNumber(
                     datetime.getLocale(),
                     datetime.getWeekDayInMonth(),
+                    length,
                 ),
         },
 
         // week day name
         E: {
             key: 'weekDay',
+            supportsLength: (length, parsing) =>
+                length !== 6 && (!parsing || length !== 5),
             regex: (locale, length) => {
                 const type = getType(length);
                 return valuesRegExp(getDays(locale, type, false));
             },
             input: (locale, value, length) => {
-                if (length === 5) {
-                    return null;
-                }
-
                 const type = getType(length);
                 return parseDay(locale, value, type, false);
             },
@@ -1352,94 +1351,64 @@
         // week day
         e: {
             key: 'weekDay',
-            maxLength: 5,
+            supportsLength: (length, parsing) =>
+                length !== 6 && (!parsing || length !== 5),
             regex: (locale, length) => {
-                switch (length) {
-                    case 5:
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        return valuesRegExp(getDays(locale, type, false));
-                    }
-                    default:
-                        return numberRegExp(locale);
+                if (length < 3) {
+                    return numberRegExp(locale);
                 }
+
+                const type = getType(length);
+                return valuesRegExp(getDays(locale, type, false));
             },
             input: (locale, value, length) => {
-                switch (length) {
-                    case 5:
-                        return null;
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        return parseDay(locale, value, type, false);
-                    }
-                    default:
-                        return parseNumber(locale, value);
+                if (length < 3) {
+                    return parseNumber(locale, value);
                 }
+
+                const type = getType(length);
+                return parseDay(locale, value, type, false);
             },
             output: (datetime, length) => {
                 const locale = datetime.getLocale();
-                switch (length) {
-                    case 5:
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        const day = datetime.getDay();
-                        return formatDay(locale, day, type, false);
-                    }
-                    default: {
-                        const weekDay = datetime.getWeekDay();
-                        return formatNumber(locale, weekDay, length);
-                    }
+                if (length < 3) {
+                    return formatNumber(locale, datetime.getWeekDay(), length);
                 }
+
+                const type = getType(length);
+                return formatDay(locale, datetime.getDay(), type, false);
             },
         },
 
         // week day (standalone)
         c: {
             key: 'weekDay',
-            maxLength: 5,
+            supportsLength: (length, parsing) =>
+                length !== 6 && (!parsing || length !== 5),
             regex: (locale, length) => {
-                switch (length) {
-                    case 5:
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        return valuesRegExp(getDays(locale, type));
-                    }
-                    default:
-                        return numberRegExp(locale);
+                if (length < 3) {
+                    return numberRegExp(locale);
                 }
+
+                const type = getType(length);
+                return valuesRegExp(getDays(locale, type));
             },
             input: (locale, value, length) => {
-                switch (length) {
-                    case 5:
-                        return null;
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        return parseDay(locale, value, type);
-                    }
-                    default:
-                        return parseNumber(locale, value);
+                if (length < 3) {
+                    return parseNumber(locale, value);
                 }
+
+                const type = getType(length);
+                return parseDay(locale, value, type);
             },
             output: (datetime, length) => {
                 const locale = datetime.getLocale();
-                switch (length) {
-                    case 5:
-                    case 4:
-                    case 3: {
-                        const type = getType(length);
-                        const day = datetime.getDay();
-                        return formatDay(locale, day, type);
-                    }
-                    default: {
-                        const weekDay = datetime.getWeekDay();
-                        return formatNumber(locale, weekDay);
-                    }
+                if (length < 3) {
+                    return formatNumber(locale, datetime.getWeekDay());
                 }
+
+                const type = getType(length);
+                return formatDay(locale, datetime.getDay(), type);
             },
         },
 
@@ -1447,6 +1416,7 @@
 
         a: {
             key: 'dayPeriod',
+            supportsLength: (length) => length <= 4,
             regex: (locale, length) => {
                 const type = getType(length);
                 return valuesRegExp(getDayPeriods(locale, type));
@@ -1575,11 +1545,9 @@
         /* TIMEZONE/OFFSET */
 
         z: {
+            supportsLength: (_, parsing) => !parsing,
             output: (datetime, length) => {
-                if (length === 5) {
-                    length = 1;
-                }
-                const type = getType(length);
+                const type = getType(Math.min(length, 4));
                 return datetime.timeZoneName(type);
             },
         },
@@ -1587,14 +1555,13 @@
         Z: {
             key: 'timeZone',
             regex: (_, length) => {
-                switch (length) {
-                    case 5:
-                        return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
-                    case 4:
-                        return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
-                    default:
-                        return `[\\+\\-]\\d{4}`;
+                if (length === 5) {
+                    return `[\\+\\-]\\d{2}\\:\\d{2}(?:\\:\\d{2})?|Z`;
                 }
+
+                return length >= 4 ?
+                    `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT` :
+                    `[\\+\\-]\\d{4}`;
             },
             input: (_, value) => value,
             output: (datetime, length) => {
@@ -1602,23 +1569,18 @@
 
                 let useColon = true;
                 let prefix = '';
-                switch (length) {
-                    case 5:
-                        if (!offset) {
-                            return 'Z';
-                        }
-                        break;
-                    case 4:
-                        prefix = 'GMT';
+                if (length === 5) {
+                    if (!offset) {
+                        return 'Z';
+                    }
+                } else if (length >= 4) {
+                    prefix = 'GMT';
 
-                        if (!offset) {
-                            return prefix;
-                        }
-
-                        break;
-                    default:
-                        useColon = false;
-                        break;
+                    if (!offset) {
+                        return prefix;
+                    }
+                } else {
+                    useColon = false;
                 }
 
                 return prefix + formatOffset(offset, useColon, false, length === 5);
@@ -1627,6 +1589,7 @@
 
         O: {
             key: 'timeZone',
+            supportsLength: (length) => length === 1 || length === 4,
             regex: (_, length) => {
                 switch (length) {
                     case 4:
@@ -1658,6 +1621,7 @@
 
         V: {
             key: 'timeZone',
+            supportsLength: (length) => length === 2,
             regex: (_) => '([A-Za-z0-9_.+\\-/]+)',
             input: (_, value) => value,
             output: (datetime) => datetime.getTimeZone(),
@@ -1665,6 +1629,7 @@
 
         X: {
             key: 'timeZone',
+            supportsLength: (length) => length <= 5,
             regex: (_, length) => {
                 switch (length) {
                     case 5:
@@ -1704,6 +1669,7 @@
 
         x: {
             key: 'timeZone',
+            supportsLength: (length) => length <= 5,
             regex: (_, length) => {
                 switch (length) {
                     case 5:
@@ -1888,7 +1854,7 @@
                     throw new Error(`Invalid token in DateTime format: ${token}`);
                 }
 
-                if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
+                if (tokens[token].supportsLength?.(length, true) === false) {
                     throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
                 }
 
@@ -2550,6 +2516,10 @@
 
                 if (!(token in tokens)) {
                     throw new Error(`Invalid token in DateTime format: ${token}`);
+                }
+
+                if (tokens[token].supportsLength?.(length) === false) {
+                    throw new Error(`Unsupported token in DateTime format: ${token.repeat(length)}`);
                 }
 
                 output += tokens[token].output(this, length);

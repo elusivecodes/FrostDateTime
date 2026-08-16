@@ -181,7 +181,7 @@ export default class DateTime {
                 throw new Error(`Invalid token in DateTime format: ${token}`);
             }
 
-            if (length === 5 && ['M', 'L', 'E', 'e', 'c'].includes(token)) {
+            if (tokens[token].supportsLength?.(length, true) === false) {
                 throw new Error(`Unsupported parsing token in DateTime format: ${token.repeat(length)}`);
             }
 
@@ -843,6 +843,10 @@ export default class DateTime {
 
             if (!(token in tokens)) {
                 throw new Error(`Invalid token in DateTime format: ${token}`);
+            }
+
+            if (tokens[token].supportsLength?.(length) === false) {
+                throw new Error(`Unsupported token in DateTime format: ${token.repeat(length)}`);
             }
 
             output += tokens[token].output(this, length);

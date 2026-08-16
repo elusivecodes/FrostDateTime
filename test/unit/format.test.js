@@ -29,6 +29,52 @@ describe('DateTime #format', function() {
         });
     });
 
+    describe('Token widths', function() {
+        it('uses PHP padding for wider numeric patterns', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 6, 1])
+                    .format('yyyyy MMMMMM www dddd WWWW FFFF'),
+                '02018 000006 022 0001 0001 0001',
+            );
+        });
+
+        it('uses PHP fallback behavior after textual widths', function() {
+            assert.strictEqual(
+                DateTime.fromArray([2018, 6, 1])
+                    .format('GGGGGG QQQQQ qqqqq EEEEEEE eeeeeee ccccccc zzzzzz ZZZZZZ'),
+                'AD 2 2 Fri Fri Fri Coordinated Universal Time GMT',
+            );
+            assert.strictEqual(
+                DateTime.fromArray([2018, 6, 1], { timeZone: 'Australia/Brisbane' })
+                    .format('ZZZZZZ'),
+                'GMT+10:00',
+            );
+        });
+
+        it('rejects widths without a JavaScript equivalent', function() {
+            const date = DateTime.fromArray([2018, 6, 1]);
+
+            assert.throws((_) => {
+                date.format('QQQ');
+            }, /Unsupported token in DateTime format: QQQ/);
+            assert.throws((_) => {
+                date.format('EEEEEE');
+            }, /Unsupported token in DateTime format: EEEEEE/);
+            assert.throws((_) => {
+                date.format('aaaaa');
+            }, /Unsupported token in DateTime format: aaaaa/);
+            assert.throws((_) => {
+                date.format('OO');
+            }, /Unsupported token in DateTime format: OO/);
+            assert.throws((_) => {
+                date.format('V');
+            }, /Unsupported token in DateTime format: V/);
+            assert.throws((_) => {
+                date.format('XXXXXX');
+            }, /Unsupported token in DateTime format: XXXXXX/);
+        });
+    });
+
     /**
      * Era
      */

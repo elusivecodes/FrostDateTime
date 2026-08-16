@@ -51,6 +51,58 @@ describe('DateTime #fromFormat', function() {
                 DateTime.fromFormat('Md', '123');
             }, /Unmatched trailing characters in DateTime string: 3/);
         });
+
+        it('parses wider PHP numeric patterns', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('yyyyyMMMMMMdddd', '020180000060001')
+                    .toISOString(),
+                '2018-06-01T00:00:00.000+00:00',
+            );
+        });
+    });
+
+    describe('Token widths', function() {
+        it('parses numeric quarter fallback widths', function() {
+            assert.strictEqual(
+                DateTime.fromFormat('QQQQQ', '2')
+                    .getQuarter(),
+                2,
+            );
+        });
+
+        it('parses localized GMT fallback widths', function() {
+            assert.strictEqual(
+                DateTime.fromFormat(
+                    'dd/MM/yyyy HH:mm:ss ZZZZZZ',
+                    '01/01/2019 00:00:00 GMT+10:00',
+                ).toISOString(),
+                '2018-12-31T14:00:00.000+00:00',
+            );
+        });
+
+        it('rejects widths without a JavaScript parsing equivalent', function() {
+            assert.throws((_) => {
+                DateTime.fromFormat('QQQ', 'Q2');
+            }, /Unsupported parsing token in DateTime format: QQQ/);
+            assert.throws((_) => {
+                DateTime.fromFormat('EEEEEE', 'Fr');
+            }, /Unsupported parsing token in DateTime format: EEEEEE/);
+            assert.throws((_) => {
+                DateTime.fromFormat('aaaaa', 'p');
+            }, /Unsupported parsing token in DateTime format: aaaaa/);
+            assert.throws((_) => {
+                DateTime.fromFormat('OO', '');
+            }, /Unsupported parsing token in DateTime format: OO/);
+            assert.throws((_) => {
+                DateTime.fromFormat('V', 'usnyc');
+            }, /Unsupported parsing token in DateTime format: V/);
+            assert.throws((_) => {
+                DateTime.fromFormat('xxxxxx', '');
+            }, /Unsupported parsing token in DateTime format: xxxxxx/);
+            assert.throws((_) => {
+                DateTime.fromFormat('z', 'UTC');
+            }, /Unsupported parsing token in DateTime format: z/);
+        });
     });
 
     /**

@@ -136,7 +136,7 @@ const invalid = DateTime.fromFormat('yyyy-MM-dd', '2019-02-31');
 invalid.isValid; // false
 ```
 
-`fromFormat()` does not support narrow month parsing tokens `MMMMM` and `LLLLL`; those tokens are output-only.
+`fromFormat()` rejects output-only or intentionally unsupported token widths. The compatibility matrix in [Formats.md](./Formats.md#php-intldateformatter-token-width-compatibility) records the supported PHP behavior and known differences.
 
 Format tokens are documented in [Formats.md](./Formats.md).
 
