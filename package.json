@@ -35,6 +35,7 @@
     "unpkg": "dist/frost-datetime.min.js",
     "files": [
         "dist",
+        "Formats.md",
         "LICENSE",
         "README.md",
         "src"
