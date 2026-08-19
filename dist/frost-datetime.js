@@ -3489,7 +3489,7 @@
          * Formats the current date using "yyyy-MM-dd'T'HH:mm:ss.SSSxxx".
          * @return {string} The formatted date string.
          */
-        toISOString() {
+        toIsoString() {
             return this
                 .withLocale('en')
                 .withTimeZone('UTC')
@@ -3502,7 +3502,7 @@
          */
         toJSON() {
             return this.isValid ?
-                this.toISOString() :
+                this.toIsoString() :
                 null;
         }
 

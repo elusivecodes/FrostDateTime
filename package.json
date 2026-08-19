@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/datetime",
-    "version": "7.0.0",
+    "version": "8.0.0",
     "private": false,
     "description": "Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones.",
     "keywords": [

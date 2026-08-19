@@ -14,7 +14,7 @@ describe('DateTime Creation', function() {
         it('works with date string', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -22,7 +22,7 @@ describe('DateTime Creation', function() {
         it('works with ISO string', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -102,7 +102,7 @@ describe('DateTime Creation', function() {
         it('works with ISO string with Z', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00Z')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -110,7 +110,7 @@ describe('DateTime Creation', function() {
         it('works with ISO string with offset', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00+10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -118,7 +118,7 @@ describe('DateTime Creation', function() {
         it('works with ISO string with negative offset', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00-05:30')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T05:30:00.000+00:00',
             );
         });
@@ -126,7 +126,7 @@ describe('DateTime Creation', function() {
         it('does not reinterpret explicit offsets in the requested time zone', function() {
             assert.strictEqual(
                 new DateTime('2019-01-01T00:00:00+00:00', { timeZone: 'America/New_York' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -134,7 +134,7 @@ describe('DateTime Creation', function() {
         it('works with partial string', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -142,7 +142,7 @@ describe('DateTime Creation', function() {
         it('works with time zone', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -150,7 +150,7 @@ describe('DateTime Creation', function() {
         it('works with offsets with colon', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+10:00' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -158,7 +158,7 @@ describe('DateTime Creation', function() {
         it('works with offsets without colon', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+1000' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -166,7 +166,7 @@ describe('DateTime Creation', function() {
         it('works with second-precision offsets with colons', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+00:09:21' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T23:50:39.000+00:00',
             );
         });
@@ -174,7 +174,7 @@ describe('DateTime Creation', function() {
         it('works with compact second-precision offsets', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: '+000921' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T23:50:39.000+00:00',
             );
         });
@@ -190,7 +190,7 @@ describe('DateTime Creation', function() {
         it('works with minute-offset time zones', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Asia/Kathmandu' })
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T18:15:00.000+00:00',
             );
         });
@@ -235,7 +235,7 @@ describe('DateTime Creation', function() {
         it('works with year', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -243,7 +243,7 @@ describe('DateTime Creation', function() {
         it('works with month', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 2])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-02-01T00:00:00.000+00:00',
             );
         });
@@ -251,7 +251,7 @@ describe('DateTime Creation', function() {
         it('works with date', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 2])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-02T00:00:00.000+00:00',
             );
         });
@@ -259,7 +259,7 @@ describe('DateTime Creation', function() {
         it('works with hour', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 1])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T01:00:00.000+00:00',
             );
         });
@@ -267,7 +267,7 @@ describe('DateTime Creation', function() {
         it('works with minute', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 1])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:01:00.000+00:00',
             );
         });
@@ -275,7 +275,7 @@ describe('DateTime Creation', function() {
         it('works with second', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 1])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:01.000+00:00',
             );
         });
@@ -283,7 +283,7 @@ describe('DateTime Creation', function() {
         it('works with millisecond', function() {
             assert.strictEqual(
                 DateTime.fromArray([2019, 1, 1, 0, 0, 0, 1])
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.001+00:00',
             );
         });
@@ -372,7 +372,7 @@ describe('DateTime Creation', function() {
             const date = new Date(1546300800000);
             assert.strictEqual(
                 DateTime.fromDate(date)
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -407,7 +407,7 @@ describe('DateTime Creation', function() {
         it('works with date', function() {
             assert.strictEqual(
                 DateTime.fromISOString('2019-01-01T00:00:00.000+00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -415,7 +415,7 @@ describe('DateTime Creation', function() {
         it('works with milliseconds', function() {
             assert.strictEqual(
                 DateTime.fromISOString('2019-01-01T00:00:00.123+00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.123+00:00',
             );
         });
@@ -453,7 +453,7 @@ describe('DateTime Creation', function() {
         it('works with timestamp', function() {
             assert.strictEqual(
                 DateTime.fromTimestamp(1546300800)
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });

@@ -42,7 +42,7 @@ Load the bundle from your own copy or a CDN:
 <script src="https://cdn.jsdelivr.net/npm/@fr0st/datetime@latest/dist/frost-datetime.min.js"></script>
 <script>
     const date = DateTime.now({ timeZone: 'UTC' });
-    console.log(date.toISOString());
+    console.log(date.toIsoString());
 </script>
 ```
 
@@ -62,7 +62,7 @@ const nextWeek = meeting.addWeeks(1);
 nextWeek.toString();
 // Mon Mar 30 2026 09:30:00 +1000 (Australia/Brisbane)
 
-nextWeek.toISOString();
+nextWeek.toIsoString();
 // 2026-03-29T23:30:00.000+00:00
 
 nextWeek.monthName();
@@ -87,11 +87,11 @@ FrostDateTime revolves around an immutable `DateTime` class and a small set of p
 const a = DateTime.fromArray([2026, 3, 23], { timeZone: 'UTC' });
 const b = a.addDays(1);
 
-a.toISOString(); // 2026-03-23T00:00:00.000+00:00
-b.toISOString(); // 2026-03-24T00:00:00.000+00:00
+a.toIsoString(); // 2026-03-23T00:00:00.000+00:00
+b.toIsoString(); // 2026-03-24T00:00:00.000+00:00
 
 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
-    .toISOString();
+    .toIsoString();
 // 2018-12-31T14:00:00.000+00:00
 ```
 
@@ -154,7 +154,7 @@ A time-only `fromFormat()` pattern starts from January 1, 1970 in the requested 
 DateTime.fromFormat('yyyyMMddHHmmss', '20190102123456');
 ```
 
-`fromFormat()` rejects output-only or intentionally unsupported token widths. The compatibility matrix in [Formats.md](./Formats.md#php-intldateformatter-token-width-compatibility) records the supported PHP behavior and known differences.
+`fromFormat()` rejects output-only or intentionally unsupported token widths.
 
 Format tokens are documented in [Formats.md](./Formats.md).
 
@@ -164,7 +164,7 @@ Format tokens are documented in [Formats.md](./Formats.md).
 - `toString()`: `eee MMM dd yyyy HH:mm:ss xx (VV)`
 - `toDateString()`: `eee MMM dd yyyy`
 - `toTimeString()`: `HH:mm:ss xx (VV)`
-- `toISOString()`: `yyyy-MM-dd'T'HH:mm:ss.SSSxxx` in English and UTC
+- `toIsoString()`: `yyyy-MM-dd'T'HH:mm:ss.SSSxxx` in English and UTC
 - `toJSON()`: same UTC ISO string for valid dates, `null` for invalid dates
 - `toUTCString()`: `toString()` shape in English and UTC
 
@@ -384,9 +384,9 @@ DateTime.clearDataCache();
 
 - Constructor-based parsing throws on invalid strings or unsupported time zones.
 - `fromFormat()` rejects trailing characters and marks impossible parsed dates as `isValid === false`.
-- `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toISOString()`.
-- `toISOString()` always returns a UTC string regardless of the instance time zone.
-- `toJSON()` returns the same value as `toISOString()` for valid dates and `null` for invalid dates.
+- `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toIsoString()`.
+- `toIsoString()` always returns a UTC string regardless of the instance time zone.
+- `toJSON()` returns the same value as `toIsoString()` for valid dates and `null` for invalid dates.
 - `withTimeZone()` keeps the same instant and changes representation.
 - `withTimeZoneOffset()` returns a fixed-offset view of the same instant.
 - A nonexistent local wall time moves forward to the next valid time, while a repeated wall time uses the later occurrence.

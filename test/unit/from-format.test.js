@@ -33,7 +33,7 @@ describe('DateTime #fromFormat', function() {
         it('parses adjacent fixed-width tokens', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyyMMddHHmmss', '20190102123456')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-02T12:34:56.000+00:00',
             );
         });
@@ -55,7 +55,7 @@ describe('DateTime #fromFormat', function() {
         it('parses wider PHP numeric patterns', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyyyMMMMMMdddd', '020180000060001')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-06-01T00:00:00.000+00:00',
             );
         });
@@ -75,7 +75,7 @@ describe('DateTime #fromFormat', function() {
                 DateTime.fromFormat(
                     'dd/MM/yyyy HH:mm:ss ZZZZZZ',
                     '01/01/2019 00:00:00 GMT+10:00',
-                ).toISOString(),
+                ).toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1083,7 +1083,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +0000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1091,7 +1091,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZ', '01/01/2019 00:00:00 +1000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1101,7 +1101,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1109,7 +1109,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZ', '01/01/2019 00:00:00 GMT+10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1119,7 +1119,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1127,7 +1127,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1135,7 +1135,7 @@ describe('DateTime #fromFormat', function() {
         it('works with second-precision offsets', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss ZZZZZ', '01/01/2019 00:00:00 +00:09:21')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T23:50:39.000+00:00',
             );
         });
@@ -1145,7 +1145,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1153,7 +1153,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss O', '01/01/2019 00:00:00 GMT+10')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1163,7 +1163,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1171,7 +1171,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss OOOO', '01/01/2019 00:00:00 GMT+10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1181,7 +1181,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 UTC')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1189,7 +1189,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss VV', '01/01/2019 00:00:00 Australia/Brisbane')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1219,7 +1219,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 Z')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1227,7 +1227,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss X', '01/01/2019 00:00:00 +10')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1237,7 +1237,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 Z')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1245,7 +1245,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XX', '01/01/2019 00:00:00 +1000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1255,7 +1255,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 Z')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1263,7 +1263,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXX', '01/01/2019 00:00:00 +10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1273,7 +1273,7 @@ describe('DateTime #fromFormat', function() {
         it('works without offset seconds', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXX', '01/01/2019 00:00:00 +1000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1281,7 +1281,7 @@ describe('DateTime #fromFormat', function() {
         it('works with second-precision offsets', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXX', '01/01/2019 00:00:00 +000921')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T23:50:39.000+00:00',
             );
         });
@@ -1291,7 +1291,7 @@ describe('DateTime #fromFormat', function() {
         it('works with second-precision offsets', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss XXXXX', '01/01/2019 00:00:00 +00:09:21')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T23:50:39.000+00:00',
             );
         });
@@ -1301,7 +1301,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1309,7 +1309,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss x', '01/01/2019 00:00:00 +10')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1319,7 +1319,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +0000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1327,7 +1327,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xx', '01/01/2019 00:00:00 +1000')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1337,7 +1337,7 @@ describe('DateTime #fromFormat', function() {
         it('parses the time zone', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +00:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2019-01-01T00:00:00.000+00:00',
             );
         });
@@ -1345,7 +1345,7 @@ describe('DateTime #fromFormat', function() {
         it('works with time zones', function() {
             assert.strictEqual(
                 DateTime.fromFormat('dd/MM/yyyy HH:mm:ss xxx', '01/01/2019 00:00:00 +10:00')
-                    .toISOString(),
+                    .toIsoString(),
                 '2018-12-31T14:00:00.000+00:00',
             );
         });
@@ -1354,7 +1354,7 @@ describe('DateTime #fromFormat', function() {
     it('creates time only dates from January 01 1970', function() {
         assert.strictEqual(
             DateTime.fromFormat('hh:mm a', '12:00 PM')
-                .toISOString(),
+                .toIsoString(),
             '1970-01-01T12:00:00.000+00:00',
         );
     });
