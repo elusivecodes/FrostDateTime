@@ -10,7 +10,7 @@ import { diffMethods, thresholds } from './vars.js';
 /**
  * Escapes a string for safe use inside a RegExp source.
  * @param {string} value The string to escape.
- * @return {string} The escaped string.
+ * @returns {string} The escaped string.
  */
 function escapeRegExp(value) {
     return value.replace(/[|\\{}()[\]^$+*?.-]/g, '\\$&');
@@ -19,7 +19,7 @@ function escapeRegExp(value) {
 /**
  * Gets a stable day number from a DateTime's local calendar fields.
  * @param {DateTime} date The DateTime.
- * @return {number} The local calendar day number.
+ * @returns {number} The local calendar day number.
  */
 function calendarDay(date) {
     const calendarDate = new Date(0);
@@ -34,7 +34,7 @@ function calendarDay(date) {
  * @param {DateTime} other The DateTime to compare to.
  * @param {'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'} timeUnit The time unit to compare in.
  * @param {boolean} [relative=true] Whether to use relative boundaries when calculating the difference.
- * @return {number} The difference between the dates in the given time unit.
+ * @returns {number} The difference between the dates in the given time unit.
  */
 export function calculateDiff(date, other, timeUnit, relative = true) {
     other = other.withTimeZone(date.getTimeZone());
@@ -147,7 +147,7 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
  * Gets the RegExp for a list of string values.
  * Longer values are matched first to avoid prefix collisions.
  * @param {string[]} values The values to include in the RegExp.
- * @return {string} The values RegExp.
+ * @returns {string} The values RegExp.
  */
 export function valuesRegExp(values) {
     return values.slice()
@@ -163,7 +163,7 @@ export function valuesRegExp(values) {
  * @param {number} amount The amount to compensate.
  * @param {boolean} [compensate=true] Whether to compensate the amount.
  * @param {number} [compensation=1] The compensation offset.
- * @return {number} The compensated amount.
+ * @returns {number} The compensated amount.
  */
 function compensateDiff(date, other, amount, compensate = true, compensation = 1) {
     if (amount > 0) {
@@ -187,7 +187,7 @@ function compensateDiff(date, other, amount, compensate = true, compensation = 1
  * Gets the biggest difference between two dates.
  * @param {DateTime} date The DateTime.
  * @param {DateTime} [other] The DateTime to compare to.
- * @return {[number, string]} The biggest difference (amount and time unit).
+ * @returns {[number, string]} The biggest difference (amount and time unit).
  */
 export function getBiggestDiff(date, other) {
     let lastResult;
@@ -219,7 +219,7 @@ export function getBiggestDiff(date, other) {
 /**
  * Gets the offset for a DateTime.
  * @param {DateTime} date The DateTime.
- * @return {number} The offset.
+ * @returns {number} The offset.
  */
 export function getOffset(date) {
     const timeZone = date.getTimeZone();
@@ -259,7 +259,7 @@ export function getOffset(date) {
 /**
  * Gets the number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {DateTime} date The DateTime.
- * @return {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
+ * @returns {number} The number of milliseconds since the UNIX epoch (offset to timeZone).
  */
 export function getOffsetTime(date) {
     return date.getTime() - (date.getTimeZoneOffset() * 60000);
@@ -284,7 +284,7 @@ export function parseCompare(formatString, dateString) {
 /**
  * Parses a supported unzoned ISO string as a neutral wall-clock timestamp.
  * @param {string} dateString The date string to parse.
- * @return {number|null} The timestamp, or null if the shape is not supported.
+ * @returns {number|null} The timestamp, or null if the shape is not supported.
  */
 export function parseLocalTimestamp(dateString) {
     const match =
@@ -314,7 +314,7 @@ export function parseLocalTimestamp(dateString) {
 
 /**
  * Generates methods for parsing a date.
- * @return {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
+ * @returns {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
  */
 export function parseFactory() {
     let isPM = false;
@@ -421,7 +421,7 @@ export function parseFactory() {
  * @param {DateTime} date The DateTime.
  * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {number} [direction=1] The direction to resolve a gap.
- * @return {DateTime} A new DateTime instance.
+ * @returns {DateTime} A new DateTime instance.
  */
 export function setOffsetTime(date, time, direction = 1) {
     const newDate = date.withTime(

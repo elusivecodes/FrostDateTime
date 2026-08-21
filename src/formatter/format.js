@@ -5,9 +5,9 @@ import { getDayPeriods, getDays, getEras, getMonths, getNumbers } from './values
  * Formats a day as a locale string.
  * @param {string} locale The locale.
  * @param {number} day The day to format (0-6).
- * @param {string} [type=long] The formatting type.
+ * @param {string} [type='long'] The formatting type.
  * @param {boolean} [standalone=true] Whether the value is standalone.
- * @return {string} The formatted string.
+ * @returns {string} The formatted string.
  */
 export function formatDay(locale, day, type = 'long', standalone = true) {
     return getDays(locale, type, standalone)[day];
@@ -17,8 +17,8 @@ export function formatDay(locale, day, type = 'long', standalone = true) {
  * Formats a day period as a locale string.
  * @param {string} locale The locale.
  * @param {number} period The day-period index to format. (0-1)
- * @param {string} [type=long] The formatting type.
- * @return {string} The formatted string.
+ * @param {string} [type='long'] The formatting type.
+ * @returns {string} The formatted string.
  */
 export function formatDayPeriod(locale, period, type = 'long') {
     return getDayPeriods(locale, type)[period];
@@ -28,8 +28,8 @@ export function formatDayPeriod(locale, period, type = 'long') {
  * Formats an era as a locale string.
  * @param {string} locale The locale.
  * @param {number} era The era index to format. (0-1)
- * @param {string} [type=long] The formatting type.
- * @return {string} The formatted string.
+ * @param {string} [type='long'] The formatting type.
+ * @returns {string} The formatted string.
  */
 export function formatEra(locale, era, type = 'long') {
     return getEras(locale, type)[era];
@@ -39,9 +39,9 @@ export function formatEra(locale, era, type = 'long') {
  * Formats a month as a locale string.
  * @param {string} locale The locale.
  * @param {number} month The month to format (1-12).
- * @param {string} [type=long] The formatting type.
+ * @param {string} [type='long'] The formatting type.
  * @param {boolean} [standalone=true] Whether the value is standalone.
- * @return {string} The formatted string.
+ * @returns {string} The formatted string.
  */
 export function formatMonth(locale, month, type = 'long', standalone = true) {
     return getMonths(locale, type, standalone)[month - 1];
@@ -52,7 +52,7 @@ export function formatMonth(locale, month, type = 'long', standalone = true) {
  * @param {string} locale The locale.
  * @param {number} number The number to format.
  * @param {number} [padding=0] The amount of padding to use.
- * @return {string} The formatted string.
+ * @returns {string} The formatted string.
  */
 export function formatNumber(locale, number, padding = 0) {
     const numbers = getNumbers(locale);
@@ -67,7 +67,7 @@ export function formatNumber(locale, number, padding = 0) {
  * @param {boolean} [useColon=true] Whether to use a colon separator.
  * @param {boolean} [optionalMinutes=false] Whether minutes are optional.
  * @param {boolean} [includeSeconds=true] Whether seconds are included.
- * @return {string} The formatted offset string.
+ * @returns {string} The formatted offset string.
  */
 export function formatOffset(offset, useColon = true, optionalMinutes = false, includeSeconds = true) {
     const absoluteSeconds = Math.abs(offset * 60);
@@ -102,7 +102,7 @@ export function formatOffset(offset, useColon = true, optionalMinutes = false, i
  * @param {string} locale The locale.
  * @param {number} amount The amount of duration.
  * @param {string} unit The time unit.
- * @return {string} The relative duration.
+ * @returns {string} The relative duration.
  */
 export function formatRelative(locale, amount, unit) {
     const relativeFormatter = getRelativeFormatter(locale);
@@ -119,8 +119,8 @@ export function formatRelative(locale, amount, unit) {
  * @param {string} locale The locale.
  * @param {number} timestamp The timestamp to use.
  * @param {string} timeZone The time zone to format.
- * @param {string} [type=long] The formatting type.
- * @return {string} The formatted string.
+ * @param {string} [type='long'] The formatting type.
+ * @returns {string} The formatted string.
  */
 export function formatTimeZoneName(locale, timestamp, timeZone, type = 'long') {
     return makeFormatter(locale, { second: 'numeric', timeZone, timeZoneName: type })

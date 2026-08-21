@@ -6,7 +6,7 @@ import { minDaysInFirstWeek, weekStart } from './locales.js';
  * @param {object} data The generated locale data.
  * @param {string[]} candidates The locale candidates.
  * @param {number} fallback The fallback value.
- * @return {number} The locale value.
+ * @returns {number} The locale value.
  */
 function generatedValue(data, candidates, fallback) {
     for (const candidate of candidates) {
@@ -23,7 +23,7 @@ function generatedValue(data, candidates, fallback) {
 /**
  * Gets generated-data candidates for a locale.
  * @param {Intl.Locale} locale The locale.
- * @return {string[]} The locale candidates.
+ * @returns {string[]} The locale candidates.
  */
 function localeCandidates(locale) {
     const localeName = locale.toString().split('-x-', 1)[0];
@@ -48,7 +48,7 @@ function localeCandidates(locale) {
 /**
  * Gets week information for a locale.
  * @param {string} locale The locale.
- * @return {{firstDay: number, minimalDays: number}} The week information.
+ * @returns {{firstDay: number, minimalDays: number}} The week information.
  */
 export function getWeekInfo(locale) {
     return getData(

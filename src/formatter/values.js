@@ -8,8 +8,8 @@ import { valuesRegExp } from './../helpers.js';
 /**
  * Gets cached localized day-period labels.
  * @param {string} locale The locale.
- * @param {string} [type=long] The formatting type.
- * @return {string[]} The localized day-period labels.
+ * @param {string} [type='long'] The formatting type.
+ * @returns {string[]} The localized day-period labels.
  */
 export function getDayPeriods(locale, type = 'long') {
     return getData(
@@ -30,9 +30,9 @@ export function getDayPeriods(locale, type = 'long') {
 /**
  * Gets cached localized weekday labels.
  * @param {string} locale The locale.
- * @param {string} [type=long] The formatting type.
+ * @param {string} [type='long'] The formatting type.
  * @param {boolean} [standalone=true] Whether the values are standalone.
- * @return {string[]} The localized weekday labels.
+ * @returns {string[]} The localized weekday labels.
  */
 export function getDays(locale, type = 'long', standalone = true) {
     return getData(
@@ -62,8 +62,8 @@ export function getDays(locale, type = 'long', standalone = true) {
 /**
  * Gets cached localized era labels.
  * @param {string} locale The locale.
- * @param {string} [type=long] The formatting type.
- * @return {string[]} The localized era labels.
+ * @param {string} [type='long'] The formatting type.
+ * @returns {string[]} The localized era labels.
  */
 export function getEras(locale, type = 'long') {
     return getData(
@@ -84,9 +84,9 @@ export function getEras(locale, type = 'long') {
 /**
  * Gets cached localized month labels.
  * @param {string} locale The locale.
- * @param {string} [type=long] The formatting type.
+ * @param {string} [type='long'] The formatting type.
  * @param {boolean} [standalone=true] Whether the values are standalone.
- * @return {string[]} The localized month labels.
+ * @returns {string[]} The localized month labels.
  */
 export function getMonths(locale, type = 'long', standalone = true) {
     return getData(
@@ -116,7 +116,7 @@ export function getMonths(locale, type = 'long', standalone = true) {
 /**
  * Gets cached localized digit glyphs.
  * @param {string} locale The locale.
- * @return {string[]} The localized digit glyphs.
+ * @returns {string[]} The localized digit glyphs.
  */
 export function getNumbers(locale) {
     return getData(
@@ -136,7 +136,7 @@ export function getNumbers(locale) {
  * Gets the RegExp for the number values.
  * @param {string} locale The locale.
  * @param {number|null} [length=null] The exact number of digits to match.
- * @return {string} The number values RegExp.
+ * @returns {string} The number values RegExp.
  */
 export function numberRegExp(locale, length = null) {
     const quantifier = length === null ?
