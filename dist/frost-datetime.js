@@ -141,7 +141,8 @@
         second: 60,
     };
 
-    /** @typedef {import('./date-time.js').default} DateTime */
+    /** @import DateTime from './date-time.js' */
+
 
     /**
      * DateTime Helpers
@@ -3601,10 +3602,8 @@
 
         /**
          * Returns a copy with the hours changed in the current time zone.
-         * @param {number} hours The hours. (0-23)
-         * @param {number} [minutes] The minutes. (0-59)
-         * @param {number} [seconds] The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
+         * @param {...number} args The hours (0-23), optionally followed by minutes
+         * (0-59), seconds (0-59), and milliseconds.
          * @returns {DateTime} A new DateTime instance.
          */
         withHours(...args) {
@@ -3640,9 +3639,8 @@
 
         /**
          * Returns a copy with the minutes changed in the current time zone.
-         * @param {number} minutes The minutes. (0-59)
-         * @param {number} [seconds] The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
+         * @param {...number} args The minutes (0-59), optionally followed by seconds
+         * (0-59) and milliseconds.
          * @returns {DateTime} A new DateTime instance.
          */
         withMinutes(...args) {
@@ -3699,8 +3697,8 @@
 
         /**
          * Returns a copy with the seconds changed in the current time zone.
-         * @param {number} seconds The seconds. (0-59)
-         * @param {number} [milliseconds] The milliseconds.
+         * @param {...number} args The seconds (0-59), optionally followed by
+         * milliseconds.
          * @returns {DateTime} A new DateTime instance.
          */
         withSeconds(...args) {

@@ -1,7 +1,7 @@
+/** @import DateTime from './date-time.js' */
+
 import { getDateFormatter } from './factory.js';
 import { diffMethods, thresholds } from './vars.js';
-
-/** @typedef {import('./date-time.js').default} DateTime */
 
 /**
  * DateTime Helpers

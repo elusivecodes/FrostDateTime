@@ -398,7 +398,7 @@ DateTime.clearDataCache();
 
 ```bash
 npm test
-npm run js-lint
+npm run lint
 npm run build
 ```
 
