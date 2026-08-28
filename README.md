@@ -27,7 +27,7 @@ Immutable date and time handling for JavaScript with locale-aware formatting, pa
 npm i @fr0st/datetime
 ```
 
-FrostDateTime is ESM-only. Import the default `DateTime` export in Node and bundlers.
+FrostDateTime's package entry point is ESM-only. Import the default `DateTime` export in Node and bundlers.
 
 ```js
 import DateTime from '@fr0st/datetime';
@@ -55,10 +55,12 @@ Load the bundle from your own copy or a CDN:
 <!-- or -->
 <script src="https://cdn.jsdelivr.net/npm/@fr0st/datetime@latest/dist/frost-datetime.min.js"></script>
 <script>
-    const date = DateTime.now({ timeZone: 'UTC' });
+    const date = globalThis.DateTime.now({ timeZone: 'UTC' });
     console.log(date.toIsoString());
 </script>
 ```
+
+The package root resolves to the prebuilt ESM bundle. Published files under `dist/` and `src/` are also available through matching package subpaths.
 
 ## Quick Start
 

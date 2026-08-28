@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/datetime",
-    "version": "8.1.0",
+    "version": "8.1.1",
     "private": false,
     "description": "Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones.",
     "keywords": [
@@ -54,7 +54,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "devDependencies": {
-        "@fr0st/eslint-config": "^5.0.1",
+        "@fr0st/eslint-config": "^5.0.2",
         "@vitest/coverage-v8": "^4.1.11",
         "eslint": "^10.9.1",
         "vite": "^8.2.2",
