@@ -1,4 +1,4 @@
-import { beforeEach } from 'mocha';
+import { beforeEach } from 'vitest';
 import DateTime from '../src/index.js';
 
 beforeEach(function() {

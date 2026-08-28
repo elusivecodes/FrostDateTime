@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'mocha';
+import { describe, it } from 'vitest';
 import { getData } from '../../src/factory.js';
 import DateTime from '../../src/index.js';
 

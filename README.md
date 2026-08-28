@@ -1,9 +1,10 @@
 # FrostDateTime
 
 [![CI](https://github.com/elusivecodes/FrostDateTime/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/elusivecodes/FrostDateTime/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/elusivecodes/FrostDateTime/branch/main/graph/badge.svg)](https://codecov.io/gh/elusivecodes/FrostDateTime)
 [![npm version](https://img.shields.io/npm/v/%40fr0st%2Fdatetime?style=flat-square)](https://www.npmjs.com/package/@fr0st/datetime)
 [![npm downloads](https://img.shields.io/npm/dm/%40fr0st%2Fdatetime?style=flat-square)](https://www.npmjs.com/package/@fr0st/datetime)
-[![minzipped size](https://img.shields.io/bundlejs/size/%40fr0st/datetime?format=minzip&style=flat-square)](https://bundlejs.com/?q=@fr0st/datetime)
+[![JS gzip size](https://img.badgesize.io/elusivecodes/FrostDateTime/main/dist/frost-datetime.min.js?compression=gzip&label=JS%20gzip%20size&style=flat-square)](https://github.com/elusivecodes/FrostDateTime/blob/main/dist/frost-datetime.min.js)
 [![license](https://img.shields.io/github/license/elusivecodes/FrostDateTime?style=flat-square)](./LICENSE)
 
 Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones. FrostDateTime works in Node and bundlers, and also ships a browser-friendly UMD bundle that exposes `globalThis.DateTime`.
@@ -11,7 +12,7 @@ Immutable date and time handling for JavaScript with locale-aware formatting, pa
 ## Highlights
 
 - Default ESM `DateTime` export for Node and bundlers
-- Browser UMD bundle in `dist/` exposed as `globalThis.DateTime`
+- Prebuilt ESM and UMD bundles in `dist/`
 - No runtime dependencies
 - Immutable operations across getters, setters, and date math
 - Locale-aware formatting, parsing, relative time, and week rules through `Intl`
@@ -30,6 +31,19 @@ FrostDateTime is ESM-only. Import the default `DateTime` export in Node and bund
 
 ```js
 import DateTime from '@fr0st/datetime';
+```
+
+### Browser (ESM)
+
+Import the minified ESM bundle directly from a CDN:
+
+```html
+<script type="module">
+    import DateTime from 'https://cdn.jsdelivr.net/npm/@fr0st/datetime@latest/dist/frost-datetime.esm.min.js';
+
+    const date = DateTime.now({ timeZone: 'UTC' });
+    console.log(date.toIsoString());
+</script>
 ```
 
 ### Browser (UMD)

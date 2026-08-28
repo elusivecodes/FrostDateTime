@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'mocha';
+import { describe, it } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat (Locale)', function() {
-    it('parses astral numbering-system digits', function() {
+    it('parses astral numbering-system digits', function({ skip }) {
         const locale = 'en-u-nu-mathbold';
         if (new Intl.NumberFormat(locale).resolvedOptions().numberingSystem !== 'mathbold') {
-            this.skip();
+            skip();
         }
 
         assert.strictEqual(

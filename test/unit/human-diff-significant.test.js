@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'mocha';
+import { describe, it } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #humanDiff Significant Values', function() {

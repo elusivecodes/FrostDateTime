@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/datetime",
-    "version": "8.0.3",
+    "version": "8.1.0",
     "private": false,
     "description": "Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones.",
     "keywords": [
@@ -28,11 +28,17 @@
     "sideEffects": false,
     "type": "module",
     "exports": {
-        ".": "./src/index.js"
+        ".": {
+            "import": "./dist/frost-datetime.esm.js",
+            "default": "./dist/frost-datetime.esm.js"
+        },
+        "./dist/*": "./dist/*",
+        "./src/*": "./src/*"
     },
-    "main": "src/index.js",
-    "jsdelivr": "dist/frost-datetime.min.js",
-    "unpkg": "dist/frost-datetime.min.js",
+    "main": "./dist/frost-datetime.esm.js",
+    "jsdelivr": "./dist/frost-datetime.min.js",
+    "unpkg": "./dist/frost-datetime.min.js",
+    "module": "./dist/frost-datetime.esm.js",
     "files": [
         "dist",
         "Formats.md",
@@ -41,19 +47,18 @@
         "src"
     ],
     "scripts": {
-        "build": "npm run bundle && npm run minify",
-        "bundle": "rollup --config",
+        "build": "vite build",
         "lint": "eslint",
-        "minify": "terser --compress passes=2 --mangle --source-map \"content=dist/frost-datetime.js.map,url=frost-datetime.min.js.map\" --output dist/frost-datetime.min.js dist/frost-datetime.js",
         "locales": "php generate-locales.php > src/formatter/locales.js",
-        "test": "mocha --forbid-only --file test/setup.js \"test/unit/**/*.test.js\""
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage"
     },
     "devDependencies": {
-        "@fr0st/eslint-config": "^5.0.0",
-        "eslint": "^10.8.1",
-        "mocha": "^11.8.0",
-        "rollup": "^4.62.4",
-        "terser": "^5.50.0"
+        "@fr0st/eslint-config": "^5.0.1",
+        "@vitest/coverage-v8": "^4.1.11",
+        "eslint": "^10.9.1",
+        "vite": "^8.2.2",
+        "vitest": "^4.1.11"
     },
     "engines": {
         "node": "^20.19.0 || ^22.13.0 || >=24"
