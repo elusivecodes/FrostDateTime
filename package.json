@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/datetime",
-    "version": "8.1.1",
+    "version": "8.1.2",
     "private": false,
     "description": "Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones.",
     "keywords": [
@@ -14,14 +14,14 @@
         "parse",
         "format"
     ],
-    "homepage": "https://github.com/elusivecodes/FrostDateTime",
+    "homepage": "https://github.com/frost-js/datetime",
     "bugs": {
-        "url": "https://github.com/elusivecodes/FrostDateTime/issues",
+        "url": "https://github.com/frost-js/datetime/issues",
         "email": "elusivecodes@gmail.com"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/elusivecodes/FrostDateTime.git"
+        "url": "git+https://github.com/frost-js/datetime.git"
     },
     "license": "MIT",
     "author": "Elusive <elusivecodes@gmail.com>",
@@ -54,7 +54,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "devDependencies": {
-        "@fr0st/eslint-config": "^5.0.2",
+        "@fr0st/eslint-config": "^5.0.3",
         "@vitest/coverage-v8": "^4.1.11",
         "eslint": "^10.9.1",
         "vite": "^8.2.2",

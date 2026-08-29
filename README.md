@@ -1,13 +1,13 @@
-# FrostDateTime
+# Frost DateTime
 
-[![CI](https://github.com/elusivecodes/FrostDateTime/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/elusivecodes/FrostDateTime/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/elusivecodes/FrostDateTime/branch/main/graph/badge.svg)](https://codecov.io/gh/elusivecodes/FrostDateTime)
+[![CI](https://github.com/frost-js/datetime/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/frost-js/datetime/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/frost-js/datetime/branch/main/graph/badge.svg)](https://codecov.io/gh/frost-js/datetime)
 [![npm version](https://img.shields.io/npm/v/%40fr0st%2Fdatetime?style=flat-square)](https://www.npmjs.com/package/@fr0st/datetime)
 [![npm downloads](https://img.shields.io/npm/dm/%40fr0st%2Fdatetime?style=flat-square)](https://www.npmjs.com/package/@fr0st/datetime)
-[![JS gzip size](https://img.badgesize.io/elusivecodes/FrostDateTime/main/dist/frost-datetime.min.js?compression=gzip&label=JS%20gzip%20size&style=flat-square)](https://github.com/elusivecodes/FrostDateTime/blob/main/dist/frost-datetime.min.js)
-[![license](https://img.shields.io/github/license/elusivecodes/FrostDateTime?style=flat-square)](./LICENSE)
+[![JS gzip size](https://img.badgesize.io/frost-js/datetime/main/dist/frost-datetime.min.js?compression=gzip&label=JS%20gzip%20size&style=flat-square)](https://github.com/frost-js/datetime/blob/main/dist/frost-datetime.min.js)
+[![license](https://img.shields.io/github/license/frost-js/datetime?style=flat-square)](./LICENSE)
 
-Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones. FrostDateTime works in Node and bundlers, and also ships a browser-friendly UMD bundle that exposes `globalThis.DateTime`.
+Immutable date and time handling for JavaScript with locale-aware formatting, parsing, calendar math, and IANA or fixed-offset time zones. Frost DateTime works in Node and bundlers, and also ships a browser-friendly UMD bundle that exposes `globalThis.DateTime`.
 
 ## Highlights
 
@@ -27,7 +27,7 @@ Immutable date and time handling for JavaScript with locale-aware formatting, pa
 npm i @fr0st/datetime
 ```
 
-FrostDateTime's package entry point is ESM-only. Import the default `DateTime` export in Node and bundlers.
+Frost DateTime's package entry point is ESM-only. Import the default `DateTime` export in Node and bundlers.
 
 ```js
 import DateTime from '@fr0st/datetime';
@@ -85,11 +85,11 @@ nextWeek.monthName();
 // March
 ```
 
-TypeScript note: FrostDateTime is written in JavaScript and uses JSDoc types, which most editors surface as IntelliSense.
+TypeScript note: Frost DateTime is written in JavaScript and uses JSDoc types, which most editors surface as IntelliSense.
 
 ## Date Model
 
-FrostDateTime revolves around an immutable `DateTime` class and a small set of predictable parsing and formatting rules.
+Frost DateTime revolves around an immutable `DateTime` class and a small set of predictable parsing and formatting rules.
 
 - Every setter and manipulation method returns a new instance
 - Constructor numbers are milliseconds since the UNIX epoch
@@ -113,7 +113,7 @@ new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
 
 ## API
 
-FrostDateTime exports a default `DateTime` class from `@fr0st/datetime`.
+Frost DateTime exports a default `DateTime` class from `@fr0st/datetime`.
 
 ### Creating dates
 
@@ -176,7 +176,7 @@ Format tokens are documented in [Formats.md](./Formats.md).
 
 ### Formatting and output
 
-- `format(formatString)`: format with FrostDateTime's token set
+- `format(formatString)`: format with Frost DateTime's token set
 - `toString()`: `eee MMM dd yyyy HH:mm:ss xx (VV)`
 - `toDateString()`: `eee MMM dd yyyy`
 - `toTimeString()`: `HH:mm:ss xx (VV)`
@@ -420,4 +420,4 @@ npm run build
 
 ## License
 
-FrostDateTime is released under the [MIT License](./LICENSE).
+Frost DateTime is released under the [MIT License](./LICENSE).
