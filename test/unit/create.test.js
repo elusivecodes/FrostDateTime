@@ -131,6 +131,24 @@ describe('DateTime Creation', function() {
             );
         });
 
+        it.each([
+            '2024-01-01T12:00:00.1Z',
+            '2024-01-01T12:00:00.12Z',
+            '2024-01-01T12:00:00.123Z',
+            '2024-01-01T12:00:00.123456Z',
+            '2024-01-01T12:00:00.1+10:00',
+            '2024-01-01T12:00:00.12-05:30',
+            'Tue, 01 Jan 2019 00:00:00 +1000',
+            'Tue, 01 Jan 2019 00:00:00 -0530',
+        ])('preserves the instant for zoned string %s', function(dateString) {
+            for (const timeZone of ['UTC', 'Australia/Brisbane']) {
+                assert.strictEqual(
+                    new DateTime(dateString, { timeZone }).getTime(),
+                    Date.parse(dateString),
+                );
+            }
+        });
+
         it('works with partial string', function() {
             assert.strictEqual(
                 new DateTime('January 1, 2019')

@@ -10,7 +10,7 @@ export const config = {
     defaultTimeZone: resolvedOptions.timeZone,
 };
 
-export const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[+-]\d{2}(?::?\d{2})?)\b)/i;
+export const dateStringTimeZoneRegExp = /(?:\b(?:UTC|GMT)\b|[T\s]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?\s*(?:Z|[+-]\d{2}(?::?\d{2})?)\b)/i;
 
 export const formats = {
     date: 'eee MMM dd yyyy',
