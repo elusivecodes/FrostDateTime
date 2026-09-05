@@ -1,11 +1,48 @@
 /** @import DateTime from './date-time.js' */
 
 import { getDateFormatter } from './factory.js';
-import { diffMethods, thresholds } from './vars.js';
+import { diffMethods, parseOrderKeys, thresholds } from './vars.js';
+
+/**
+ * @typedef {{key: string, value: number|string, literal: string, token: string, length: number}} ParsedDateValue
+ */
 
 /**
  * DateTime Helpers
  */
+
+/**
+ * Applies parsed fields in calendar order and validates their final values.
+ * @param {DateTime} datetime The base date.
+ * @param {ParsedDateValue[]} values The parsed fields.
+ * @returns {DateTime} The parsed date.
+ */
+function applyDateValues(datetime, values) {
+    const methods = parseFactory();
+    const testValues = [];
+
+    for (const subKeys of parseOrderKeys) {
+        for (const subKey of subKeys) {
+            if (subKey === 'era' && !values.some((data) => data.key === 'year')) {
+                continue;
+            }
+
+            for (const data of values) {
+                const { key, value } = data;
+
+                if (key !== subKey) {
+                    continue;
+                }
+
+                datetime = methods[key].set(datetime, value);
+                testValues.push(data);
+            }
+        }
+    }
+
+    datetime.isValid = testValues.every(({ key, value }) => methods[key].get(datetime) === value);
+    return datetime;
+}
 
 /**
  * Escapes a string for safe use inside a RegExp source.
@@ -279,6 +316,57 @@ export function parseCompare(formatString, dateString) {
 
         i++;
     }
+};
+
+/**
+ * Resolves two-digit years in a moving century window and applies parsed fields.
+ * The window starts 80 calendar years before the reference time in UTC.
+ * @param {DateTime} baseDate The base date in the parsing locale and time zone.
+ * @param {ParsedDateValue[]} values The parsed fields.
+ * @param {number} referenceTime The epoch milliseconds captured when parsing began.
+ * @returns {DateTime} The parsed date.
+ */
+export function parseDateValues(baseDate, values, referenceTime) {
+    const shortYears = values.filter(({ key, literal, length }) =>
+        (key === 'year' || key === 'weekYear') &&
+        length <= 2 && Array.from(literal).length === 2,
+    );
+    let centuryStart = null;
+    let startYear;
+
+    if (shortYears.length) {
+        centuryStart = new Date(referenceTime);
+        startYear = centuryStart.getUTCFullYear() - 80;
+        const month = centuryStart.getUTCMonth();
+        const day = Math.min(
+            centuryStart.getUTCDate(),
+            baseDate.constructor.daysInMonth(startYear, month + 1),
+        );
+        centuryStart.setUTCFullYear(startYear, month, day);
+
+        for (const data of shortYears) {
+            data.value += Math.floor(startYear / 100) * 100 +
+                (data.value < startYear % 100 ? 100 : 0);
+        }
+    }
+
+    let datetime = applyDateValues(baseDate, values);
+
+    if (centuryStart && datetime < centuryStart) {
+        const boundaryYears = shortYears.filter(({ value }) => value === startYear);
+
+        if (boundaryYears.length) {
+            for (const data of boundaryYears) {
+                data.value += 100;
+            }
+
+            // Reapply the original fields so leap days, week dates and DST gaps
+            // are resolved in the chosen century rather than carried over.
+            datetime = applyDateValues(baseDate, values);
+        }
+    }
+
+    return datetime;
 };
 
 /**

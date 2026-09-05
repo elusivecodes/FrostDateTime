@@ -164,6 +164,10 @@ const invalid = DateTime.fromFormat('yyyy-MM-dd', '2019-02-31');
 invalid.isValid; // false
 ```
 
+Exactly two input digits parsed with `y`, `yy`, `Y`, or `YY` use ICU's moving 100-year window. The window starts 80 calendar years before the UTC reference time captured at the beginning of each `fromFormat()` call. The complete parsed date, including its time and offset, determines the century at the boundary. Week dates retain their locale-specific week number and weekday when the century changes.
+
+Single-digit and longer input years are interpreted literally. Patterns with three or more year letters (`yyy`, `yyyy`, `YYY`, `YYYY`, etc.) also interpret the year literally.
+
 A time-only `fromFormat()` pattern starts from January 1, 1970 in the requested local time zone. Directly adjacent numeric tokens consume their pattern widths exactly, so compact fixed-width patterns can be parsed; standalone numeric tokens are not capped at the pattern width:
 
 ```js

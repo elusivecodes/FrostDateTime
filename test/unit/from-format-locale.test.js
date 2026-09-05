@@ -1,8 +1,33 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'vitest';
+import { afterEach, beforeEach, describe, it, vi } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat (Locale)', function() {
+    beforeEach(function() {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-09-06T12:00:00.000Z'));
+    });
+
+    afterEach(function() {
+        vi.useRealTimers();
+    });
+
+    it('parses two-digit years with astral numbering-system digits', function({ skip }) {
+        const locale = 'en-u-nu-mathbold';
+        if (new Intl.NumberFormat(locale).resolvedOptions().numberingSystem !== 'mathbold') {
+            skip();
+        }
+
+        assert.strictEqual(
+            DateTime.fromFormat('yy-MM-dd', '𝟎𝟓-𝟎𝟏-𝟎𝟏', { locale }).getYear(),
+            2005,
+        );
+        assert.strictEqual(
+            DateTime.fromFormat('YY w e', '𝟎𝟓 𝟏 𝟏', { locale }).getWeekYear(),
+            2005,
+        );
+    });
+
     it('parses astral numbering-system digits', function({ skip }) {
         const locale = 'en-u-nu-mathbold';
         if (new Intl.NumberFormat(locale).resolvedOptions().numberingSystem !== 'mathbold') {
@@ -111,11 +136,16 @@ describe('DateTime #fromFormat (Locale)', function() {
             );
         });
 
-        it('parses 2-digit year', function() {
+        it.each([
+            ['٠٠', 2000],
+            ['٠٥', 2005],
+            ['٠٩', 2009],
+            ['٨٨', 1988],
+        ])('parses year %s as %i', function(value, expected) {
             assert.strictEqual(
-                DateTime.fromFormat('yy', '٨٨', { locale: 'ar-eg' })
+                DateTime.fromFormat('yy', value, { locale: 'ar-eg' })
                     .getYear(),
-                1988,
+                expected,
             );
         });
     });
@@ -187,11 +217,16 @@ describe('DateTime #fromFormat (Locale)', function() {
             );
         });
 
-        it('parses 2-digit year', function() {
+        it.each([
+            ['٠٠', 2000],
+            ['٠٥', 2005],
+            ['٠٩', 2009],
+            ['٨٨', 1988],
+        ])('parses week year %s as %i', function(value, expected) {
             assert.strictEqual(
-                DateTime.fromFormat('YY w e', '٨٨ ١ ٦', { locale: 'ar-eg' })
+                DateTime.fromFormat('YY w e', `${value} ١ ٦`, { locale: 'ar-eg' })
                     .getWeekYear(),
-                1988,
+                expected,
             );
         });
     });

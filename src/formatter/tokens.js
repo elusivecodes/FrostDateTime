@@ -34,17 +34,7 @@ export default {
     y: {
         key: 'year',
         regex: (locale) => numberRegExp(locale),
-        input: (locale, value, length) => {
-            value = parseNumber(locale, value);
-
-            if (length !== 2 || `${value}`.length !== 2) {
-                return value;
-            }
-
-            return value > 40 ?
-                1900 + value :
-                2000 + value;
-        },
+        input: (locale, value) => parseNumber(locale, value),
         output: (datetime, length) => {
             let year = datetime.getYear();
             if (length === 2) {
@@ -62,17 +52,7 @@ export default {
     Y: {
         key: 'weekYear',
         regex: (locale) => numberRegExp(locale),
-        input: (locale, value, length) => {
-            value = parseNumber(locale, value);
-
-            if (length !== 2 || `${value}`.length !== 2) {
-                return value;
-            }
-
-            return value > 40 ?
-                1900 + value :
-                2000 + value;
-        },
+        input: (locale, value) => parseNumber(locale, value),
         output: (datetime, length) => {
             let year = datetime.getWeekYear();
             if (length === 2) {

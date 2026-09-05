@@ -16,7 +16,7 @@ import {
     getOffset,
     getOffsetTime,
     parseCompare,
-    parseFactory,
+    parseDateValues,
     parseLocalTimestamp,
     setOffsetTime,
 } from './helpers.js';
@@ -27,7 +27,6 @@ import {
     formatTokenRegExp,
     monthDays,
     offsetRegExp,
-    parseOrderKeys,
 } from './vars.js';
 
 /**
@@ -151,6 +150,7 @@ export default class DateTime {
      * `MMMMM` or `LLLLL`.
      */
     static fromFormat(formatString, dateString, options = {}) {
+        const referenceTime = Date.now();
         const locale = 'locale' in options ?
             options.locale :
             config.defaultLocale;
@@ -236,58 +236,17 @@ export default class DateTime {
             throw new Error(`Unmatched trailing characters in DateTime string: ${dateString}`);
         }
 
-        let timeZone = requestedTimeZone;
-        for (const { key, value } of values) {
-            if (key !== 'timeZone') {
-                continue;
-            }
+        const timeZone = values.findLast(({ key }) => key === 'timeZone')?.value ?? requestedTimeZone;
 
-            timeZone = value;
-        }
+        const datetime = parseDateValues(
+            this.fromArray([1970, 1, 1], { locale, timeZone }),
+            values,
+            referenceTime,
+        );
 
-        let datetime = this.fromArray([1970, 1, 1], {
-            locale,
-            timeZone,
-        });
-
-        const methods = parseFactory();
-
-        const testValues = [];
-
-        for (const subKeys of parseOrderKeys) {
-            for (const subKey of subKeys) {
-                if (subKey === 'era' && !values.find((data) => data.key === 'year')) {
-                    continue;
-                }
-
-                for (const data of values) {
-                    const { key, value } = data;
-
-                    if (key !== subKey) {
-                        continue;
-                    }
-
-                    datetime = methods[key].set(datetime, value);
-                    testValues.push(data);
-                }
-            }
-        }
-
-        let isValid = true;
-        for (const { key, value } of testValues) {
-            if (key in methods && methods[key].get(datetime) !== value) {
-                isValid = false;
-                break;
-            }
-        }
-
-        if (requestedTimeZone !== timeZone) {
-            datetime = datetime.withTimeZone(requestedTimeZone);
-        }
-
-        datetime.isValid = isValid;
-
-        return datetime;
+        return requestedTimeZone !== timeZone ?
+            datetime.withTimeZone(requestedTimeZone) :
+            datetime;
     }
 
     /**

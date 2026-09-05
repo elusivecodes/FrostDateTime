@@ -1,8 +1,17 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'vitest';
+import { afterEach, beforeEach, describe, it, vi } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime #fromFormat', function() {
+    beforeEach(function() {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-09-06T12:00:00.000Z'));
+    });
+
+    afterEach(function() {
+        vi.useRealTimers();
+    });
+
     describe('Literals', function() {
         it('parses ordinary quoted text', function() {
             assert.strictEqual(
@@ -194,11 +203,23 @@ describe('DateTime #fromFormat', function() {
             );
         });
 
-        it('parses 2-digit year', function() {
+        it.each([
+            ['00', 2000],
+            ['01', 2001],
+            ['05', 2005],
+            ['09', 2009],
+            ['40', 2040],
+            ['41', 2041],
+            ['88', 1988],
+            ['99', 1999],
+            ['5', 5],
+            ['005', 5],
+            ['0088', 88],
+        ])('parses year %s as %i', function(value, expected) {
             assert.strictEqual(
-                DateTime.fromFormat('yy', '88')
+                DateTime.fromFormat('yy-MM-dd', `${value}-01-01`)
                     .getYear(),
-                1988,
+                expected,
             );
         });
     });
@@ -270,11 +291,23 @@ describe('DateTime #fromFormat', function() {
             );
         });
 
-        it('parses 2-digit year', function() {
+        it.each([
+            ['00', 2000],
+            ['01', 2001],
+            ['05', 2005],
+            ['09', 2009],
+            ['40', 2040],
+            ['41', 2041],
+            ['88', 1988],
+            ['99', 1999],
+            ['5', 5],
+            ['005', 5],
+            ['0088', 88],
+        ])('parses week year %s as %i', function(value, expected) {
             assert.strictEqual(
-                DateTime.fromFormat('YY w e', '88 1 1')
+                DateTime.fromFormat('YY w e', `${value} 1 1`)
                     .getWeekYear(),
-                1988,
+                expected,
             );
         });
     });
