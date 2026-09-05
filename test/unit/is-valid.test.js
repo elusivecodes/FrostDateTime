@@ -3,6 +3,45 @@ import { describe, it } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime Is Valid', function() {
+    describe('Copies', function() {
+        it.each([
+            ['withLocale', 'fr'],
+            ['withTimeZone', 'America/New_York'],
+            ['withTimeZoneOffset', -600],
+            ['withTime', 1704067200000],
+            ['withTimestamp', 1704067200],
+            ['withYear', 2024],
+            ['addDays', 1],
+            ['addHours', 1],
+        ])('preserves validity through %s', function(method, value) {
+            for (const [dateString, isValid] of [['2019-02-28', true], ['2019-02-31', false]]) {
+                const date = DateTime.fromFormat('yyyy-MM-dd', dateString);
+                const time = date.getTime();
+                const copy = date[method](value);
+
+                assert.notStrictEqual(copy, date);
+                assert.strictEqual(copy.isValid, isValid);
+                assert.strictEqual(copy.toJSON(), isValid ? copy.toIsoString() : null);
+                assert.strictEqual(date.isValid, isValid);
+                assert.strictEqual(date.getTime(), time);
+            }
+        });
+    });
+
+    describe('ISO Parsing', function() {
+        it.each([
+            {},
+            { timeZone: 'UTC' },
+            { locale: 'fr' },
+            { timeZone: 'Australia/Brisbane', locale: 'fr' },
+        ])('preserves invalidity with options %j', function(options) {
+            const date = DateTime.fromISOString('2019-02-31T00:00:00.000+00:00', options);
+
+            assert.strictEqual(date.isValid, false);
+            assert.strictEqual(date.toJSON(), null);
+        });
+    });
+
     describe('Era', function() {
         it('validates AD era', function() {
             assert.strictEqual(

@@ -400,6 +400,7 @@ DateTime.clearDataCache();
 
 - Constructor-based parsing throws on invalid strings or unsupported time zones.
 - `fromFormat()` rejects trailing characters and marks impossible parsed dates as `isValid === false`.
+- Copies and arithmetic preserve `isValid`; invalid dates remain invalid.
 - `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toIsoString()`.
 - `toIsoString()` always returns a UTC string regardless of the instance time zone.
 - `toJSON()` returns the same value as `toIsoString()` for valid dates and `null` for invalid dates.

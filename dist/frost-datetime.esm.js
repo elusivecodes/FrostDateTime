@@ -3080,10 +3080,7 @@ var DateTime = class {
 	* @returns {DateTime} A new DateTime instance.
 	*/
 	withLocale(locale) {
-		return new this.constructor(this.getTime(), {
-			locale,
-			timeZone: this.#timeZone
-		});
+		return this.#copy({ locale });
 	}
 	/**
 	* Returns a copy with the milliseconds changed in the current time zone.
@@ -3138,10 +3135,7 @@ var DateTime = class {
 	* @returns {DateTime} A new DateTime instance.
 	*/
 	withTime(time) {
-		return new this.constructor(time, {
-			locale: this.#locale,
-			timeZone: this.#timeZone
-		});
+		return this.#copy({ time });
 	}
 	/**
 	* Returns a copy with a different number of seconds since the UNIX epoch.
@@ -3157,10 +3151,7 @@ var DateTime = class {
 	* @returns {DateTime} A new DateTime instance.
 	*/
 	withTimeZone(timeZone) {
-		return new this.constructor(this.getTime(), {
-			locale: this.#locale,
-			timeZone
-		});
+		return this.#copy({ timeZone });
 	}
 	/**
 	* Returns a copy with a fixed numeric UTC offset.
@@ -3168,10 +3159,7 @@ var DateTime = class {
 	* @returns {DateTime} A new DateTime instance.
 	*/
 	withTimeZoneOffset(offset) {
-		return new this.constructor(this.getTime(), {
-			locale: this.#locale,
-			timeZone: formatOffset(offset)
-		});
+		return this.#copy({ timeZone: formatOffset(offset) });
 	}
 	/**
 	* Returns a copy with the local week changed in the current time zone.
@@ -3243,6 +3231,19 @@ var DateTime = class {
 			if (config.clampDates) date = Math.min(date, this.constructor.daysInMonth(year, month));
 		}
 		return setOffsetTime(this, new Date(getOffsetTime(this)).setUTCFullYear(year, month - 1, date));
+	}
+	/**
+	* Creates a copy with overridden values while preserving validity.
+	* @param {DateTimeOptions & {time?: number}} options The values to override.
+	* @returns {DateTime} A new DateTime instance.
+	*/
+	#copy({ time = this.getTime(), locale = this.#locale, timeZone = this.#timeZone }) {
+		const date = new this.constructor(time, {
+			locale,
+			timeZone
+		});
+		date.isValid = this.isValid;
+		return date;
 	}
 };
 

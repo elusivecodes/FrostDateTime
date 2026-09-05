@@ -1945,10 +1945,7 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     withLocale(locale) {
-        return new this.constructor(this.getTime(), {
-            locale,
-            timeZone: this.#timeZone,
-        });
+        return this.#copy({ locale });
     }
 
     /**
@@ -2040,10 +2037,7 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     withTime(time) {
-        return new this.constructor(time, {
-            locale: this.#locale,
-            timeZone: this.#timeZone,
-        });
+        return this.#copy({ time });
     }
 
     /**
@@ -2061,10 +2055,7 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     withTimeZone(timeZone) {
-        return new this.constructor(this.getTime(), {
-            locale: this.#locale,
-            timeZone,
-        });
+        return this.#copy({ timeZone });
     }
 
     /**
@@ -2073,8 +2064,7 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     withTimeZoneOffset(offset) {
-        return new this.constructor(this.getTime(), {
-            locale: this.#locale,
+        return this.#copy({
             timeZone: formatOffset(offset),
         });
     }
@@ -2202,5 +2192,20 @@ export default class DateTime {
                 date,
             ),
         );
+    }
+
+    /**
+     * Creates a copy with overridden values while preserving validity.
+     * @param {DateTimeOptions & {time?: number}} options The values to override.
+     * @returns {DateTime} A new DateTime instance.
+     */
+    #copy({
+        time = this.getTime(),
+        locale = this.#locale,
+        timeZone = this.#timeZone,
+    }) {
+        const date = new this.constructor(time, { locale, timeZone });
+        date.isValid = this.isValid;
+        return date;
     }
 }
