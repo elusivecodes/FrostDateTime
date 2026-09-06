@@ -3,6 +3,23 @@ import { describe, it } from 'vitest';
 import DateTime from '../../src/index.js';
 
 describe('DateTime Differences', function() {
+    it.each([
+        ['spring DST', 'America/New_York', '2024-03-03T17:00:00Z', '2024-03-10T16:30:15.500Z', [0, 6, 167, 10050, 603015]],
+        ['fall DST', 'America/New_York', '2024-11-02T05:30:00Z', '2024-11-10T06:30:00Z', [1, 8, 193, 11580, 694800]],
+        ['a deleted date', 'Pacific/Apia', '2011-12-29T22:00:00Z', '2011-12-30T22:00:00Z', [0, 1, 24, 1440, 86400]],
+        ['a fraction of a second', 'Australia/Brisbane', '2024-01-01T00:00:00Z', '2024-01-01T00:00:00.999Z', [0, 0, 0, 0, 0]],
+    ])('counts complete elapsed units across %s in both directions', function(_, timeZone, before, after, expected) {
+        const start = new DateTime(before, { timeZone: 'UTC' });
+        const end = new DateTime(after, { timeZone });
+        const methods = ['diffInWeeks', 'diffInDays', 'diffInHours', 'diffInMinutes', 'diffInSeconds'];
+
+        for (const [index, method] of methods.entries()) {
+            assert.strictEqual(end[method](start, { relative: false }), expected[index], method);
+            assert.strictEqual(start[method](end, { relative: false }), -expected[index], method);
+            assert.strictEqual(end[method](end, { relative: false }), 0, method);
+        }
+    });
+
     describe('#diff', function() {
         it('returns the difference in milliseconds', function() {
             assert.strictEqual(

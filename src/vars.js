@@ -26,13 +26,23 @@ export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const offsetRegExp = /^(?:GMT)?([+-])([01]\d|2[0-3])(?:(:?)([0-5]\d)(?:\3([0-5]\d))?)?$/;
 
 export const parseOrderKeys = [
-    ['year', 'weekYear'],
-    ['era'],
-    ['quarter', 'month', 'week', 'dayOfYear'],
-    ['date', 'weekOfMonth', 'weekDay'],
-    ['weekDayInMonth'],
-    ['hours24', 'hours12', 'dayPeriod'],
-    ['minutes', 'seconds', 'milliseconds'],
+    'year',
+    'weekYear',
+    'era',
+    'quarter',
+    'month',
+    'week',
+    'dayOfYear',
+    'date',
+    'weekOfMonth',
+    'weekDay',
+    'weekDayInMonth',
+    'hours24',
+    'hours12',
+    'dayPeriod',
+    'minutes',
+    'seconds',
+    'milliseconds',
 ];
 
 export const diffMethods = {

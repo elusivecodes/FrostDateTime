@@ -120,8 +120,7 @@ export default class DateTime {
             timeValues.push(...new Array(4 - timeValues.length).fill(0));
         }
 
-        return new this(null, options)
-            .withTimestamp(0)
+        return new this(0, options)
             .withYear(...dateValues)
             .withHours(...timeValues);
     }

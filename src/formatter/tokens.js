@@ -533,13 +533,7 @@ export default {
                 return prefix;
             }
 
-            let optionalMinutes = false;
-            switch (length) {
-                case 4:
-                    break;
-                default:
-                    optionalMinutes = true;
-            }
+            const optionalMinutes = length !== 4;
 
             return prefix + formatOffset(offset, true, optionalMinutes);
         },
@@ -578,16 +572,7 @@ export default {
                 return 'Z';
             }
 
-            let useColon;
-            switch (length) {
-                case 5:
-                case 3:
-                    useColon = true;
-                    break;
-                default:
-                    useColon = false;
-                    break;
-            }
+            const useColon = length === 3 || length === 5;
 
             return formatOffset(offset, useColon, length === 1, length >= 4);
         },
@@ -612,16 +597,7 @@ export default {
         },
         input: (_, value) => value,
         output: (datetime, length) => {
-            let useColon;
-            switch (length) {
-                case 5:
-                case 3:
-                    useColon = true;
-                    break;
-                default:
-                    useColon = false;
-                    break;
-            }
+            const useColon = length === 3 || length === 5;
 
             return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1, length >= 4);
         },

@@ -100,30 +100,23 @@ var monthDays = [
 ];
 var offsetRegExp = /^(?:GMT)?([+-])([01]\d|2[0-3])(?:(:?)([0-5]\d)(?:\3([0-5]\d))?)?$/;
 var parseOrderKeys = [
-	["year", "weekYear"],
-	["era"],
-	[
-		"quarter",
-		"month",
-		"week",
-		"dayOfYear"
-	],
-	[
-		"date",
-		"weekOfMonth",
-		"weekDay"
-	],
-	["weekDayInMonth"],
-	[
-		"hours24",
-		"hours12",
-		"dayPeriod"
-	],
-	[
-		"minutes",
-		"seconds",
-		"milliseconds"
-	]
+	"year",
+	"weekYear",
+	"era",
+	"quarter",
+	"month",
+	"week",
+	"dayOfYear",
+	"date",
+	"weekOfMonth",
+	"weekDay",
+	"weekDayInMonth",
+	"hours24",
+	"hours12",
+	"dayPeriod",
+	"minutes",
+	"seconds",
+	"milliseconds"
 ];
 var diffMethods = {
 	year: "diffInYears",
@@ -161,11 +154,11 @@ var thresholds = {
 function applyDateValues(datetime, values) {
 	const methods = parseFactory();
 	const testValues = [];
-	for (const subKeys of parseOrderKeys) for (const subKey of subKeys) {
-		if (subKey === "era" && !values.some((data) => data.key === "year")) continue;
+	for (const parseKey of parseOrderKeys) {
+		if (parseKey === "era" && !values.some((data) => data.key === "year")) continue;
 		for (const data of values) {
 			const { key, value } = data;
-			if (key !== subKey) continue;
+			if (key !== parseKey) continue;
 			datetime = methods[key].set(datetime, value);
 			testValues.push(data);
 		}
@@ -200,7 +193,7 @@ function calendarDay(date) {
 * @returns {number} The difference between the dates in the given time unit.
 */
 function calculateDiff(date, other, timeUnit, relative = true) {
-	other = other.withTimeZone(date.getTimeZone());
+	if (relative || timeUnit === "year" || timeUnit === "month") other = other.withTimeZone(date.getTimeZone());
 	switch (timeUnit) {
 		case "year": return compensateDiff(date, other.withYear(date.getYear()), date.getYear() - other.getYear(), !relative, -1);
 		case "month": return compensateDiff(date, other.withYear(date.getYear(), date.getMonth()), (date.getYear() - other.getYear()) * 12 + date.getMonth() - other.getMonth(), !relative, -1);
@@ -210,13 +203,19 @@ function calculateDiff(date, other, timeUnit, relative = true) {
 				const otherWeek = other.withLocale(date.getLocale()).startOfWeek();
 				return (calendarDay(dateWeek) - calendarDay(otherWeek)) / 7;
 			}
-			return compensateDiff(date, other.withWeekYear(date.getWeekYear(), date.getWeek()), (date - other) / 6048e5, relative);
+			return Math.trunc((date - other) / 6048e5);
 		case "day":
 			if (relative) return calendarDay(date) - calendarDay(other);
-			return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()), (date - other) / 864e5, relative);
-		case "hour": return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours()), (date - other) / 36e5, relative);
-		case "minute": return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours(), date.getMinutes()), (date - other) / 6e4, relative);
-		case "second": return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours(), date.getMinutes(), date.getSeconds()), (date - other) / 1e3, relative);
+			return Math.trunc((date - other) / 864e5);
+		case "hour":
+			if (!relative) return Math.trunc((date - other) / 36e5);
+			return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours()), (date - other) / 36e5);
+		case "minute":
+			if (!relative) return Math.trunc((date - other) / 6e4);
+			return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours(), date.getMinutes()), (date - other) / 6e4);
+		case "second":
+			if (!relative) return Math.trunc((date - other) / 1e3);
+			return compensateDiff(date, other.withYear(date.getYear(), date.getMonth(), date.getDate()).withHours(date.getHours(), date.getMinutes(), date.getSeconds()), (date - other) / 1e3);
 		default: throw new Error("Invalid time unit supplied");
 	}
 }
@@ -1555,12 +1554,7 @@ var tokens_default = {
 			const offset = datetime.getTimeZoneOffset();
 			const prefix = "GMT";
 			if (!offset) return prefix;
-			let optionalMinutes = false;
-			switch (length) {
-				case 4: break;
-				default: optionalMinutes = true;
-			}
-			return prefix + formatOffset(offset, true, optionalMinutes);
+			return prefix + formatOffset(offset, true, length !== 4);
 		}
 	},
 	V: {
@@ -1586,15 +1580,7 @@ var tokens_default = {
 		output: (datetime, length) => {
 			const offset = datetime.getTimeZoneOffset();
 			if (!offset) return "Z";
-			let useColon;
-			switch (length) {
-				case 5:
-				case 3:
-					useColon = true;
-					break;
-				default: useColon = false;
-			}
-			return formatOffset(offset, useColon, length === 1, length >= 4);
+			return formatOffset(offset, length === 3 || length === 5, length === 1, length >= 4);
 		}
 	},
 	x: {
@@ -1611,14 +1597,7 @@ var tokens_default = {
 		},
 		input: (_, value) => value,
 		output: (datetime, length) => {
-			let useColon;
-			switch (length) {
-				case 5:
-				case 3:
-					useColon = true;
-					break;
-				default: useColon = false;
-			}
+			const useColon = length === 3 || length === 5;
 			return formatOffset(datetime.getTimeZoneOffset(), useColon, length === 1, length >= 4);
 		}
 	}
@@ -1688,7 +1667,7 @@ var DateTime = class {
 		const timeValues = dateArray.slice(3);
 		if (dateValues.length < 3) dateValues.push(...new Array(3 - dateValues.length).fill(1));
 		if (timeValues.length < 4) timeValues.push(...new Array(4 - timeValues.length).fill(0));
-		return new this(null, options).withTimestamp(0).withYear(...dateValues).withHours(...timeValues);
+		return new this(0, options).withYear(...dateValues).withHours(...timeValues);
 	}
 	/**
 	* Creates a new DateTime from a Date.

@@ -21,22 +21,20 @@ function applyDateValues(datetime, values) {
     const methods = parseFactory();
     const testValues = [];
 
-    for (const subKeys of parseOrderKeys) {
-        for (const subKey of subKeys) {
-            if (subKey === 'era' && !values.some((data) => data.key === 'year')) {
+    for (const parseKey of parseOrderKeys) {
+        if (parseKey === 'era' && !values.some((data) => data.key === 'year')) {
+            continue;
+        }
+
+        for (const data of values) {
+            const { key, value } = data;
+
+            if (key !== parseKey) {
                 continue;
             }
 
-            for (const data of values) {
-                const { key, value } = data;
-
-                if (key !== subKey) {
-                    continue;
-                }
-
-                datetime = methods[key].set(datetime, value);
-                testValues.push(data);
-            }
+            datetime = methods[key].set(datetime, value);
+            testValues.push(data);
         }
     }
 
@@ -74,7 +72,9 @@ function calendarDay(date) {
  * @returns {number} The difference between the dates in the given time unit.
  */
 export function calculateDiff(date, other, timeUnit, relative = true) {
-    other = other.withTimeZone(date.getTimeZone());
+    if (relative || timeUnit === 'year' || timeUnit === 'month') {
+        other = other.withTimeZone(date.getTimeZone());
+    }
 
     switch (timeUnit) {
         case 'year':
@@ -109,31 +109,18 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                 ) / 7;
             }
 
-            return compensateDiff(
-                date,
-                other.withWeekYear(
-                    date.getWeekYear(),
-                    date.getWeek(),
-                ),
-                (date - other) / 604800000,
-                relative,
-            );
+            return Math.trunc((date - other) / 604800000);
         case 'day':
             if (relative) {
                 return calendarDay(date) - calendarDay(other);
             }
 
-            return compensateDiff(
-                date,
-                other.withYear(
-                    date.getYear(),
-                    date.getMonth(),
-                    date.getDate(),
-                ),
-                (date - other) / 86400000,
-                relative,
-            );
+            return Math.trunc((date - other) / 86400000);
         case 'hour':
+            if (!relative) {
+                return Math.trunc((date - other) / 3600000);
+            }
+
             return compensateDiff(
                 date,
                 other.withYear(
@@ -144,9 +131,12 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                     date.getHours(),
                 ),
                 (date - other) / 3600000,
-                relative,
             );
         case 'minute':
+            if (!relative) {
+                return Math.trunc((date - other) / 60000);
+            }
+
             return compensateDiff(
                 date,
                 other.withYear(
@@ -158,9 +148,12 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                     date.getMinutes(),
                 ),
                 (date - other) / 60000,
-                relative,
             );
         case 'second':
+            if (!relative) {
+                return Math.trunc((date - other) / 1000);
+            }
+
             return compensateDiff(
                 date,
                 other.withYear(
@@ -173,7 +166,6 @@ export function calculateDiff(date, other, timeUnit, relative = true) {
                     date.getSeconds(),
                 ),
                 (date - other) / 1000,
-                relative,
             );
         default:
             throw new Error('Invalid time unit supplied');
