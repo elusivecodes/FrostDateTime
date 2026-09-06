@@ -24,20 +24,13 @@ describe('DateTime Primitive', function() {
     });
 
     describe('#[Symbol.toPrimitive]', function() {
-        it('returns the date/time string', function() {
+        it.each([
+            ['returns the date/time string', 'string', 'Mon Jan 01 2018 00:00:00 +0000 (UTC)'],
+            ['returns the timestamp', 'number', 1514764800000],
+        ])('%s', function(_, hint, expected) {
             const date = DateTime.fromArray([2018]);
-            assert.strictEqual(
-                date[Symbol.toPrimitive]('string'),
-                'Mon Jan 01 2018 00:00:00 +0000 (UTC)',
-            );
-        });
 
-        it('returns the timestamp', function() {
-            const date = DateTime.fromArray([2018]);
-            assert.strictEqual(
-                date[Symbol.toPrimitive]('number'),
-                1514764800000,
-            );
+            assert.strictEqual(date[Symbol.toPrimitive](hint), expected);
         });
     });
 });

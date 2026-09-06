@@ -33,51 +33,38 @@ describe('DateTime Static', function() {
     });
 
     describe('#daysInMonth', function() {
-        it('returns the days in the month', function() {
-            const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            for (const i of [...new Array(12).keys()]) {
-                assert.strictEqual(
-                    DateTime.daysInMonth(2018, i + 1),
-                    monthDays[i],
-                );
-            }
+        it.each([
+            [1, 31],
+            [2, 28],
+            [3, 31],
+            [4, 30],
+            [5, 31],
+            [6, 30],
+            [7, 31],
+            [8, 31],
+            [9, 30],
+            [10, 31],
+            [11, 30],
+            [12, 31],
+        ])('returns the length of month %i as %i', function(month, expected) {
+            assert.strictEqual(DateTime.daysInMonth(2018, month), expected);
         });
 
-        it('works with leap years', function() {
-            assert.strictEqual(
-                DateTime.daysInMonth(2020, 2),
-                29,
-            );
-        });
-
-        it('matches php for year zero', function() {
-            assert.strictEqual(
-                DateTime.daysInMonth(0, 2),
-                29,
-            );
+        it.each([
+            ['works with leap years', [2020, 2]],
+            ['matches php for year zero', [0, 2]],
+        ])('%s', function(_, args) {
+            assert.strictEqual(DateTime.daysInMonth(...args), 29);
         });
     });
 
     describe('#daysInYear', function() {
-        it('returns the days in the year', function() {
-            assert.strictEqual(
-                DateTime.daysInYear(2018),
-                365,
-            );
-        });
-
-        it('works with leap years', function() {
-            assert.strictEqual(
-                DateTime.daysInYear(2020),
-                366,
-            );
-        });
-
-        it('matches php for year zero', function() {
-            assert.strictEqual(
-                DateTime.daysInYear(0),
-                366,
-            );
+        it.each([
+            ['returns the days in the year', [2018], 365],
+            ['works with leap years', [2020], 366],
+            ['matches php for year zero', [0], 366],
+        ])('%s', function(_, args, expected) {
+            assert.strictEqual(DateTime.daysInYear(...args), expected);
         });
     });
 
@@ -100,25 +87,12 @@ describe('DateTime Static', function() {
     });
 
     describe('#isLeapYear', function() {
-        it('returns false if the year is not a leap year', function() {
-            assert.strictEqual(
-                DateTime.isLeapYear(2019),
-                false,
-            );
-        });
-
-        it('returns true if the year is a leap year', function() {
-            assert.strictEqual(
-                DateTime.isLeapYear(2016),
-                true,
-            );
-        });
-
-        it('matches php for year zero', function() {
-            assert.strictEqual(
-                DateTime.isLeapYear(0),
-                true,
-            );
+        it.each([
+            ['returns false if the year is not a leap year', [2019], false],
+            ['returns true if the year is a leap year', [2016], true],
+            ['matches php for year zero', [0], true],
+        ])('%s', function(_, args, expected) {
+            assert.strictEqual(DateTime.isLeapYear(...args), expected);
         });
     });
 });

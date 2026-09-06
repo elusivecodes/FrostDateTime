@@ -4,508 +4,131 @@ import DateTime from '../../src/index.js';
 
 describe('DateTime Human Difference', function() {
     describe('#humanDiff', function() {
-        it('returns the difference in human readable form (years)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018])
-                    .humanDiff(
-                        DateTime.fromArray([2016]),
-                    ),
-                'in 2 years',
-            );
-        });
+        it.each([
+            ['returns the difference in human readable form (years)', [2018], [2016], 'in 2 years'],
+            ['returns the difference in human readable form (months)', [2018, 1], [2018, 4], '3 months ago'],
+            ['returns the difference in human readable form (weeks)', [2018, 1, 1], [2018, 1, 23], '3 weeks ago'],
+            ['returns the difference in human readable form (days)', [2018, 1, 1], [2018, 1, 4], '3 days ago'],
+            ['returns the difference in human readable form (hours)', [2018, 1, 1, 0], [2018, 1, 1, 11], '11 hours ago'],
+            ['returns the difference in human readable form (minutes)', [2018, 1, 1, 0, 0], [2018, 1, 1, 0, 9], '9 minutes ago'],
+            ['returns the difference in human readable form (seconds)', [2018, 1, 1, 0, 0, 15], [2018, 1, 1, 0, 0, 0], 'in 15 seconds'],
+            ['returns the difference in human readable form (now)', [2018, 1, 1, 0, 0, 0], [2018, 1, 1, 0, 0, 0], 'now'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('returns the difference in human readable form (months)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 4]),
-                    ),
-                '3 months ago',
-            );
-        });
-
-        it('returns the difference in human readable form (weeks)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 23]),
-                    ),
-                '3 weeks ago',
-            );
-        });
-
-        it('returns the difference in human readable form (days)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 4]),
-                    ),
-                '3 days ago',
-            );
-        });
-
-        it('returns the difference in human readable form (hours)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1, 0])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 1, 11]),
-                    ),
-                '11 hours ago',
-            );
-        });
-
-        it('returns the difference in human readable form (minutes)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1, 0, 0])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 1, 0, 9]),
-                    ),
-                '9 minutes ago',
-            );
-        });
-
-        it('returns the difference in human readable form (seconds)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1, 0, 0, 15])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 1, 0, 0, 0]),
-                    ),
-                'in 15 seconds',
-            );
-        });
-
-        it('returns the difference in human readable form (now)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 1, 0, 0, 0])
-                    .humanDiff(
-                        DateTime.fromArray([2018, 1, 1, 0, 0, 0]),
-                    ),
-                'now',
-            );
+            assert.strictEqual(date.humanDiff(other), expected);
         });
     });
 
     describe('#humanDiffInDays', function() {
-        it('works with day', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 23])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 22]),
-                    ),
-                'tomorrow',
-            );
-        });
+        it.each([
+            ['works with day', [2018, 6, 23], [2018, 6, 22], 'tomorrow'],
+            ['works with days', [2018, 6, 23], [2018, 6, 15], 'in 8 days'],
+            ['works with day (negative)', [2018, 6, 22], [2018, 6, 23], 'yesterday'],
+            ['works with days (negative)', [2018, 6, 15], [2018, 6, 23], '8 days ago'],
+            ['works with days (relative)', [2018, 6, 23, 0], [2018, 6, 15, 1], 'in 8 days'],
+            ['works with days and months', [2018, 8, 23], [2018, 6, 15], 'in 69 days'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with days', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 23])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 15]),
-                    ),
-                'in 8 days',
-            );
-        });
-
-        it('works with day (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 22])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 23]),
-                    ),
-                'yesterday',
-            );
-        });
-
-        it('works with days (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 23]),
-                    ),
-                '8 days ago',
-            );
-        });
-
-        it('works with days (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 23, 0])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 15, 1]),
-                    ),
-                'in 8 days',
-            );
-        });
-
-        it('works with days and months', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 8, 23])
-                    .humanDiffInDays(
-                        DateTime.fromArray([2018, 6, 15]),
-                    ),
-                'in 69 days',
-            );
+            assert.strictEqual(date.humanDiffInDays(other), expected);
         });
     });
 
     describe('#humanDiffInHours', function() {
-        it('works with hour', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 23])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 22]),
-                    ),
-                'in 1 hour',
-            );
-        });
+        it.each([
+            ['works with hour', [2018, 6, 15, 23], [2018, 6, 15, 22], 'in 1 hour'],
+            ['works with hours', [2018, 6, 15, 23], [2018, 6, 15, 12], 'in 11 hours'],
+            ['works with hour (negative)', [2018, 6, 15, 22], [2018, 6, 15, 23], '1 hour ago'],
+            ['works with hours (negative)', [2018, 6, 15, 12], [2018, 6, 15, 23], '11 hours ago'],
+            ['works with hours (relative)', [2018, 6, 15, 23, 0], [2018, 6, 15, 12, 1], 'in 11 hours'],
+            ['works with hours and days', [2018, 6, 18, 23], [2018, 6, 15, 12], 'in 83 hours'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with hours', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 23])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 12]),
-                    ),
-                'in 11 hours',
-            );
-        });
-
-        it('works with hour (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 22])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 23]),
-                    ),
-                '1 hour ago',
-            );
-        });
-
-        it('works with hours (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 23]),
-                    ),
-                '11 hours ago',
-            );
-        });
-
-        it('works with hours (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 23, 0])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 12, 1]),
-                    ),
-                'in 11 hours',
-            );
-        });
-
-        it('works with hours and days', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 18, 23])
-                    .humanDiffInHours(
-                        DateTime.fromArray([2018, 6, 15, 12]),
-                    ),
-                'in 83 hours',
-            );
+            assert.strictEqual(date.humanDiffInHours(other), expected);
         });
     });
 
     describe('#humanDiffInMinutes', function() {
-        it('works with minute', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 29]),
-                    ),
-                'in 1 minute',
-            );
-        });
+        it.each([
+            ['works with minute', [2018, 6, 15, 12, 30], [2018, 6, 15, 12, 29], 'in 1 minute'],
+            ['works with minutes', [2018, 6, 15, 12, 30], [2018, 6, 15, 12, 15], 'in 15 minutes'],
+            ['works with minute (negative)', [2018, 6, 15, 12, 29], [2018, 6, 15, 12, 30], '1 minute ago'],
+            ['works with minutes (negative)', [2018, 6, 15, 12, 15], [2018, 6, 15, 12, 30], '15 minutes ago'],
+            ['works with minutes (relative)', [2018, 6, 15, 12, 30, 1], [2018, 6, 15, 12, 15, 0], 'in 15 minutes'],
+            ['works with minutes and hours', [2018, 6, 15, 16, 30], [2018, 6, 15, 12, 15], 'in 255 minutes'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with minutes', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    ),
-                'in 15 minutes',
-            );
-        });
-
-        it('works with minute (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 29])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    ),
-                '1 minute ago',
-            );
-        });
-
-        it('works with minutes (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 15])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 30]),
-                    ),
-                '15 minutes ago',
-            );
-        });
-
-        it('works with minutes (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 1])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 15, 0]),
-                    ),
-                'in 15 minutes',
-            );
-        });
-
-        it('works with minutes and hours', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 16, 30])
-                    .humanDiffInMinutes(
-                        DateTime.fromArray([2018, 6, 15, 12, 15]),
-                    ),
-                'in 255 minutes',
-            );
+            assert.strictEqual(date.humanDiffInMinutes(other), expected);
         });
     });
 
     describe('#humanDiffInMonths', function() {
-        it('works with month', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 7])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2018, 6]),
-                    ),
-                'next month',
-            );
-        });
+        it.each([
+            ['works with month', [2018, 7], [2018, 6], 'next month'],
+            ['works with months', [2018, 9], [2018, 6], 'in 3 months'],
+            ['works with month (negative)', [2018, 6], [2018, 7], 'last month'],
+            ['works with months (negative)', [2018, 6], [2018, 9], '3 months ago'],
+            ['works with months (relative)', [2018, 9, 1], [2018, 6, 2], 'in 3 months'],
+            ['works with months and years', [2018, 9], [2016, 6], 'in 27 months'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with months', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 9])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2018, 6]),
-                    ),
-                'in 3 months',
-            );
-        });
-
-        it('works with month (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2018, 7]),
-                    ),
-                'last month',
-            );
-        });
-
-        it('works with months (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2018, 9]),
-                    ),
-                '3 months ago',
-            );
-        });
-
-        it('works with months (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 9, 1])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2018, 6, 2]),
-                    ),
-                'in 3 months',
-            );
-        });
-
-        it('works with months and years', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 9])
-                    .humanDiffInMonths(
-                        DateTime.fromArray([2016, 6]),
-                    ),
-                'in 27 months',
-            );
+            assert.strictEqual(date.humanDiffInMonths(other), expected);
         });
     });
 
     describe('#humanDiffInSeconds', function() {
-        it('works with second', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 30])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 29]),
-                    ),
-                'in 1 second',
-            );
-        });
+        it.each([
+            ['works with second', [2018, 6, 15, 12, 30, 30], [2018, 6, 15, 12, 30, 29], 'in 1 second'],
+            ['works with seconds', [2018, 6, 15, 12, 30, 30], [2018, 6, 15, 12, 30, 15], 'in 15 seconds'],
+            ['works with second (negative)', [2018, 6, 15, 12, 30, 29], [2018, 6, 15, 12, 30, 30], '1 second ago'],
+            ['works with seconds (negative)', [2018, 6, 15, 12, 30, 15], [2018, 6, 15, 12, 30, 30], '15 seconds ago'],
+            ['works with seconds (relative)', [2018, 6, 15, 12, 30, 30, 1], [2018, 6, 15, 12, 30, 15, 0], 'in 15 seconds'],
+            ['works with seconds and minutes', [2018, 6, 15, 12, 50, 30], [2018, 6, 15, 12, 30, 15], 'in 1,215 seconds'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with seconds', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 30])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    ),
-                'in 15 seconds',
-            );
-        });
-
-        it('works with second (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 29])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    ),
-                '1 second ago',
-            );
-        });
-
-        it('works with seconds (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 15])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 30]),
-                    ),
-                '15 seconds ago',
-            );
-        });
-
-        it('works with seconds (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 30, 30, 1])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 15, 0]),
-                    ),
-                'in 15 seconds',
-            );
-        });
-
-        it('works with seconds and minutes', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 15, 12, 50, 30])
-                    .humanDiffInSeconds(
-                        DateTime.fromArray([2018, 6, 15, 12, 30, 15]),
-                    ),
-                'in 1,215 seconds',
-            );
+            assert.strictEqual(date.humanDiffInSeconds(other), expected);
         });
     });
 
     describe('#humanDiffInWeeks', function() {
-        it('works with week', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 23])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 6, 16]),
-                    ),
-                'next week',
-            );
-        });
+        it.each([
+            ['works with week', [2018, 6, 23], [2018, 6, 16], 'next week'],
+            ['works with weeks', [2018, 6, 23], [2018, 5, 15], 'in 5 weeks'],
+            ['works with week (negative)', [2018, 6, 16], [2018, 6, 23], 'last week'],
+            ['works with weeks (negative)', [2018, 5, 15], [2018, 6, 23], '5 weeks ago'],
+            ['works with weeks (relative)', [2018, 1, 8], [2018, 1, 1], 'next week'],
+            ['works with weeks and months', [2018, 8, 23], [2018, 6, 15], 'in 10 weeks'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with weeks', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 23])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 5, 15]),
-                    ),
-                'in 5 weeks',
-            );
-        });
-
-        it('works with week (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 6, 16])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 6, 23]),
-                    ),
-                'last week',
-            );
-        });
-
-        it('works with weeks (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 5, 15])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 6, 23]),
-                    ),
-                '5 weeks ago',
-            );
-        });
-
-        it('works with weeks (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1, 8])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 1, 1]),
-                    ),
-                'next week',
-            );
-        });
-
-        it('works with weeks and months', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 8, 23])
-                    .humanDiffInWeeks(
-                        DateTime.fromArray([2018, 6, 15]),
-                    ),
-                'in 10 weeks',
-            );
+            assert.strictEqual(date.humanDiffInWeeks(other), expected);
         });
     });
 
     describe('#humanDiffInYears', function() {
-        it('works with year', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018])
-                    .humanDiffInYears(
-                        DateTime.fromArray([2017]),
-                    ),
-                'next year',
-            );
-        });
+        it.each([
+            ['works with year', [2018], [2017], 'next year'],
+            ['works with years', [2018], [2016], 'in 2 years'],
+            ['works with year (negative)', [2017], [2018], 'last year'],
+            ['works with years (negative)', [2016], [2018], '2 years ago'],
+            ['works with years (relative)', [2018, 1], [2016, 2], 'in 2 years'],
+        ])('%s', function(_, input, otherInput, expected) {
+            const date = DateTime.fromArray(input);
+            const other = DateTime.fromArray(otherInput);
 
-        it('works with years', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018])
-                    .humanDiffInYears(
-                        DateTime.fromArray([2016]),
-                    ),
-                'in 2 years',
-            );
-        });
-
-        it('works with year (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2017])
-                    .humanDiffInYears(
-                        DateTime.fromArray([2018]),
-                    ),
-                'last year',
-            );
-        });
-
-        it('works with years (negative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2016])
-                    .humanDiffInYears(
-                        DateTime.fromArray([2018]),
-                    ),
-                '2 years ago',
-            );
-        });
-
-        it('works with years (relative)', function() {
-            assert.strictEqual(
-                DateTime.fromArray([2018, 1])
-                    .humanDiffInYears(
-                        DateTime.fromArray([2016, 2]),
-                    ),
-                'in 2 years',
-            );
+            assert.strictEqual(date.humanDiffInYears(other), expected);
         });
     });
 });

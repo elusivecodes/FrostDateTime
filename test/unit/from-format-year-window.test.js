@@ -64,26 +64,33 @@ describe('DateTime #fromFormat year window', function() {
     });
 
     describe.each(['Y', 'YY'])('%s week year', function(token) {
-        it.each(['en-US', 'en-GB'])('preserves week fields in %s', function(locale) {
-            for (const [input, year, week] of [['05 1 1', 2005, 1], ['41 1 1', 2041, 1], ['46 1 1', 2046, 1], ['46 52 1', 1946, 52]]) {
+        describe.each(['en-US', 'en-GB'])('week fields in %s', function(locale) {
+            it.each([
+                ['05 1 1', 2005, 1],
+                ['41 1 1', 2041, 1],
+                ['46 1 1', 2046, 1],
+                ['46 52 1', 1946, 52],
+            ])('preserves the year, week, and weekday in %s', function(input, year, week) {
                 const date = DateTime.fromFormat(`${token} w e`, input, { locale });
 
                 assert.strictEqual(date.getWeekYear(), year);
                 assert.strictEqual(date.getWeek(), week);
                 assert.strictEqual(date.getWeekDay(), 1);
                 assert.strictEqual(date.isValid, true);
-            }
+            });
         });
     });
 
-    it('keeps longer year patterns literal', function() {
-        for (const token of ['yyy', 'yyyy', 'YYY', 'YYYY']) {
-            const weekYear = token[0] === 'Y';
-            const date = DateTime.fromFormat(weekYear ? `${token} w e` : `${token}-MM-dd`, weekYear ? '05 1 1' : '05-01-01');
+    it.each([
+        ['yyy-MM-dd', '05-01-01', 'getYear'],
+        ['yyyy-MM-dd', '05-01-01', 'getYear'],
+        ['YYY w e', '05 1 1', 'getWeekYear'],
+        ['YYYY w e', '05 1 1', 'getWeekYear'],
+    ])('keeps the year literal in %s', function(pattern, input, method) {
+        const date = DateTime.fromFormat(pattern, input);
 
-            assert.strictEqual(weekYear ? date.getWeekYear() : date.getYear(), 5);
-            assert.strictEqual(date.isValid, true);
-        }
+        assert.strictEqual(date[method](), 5);
+        assert.strictEqual(date.isValid, true);
     });
 
     it('moves the window as the reference date changes', function() {

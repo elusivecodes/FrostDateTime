@@ -24,20 +24,13 @@ describe('DateTime Output', function() {
     });
 
     describe('#toIsoString', function() {
-        it('returns the ISO string', function() {
-            const date = DateTime.fromArray([2018], { timeZone: 'Australia/Brisbane' });
-            assert.strictEqual(
-                date.toIsoString(),
-                '2017-12-31T14:00:00.000+00:00',
-            );
-        });
+        it.each([
+            ['returns the ISO string', [2018], '2017-12-31T14:00:00.000+00:00'],
+            ['preserves milliseconds in UTC output', [2018, 1, 1, 0, 0, 0, 1], '2017-12-31T14:00:00.001+00:00'],
+        ])('%s', function(_, input, expected) {
+            const date = DateTime.fromArray(input, { timeZone: 'Australia/Brisbane' });
 
-        it('preserves milliseconds in UTC output', function() {
-            const date = DateTime.fromArray([2018, 1, 1, 0, 0, 0, 1], { timeZone: 'Australia/Brisbane' });
-            assert.strictEqual(
-                date.toIsoString(),
-                '2017-12-31T14:00:00.001+00:00',
-            );
+            assert.strictEqual(date.toIsoString(), expected);
         });
     });
 
