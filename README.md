@@ -258,6 +258,8 @@ DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 | week of month | `getWeekOfMonth()` | `withWeekOfMonth(week)` |
 | locale-aware week year | `getWeekYear()` | `withWeekYear(year, week?, day?)` |
 
+`getWeekDayInMonth()` counts occurrences of the current weekday within the month (`1-5`). `getWeekOfMonth()` follows the locale's first weekday and minimum days in the first week; an opening partial week can be week `0`, as with January 1, 2021 in `en-GB`.
+
 #### Time fields
 
 | Value | Getter | With |

@@ -2324,23 +2324,19 @@
 		}
 		/**
 		* Gets the week day in month in the current time zone.
-		* @returns {number} The week day in month.
+		* @returns {number} The weekday occurrence in the month. (1-5)
 		*/
 		getWeekDayInMonth() {
-			const thisWeek = this.getWeek();
-			const first = this.withDate(1);
-			const firstWeek = first.getWeek();
-			const offset = first.getWeekDay() > this.getWeekDay() ? 0 : 1;
-			return firstWeek > thisWeek ? thisWeek + offset : thisWeek - firstWeek + offset;
+			return Math.ceil(this.getDate() / 7);
 		}
 		/**
 		* Gets the week of month in the current time zone.
-		* @returns {number} The week of month.
+		* @returns {number} The locale-aware week of month. (0-6)
 		*/
 		getWeekOfMonth() {
-			const thisWeek = this.getWeek();
-			const firstWeek = this.withDate(1).getWeek();
-			return firstWeek > thisWeek ? thisWeek + 1 : thisWeek - firstWeek + 1;
+			const firstDay = this.withDate(1).getWeekDay();
+			const firstWeek = 8 - firstDay >= minimumDays(this.getLocale()) ? 1 : 0;
+			return Math.floor((this.getDate() + firstDay - 2) / 7) + firstWeek;
 		}
 		/**
 		* Gets the week year in the current time zone.
