@@ -519,9 +519,9 @@ export default {
         regex: (_, length) => {
             switch (length) {
                 case 4:
-                    return `GMT[\\+\\-]\\d{2}\\:\\d{2}|GMT`;
+                    return `GMT(?:[+-]\\d{2}:\\d{2}(?::\\d{2})?)?`;
                 default:
-                    return `GMT[\\+\\-]\\d{2}|GMT`;
+                    return `GMT(?:[+-]\\d{2}(?::\\d{2}(?::\\d{2})?)?)?`;
             }
         },
         input: (_, value) => value,
@@ -548,7 +548,7 @@ export default {
     V: {
         key: 'timeZone',
         supportsLength: (length) => length === 2,
-        regex: (_) => '([A-Za-z0-9_.+\\-/]+)',
+        regex: (_) => '(?:[+-]\\d{2}:\\d{2}(?::\\d{2})?|[A-Za-z0-9_.+\\-/]+)',
         input: (_, value) => value,
         output: (datetime) => datetime.getTimeZone(),
     },
