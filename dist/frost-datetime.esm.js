@@ -108,8 +108,11 @@ var parseOrderKeys = [
 		"week",
 		"dayOfYear"
 	],
-	["weekOfMonth"],
-	["date", "weekDay"],
+	[
+		"date",
+		"weekOfMonth",
+		"weekDay"
+	],
 	["weekDayInMonth"],
 	[
 		"hours24",

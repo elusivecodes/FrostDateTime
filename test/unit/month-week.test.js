@@ -54,6 +54,28 @@ describe.each(['en-US', 'en-GB'])('DateTime month weeks in %s', function(locale)
         assert.strictEqual(date.isValid, true);
     });
 
+    describe.each(['yyyy-MM-dd W', 'W yyyy-MM-dd'])('combined date and month week: %s', function(pattern) {
+        it.each([
+            ['2018-12-31', 6, 5],
+            ['2019-12-31', 5, 5],
+            ['2021-01-01', 1, 0],
+        ])('preserves %s when the fields agree', function(input, usWeek, gbWeek) {
+            const week = locale === 'en-US' ? usWeek : gbWeek;
+            const dateString = pattern.startsWith('W') ? `${week} ${input}` : `${input} ${week}`;
+            const date = DateTime.fromFormat(pattern, dateString, options);
+
+            assert.strictEqual(date.format('yyyy-MM-dd'), input);
+            assert.strictEqual(date.isValid, true);
+        });
+
+        it('marks conflicting day and month-week values invalid', function() {
+            const dateString = pattern.startsWith('W') ? '4 2019-12-31' : '2019-12-31 4';
+            const date = DateTime.fromFormat(pattern, dateString, options);
+
+            assert.strictEqual(date.isValid, false);
+        });
+    });
+
     it('parses the fifth weekday occurrence at the end of December', function() {
         const date = DateTime.fromFormat('yyyy-MM-dd F', '2019-12-31 5', options);
 
