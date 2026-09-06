@@ -127,15 +127,63 @@ describe('DateTime DST Transitions', function() {
             );
         });
 
-        it('uses the later occurrence of a repeated hour', function() {
-            const date = DateTime.fromArray([2024, 11, 3, 1, 30], {
+        describe.each([
+            ['America/New_York', [2024, 11, 3, 1, 30, 12, 345], '2024-11-03T01:30:12.345', '-04:00', '-05:00'],
+            ['Australia/Lord_Howe', [2024, 4, 7, 1, 45, 12, 345], '2024-04-07T01:45:12.345', '+11:00', '+10:30'],
+            ['Atlantic/Azores', [2024, 10, 27, 0, 30, 12, 345], '2024-10-27T00:30:12.345', '+00:00', '-01:00'],
+        ])('repeated wall times in %s', function(timeZone, fields, input, earlierOffset, laterOffset) {
+            const options = { timeZone };
+            const expected = Date.parse(`${input}${laterOffset}`);
+
+            it.each(['T', ' '])('uses the later occurrence in the constructor with separator "%s"', function(separator) {
+                const date = new DateTime(input.replace('T', separator), options);
+
+                assert.strictEqual(date.getTime(), expected);
+            });
+
+            it('uses the later occurrence in fromArray', function() {
+                const date = DateTime.fromArray(fields, options);
+
+                assert.strictEqual(date.getTime(), expected);
+            });
+
+            it('uses the later occurrence in fromFormat', function() {
+                const date = DateTime.fromFormat('yyyy-MM-dd\'T\'HH:mm:ss.SSS', input, options);
+
+                assert.strictEqual(date.getTime(), expected);
+                assert.strictEqual(date.isValid, true);
+            });
+
+            it.each([earlierOffset, laterOffset])('uses the later occurrence when setting minutes from offset %s', function(offset) {
+                const date = new DateTime(`${input}${offset}`, options).withMinutes(fields[4]);
+
+                assert.strictEqual(date.getTime(), expected);
+            });
+
+            it.each([earlierOffset, laterOffset])('preserves an explicit offset of %s', function(offset) {
+                const zonedInput = `${input}${offset}`;
+                const timestamp = Date.parse(zonedInput);
+
+                assert.strictEqual(new DateTime(zonedInput, options).getTime(), timestamp);
+                assert.strictEqual(
+                    DateTime.fromFormat('yyyy-MM-dd\'T\'HH:mm:ss.SSSxxx', zonedInput, options).getTime(),
+                    timestamp,
+                );
+            });
+        });
+
+        it('preserves a non-repeated time before a rollback', function() {
+            const date = new DateTime('2024-11-03T00:30:00', {
                 timeZone: 'America/New_York',
             });
 
-            assert.strictEqual(
-                date.toString(),
-                'Sun Nov 03 2024 01:30:00 -0500 (America/New_York)',
-            );
+            assert.strictEqual(date.getTime(), Date.parse('2024-11-03T04:30:00Z'));
+        });
+
+        it('preserves a wall time at the maximum supported timestamp', function() {
+            const date = new DateTime(8.64e15, { timeZone: 'America/New_York' });
+
+            assert.strictEqual(date.withMinutes(date.getMinutes()).getTime(), date.getTime());
         });
 
         it('moves construction forward through a deleted day', function() {

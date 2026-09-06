@@ -505,6 +505,22 @@ export function parseFactory() {
 };
 
 /**
+ * Selects the later occurrence of a matching local wall time.
+ * @param {DateTime} date A date matching the requested wall time.
+ * @param {number} time The requested wall-clock timestamp.
+ * @returns {DateTime} The later matching date.
+ */
+function resolveRepeatedTime(date, time) {
+    const nextTime = Math.min(date.getTime() + 86400000, 8.64e15);
+    const nextOffset = date.withTime(nextTime).getTimeZoneOffset();
+    const laterDate = date.withTime(time + (nextOffset * 60000));
+
+    return laterDate > date && getOffsetTime(laterDate) === time ?
+        laterDate :
+        date;
+}
+
+/**
  * Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
  * @param {DateTime} date The DateTime.
  * @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
@@ -518,7 +534,7 @@ export function setOffsetTime(date, time, direction = 1) {
     const newOffsetTime = getOffsetTime(newDate);
 
     if (newOffsetTime === time) {
-        return newDate;
+        return resolveRepeatedTime(newDate, time);
     }
 
     const adjustedDate = date.withTime(
@@ -527,7 +543,7 @@ export function setOffsetTime(date, time, direction = 1) {
     const adjustedOffsetTime = getOffsetTime(adjustedDate);
 
     if (adjustedOffsetTime === time) {
-        return adjustedDate;
+        return resolveRepeatedTime(adjustedDate, time);
     }
 
     if (direction < 0) {

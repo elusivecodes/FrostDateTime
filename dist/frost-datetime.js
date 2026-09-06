@@ -444,6 +444,18 @@
 		};
 	}
 	/**
+	* Selects the later occurrence of a matching local wall time.
+	* @param {DateTime} date A date matching the requested wall time.
+	* @param {number} time The requested wall-clock timestamp.
+	* @returns {DateTime} The later matching date.
+	*/
+	function resolveRepeatedTime(date, time) {
+		const nextTime = Math.min(date.getTime() + 864e5, 864e13);
+		const nextOffset = date.withTime(nextTime).getTimeZoneOffset();
+		const laterDate = date.withTime(time + nextOffset * 6e4);
+		return laterDate > date && getOffsetTime(laterDate) === time ? laterDate : date;
+	}
+	/**
 	* Sets the number of milliseconds since the UNIX epoch (offset to timeZone).
 	* @param {DateTime} date The DateTime.
 	* @param {number} time The number of milliseconds since the UNIX epoch (offset to timeZone).
@@ -453,10 +465,10 @@
 	function setOffsetTime(date, time, direction = 1) {
 		const newDate = date.withTime(time + date.getTimeZoneOffset() * 6e4);
 		const newOffsetTime = getOffsetTime(newDate);
-		if (newOffsetTime === time) return newDate;
+		if (newOffsetTime === time) return resolveRepeatedTime(newDate, time);
 		const adjustedDate = date.withTime(time + newDate.getTimeZoneOffset() * 6e4);
 		const adjustedOffsetTime = getOffsetTime(adjustedDate);
-		if (adjustedOffsetTime === time) return adjustedDate;
+		if (adjustedOffsetTime === time) return resolveRepeatedTime(adjustedDate, time);
 		if (direction < 0) return newOffsetTime < adjustedOffsetTime ? newDate : adjustedDate;
 		return newOffsetTime > adjustedOffsetTime ? newDate : adjustedDate;
 	}
@@ -1894,7 +1906,7 @@
 			}
 			this.#locale = "locale" in options ? options.locale : config.defaultLocale;
 			if (this.#dynamicTz) this.#offset = getOffset(this);
-			if (adjustOffset && this.#offset) {
+			if (adjustOffset) {
 				const resolvedDate = setOffsetTime(this, timestamp);
 				this.#date.setTime(resolvedDate.getTime());
 				this.#offset = resolvedDate.getTimeZoneOffset();

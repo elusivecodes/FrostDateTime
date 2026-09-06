@@ -429,7 +429,7 @@ export default class DateTime {
             this.#offset = getOffset(this);
         }
 
-        if (adjustOffset && this.#offset) {
+        if (adjustOffset) {
             const resolvedDate = setOffsetTime(this, timestamp);
             this.#date.setTime(resolvedDate.getTime());
             this.#offset = resolvedDate.getTimeZoneOffset();
