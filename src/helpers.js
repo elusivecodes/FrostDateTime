@@ -302,13 +302,8 @@ export function getOffsetTime(date) {
  * @param {string} dateString The date string.
  */
 export function parseCompare(formatString, dateString) {
-    let i = 0;
-    for (const char of formatString) {
-        if (char !== dateString[i]) {
-            throw new Error(`Unmatched character in DateTime string: ${char}`);
-        }
-
-        i++;
+    if (!dateString.startsWith(formatString)) {
+        throw new Error(`Unmatched literal in DateTime string: ${formatString}`);
     }
 };
 

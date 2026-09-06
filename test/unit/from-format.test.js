@@ -36,6 +36,39 @@ describe('DateTime #fromFormat', function() {
                 2019,
             );
         });
+
+        it.each([
+            [`yyyy'😀'MM-dd`, '2024😀01-01'],
+            [`'😀'yyyy-MM-dd`, '😀2024-01-01'],
+            [`yyyy-MM-dd'😀'`, '2024-01-01😀'],
+            ['😀yyyy-MM-dd', '😀2024-01-01'],
+            ['yyyy😀MM-dd', '2024😀01-01'],
+            ['yyyy-MM-dd😀', '2024-01-01😀'],
+            [`yyyy'👩🏽‍💻'MM-dd`, '2024👩🏽‍💻01-01'],
+            [`yyyy'😀''🗓️'MM-dd`, `2024😀'🗓️01-01`],
+        ])('parses Unicode literals in %s', function(pattern, input) {
+            const date = DateTime.fromFormat(pattern, input);
+
+            assert.strictEqual(date.toIsoString(), '2024-01-01T00:00:00.000+00:00');
+            assert.strictEqual(date.isValid, true);
+        });
+
+        it.each([
+            [`yyyy'😀'MM-dd`, '2024😃01-01'],
+            [`yyyy'👩🏽‍💻'MM-dd`, '2024👩01-01'],
+            [`yyyy'😀abc'MM-dd`, '2024😀abx01-01'],
+            [`yyyy-MM-dd'😀'`, '2024-01-01'],
+            [`yyyy-MM-dd'😀'`, '2024-01-01\uD83D'],
+        ])('rejects mismatched or incomplete Unicode literals in %s', function(pattern, input) {
+            assert.throws(() => DateTime.fromFormat(pattern, input), /Unmatched literal in DateTime string:/);
+        });
+
+        it('rejects trailing characters after a matching Unicode literal', function() {
+            assert.throws(
+                () => DateTime.fromFormat(`yyyy-MM-dd'😀'`, '2024-01-01😀x'),
+                /Unmatched trailing characters in DateTime string:/,
+            );
+        });
     });
 
     describe('Token anchoring', function() {
