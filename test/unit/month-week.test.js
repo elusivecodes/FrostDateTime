@@ -83,6 +83,44 @@ describe.each(['en-US', 'en-GB'])('DateTime month weeks in %s', function(locale)
         assert.strictEqual(date.isValid, true);
     });
 
+    describe.each(['yyyy-MM F e', 'yyyy-MM e F', 'yyyy-MM F EEE', 'yyyy-MM F c'])('weekday occurrence: %s', function(pattern) {
+        it.each(['2024-01-07', '2024-02-29', '2024-09-02', '2024-09-30'])('parses %s within the requested month', function(input) {
+            const expected = new DateTime(input, options);
+            const date = DateTime.fromFormat(pattern, expected.format(pattern), options);
+
+            assert.strictEqual(date.getTime(), expected.getTime());
+            assert.strictEqual(date.isValid, true);
+        });
+    });
+
+    it.each([
+        ['yyyy-MM W F e', '2024-09-30'],
+        ['YYYY w F e', '2024-01-28'],
+        ['yyyy-MM-dd F e', '2024-09-02'],
+    ])('preserves the other date fields when parsing %s', function(pattern, input) {
+        const expected = new DateTime(input, options);
+        const date = DateTime.fromFormat(pattern, expected.format(pattern), options);
+
+        assert.strictEqual(date.getTime(), expected.getTime());
+        assert.strictEqual(date.isValid, true);
+    });
+
+    it.each([
+        ['yyyy-MM-dd F e', '2024-09-02 2', 2, 1],
+        ['yyyy-MM F e', '2024-09 5', 3, 2],
+    ])('rejects conflicting or impossible weekday occurrences with %s', function(pattern, input, usDay, gbDay) {
+        const day = locale === 'en-US' ? usDay : gbDay;
+        const date = DateTime.fromFormat(pattern, `${input} ${day}`, options);
+
+        assert.strictEqual(date.isValid, false);
+    });
+
+    it('rejects conflicting weekday fields with a weekday occurrence', function() {
+        const date = DateTime.fromFormat('yyyy-MM F e e', '2024-09 1 1 2', options);
+
+        assert.strictEqual(date.isValid, false);
+    });
+
     it('uses the local month and date near a UTC year boundary', function() {
         const date = new DateTime('2020-01-01T01:00:00Z', { locale, timeZone: 'America/New_York' });
 

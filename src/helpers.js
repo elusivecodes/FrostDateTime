@@ -18,7 +18,9 @@ import { diffMethods, parseOrderKeys, thresholds } from './vars.js';
  * @returns {DateTime} The parsed date.
  */
 function applyDateValues(datetime, values) {
-    const methods = parseFactory();
+    const weekDayWithinMonth = values.some(({ key }) => key === 'weekDayInMonth') &&
+        !values.some(({ key }) => key === 'week' || key === 'weekOfMonth');
+    const methods = parseFactory({ weekDayWithinMonth });
     const testValues = [];
 
     for (const parseKey of parseOrderKeys) {
@@ -394,9 +396,11 @@ export function parseLocalTimestamp(dateString) {
 
 /**
  * Generates methods for parsing a date.
+ * @param {object} [options={}] The parsing options.
+ * @param {boolean} [options.weekDayWithinMonth=false] Whether to select the first weekday occurrence in the month.
  * @returns {Record<string, {get: Function, set: Function}>} An object containing date parsing methods.
  */
-export function parseFactory() {
+export function parseFactory({ weekDayWithinMonth = false } = {}) {
     let isPM = false;
     let lastAM = true;
 
@@ -472,7 +476,14 @@ export function parseFactory() {
         },
         weekDay: {
             get: (datetime) => datetime.getWeekDay(),
-            set: (datetime, value) => datetime.withWeekDay(value),
+            set: (datetime, value) => {
+                if (!weekDayWithinMonth) {
+                    return datetime.withWeekDay(value);
+                }
+
+                const first = datetime.withDate(1);
+                return first.withDate(1 + (value - first.getWeekDay() + 7) % 7);
+            },
         },
         weekDayInMonth: {
             get: (datetime) => datetime.getWeekDayInMonth(),
