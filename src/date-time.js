@@ -209,7 +209,7 @@ export default class DateTime {
                 locale,
                 previousNumeric,
             );
-            const matchedValue = dateString.match(new RegExp(`^${source}`));
+            const matchedValue = dateString.match(new RegExp(`^(?:${source})`));
 
             if (!matchedValue) {
                 throw new Error(`Unmatched token in DateTime string: ${token}`);

@@ -38,6 +38,33 @@ describe('DateTime #fromFormat', function() {
         });
     });
 
+    describe('Token anchoring', function() {
+        it.each([
+            [`MMM'Feb'`, '???Feb'],
+            [`EEE'Tue'`, '???Tue'],
+            [`ZZZZ'GMT'`, '???GMT'],
+            [`XXX'Z'`, '?Z'],
+            [`yyyy MMM'Feb'`, '2024 ???Feb'],
+        ])('rejects unmatched prefixes in %s', function(pattern, input) {
+            assert.throws((_) => {
+                DateTime.fromFormat(pattern, input, { locale: 'en-US' });
+            }, /Unmatched token in DateTime string:/);
+        });
+
+        it.each([
+            [`MMM'Feb'`, 'FebFeb', '1970-02-01T00:00:00.000+00:00'],
+            [`EEE'Tue'`, 'TueTue', '1969-12-30T00:00:00.000+00:00'],
+            [`ZZZZ'GMT'`, 'GMTGMT', '1970-01-01T00:00:00.000+00:00'],
+            [`XXX'Z'`, 'ZZ', '1970-01-01T00:00:00.000+00:00'],
+            [`yyyy MMM'Feb'`, '2024 FebFeb', '2024-02-01T00:00:00.000+00:00'],
+        ])('accepts valid alternatives and following literals in %s', function(pattern, input, expected) {
+            const date = DateTime.fromFormat(pattern, input, { locale: 'en-US' });
+
+            assert.strictEqual(date.toIsoString(), expected);
+            assert.strictEqual(date.isValid, true);
+        });
+    });
+
     describe('Compact numeric patterns', function() {
         it('parses adjacent fixed-width tokens', function() {
             assert.strictEqual(

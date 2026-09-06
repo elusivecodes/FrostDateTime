@@ -1753,7 +1753,7 @@
 					}
 				}
 				const { numeric, source } = getTokenRegExp(tokens_default[token].regex(locale, length), nextSource, length, locale, previousNumeric);
-				const matchedValue = dateString.match(new RegExp(`^${source}`));
+				const matchedValue = dateString.match(new RegExp(`^(?:${source})`));
 				if (!matchedValue) throw new Error(`Unmatched token in DateTime string: ${token}`);
 				const literal = matchedValue[0];
 				const value = tokens_default[token].input(locale, literal, length);
