@@ -549,9 +549,7 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     addWeeks(amount) {
-        return this.withDate(
-            this.getDate() + (amount * 7),
-        );
+        return this.addDays(amount * 7);
     }
 
     /**

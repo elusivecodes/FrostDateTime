@@ -219,6 +219,32 @@ describe('DateTime DST Transitions', function() {
             );
         });
 
+        it.each([
+            ['subWeek', undefined],
+            ['subWeeks', 1],
+            ['addWeeks', -1],
+        ])('moves week subtraction backward through a deleted day using %s', function(method, amount) {
+            const date = DateTime.fromArray([2012, 1, 6, 12, 34, 56, 789], {
+                timeZone: 'Pacific/Apia',
+            });
+            const result = date[method](amount);
+
+            assert.strictEqual(result.format('yyyy-MM-dd HH:mm:ss.SSS xxx'), '2011-12-29 12:34:56.789 -10:00');
+        });
+
+        it.each([
+            ['addWeek', undefined],
+            ['addWeeks', 1],
+            ['subWeeks', -1],
+        ])('moves week addition forward through a deleted day using %s', function(method, amount) {
+            const date = DateTime.fromArray([2011, 12, 23, 12, 34, 56, 789], {
+                timeZone: 'Pacific/Apia',
+            });
+            const result = date[method](amount);
+
+            assert.strictEqual(result.format('yyyy-MM-dd HH:mm:ss.SSS xxx'), '2011-12-31 12:34:56.789 +14:00');
+        });
+
         it('preserves a non-transition wall time', function() {
             const date = DateTime.fromArray([2024, 2, 15, 12, 30], {
                 timeZone: 'America/New_York',
