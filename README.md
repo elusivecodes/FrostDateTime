@@ -27,7 +27,7 @@ Immutable date and time handling for JavaScript with locale-aware formatting, pa
 npm i @fr0st/datetime
 ```
 
-Frost DateTime's package entry point is ESM-only. Import the default `DateTime` export in Node and bundlers.
+Frost DateTime's package entry point is ESM-only. Use `import` syntax in Node and bundlers.
 
 ```js
 import DateTime from '@fr0st/datetime';
@@ -70,7 +70,7 @@ import DateTime from '@fr0st/datetime';
 const meeting = DateTime.fromFormat(
     'yyyy-MM-dd HH:mm:ss',
     '2026-03-23 09:30:00',
-    { timeZone: 'Australia/Brisbane' },
+    { locale: 'en', timeZone: 'Australia/Brisbane' },
 );
 
 const nextWeek = meeting.addWeeks(1);
@@ -91,7 +91,7 @@ TypeScript note: Frost DateTime is written in JavaScript and uses JSDoc types, w
 
 Frost DateTime revolves around an immutable `DateTime` class and a small set of predictable parsing and formatting rules.
 
-- Every setter and manipulation method returns a new instance
+- Instance setters and manipulation methods return new instances
 - Constructor numbers are milliseconds since the UNIX epoch
 - `fromTimestamp()` and `withTimestamp()` use seconds since the UNIX epoch
 - Strings without a zone designator are interpreted in the requested or default time zone
@@ -109,6 +109,10 @@ b.toIsoString(); // 2026-03-24T00:00:00.000+00:00
 new DateTime('January 1, 2019 00:00:00', { timeZone: 'Australia/Brisbane' })
     .toIsoString();
 // 2018-12-31T14:00:00.000+00:00
+
+new DateTime('2024-01-01T12:00:00.1Z', { timeZone: 'Australia/Brisbane' })
+    .toIsoString();
+// 2024-01-01T12:00:00.100+00:00
 ```
 
 ## API
@@ -157,12 +161,14 @@ const fromFormat = DateTime.fromFormat(
 );
 ```
 
-`fromFormat()` and `fromISOString()` can return an invalid `DateTime` when the text parses structurally but the calendar values are impossible.
+`fromFormat()` and `fromISOString()` can return an invalid `DateTime` when the text parses structurally but the calendar values are impossible. This validity is preserved when applying locale or time-zone options and when copying the instance.
 
 ```js
 const invalid = DateTime.fromFormat('yyyy-MM-dd', '2019-02-31');
 invalid.isValid; // false
 ```
+
+`fromISOString()` expects the shape emitted by `toIsoString()`, including milliseconds and a numeric offset such as `+00:00` for UTC. Use the constructor for ISO strings ending in `Z`.
 
 Exactly two input digits parsed with `y`, `yy`, `Y`, or `YY` use ICU's moving 100-year window. The window starts 80 calendar years before the UTC reference time captured at the beginning of each `fromFormat()` call. The complete parsed date, including its time and offset, determines the century at the boundary. Week dates retain their locale-specific week number and weekday when the century changes.
 
@@ -174,6 +180,14 @@ A time-only `fromFormat()` pattern starts from January 1, 1970 in the requested 
 
 ```js
 DateTime.fromFormat('yyyyMMddHHmmss', '20190102123456');
+```
+
+In format patterns, single quotes delimit literal text and doubled apostrophes represent a literal apostrophe. Unicode literals, including emoji, work in both formatting and parsing. Parsing requires literals to match exactly:
+
+```js
+DateTime.fromFormat("yyyy'😀'MM-dd", '2024😀01-01', { timeZone: 'UTC' })
+    .toIsoString();
+// 2024-01-01T00:00:00.000+00:00
 ```
 
 `fromFormat()` rejects output-only or intentionally unsupported token widths.
@@ -220,14 +234,18 @@ Relevant instance methods:
 
 Accepted time-zone formats:
 
-- IANA names such as `UTC`, `Europe/London`, and `America/New_York`
+- IANA names such as `Europe/London` and `America/New_York`
+- Zero-offset names `UTC`, `GMT`, and `Z`
 - Numeric offsets in `±HH`, `±HHMM`, `±HH:MM`, `±HHMMSS`, or `±HH:MM:SS` form
 - The same numeric forms prefixed with `GMT`, such as `GMT+10:00`
 
 The absolute fixed offset must be less than 24 hours and have whole-second precision. `getTimeZoneOffset()` and `withTimeZoneOffset()` use the native `Date#getTimezoneOffset()` sign convention: a `UTC-10:00` zone reports `600`, while `UTC+10:00` reports `-600`. Fractional minutes can represent whole seconds, such as `31 / 60` for 31 seconds.
 
+The `O` and `OOOO` tokens can parse their GMT-prefixed output, such as `GMT+05:30`. The `VV` token can format and parse both IANA names and fixed offsets such as `+05:30`.
+
 ```js
 const brisbane = DateTime.fromArray([2026, 3, 23, 9, 30], {
+    locale: 'en',
     timeZone: 'Australia/Brisbane',
 });
 
@@ -256,11 +274,21 @@ DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 | --- | --- | --- |
 | locale-aware week of year | `getWeek()` | `withWeek(week, day?)` |
 | locale-aware day of week (`1-7`) | `getWeekDay()` | `withWeekDay(day)` |
-| week day in month | `getWeekDayInMonth()` | `withWeekDayInMonth(week)` |
-| week of month | `getWeekOfMonth()` | `withWeekOfMonth(week)` |
+| weekday occurrence in month (`1-5`) | `getWeekDayInMonth()` | `withWeekDayInMonth(week)` |
+| locale-aware week of month (`0-6`) | `getWeekOfMonth()` | `withWeekOfMonth(week)` |
 | locale-aware week year | `getWeekYear()` | `withWeekYear(year, week?, day?)` |
 
 `getWeekDayInMonth()` counts occurrences of the current weekday within the month (`1-5`). `getWeekOfMonth()` follows the locale's first weekday and minimum days in the first week; an opening partial week can be week `0`, as with January 1, 2021 in `en-GB`.
+
+When parsing, `F` with a weekday selects that occurrence within the specified month, while `W` selects the locale-aware week of the month. An explicit day of month must agree with any supplied `F` or `W` value:
+
+```js
+DateTime.fromFormat('yyyy-MM F e', '2024-09 1 1', {
+    locale: 'en-GB',
+    timeZone: 'UTC',
+}).toIsoString();
+// 2024-09-02T00:00:00.000+00:00 (first Monday in September)
+```
 
 #### Time fields
 
@@ -313,7 +341,9 @@ DateTime.fromArray([2026, 3, 23], { locale: 'ar-eg' }).toDateString();
 - `diffInMinutes(other, options?)`
 - `diffInSeconds(other, options?)`
 
-`options.relative` defaults to `true` for unit-based differences and compares calendar boundaries. For days and weeks, this uses local calendar dates and locale-aware week starts rather than elapsed 24-hour periods. Set `relative: false` to count completed elapsed units instead.
+`options.relative` defaults to `true` for unit-based differences and compares calendar boundaries. For days and weeks, this uses local calendar dates and locale-aware week starts.
+
+With `relative: false`, weeks, days, hours, minutes, and seconds count completed elapsed units, truncating toward zero; a day is 24 hours and a week is 168 hours. Months and years count completed calendar units using the current date-clamping setting.
 
 ```js
 const a = DateTime.fromArray([2026, 3, 23]);
@@ -354,6 +384,8 @@ Base comparisons:
 - `isSameOrAfter(other)`
 - `isSameOrBefore(other)`
 
+`isBetween()` and its scoped variants exclude both endpoints.
+
 Scoped comparisons exist for these units:
 
 - `Day`
@@ -390,14 +422,16 @@ Examples:
 
 ### Global configuration
 
-These affect new instances when you do not pass explicit options:
+The default locale and time zone initially come from the host's `Intl` settings. They apply to new instances when you omit the corresponding option:
 
 - `DateTime.getDefaultLocale()`
 - `DateTime.setDefaultLocale(locale)`
 - `DateTime.getDefaultTimeZone()`
 - `DateTime.setDefaultTimeZone(timeZone)`
-- `DateTime.setDateClamping(enabled)`
-- `DateTime.clearDataCache()`
+
+`DateTime.setDateClamping(enabled)` controls month and year changes for all instances, including existing ones. It defaults to `true`: preserving a day that does not exist in the target month clamps to that month's last day. Setting it to `false` allows overflow into the next month.
+
+`DateTime.clearDataCache()` clears cached formatter and locale data.
 
 ```js
 DateTime.setDateClamping(true);
@@ -406,16 +440,17 @@ DateTime.clearDataCache();
 
 ## Behavior Notes
 
-- Constructor-based parsing throws on invalid strings or unsupported time zones.
-- `fromFormat()` rejects trailing characters and marks impossible parsed dates as `isValid === false`.
+- Constructor-based parsing throws on unparseable strings or unsupported time zones.
+- `fromFormat()` throws on unmatched tokens, mismatched literals, or trailing characters, and marks impossible parsed dates as `isValid === false`.
 - Copies and arithmetic preserve `isValid`; invalid dates remain invalid.
 - `fromISOString()` parses the RFC 3339 / ISO-style shape used by `toIsoString()`.
 - `toIsoString()` always returns a UTC string regardless of the instance time zone.
 - `toJSON()` returns the same value as `toIsoString()` for valid dates and `null` for invalid dates.
 - `withTimeZone()` keeps the same instant and changes representation.
 - `withTimeZoneOffset()` returns a fixed-offset view of the same instant.
-- A nonexistent local wall time moves forward to the next valid time, while a repeated wall time uses the later occurrence.
-- Calendar addition and subtraction across a fully deleted day follow the operation direction.
+- Construction and calendar setters shift nonexistent local wall times forward by the gap duration; repeated wall times use the later occurrence. `fromFormat()` still marks the result invalid if its final fields differ from the parsed values.
+- Adding and subtracting calendar days or weeks resolve a nonexistent target time in the operation direction, including across a fully deleted day.
+- Hour, minute, and second arithmetic uses elapsed time.
 - Date clamping controls whether month and year changes clamp invalid dates.
 - `DateTime.clearDataCache()` clears cached formatter and locale data, which is mainly useful in tests and long-lived processes.
 
