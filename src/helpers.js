@@ -425,11 +425,12 @@ export function parseFactory({ weekDayWithinMonth = false } = {}) {
             set: (datetime, value) => datetime.withDayOfYear(value),
         },
         era: {
-            get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
+            get: (datetime) => datetime.getYear() <= 0 ? 0 : 1,
             set: (datetime, value) => {
-                const offset = value ? 1 : -1;
+                const year = datetime.getYear();
+                const yearOfEra = year <= 0 ? 1 - year : year;
                 return datetime.withYear(
-                    datetime.getYear() * offset,
+                    value ? yearOfEra : 1 - yearOfEra,
                 );
             },
         },
@@ -500,7 +501,7 @@ export function parseFactory({ weekDayWithinMonth = false } = {}) {
         year: {
             get: (datetime) => {
                 const year = datetime.getYear();
-                return Math.abs(year);
+                return year <= 0 ? 1 - year : year;
             },
             set: (datetime, value) => datetime.withYear(value),
         },

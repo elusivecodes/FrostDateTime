@@ -147,11 +147,11 @@ describe('DateTime Utility', function() {
             );
         });
 
-        it('treats year zero as ad to match php numbering', function() {
+        it('treats astronomical year zero as bc', function() {
             assert.strictEqual(
                 DateTime.fromArray([0])
                     .era(),
-                'Anno Domini',
+                'Before Christ',
             );
         });
 

@@ -372,10 +372,11 @@ function parseFactory({ weekDayWithinMonth = false } = {}) {
 			set: (datetime, value) => datetime.withDayOfYear(value)
 		},
 		era: {
-			get: (datetime) => datetime.getYear() < 0 ? 0 : 1,
+			get: (datetime) => datetime.getYear() <= 0 ? 0 : 1,
 			set: (datetime, value) => {
-				const offset = value ? 1 : -1;
-				return datetime.withYear(datetime.getYear() * offset);
+				const year = datetime.getYear();
+				const yearOfEra = year <= 0 ? 1 - year : year;
+				return datetime.withYear(value ? yearOfEra : 1 - yearOfEra);
 			}
 		},
 		hours12: {
@@ -440,7 +441,7 @@ function parseFactory({ weekDayWithinMonth = false } = {}) {
 		year: {
 			get: (datetime) => {
 				const year = datetime.getYear();
-				return Math.abs(year);
+				return year <= 0 ? 1 - year : year;
 			},
 			set: (datetime, value) => datetime.withYear(value)
 		}
@@ -1257,9 +1258,9 @@ var tokens_default = {
 		regex: (locale) => numberRegExp(locale),
 		input: (locale, value) => parseNumber(locale, value),
 		output: (datetime, length) => {
-			let year = datetime.getYear();
-			if (length === 2) year = `${year}`.slice(-2);
-			return formatNumber(datetime.getLocale(), Math.abs(year), length);
+			const year = datetime.getYear();
+			const yearOfEra = year <= 0 ? 1 - year : year;
+			return formatNumber(datetime.getLocale(), length === 2 ? yearOfEra % 100 : yearOfEra, length);
 		}
 	},
 	Y: {
@@ -1775,7 +1776,12 @@ var DateTime = class {
 	* @returns {DateTime} A new DateTime instance.
 	*/
 	static fromISOString(dateString, options = {}) {
-		let date = this.fromFormat(formats.rfc3339_extended, dateString, { locale: "en" });
+		const match = dateString.match(/^(?:\d{4}|[+-]\d{6})(?=-)/);
+		if (!match || match[0] === "-000000") throw new Error("Invalid ISO year supplied");
+		const year = Number(match[0]);
+		const yearOfEra = year <= 0 ? 1 - year : year;
+		const era = formatEra("en", year <= 0 ? 0 : 1, "short");
+		let date = this.fromFormat(`${formats.rfc3339_extended} G`, `${yearOfEra}${dateString.substring(match[0].length)} ${era}`, { locale: "en" });
 		if ("timeZone" in options) date = date.withTimeZone(options.timeZone);
 		if ("locale" in options) date = date.withLocale(options.locale);
 		return date;
@@ -2164,7 +2170,7 @@ var DateTime = class {
 	* @returns {string} The localized era.
 	*/
 	era(type = "long") {
-		return formatEra(this.getLocale(), this.getYear() < 0 ? 0 : 1, type);
+		return formatEra(this.getLocale(), this.getYear() <= 0 ? 0 : 1, type);
 	}
 	/**
 	* Formats the current date using a format string.
@@ -2330,7 +2336,7 @@ var DateTime = class {
 		return this.withWeekDay(7 - minDays + 1).getYear();
 	}
 	/**
-	* Gets the year in the current time zone.
+	* Gets the astronomical year in the current time zone (0 = 1 BC, -1 = 2 BC).
 	* @returns {number} The year.
 	*/
 	getYear() {
@@ -3013,11 +3019,11 @@ var DateTime = class {
 		return this.format(formats.date);
 	}
 	/**
-	* Formats the current date using "yyyy-MM-dd'T'HH:mm:ss.SSSxxx".
+	* Formats the current date as a UTC ISO string with astronomical years and a +00:00 offset.
 	* @returns {string} The formatted date string.
 	*/
 	toIsoString() {
-		return this.withLocale("en").withTimeZone("UTC").format(formats.rfc3339_extended);
+		return this.#date.toISOString().replace("Z", "+00:00");
 	}
 	/**
 	* Returns the JSON representation of the current date.

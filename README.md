@@ -130,7 +130,7 @@ All creation methods accept an optional options object:
 - `DateTime.fromArray(dateArray, options?)`: create from `[year, month, date, hours, minutes, seconds, milliseconds]`
 - `DateTime.fromDate(date, options?)`: wrap a native `Date`
 - `DateTime.fromFormat(formatString, dateString, options?)`: parse a string with a known token pattern
-- `DateTime.fromISOString(dateString, options?)`: parse `yyyy-MM-dd'T'HH:mm:ss.SSSxxx`
+- `DateTime.fromISOString(dateString, options?)`: parse an ISO date with milliseconds and a numeric offset, using a four-digit or signed six-digit astronomical year
 - `DateTime.fromTimestamp(timestamp, options?)`: create from seconds since the UNIX epoch
 - `DateTime.now(options?)`: create the current time
 
@@ -168,6 +168,8 @@ Exactly two input digits parsed with `y`, `yy`, `Y`, or `YY` use ICU's moving 10
 
 Single-digit and longer input years are interpreted literally. Patterns with three or more year letters (`yyy`, `yyyy`, `YYY`, `YYYY`, etc.) also interpret the year literally.
 
+Calendar-year `y` tokens use the year within the era: `0001 BC` is 1 BC, and neither era has a year zero. `getYear()`, array construction, and ISO parsing/output use astronomical years, where `0` is 1 BC and `-1` is 2 BC. For example, year `0` formats as `0001 BC` with `yyyy G`, while its ISO year is `0000`.
+
 A time-only `fromFormat()` pattern starts from January 1, 1970 in the requested local time zone. Directly adjacent numeric tokens consume their pattern widths exactly, so compact fixed-width patterns can be parsed; standalone numeric tokens are not capped at the pattern width:
 
 ```js
@@ -184,7 +186,7 @@ Format tokens are documented in [Formats.md](./Formats.md).
 - `toString()`: `eee MMM dd yyyy HH:mm:ss xx (VV)`
 - `toDateString()`: `eee MMM dd yyyy`
 - `toTimeString()`: `HH:mm:ss xx (VV)`
-- `toIsoString()`: `yyyy-MM-dd'T'HH:mm:ss.SSSxxx` in English and UTC
+- `toIsoString()`: UTC ISO string with milliseconds and `+00:00`; astronomical years outside `0000`–`9999` use a sign and six digits
 - `toJSON()`: same UTC ISO string for valid dates, `null` for invalid dates
 - `toUTCString()`: `toString()` shape in English and UTC
 

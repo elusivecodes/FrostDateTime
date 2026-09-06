@@ -154,11 +154,11 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('outputs absolute year', function() {
+        it('outputs the year of era', function() {
             assert.strictEqual(
                 DateTime.fromArray([-2000])
                     .format('y'),
-                '2000',
+                '2001',
             );
         });
     });
@@ -180,11 +180,11 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('outputs absolute year', function() {
+        it('outputs the year of era', function() {
             assert.strictEqual(
                 DateTime.fromArray([-2000])
                     .format('yy'),
-                '00',
+                '01',
             );
         });
     });
@@ -206,11 +206,11 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('outputs absolute year', function() {
+        it('outputs the year of era', function() {
             assert.strictEqual(
                 DateTime.fromArray([-2000])
                     .format('yyy'),
-                '2000',
+                '2001',
             );
         });
     });
@@ -232,11 +232,11 @@ describe('DateTime #format', function() {
             );
         });
 
-        it('outputs absolute year', function() {
+        it('outputs the year of era', function() {
             assert.strictEqual(
                 DateTime.fromArray([-2000])
                     .format('yyyy'),
-                '2000',
+                '2001',
             );
         });
     });

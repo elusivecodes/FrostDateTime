@@ -158,7 +158,7 @@ describe('DateTime #fromFormat', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGG', '1970 BC')
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
     });
@@ -176,7 +176,7 @@ describe('DateTime #fromFormat', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGGG', '1970 Before Christ')
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
     });
@@ -194,7 +194,7 @@ describe('DateTime #fromFormat', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGGGG', '1970 B')
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
     });

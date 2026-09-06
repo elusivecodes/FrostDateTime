@@ -57,10 +57,10 @@ describe('DateTime Is Valid', function() {
             );
         });
 
-        it('treats year zero as AD to match php numbering', function() {
+        it('invalidates year zero AD', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGG', '0000 AD').isValid,
-                true,
+                false,
             );
         });
 

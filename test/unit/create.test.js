@@ -326,7 +326,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([0, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
                     .format('yyyy-MM-dd HH:mm G'),
-                '0000-06-01 12:00 AD',
+                '0001-06-01 12:00 BC',
             );
         });
 
@@ -350,7 +350,7 @@ describe('DateTime Creation', function() {
             assert.strictEqual(
                 DateTime.fromArray([-1, 6, 1, 12], { timeZone: 'Australia/Brisbane' })
                     .format('yyyy-MM-dd HH:mm G'),
-                '0001-06-01 12:00 BC',
+                '0002-06-01 12:00 BC',
             );
         });
 

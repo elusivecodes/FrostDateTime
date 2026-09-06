@@ -36,13 +36,11 @@ export default {
         regex: (locale) => numberRegExp(locale),
         input: (locale, value) => parseNumber(locale, value),
         output: (datetime, length) => {
-            let year = datetime.getYear();
-            if (length === 2) {
-                year = `${year}`.slice(-2);
-            }
+            const year = datetime.getYear();
+            const yearOfEra = year <= 0 ? 1 - year : year;
             return formatNumber(
                 datetime.getLocale(),
-                Math.abs(year),
+                length === 2 ? yearOfEra % 100 : yearOfEra,
                 length,
             );
         },

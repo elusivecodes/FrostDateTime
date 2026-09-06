@@ -257,9 +257,20 @@ export default class DateTime {
      * @returns {DateTime} A new DateTime instance.
      */
     static fromISOString(dateString, options = {}) {
-        let date = this.fromFormat(formats.rfc3339_extended, dateString, {
-            locale: 'en',
-        });
+        const match = dateString.match(/^(?:\d{4}|[+-]\d{6})(?=-)/);
+
+        if (!match || match[0] === '-000000') {
+            throw new Error('Invalid ISO year supplied');
+        }
+
+        const year = Number(match[0]);
+        const yearOfEra = year <= 0 ? 1 - year : year;
+        const era = formatEra('en', year <= 0 ? 0 : 1, 'short');
+        let date = this.fromFormat(
+            `${formats.rfc3339_extended} G`,
+            `${yearOfEra}${dateString.substring(match[0].length)} ${era}`,
+            { locale: 'en' },
+        );
 
         if ('timeZone' in options) {
             date = date.withTimeZone(options.timeZone);
@@ -771,7 +782,7 @@ export default class DateTime {
     era(type = 'long') {
         return formatEra(
             this.getLocale(),
-            this.getYear() < 0 ?
+            this.getYear() <= 0 ?
                 0 :
                 1,
             type,
@@ -989,7 +1000,7 @@ export default class DateTime {
     }
 
     /**
-     * Gets the year in the current time zone.
+     * Gets the astronomical year in the current time zone (0 = 1 BC, -1 = 2 BC).
      * @returns {number} The year.
      */
     getYear() {
@@ -1767,14 +1778,11 @@ export default class DateTime {
     }
 
     /**
-     * Formats the current date using "yyyy-MM-dd'T'HH:mm:ss.SSSxxx".
+     * Formats the current date as a UTC ISO string with astronomical years and a +00:00 offset.
      * @returns {string} The formatted date string.
      */
     toIsoString() {
-        return this
-            .withLocale('en')
-            .withTimeZone('UTC')
-            .format(formats.rfc3339_extended);
+        return this.#date.toISOString().replace('Z', '+00:00');
     }
 
     /**

@@ -121,6 +121,18 @@ describe('DateTime #fromFormat year window', function() {
         assert.strictEqual(DateTime.fromFormat('yy-MM-dd', '46-02-31').isValid, false);
     });
 
+    it.each([
+        ['01-01-01 BC', -2000],
+        ['46-01-01 BC', -2045],
+        ['46-12-31 BC', -2045],
+        ['99-01-01 BC', -1998],
+    ])('expands two-digit years before converting the era: %s', function(input, year) {
+        const date = DateTime.fromFormat('yy-MM-dd G', input);
+
+        assert.strictEqual(date.getYear(), year);
+        assert.strictEqual(date.isValid, true);
+    });
+
     it('captures the reference time once for each parse', function() {
         vi.spyOn(Date, 'now')
             .mockReturnValueOnce(Date.parse('2026-09-06T12:34:56.789Z'))

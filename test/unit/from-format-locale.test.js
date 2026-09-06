@@ -58,7 +58,7 @@ describe('DateTime #fromFormat (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGG', '1970 до н. э.', { locale: 'ru' })
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
 
@@ -82,7 +82,7 @@ describe('DateTime #fromFormat (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGGG', '1970 до Рождества Христова', { locale: 'ru' })
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
     });
@@ -100,7 +100,7 @@ describe('DateTime #fromFormat (Locale)', function() {
             assert.strictEqual(
                 DateTime.fromFormat('yyyy GGGGG', '1970 до н.э.', { locale: 'ru' })
                     .getYear(),
-                -1970,
+                -1969,
             );
         });
     });
